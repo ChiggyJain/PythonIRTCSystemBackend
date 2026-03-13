@@ -55,13 +55,6 @@ In this backend system below given following things are must be implement in sta
 6) Try to implement SINGLETON-SYSTEM-DESIGN code pattern at wherever is required.
 7) Use SQLAlchemy models concept only.
  
-I want to develop this feature [User-SignUp-Account-Details] as backend system [HTTP-POST-REQUEST]:
-1) Collect following fields details from the API-endpoints [first_name, last_name, mobile, email, gender, password, confirm_password]
-2) Check field data validation [All fields are mandatory, password and confirm_password must be same, mobile must be 10digits number only]
-3) Check email uniqueness from this mysql table [USERS]. If email already exists then raise exception error with following standard messages.
-4) Stored details into this mysql table [USERS]
-5) Return response.
-
 
 SendGrid Sending Email API-key =>
 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
