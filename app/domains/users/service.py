@@ -1,0 +1,86 @@
+
+"""
+Users Service
+
+Business logic for users domain.
+"""
+
+from sqlalchemy.exc import IntegrityError
+
+from app.core.exceptions import BaseAppException
+from app.common.utils.password import hash_password
+
+from app.domains.users.repository.base import (
+    UsersRepositoryBase,
+)
+
+
+class UsersService:
+    """
+    Users business logic
+    """
+
+    def __init__(
+        self,
+        repo: UsersRepositoryBase,
+    ):
+        self.repo = repo
+
+    # ---------------------------------
+    # signup user
+    # ---------------------------------
+
+    async def signup_user(
+        self,
+        *,
+        first_name: str,
+        last_name: str,
+        mobile: str,
+        email: str,
+        password: str,
+        gender: str,
+    ):
+
+        # -------------------------
+        # check email exists
+        # -------------------------
+
+        existing = await self.repo.get_by_email(
+            email
+        )
+
+        if existing:
+            raise BaseAppException(
+                messages=["Email already exists"],
+                status_code=400,
+            )
+
+        # -------------------------
+        # hash password
+        # -------------------------
+
+        hashed_password = hash_password(password)
+
+        # -------------------------
+        # create user
+        # -------------------------
+
+        try:
+
+            user = await self.repo.create_user(
+                first_name=first_name,
+                last_name=last_name,
+                mobile=mobile,
+                email=email,
+                password=hashed_password,
+                gender=gender,
+            )
+
+        except IntegrityError:
+
+            raise BaseAppException(
+                messages=["Email already exists"],
+                status_code=400,
+            )
+
+        return user
