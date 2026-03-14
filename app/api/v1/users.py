@@ -1,5 +1,7 @@
 
-from fastapi import APIRouter, Depends
+from fastapi import (
+    APIRouter, Depends, Request
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
@@ -10,6 +12,9 @@ from app.domains.users.schemas import (
 )
 from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
+from app.dependencies.auth import get_token_service
+from app.domains.auth.service import TokenService
+
 
 
 router = APIRouter()
@@ -82,14 +87,36 @@ router.add_api_route(
 )
 async def login_user(
     body: UserLoginRequest,
+    request: Request,
     service: UsersService = Depends(
         get_users_service
     ),
+    token_service: TokenService = Depends(
+        get_token_service
+    ),
 ):
+
+    # -------------------------
+    # validate user
+    # -------------------------
 
     user = await service.login_user(
         email=body.email,
         password=body.password,
+    )
+
+    # -------------------------
+    # create tokens
+    # -------------------------
+
+    tokens = await token_service.create_tokens(
+        user_id=user.id,
+        ip_address=request.client.host
+        if request.client
+        else None,
+        user_agent=request.headers.get(
+            "user-agent"
+        ),
     )
 
     return success_response(
@@ -98,7 +125,8 @@ async def login_user(
             "userId": user.id,
             "userEmail": user.email,
             "userMobile" : user.mobile,
-            "userGender" : user.gender
+            "userGender" : user.gender,
+            "tokens" : tokens
         },
     )
 
