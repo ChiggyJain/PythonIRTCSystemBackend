@@ -42,5 +42,5 @@ http://127.0.0.1:8000/api/v1/users/login
 
 http://127.0.0.1:8000/api/v1/auth/refresh
 {
-  "refresh_token": "1eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3NzQxMDU4MTQsImlzcyI6ImlydGMtYmFja2VuZCIsImF1ZCI6ImlydGMtdXNlcnMiLCJ0aWQiOjh9.O9hVILadVm0PY1MSwBUJCe3tE5FlCk5WUF2C1vBqJoA"
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3NzQxMDU4MTQsImlzcyI6ImlydGMtYmFja2VuZCIsImF1ZCI6ImlydGMtdXNlcnMiLCJ0aWQiOjh9.O9hVILadVm0PY1MSwBUJCe3tE5FlCk5WUF2C1vBqJoA"
 }
