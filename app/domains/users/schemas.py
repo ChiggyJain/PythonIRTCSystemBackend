@@ -14,12 +14,12 @@ Signup validation rules:
 """
 
 import re
-from pydantic import ValidationInfo
 from pydantic import (
     BaseModel,
     EmailStr,
     field_validator,
     model_validator,
+    ValidationInfo
 )
 
 
@@ -181,3 +181,38 @@ class UserSignupRequest(BaseModel):
             )
 
         return self
+    
+
+
+# =========================================================
+# Login Schema
+# =========================================================
+
+class UserLoginRequest(BaseModel):
+
+    email: EmailStr
+    password: str
+
+    # -------------------------
+    # strip spaces
+    # -------------------------
+
+    @field_validator(
+        "email",
+        "password",
+        mode="before",
+    )
+    @classmethod
+    def strip_values(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    # -------------------------
+    # lowercase email
+    # -------------------------
+
+    @field_validator("email")
+    @classmethod
+    def lower_email(cls, v, info: ValidationInfo):
+        return v.lower()

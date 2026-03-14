@@ -8,8 +8,10 @@ Business logic for users domain.
 from sqlalchemy.exc import IntegrityError
 
 from app.core.exceptions import BaseAppException
-from app.common.utils.password import hash_password
-
+from app.common.utils.password import (
+    hash_password, 
+    verify_password
+)
 from app.domains.users.repository.base import (
     UsersRepositoryBase,
 )
@@ -45,10 +47,7 @@ class UsersService:
         # check email exists
         # -------------------------
 
-        existing = await self.repo.get_by_email(
-            email
-        )
-
+        existing = await self.repo.get_by_email(email)
         if existing:
             raise BaseAppException(
                 messages=["Email already exists"],
@@ -80,6 +79,64 @@ class UsersService:
 
             raise BaseAppException(
                 messages=["Email already exists"],
+                status_code=400,
+            )
+
+        return user
+    
+
+
+    # ---------------------------------
+    # login user
+    # ---------------------------------
+
+    async def login_user(
+        self,
+        *,
+        email: str,
+        password: str,
+    ):
+
+        # -------------------------
+        # get user
+        # -------------------------
+
+        user = await self.repo.get_by_email(email)
+
+        # -------------------------
+        # user not found
+        # -------------------------
+
+        if not user:
+            raise BaseAppException(
+                messages=[
+                    "Invalid email or password"
+                ],
+                status_code=400,
+            )
+
+        # -------------------------
+        # status check
+        # -------------------------
+
+        if user.status != "A":
+            raise BaseAppException(
+                messages=[
+                    "User account inactive"
+                ],
+                status_code=403,
+            )
+
+        # -------------------------
+        # verify password
+        # -------------------------
+
+        is_valid = verify_password(password, user.password,)
+        if not is_valid:
+            raise BaseAppException(
+                messages=[
+                    "Invalid email or password"
+                ],
                 status_code=400,
             )
 
