@@ -15,3 +15,12 @@
 2026-03-14 17:52:12 | INFO | SpawnProcess-1-8113 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-14 17:52:12.438283+05:30 | 2026-03-14 17:52:12.760214+05:30 | 321 | None | 200
 2026-03-14 17:52:30 | INFO | SpawnProcess-3-8448 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-14 17:52:30.295291+05:30 | 2026-03-14 17:52:30.296065+05:30 | 0 | Request limit exceeded | 429
 2026-03-14 17:54:10 | INFO | SpawnProcess-1-8519 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-14 17:54:10.342941+05:30 | 2026-03-14 17:54:10.807455+05:30 | 464 | None | 200
+2026-03-14 20:40:14 | INFO | SpawnProcess-1-8547 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-14 20:40:14.411659+05:30 | 2026-03-14 20:40:14.934605+05:30 | 522 | None | 200
+2026-03-14 20:41:14 | INFO | SpawnProcess-1-8547 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:41:14.804837+05:30 | 2026-03-14 20:41:14.805971+05:30 | 1 | Invalid refresh token | 500
+2026-03-14 20:42:07 | INFO | SpawnProcess-1-8547 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:42:07.612683+05:30 | 2026-03-14 20:42:07.640539+05:30 | 27 | None | 200
+2026-03-14 20:45:45 | INFO | SpawnProcess-5-8958 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:45:45.042243+05:30 | 2026-03-14 20:45:45.148525+05:30 | 106 | None | 200
+2026-03-14 20:45:58 | INFO | SpawnProcess-5-8958 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:45:58.201548+05:30 | 2026-03-14 20:45:58.203485+05:30 | 1 | Refresh token revoked | 500
+2026-03-14 20:46:46 | INFO | SpawnProcess-6-8998 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:46:46.128412+05:30 | 2026-03-14 20:46:46.196505+05:30 | 68 | Refresh token revoked | 500
+2026-03-14 20:47:01 | INFO | SpawnProcess-7-9013 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:47:01.591170+05:30 | 2026-03-14 20:47:01.672668+05:30 | 81 | Refresh token revoked | 500
+2026-03-14 20:50:28 | INFO | SpawnProcess-19-9210 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:50:28.470060+05:30 | 2026-03-14 20:50:28.557451+05:30 | 87 |  | 500
+2026-03-14 20:50:40 | INFO | SpawnProcess-19-9210 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-14 20:50:40.840628+05:30 | 2026-03-14 20:50:40.957442+05:30 | 116 | None | 200

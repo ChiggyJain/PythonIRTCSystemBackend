@@ -1,4 +1,5 @@
 
+from dns.e164 import to_e164
 from fastapi import (
     APIRouter, Depends
 )
@@ -11,6 +12,7 @@ from app.domains.auth.schemas import (
     RefreshTokenRequest,
 )
 from app.common.security.jwt import decode_token
+from app.core.exceptions import BaseAppException
 
 
 router = APIRouter()
@@ -44,34 +46,40 @@ async def refresh_token(
     payload = decode_token(body.refresh_token)
 
     if not payload:
-        raise Exception(
-            "Invalid refresh token"
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid refresh token"]
         )
     
     if payload.get("type") != "refresh":
-        raise Exception(
-            "Invalid token type"
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid refresh token type"]
         )
     
     token_id = payload.get("tid")
     token_row = await token_service.get_refresh(token_id)
-
+    
     if not token_row:
-        raise Exception(
-            "Refresh token not found"
+        raise BaseAppException(
+            status_code=401,
+            messages=["Refresh token not found"]
         )
     
     if token_row.revoked:
-        raise Exception(
-            "Refresh token revoked"
+        raise BaseAppException(
+            status_code=401,
+            messages=["Refresh token not revoked"]
         )
+
+    await token_service.revoke(token_id=token_id)
 
     tokens = await token_service.create_tokens(
         user_id=int(payload["sub"])
     )
 
     return success_response(
-        messages=["Token refreshed"],
+        messages=["Token refreshed successfully"],
         data=tokens,
     )
 

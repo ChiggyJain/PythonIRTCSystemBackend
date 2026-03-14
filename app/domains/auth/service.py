@@ -11,10 +11,8 @@ from app.common.security.jwt import (
     create_access_token,
     create_refresh_token,
 )
-
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-
 from app.domains.auth.repository.base import (
     TokenRepositoryBase,
 )
