@@ -59,6 +59,18 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: str
 
     # =========================
+    # JWT Settings
+    # =========================
+
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_EXPIRE_MINUTES: int = 30
+    JWT_REFRESH_EXPIRE_DAYS: int = 7
+    JWT_ISSUER: str = "irtc-backend"
+    JWT_AUDIENCE: str = "irtc-users"
+    
+
+    # =========================
     # Pydantic Settings Config
     # =========================
 
@@ -67,6 +79,7 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
 
 
 @lru_cache()
