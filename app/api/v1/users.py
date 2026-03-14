@@ -120,10 +120,6 @@ async def login_user(
     return success_response(
         messages=["Login successful"],
         data={
-            "userId": user.id,
-            "userEmail": user.email,
-            "userMobile" : user.mobile,
-            "userGender" : user.gender,
             "tokens" : tokens
         },
     )
