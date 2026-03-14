@@ -1,20 +1,28 @@
 """
 Auth models
-
 USER_TOKENS table
 """
 
+from datetime import datetime
 from sqlalchemy import (
-    Integer,
-    String,
-    DateTime,
-    Boolean,
-    Enum,
-    Text,
+    String, DateTime, Enum, Text, Boolean
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import (
+    Mapped, mapped_column
+)
 from app.infrastructure.database.base import Base
+from app.common.utils.datetime import now_ist
 
+
+# =========================================================
+# ENUMS
+# =========================================================
+
+status_enum = Enum(
+    "A",
+    "Z",
+    name="status_enum",
+)
 
 
 # =========================
@@ -26,18 +34,12 @@ class UserTokens(Base):
     __tablename__ = "USER_TOKENS"
 
     id: Mapped[int] = mapped_column(
-        Integer,
         primary_key=True,
         autoincrement=True,
-    )
-
-    user_id: Mapped[int] = mapped_column(
-        Integer,
         nullable=False,
     )
 
-    token: Mapped[str] = mapped_column(
-        Text,
+    user_id: Mapped[int] = mapped_column(
         nullable=False,
     )
 
@@ -46,8 +48,13 @@ class UserTokens(Base):
         nullable=False,
     )
 
-    expires_at: Mapped = mapped_column(
-        DateTime,
+    token: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
+
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
         nullable=False,
     )
 
@@ -67,18 +74,21 @@ class UserTokens(Base):
         nullable=True,
     )
 
-    created_at: Mapped = mapped_column(
-        DateTime,
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=now_ist(),
         nullable=False,
     )
 
-    updated_at: Mapped = mapped_column(
-        DateTime,
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=now_ist(),
+        onupdate=now_ist(),
         nullable=False,
     )
 
     status: Mapped[str] = mapped_column(
-        String(1),
-        default="A",
+        status_enum,
         nullable=False,
+        default="A",
     )

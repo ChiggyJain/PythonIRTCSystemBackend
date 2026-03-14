@@ -9,6 +9,10 @@ Application Start Command =>
 uvicorn app.main:app --reload
 uvicorn app.main:app --reload --workers 1
 
+Alembic Command =>
+alembic revision --autogenerate -m "create USERS and USER_TOKENS table"
+alembic upgrade head
+
 
 GET Request =>
 http://127.0.0.1:8000/health
