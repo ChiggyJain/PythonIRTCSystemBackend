@@ -78,7 +78,7 @@ app_logger = logger
 
 def log_message(
     message: str,
-    logging_config={}
+    logging_config: dict | None = None,
 ):
     """
     Flexible logging using loguru.
@@ -87,6 +87,6 @@ def log_message(
     """
 
     app_logger.bind(
-        log_console=logging_config['console'],
-        log_file=logging_config['file'],
+        log_console=logging_config.get("console", False),
+        log_file=logging_config.get("file", False),
     ).info(message)
