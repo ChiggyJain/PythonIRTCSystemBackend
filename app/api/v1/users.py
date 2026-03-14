@@ -20,7 +20,7 @@ router = APIRouter()
         "name": "v1.users.signup",
         "logging": {
             "console" : True,
-            "file" : True
+            "file" : False
         },
         "rate_limit": {
             "limit": 1000,
