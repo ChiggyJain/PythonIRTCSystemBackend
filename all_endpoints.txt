@@ -39,3 +39,8 @@ http://127.0.0.1:8000/api/v1/users/login
   "email": "c1@gmail.com",
   "password": "Test1@23456"
 }
+
+http://127.0.0.1:8000/api/v1/auth/refresh
+{
+  "refresh_token": ""
+}

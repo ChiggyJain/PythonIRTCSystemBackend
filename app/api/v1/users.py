@@ -2,7 +2,6 @@
 from fastapi import (
     APIRouter, Depends, Request
 )
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
 from app.core.response import success_response
@@ -14,7 +13,6 @@ from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
-
 
 
 router = APIRouter()
@@ -136,4 +134,5 @@ router.add_api_route(
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
+
 
