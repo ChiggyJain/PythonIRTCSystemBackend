@@ -20,16 +20,6 @@ Only import models.
 """
 
 
-# =========================
-# USERS DOMAIN MODELS
-# =========================
-
 from app.domains.users import models  # noqa
-
-
-# =========================
-# AUTH DOMAIN MODELS
-# =========================
-
 from app.domains.auth import models  # noqa
 
