@@ -16,10 +16,11 @@ Used only when route_class=FeatureAPIRoute
 from typing import Callable
 from fastapi.routing import APIRoute
 from fastapi import Request, Response
-from app.common.utils.logger import app_logger
+from app.common.utils.logger import log_message
 from app.common.utils.ratelimiter import rate_limiter
 from app.common.utils.datetime import now_ist
 from app.common.utils.execution_context import get_worker_name
+
 
 
 class FeatureAPIRoute(APIRoute):
@@ -31,20 +32,10 @@ class FeatureAPIRoute(APIRoute):
 
         original_handler = super().get_route_handler()
         endpoint = self.endpoint
-        feature_config = getattr(
-            endpoint,
-            "__feature_config__",
-            {},
-        )
+        feature_config = getattr(endpoint, "__feature_config__", {})
         given_api_name = feature_config.get("name", "unknown")
-        logging_enabled = feature_config.get(
-            "logging",
-            False,
-        )
-        rate_limit_config = feature_config.get(
-            "rate_limit",
-            None,
-        )
+        logging_config = feature_config.get("logging", None)
+        rate_limit_config = feature_config.get("rate_limit", None)
 
         async def custom_handler(
             request: Request,
@@ -82,7 +73,7 @@ class FeatureAPIRoute(APIRoute):
                         f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
                         f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
                     )
-                    app_logger.error(log_msg)
+                    log_message(log_msg, logging_config=logging_config)
                     from app.core.response import error_response
                     return error_response(
                         messages=["Too many requests"],
@@ -106,22 +97,10 @@ class FeatureAPIRoute(APIRoute):
 
                 end_time = now_ist()
                 duration = int((end_time - start_time).total_seconds() * 1000)
-                if error:
-
-                    log_msg = (
-                        f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
-                        f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
-                    )
-                    app_logger.error(log_msg)
-
-                else:
-
-                    if logging_enabled:
-                        log_msg = (
-                            f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
-                            f"{start_time} | {end_time} | {duration} | {status_code}"
-                        )
-                        app_logger.info(log_msg)
-
-
+                log_msg = (
+                    f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
+                    f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
+                )
+                log_message(log_msg, logging_config=logging_config)
+                
         return custom_handler

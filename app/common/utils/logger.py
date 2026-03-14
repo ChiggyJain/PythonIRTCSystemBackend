@@ -45,6 +45,7 @@ logger.add(
     sink=lambda msg: print(msg, end=""),
     level="INFO",
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+    filter=lambda record: record["extra"].get("log_console", True),
 )
 
 
@@ -60,6 +61,7 @@ logger.add(
     compression="zip",
     enqueue=True,  # multi-worker safe
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
+    filter=lambda record: record["extra"].get("log_file", True),
 )
 
 
@@ -68,3 +70,23 @@ logger.add(
 # =========================================================
 
 app_logger = logger
+
+
+# =========================================================
+# Flexible log function
+# =========================================================
+
+def log_message(
+    message: str,
+    logging_config={}
+):
+    """
+    Flexible logging using loguru.
+    console → print to console
+    file → write to file
+    """
+
+    app_logger.bind(
+        log_console=logging_config['console'],
+        log_file=logging_config['file'],
+    ).info(message)

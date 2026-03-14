@@ -18,7 +18,10 @@ router = APIRouter()
 @feature_control(
     {
         "name": "v1.users.signup",
-        "logging": True,
+        "logging": {
+            "console" : True,
+            "file" : True
+        },
         "rate_limit": {
             "limit": 1000,
             "window": 3600,

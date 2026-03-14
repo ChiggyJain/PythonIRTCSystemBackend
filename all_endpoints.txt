@@ -1,6 +1,13 @@
 
 Redis-Command =>
 redis-cli flushdb
+redis-cli debug object ratelimit:v1.users.signup:ip:127.0.0.1
+redis-cli get ratelimit:v1.users.signup:ip:127.0.0.1
+
+
+Application Start Command =>
+uvicorn app.main:app --reload
+uvicorn app.main:app --reload --workers 1
 
 
 GET Request =>
