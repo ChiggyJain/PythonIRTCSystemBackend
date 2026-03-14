@@ -55,3 +55,11 @@
 2026-03-14 10:57:49 | ERROR | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | error | 8ms | [{'type': 'value_error', 'loc': ('body', 'gender'), 'msg': 'Value error, gender must be one of: Male, Female, Transgender', 'input': 'Male1', 'ctx': {'error': ValueError('gender must be one of: Male, Female, Transgender')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]
 2026-03-14 10:57:59 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | start
 2026-03-14 10:57:59 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | 200 | 472ms
+2026-03-14 11:02:05 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | start
+2026-03-14 11:02:05 | ERROR | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | error | 6ms | [{'type': 'value_error', 'loc': ('body', 'mobile'), 'msg': 'Value error, Mobile must be 10 digits', 'input': '1234567890', 'ctx': {'error': ValueError('Mobile must be 10 digits')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]
+2026-03-14 11:03:17 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | start
+2026-03-14 11:03:17 | ERROR | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | error | 12ms | [{'type': 'value_error', 'loc': ('body', 'mobile'), 'msg': 'Value error, mobile must be a valid 10-digit number starting with 6, 7, 8, or 9', 'input': '1234567890', 'ctx': {'error': ValueError('mobile must be a valid 10-digit number starting with 6, 7, 8, or 9')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]
+2026-03-14 11:03:36 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | start
+2026-03-14 11:03:36 | ERROR | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | error | 2ms | [{'type': 'value_error', 'loc': ('body', 'mobile'), 'msg': 'Value error, mobile must be a valid 10-digit number starting with 6, 7, 8, or 9', 'input': '1234567890', 'ctx': {'error': ValueError('mobile must be a valid 10-digit number starting with 6, 7, 8, or 9')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}]
+2026-03-14 11:03:45 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | start
+2026-03-14 11:03:46 | INFO | v1.users.signup | 127.0.0.1 | POST | /api/v1/users/signup | 200 | 456ms

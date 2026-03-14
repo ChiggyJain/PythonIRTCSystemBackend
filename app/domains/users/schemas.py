@@ -28,7 +28,7 @@ from pydantic import (
 # =========================================================
 
 NAME_REGEX = re.compile(r"^[A-Za-z ]+$")
-MOBILE_REGEX = re.compile(r"^[0-9]{10}$")
+MOBILE_REGEX = re.compile(r"^[6-9][0-9]{9}$")
 
 # allow many special chars except ' and "
 PASSWORD_REGEX = re.compile(
@@ -75,10 +75,8 @@ class UserSignupRequest(BaseModel):
     )
     @classmethod
     def strip_values(cls, v, info:ValidationInfo):
-
         if isinstance(v, str):
             v = v.strip()
-
         return v
 
     # -------------------------
@@ -91,12 +89,10 @@ class UserSignupRequest(BaseModel):
     )
     @classmethod
     def validate_name(cls, v, info:ValidationInfo):
-
         if not NAME_REGEX.match(v):
             raise ValueError(
                 f"{info.field_name} only alphabets and space allowed"
             )
-
         return v
 
     # -------------------------
@@ -106,12 +102,10 @@ class UserSignupRequest(BaseModel):
     @field_validator("mobile")
     @classmethod
     def validate_mobile(cls, v, info:ValidationInfo):
-
         if not MOBILE_REGEX.match(v):
             raise ValueError(
-                "Mobile must be 10 digits"
+                f"mobile must be a valid 10-digit number starting with 6, 7, 8, or 9"
             )
-
         return v
 
     # -------------------------
@@ -121,7 +115,6 @@ class UserSignupRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def lower_email(cls, v, info:ValidationInfo):
-
         return v.lower()
     
 
@@ -149,7 +142,6 @@ class UserSignupRequest(BaseModel):
     )
     @classmethod
     def validate_password_format(cls, v, info:ValidationInfo):
-
         if not PASSWORD_REGEX.match(v):
             raise ValueError(
                 f"{info.field_name} must contain uppercase, lowercase, digit, special character and length 8-64"
@@ -165,27 +157,27 @@ class UserSignupRequest(BaseModel):
 
         if self.password != self.confirm_password:
             raise ValueError(
-                "Password and confirm password must match"
+                "password and confirm password must match"
             )
 
         if self.password == self.email:
             raise ValueError(
-                "Password cannot be same as email"
+                "password cannot be same as email"
             )
 
         if self.confirm_password == self.email:
             raise ValueError(
-                "Confirm password cannot be same as email"
+                "confirm password cannot be same as email"
             )
 
         if self.password == self.mobile:
             raise ValueError(
-                "Password cannot be same as mobile"
+                "password cannot be same as mobile"
             )
 
         if self.confirm_password == self.mobile:
             raise ValueError(
-                "Confirm password cannot be same as mobile"
+                "confirm password cannot be same as mobile"
             )
 
         return self
