@@ -51,8 +51,8 @@ register_exception_handlers(app)
 # Routers (future)
 # =========================================================
 
-# from app.api.v1.router import router as v1_router
-# app.include_router(v1_router, prefix="/api/v1")
+from app.api.v1.router import router as v1_router
+app.include_router(v1_router, prefix="/api/v1")
 
 
 # =========================================================

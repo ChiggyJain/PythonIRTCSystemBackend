@@ -61,6 +61,9 @@ def register_exception_handlers(app: FastAPI):
 
         for err in exc.errors():
             msg = err.get("msg")
+            # remove "Value error, "
+            if msg.startswith("Value error,"):
+                msg = msg.replace("Value error,", "").strip()
             errors.append(msg)
 
         return build_response(

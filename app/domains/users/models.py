@@ -43,7 +43,6 @@ gender_enum = Enum(
     "Male",
     "Female",
     "Transgender",
-    "Others",
     name="gender_enum",
 )
 

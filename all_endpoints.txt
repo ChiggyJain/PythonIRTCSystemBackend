@@ -1,0 +1,15 @@
+
+GET Request =>
+http://127.0.0.1:8000/health
+
+POST Request =>
+http://127.0.0.1:8000/api/v1/users/signup
+{
+  "first_name": "Chirag",
+  "last_name": "Jain",
+  "mobile": "1",
+  "email": "c1@gmail.com",
+  "gender": "Male",
+  "password": "Test@1234",
+  "confirm_password": "Test@1234"
+}

@@ -14,7 +14,7 @@ Signup validation rules:
 """
 
 import re
-
+from pydantic import ValidationInfo
 from pydantic import (
     BaseModel,
     EmailStr,
@@ -28,9 +28,7 @@ from pydantic import (
 # =========================================================
 
 NAME_REGEX = re.compile(r"^[A-Za-z ]+$")
-
 MOBILE_REGEX = re.compile(r"^[0-9]{10}$")
-
 
 # allow many special chars except ' and "
 PASSWORD_REGEX = re.compile(
@@ -40,6 +38,10 @@ PASSWORD_REGEX = re.compile(
     r"(?=.*[!@#$%^&*()_\+\-=\[\]{}|;:,.<>/?`~])"
     r"[A-Za-z\d!@#$%^&*()_\+\-=\[\]{}|;:,.<>/?`~]{8,64}$"
 )
+
+# allow gender
+ALLOWED_GENDERS = ["Male", "Female", "Transgender"]
+
 
 
 # =========================================================
@@ -66,12 +68,13 @@ class UserSignupRequest(BaseModel):
         "last_name",
         "mobile",
         "email",
+        "gender",
         "password",
         "confirm_password",
         mode="before",
     )
     @classmethod
-    def strip_values(cls, v):
+    def strip_values(cls, v, info:ValidationInfo):
 
         if isinstance(v, str):
             v = v.strip()
@@ -87,11 +90,11 @@ class UserSignupRequest(BaseModel):
         "last_name",
     )
     @classmethod
-    def validate_name(cls, v):
+    def validate_name(cls, v, info:ValidationInfo):
 
         if not NAME_REGEX.match(v):
             raise ValueError(
-                "Only alphabets and space allowed"
+                f"{info.field_name} only alphabets and space allowed"
             )
 
         return v
@@ -102,7 +105,7 @@ class UserSignupRequest(BaseModel):
 
     @field_validator("mobile")
     @classmethod
-    def validate_mobile(cls, v):
+    def validate_mobile(cls, v, info:ValidationInfo):
 
         if not MOBILE_REGEX.match(v):
             raise ValueError(
@@ -117,9 +120,24 @@ class UserSignupRequest(BaseModel):
 
     @field_validator("email")
     @classmethod
-    def lower_email(cls, v):
+    def lower_email(cls, v, info:ValidationInfo):
 
         return v.lower()
+    
+
+    # -------------------------
+    # mobile validation
+    # -------------------------
+
+    @field_validator("gender")
+    @classmethod
+    def validate_gender(cls, v, info:ValidationInfo):
+        if v not in ALLOWED_GENDERS:
+            raise ValueError(
+                f"gender must be one of: {', '.join(ALLOWED_GENDERS)}"
+            )
+        return v
+    
 
     # -------------------------
     # password regex validation
@@ -130,13 +148,12 @@ class UserSignupRequest(BaseModel):
         "confirm_password",
     )
     @classmethod
-    def validate_password_format(cls, v):
+    def validate_password_format(cls, v, info:ValidationInfo):
 
         if not PASSWORD_REGEX.match(v):
             raise ValueError(
-                "Password must contain uppercase, lowercase, digit, special character and length 8-64"
+                f"{info.field_name} must contain uppercase, lowercase, digit, special character and length 8-64"
             )
-
         return v
 
     # -------------------------
