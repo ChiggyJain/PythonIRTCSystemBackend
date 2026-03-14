@@ -1,3 +1,6 @@
+Git Command =>
+git add . && git commit -m "IRTC Backend System"
+
 
 Redis-Command =>
 redis-cli flushdb
