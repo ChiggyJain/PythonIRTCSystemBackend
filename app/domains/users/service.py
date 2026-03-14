@@ -13,6 +13,15 @@ from app.common.utils.password import (
 from app.domains.users.repository.base import (
     UsersRepositoryBase,
 )
+from app.common.cache.redis_cache import (
+    cache_get,
+    cache_set,
+    build_cache_key,
+)
+from app.common.cache.config import (
+    CACHE_TTL_PROFILE,
+    CACHE_KEY_USER_PROFILE,
+)
 
 
 class UsersService:
@@ -139,3 +148,66 @@ class UsersService:
             )
 
         return user
+
+
+    # ---------------------------------
+    # profile details
+    # ---------------------------------
+
+    async def get_profile_details(
+        self,
+        user_id: int,
+    ):
+
+        # -------------------------
+        # build cache key
+        # -------------------------
+
+        key = build_cache_key(
+            CACHE_KEY_USER_PROFILE,
+            user_id,
+        )
+
+        # -------------------------
+        # try cache
+        # -------------------------
+
+        cached = await cache_get(key)
+        if cached:
+            return cached
+
+        # -------------------------
+        # DB fetch
+        # -------------------------
+
+        user = await self.repo.get_by_id(
+            user_id
+        )
+
+        if not user:
+            raise BaseAppException(
+                messages=["User not found"],
+                status_code=404,
+            )
+
+        data = {
+            "id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "mobile": user.mobile,
+            "gender": user.gender,
+            "status": user.status,
+        }
+
+        # -------------------------
+        # set cache
+        # -------------------------
+
+        await cache_set(
+            key,
+            data,
+            ttl=CACHE_TTL_PROFILE,
+        )
+
+        return data

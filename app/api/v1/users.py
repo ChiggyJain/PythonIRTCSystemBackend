@@ -13,6 +13,7 @@ from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
+from app.dependencies.auth import get_current_user
 
 
 router = APIRouter()
@@ -131,4 +132,46 @@ router.add_api_route(
     route_class_override=FeatureAPIRoute,
 )
 
+
+# -----------------------------
+# user profile details process
+# -----------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.profile_details",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 30,
+            "window": 60,
+        },
+    }
+)
+async def profile_details(
+    user_id: int = Depends(
+        get_current_user
+    ),
+    service: UsersService = Depends(
+        get_users_service
+    ),
+):
+
+    user = await service.get_profile_details(
+        user_id=user_id
+    )
+    
+    return success_response(
+        messages=["Success"],
+        data=user,
+    )
+
+router.add_api_route(
+    "/profile_details",
+    profile_details,
+    methods=["GET"],
+    route_class_override=FeatureAPIRoute,
+)
 
