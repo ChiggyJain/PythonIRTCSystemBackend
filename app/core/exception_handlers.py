@@ -1,24 +1,21 @@
 
 """
 FastAPI Exception Handlers
-
 Handles errors not caught by middleware.
-
 Handles:
 ---------
 - HTTPException
 - ValidationError
 - RequestValidationError
 - Generic Exception
-
 All responses converted to standard format.
 """
 
-from fastapi import FastAPI, Request
+from fastapi import (
+    FastAPI, Request
+)
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from fastapi import HTTPException
-
 from app.core.response import build_response
 
 

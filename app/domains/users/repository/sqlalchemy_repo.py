@@ -1,7 +1,6 @@
 
 """
 Users SQLAlchemy Repository
-
 Implementation of UsersRepositoryBase
 using SQLAlchemy async session.
 """
@@ -9,7 +8,6 @@ using SQLAlchemy async session.
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.domains.users.models import Users
 from app.domains.users.repository.base import UsersRepositoryBase
 from app.common.utils.datetime import now_ist

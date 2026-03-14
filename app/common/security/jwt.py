@@ -1,6 +1,5 @@
 """
 JWT Utility (Enterprise)
-
 Supports:
 - access token
 - refresh token
@@ -15,7 +14,6 @@ from datetime import timedelta
 from jose import jwt, JWTError
 from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist
-
 
 settings = get_settings()
 

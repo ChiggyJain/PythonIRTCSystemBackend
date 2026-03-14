@@ -1,7 +1,6 @@
 
 """
 Datetime Utility (IST)
-
 All datetime in system must use IST timezone.
 """
 

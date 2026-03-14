@@ -1,14 +1,13 @@
 
 """
 Users Repository Base Interface
-
 Defines repository contract.
-
 All implementations must follow this.
 """
 
-from abc import ABC, abstractmethod
-
+from abc import (
+    ABC, abstractmethod
+)
 from app.domains.users.models import Users
 
 

@@ -1,10 +1,7 @@
 """
 Global Exception System
-
 All custom exceptions must inherit from BaseAppException.
-
 These exceptions will be converted to standard response format.
-
 Design goals:
 -------------
 - global usage
@@ -14,7 +11,9 @@ Design goals:
 - safe for middleware
 """
 
-from typing import List, Optional
+from typing import (
+    List, Optional
+)
 
 
 # =========================================================
@@ -25,7 +24,6 @@ from typing import List, Optional
 class BaseAppException(Exception):
     """
     Base exception for application
-
     All custom exceptions must inherit this.
     """
 

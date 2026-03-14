@@ -6,16 +6,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """
     Application Settings
-
     This class loads environment variables using pydantic-settings.
-
     Why BaseSettings?
     -----------------
     - Supports .env
     - Supports environment variables
     - Type validation
     - Production safe
-
     This object should NOT be created multiple times.
     It will be cached using lru_cache (singleton per worker).
     """

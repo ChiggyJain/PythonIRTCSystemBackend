@@ -1,9 +1,7 @@
 
 """
 Database Session Manager
-
 This module creates async SQLAlchemy engine and session factory.
-
 Design goals:
 -------------
 - Async safe
@@ -16,13 +14,11 @@ Design goals:
 """
 
 from typing import AsyncGenerator
-
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
     AsyncSession,
 )
-
 from app.core.config import MYSQL_DB_URL
 
 
@@ -32,13 +28,10 @@ from app.core.config import MYSQL_DB_URL
 
 """
 Create async engine.
-
 Important:
 ----------
 Each worker process will create its own engine.
-
 This is correct behavior.
-
 Do NOT try to share engine across workers.
 """
 
@@ -57,9 +50,7 @@ engine = create_async_engine(
 
 """
 Session factory.
-
 We create sessionmaker instead of session.
-
 Each request will create new session.
 """
 
@@ -76,14 +67,11 @@ AsyncSessionLocal = async_sessionmaker(
 
 """
 FastAPI dependency.
-
 Usage:
 ------
 Depends(get_db)
-
 Creates new session per request.
 Closes after request.
-
 Safe for async.
 Safe for multi-worker.
 """

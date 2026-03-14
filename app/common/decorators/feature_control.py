@@ -1,9 +1,7 @@
 
 """
 Feature Control Decorator (Enterprise Flexible Version)
-
 This decorator attaches feature configuration to endpoint.
-
 Design goals:
 -------------
 - flexible config
@@ -12,11 +10,13 @@ Design goals:
 - safe for FastAPI
 - no wrapper
 - only metadata storage
-
 CustomAPIRoute will read __feature_config__.
 """
 
-from typing import Callable, Optional, Dict, Any
+
+from typing import (
+    Callable, Optional, Dict, Any
+)
 
 
 def feature_control(
@@ -24,18 +24,19 @@ def feature_control(
 ) -> Callable:
     """
     Feature control decorator
-
     Parameters
     ----------
     config : dict | None
-
     Example:
     --------
 
     @feature_control(
         {
             "name": "v1.users.signup",
-            "logging": True,
+            "logging": {
+                "console" : True/False,
+                "file": True/False,
+            },
             "rate_limit": {
                 "limit": 10,
                 "window": 3600

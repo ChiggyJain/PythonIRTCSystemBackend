@@ -1,12 +1,10 @@
 
 """
 Users Service
-
 Business logic for users domain.
 """
 
 from sqlalchemy.exc import IntegrityError
-
 from app.core.exceptions import BaseAppException
 from app.common.utils.password import (
     hash_password, 

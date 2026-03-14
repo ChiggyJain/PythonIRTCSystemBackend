@@ -1,6 +1,5 @@
 """
 Users ORM Model
-
 Rules:
 ------
 - Table name = CAPITAL

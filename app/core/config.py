@@ -1,24 +1,19 @@
 
 """
 Application Config Builder
-
 This module builds runtime configuration values
 from Settings.
-
 Why needed?
 -----------
 Settings only stores raw env values.
 Config builds computed values like:
-
 - Database URL
 - Redis URL
 - Kafka config
 - Other derived configs
 
 This keeps settings clean and reusable.
-
 This module must be safe for:
-
 - multi worker
 - async
 - singleton usage
@@ -26,7 +21,6 @@ This module must be safe for:
 
 from urllib.parse import quote_plus
 from app.core.settings import get_settings
-
 
 # Load settings (singleton per worker)
 settings = get_settings()
@@ -38,9 +32,7 @@ settings = get_settings()
 
 """
 Build MySQL async database URL
-
 We use asyncmy driver for SQLAlchemy async engine.
-
 Format:
 mysql+asyncmy://user:password@host:port/dbname
 """
@@ -62,7 +54,6 @@ MYSQL_DB_URL: str = (
 
 """
 Build Redis URL
-
 Format:
 redis://host:port/db
 """
@@ -81,7 +72,6 @@ REDIS_URL: str = (
 
 """
 Kafka bootstrap servers
-
 Example:
 127.0.0.1:9092
 """

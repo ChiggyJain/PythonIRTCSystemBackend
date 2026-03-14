@@ -1,10 +1,8 @@
 
 """
 Exception Middleware
-
 This middleware catches all exceptions
 and converts them to standard response format.
-
 Handles:
 ---------
 - BaseAppException
@@ -13,13 +11,11 @@ Handles:
 - DB errors
 - Async errors
 - FastAPI errors not handled
-
 Must be registered in main.py
 """
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-
 from app.core.response import build_response
 from app.core.exceptions import BaseAppException
 

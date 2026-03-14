@@ -37,5 +37,5 @@ http://127.0.0.1:8000/api/v1/users/signup
 http://127.0.0.1:8000/api/v1/users/login
 {
   "email": "c1@gmail.com",
-  "password": "Test1@234567"
+  "password": "Test1@23456"
 }

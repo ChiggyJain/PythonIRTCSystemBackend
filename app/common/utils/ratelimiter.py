@@ -28,11 +28,8 @@ from app.infrastructure.redis.client import get_redis
 class RateLimiter:
     """
     Generic Redis Rate Limiter
-
     This limiter works using:
-
         key + limit + window
-
     Example keys:
         ratelimit:v1.users.signup:ip:1.1.1.1
         ratelimit:v1.users.signup:user:45
@@ -51,18 +48,14 @@ class RateLimiter:
     ) -> bool:
         """
         Check window limit using Redis.
-
         Parameters
         ----------
         key : str
             Unique key for limiter
-
         limit : int
             Max allowed requests
-
         window : int
             Time window in seconds
-
         Returns
         -------
         bool

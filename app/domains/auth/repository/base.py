@@ -4,7 +4,9 @@ Auth Token Repository Base (ABC)
 Enterprise abstraction
 """
 
-from abc import ABC, abstractmethod
+from abc import (
+    ABC, abstractmethod
+)
 from typing import Optional
 from app.domains.auth.models import UserTokens
 

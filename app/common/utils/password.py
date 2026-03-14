@@ -1,9 +1,7 @@
 
 """
 Password Utility (Enterprise)
-
 Uses passlib + bcrypt
-
 Features:
 ---------
 - hash password

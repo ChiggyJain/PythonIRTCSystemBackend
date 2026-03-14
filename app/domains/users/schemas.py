@@ -1,18 +1,4 @@
 
-"""
-Users Schemas (Enterprise Validation)
-
-Signup validation rules:
-------------------------
-- first_name / last_name -> alphabets + space only
-- mobile -> 10 digits
-- email -> valid + lowercase
-- password -> strong password policy
-- confirm_password -> must match password
-- email != password
-- mobile != password
-"""
-
 import re
 from pydantic import (
     BaseModel,

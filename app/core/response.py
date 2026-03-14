@@ -1,18 +1,14 @@
 
 """
 Standard API Response System
-
 All APIs must return this format:
-
 {
     "status_code": int,
     "messages": [str],
     "data": any
 }
-
 This module provides helper functions to create
 standard responses.
-
 Design goals:
 -------------
 - global usage
@@ -23,8 +19,10 @@ Design goals:
 - FastAPI safe
 """
 
-from typing import Any, List, Optional
 
+from typing import (
+    Any, List, Optional
+)
 from fastapi.responses import JSONResponse
 
 
@@ -40,13 +38,11 @@ def build_response(
 ) -> JSONResponse:
     """
     Build standard JSON response
-
     Parameters
     ----------
     status_code : int
     messages : list[str]
     data : any
-
     Returns
     -------
     JSONResponse
