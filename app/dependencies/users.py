@@ -1,34 +1,26 @@
 """
 Users dependencies
-
-Provides service instances.
 """
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.infrastructure.database.session import get_db
 
 from app.domains.users.service import UsersService
-from app.domains.users.repository.sqlalchemy_repo import (
-    UsersSQLAlchemyRepository,
+from app.domains.users.repository.base import (
+    UsersRepositoryBase,
+)
+
+from app.dependencies.repositories import (
+    get_users_repository,
 )
 
 
-# =========================================================
-# Users Service Dependency
-# =========================================================
-
-
 def get_users_service(
-    db: AsyncSession = Depends(get_db),
+    repo: UsersRepositoryBase = Depends(
+        get_users_repository
+    ),
 ) -> UsersService:
     """
-    Dependency to provide UsersService
+    Provide UsersService
     """
 
-    repo = UsersSQLAlchemyRepository(db)
-
-    service = UsersService(repo)
-
-    return service
+    return UsersService(repo)
