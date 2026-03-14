@@ -1,19 +1,23 @@
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
-
 from app.core.response import success_response
-
-from app.domains.users.schemas import UserSignupRequest
+from app.domains.users.schemas import (
+    UserSignupRequest, 
+    UserLoginRequest
+)
 from app.domains.users.service import UsersService
-
 from app.dependencies.users import get_users_service
 
 
 router = APIRouter()
 
+
+# -------------------------
+# user signup process
+# -------------------------
 
 @feature_control(
     {
@@ -57,3 +61,51 @@ router.add_api_route(
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
+
+
+# -------------------------
+# user login process
+# -------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.login",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 5,
+            "window": 60,
+        },
+    }
+)
+async def login_user(
+    body: UserLoginRequest,
+    service: UsersService = Depends(
+        get_users_service
+    ),
+):
+
+    user = await service.login_user(
+        email=body.email,
+        password=body.password,
+    )
+
+    return success_response(
+        messages=["Login successful"],
+        data={
+            "userId": user.id,
+            "userEmail": user.email,
+            "userMobile" : user.mobile,
+            "userGender" : user.gender
+        },
+    )
+
+router.add_api_route(
+    "/login",
+    login_user,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
