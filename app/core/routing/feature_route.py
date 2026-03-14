@@ -13,14 +13,13 @@ Features supported:
 Used only when route_class=FeatureAPIRoute
 """
 
-import time
 from typing import Callable
-
 from fastapi.routing import APIRoute
 from fastapi import Request, Response
-
 from app.common.utils.logger import app_logger
 from app.common.utils.ratelimiter import rate_limiter
+from app.common.utils.datetime import now_ist
+from app.common.utils.execution_context import get_worker_name
 
 
 class FeatureAPIRoute(APIRoute):
@@ -31,22 +30,17 @@ class FeatureAPIRoute(APIRoute):
     def get_route_handler(self) -> Callable:
 
         original_handler = super().get_route_handler()
-
         endpoint = self.endpoint
-
         feature_config = getattr(
             endpoint,
             "__feature_config__",
             {},
         )
-
-        name = feature_config.get("name", "unknown")
-
+        given_api_name = feature_config.get("name", "unknown")
         logging_enabled = feature_config.get(
             "logging",
             False,
         )
-
         rate_limit_config = feature_config.get(
             "rate_limit",
             None,
@@ -56,13 +50,14 @@ class FeatureAPIRoute(APIRoute):
             request: Request,
         ) -> Response:
 
-            start_time = time.time()
-
+            worker = get_worker_name()
+            extracted_api_name = request.url.path.split("/")[-1]
             ip = request.client.host if request.client else "unknown"
-
-            method = request.method
-
+            method = request.method    
             path = request.url.path
+            start_time = now_ist()
+            status_code = 200
+            error = None
 
             # -------------------------
             # Rate limit
@@ -72,69 +67,61 @@ class FeatureAPIRoute(APIRoute):
 
                 limit = rate_limit_config.get("limit")
                 window = rate_limit_config.get("window")
-
-                key = f"ratelimit:{name}:ip:{ip}"
-
+                key = f"ratelimit:{given_api_name}:ip:{ip}"
                 allowed = await rate_limiter.check_window_limit(
                     key=key,
                     limit=limit,
                     window=window,
                 )
-
                 if not allowed:
-
-                    app_logger.warning(
-                        f"{name} | {ip} | rate limit exceeded"
+                    end_time = now_ist()
+                    duration = int((end_time - start_time).total_seconds() * 1000)
+                    status_code = 429
+                    error = 'Request limit exceeded'
+                    log_msg = (
+                        f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
+                        f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
                     )
-
+                    app_logger.error(log_msg)
                     from app.core.response import error_response
-
                     return error_response(
                         messages=["Too many requests"],
                         status_code=429,
                     )
 
-            # -------------------------
-            # Logging start
-            # -------------------------
-
-            if logging_enabled:
-
-                app_logger.info(
-                    f"{name} | {ip} | {method} | {path} | start"
-                )
-
             try:
 
-                response: Response = await original_handler(
-                    request
-                )
-
-                duration = int(
-                    (time.time() - start_time) * 1000
-                )
-
-                if logging_enabled:
-
-                    app_logger.info(
-                        f"{name} | {ip} | {method} | {path} | "
-                        f"{response.status_code} | "
-                        f"{duration}ms"
-                    )
-
+                response: Response = await original_handler(request)
+                status_code = response.status_code
+                error = None
                 return response
 
             except Exception as e:
 
-                duration = int(
-                    (time.time() - start_time) * 1000
-                )
-
-                app_logger.error(
-                    f"{name} | {ip} | {method} | {path} | "
-                    f"error | {duration}ms | {e}"
-                )
-
+                status_code = 500
+                error = str(e)
                 raise
+
+            finally:
+
+                end_time = now_ist()
+                duration = int((end_time - start_time).total_seconds() * 1000)
+                if error:
+
+                    log_msg = (
+                        f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
+                        f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
+                    )
+                    app_logger.error(log_msg)
+
+                else:
+
+                    if logging_enabled:
+                        log_msg = (
+                            f"{worker} | {given_api_name} | {ip} | {method} | {path} | "
+                            f"{start_time} | {end_time} | {duration} | {status_code}"
+                        )
+                        app_logger.info(log_msg)
+
 
         return custom_handler
