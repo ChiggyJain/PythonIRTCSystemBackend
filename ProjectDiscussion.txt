@@ -88,14 +88,14 @@ except Exception as e:
 
 
 
-I think we should go in flow as per front-end side also. Any front-end side flow => 
+At Any front-end side flow of the APIs => 
 1) User create account (first_name, last_name, gender, mobile, email, password, confirm_password) without OTP concept. Here account details will be created into the system. Using the Signup-API process only. This api is already working properly. 
 2) User login [using Email + Password] into the system with generated [Access-Token, Refresh-Token] using Login-API process only. This api is already working properly. 
 3) User see our existing profile details (first_name, last_name, gender, mobile, email) into the system anytime using Profile-Details API only after any-time login. This api is already working properly. 
 4) User can update existing profile details like (first_name, last_name, mobile, email, gender) at anytime. If mobile/email is changed then must be verified via OTP concept independently. 
 5) User can changed the password at anytime. If password is changed then must be allow changes via OTP [anyone on mobile/email] concept only. 
 
-How to implemented points (4th and 5th).
+How to implemented points (4th and 5th) at scalable/production/async level concept.
 
 
 
