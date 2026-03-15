@@ -17,6 +17,9 @@ from app.domains.users.repository.base import (
 from app.domains.users.repository.sqlalchemy_repo import (
     UsersSQLAlchemyRepository,
 )
+from app.domains.security.repository.base import SecurityRepositoryBase
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+
 
 
 # =========================================================
@@ -41,4 +44,20 @@ def get_users_repository(
         UsersSQLAlchemyRepository(db)
     )
 
+    return repo
+
+
+# =========================================================
+# Security repository provider
+# =========================================================
+
+def get_security_repository(
+    db: AsyncSession = Depends(get_db),
+) -> SecurityRepositoryBase:
+    """
+    Returns security repository implementation.
+    """
+
+    repo: SecurityRepositoryBase = SecuritySQLAlchemyRepository(db)
+    
     return repo
