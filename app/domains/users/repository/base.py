@@ -35,3 +35,10 @@ class UsersRepositoryBase(ABC):
         gender: str,
     ) -> Users:
         pass
+
+    @abstractmethod
+    async def get_by_id(
+        self,
+        user_id: int,
+    ) -> Users | None:
+        pass

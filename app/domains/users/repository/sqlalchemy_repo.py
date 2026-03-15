@@ -33,7 +33,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         stmt = select(Users).where(
             Users.email == email
         )
-
         result = await self.session.execute(stmt)
 
         return result.scalar_one_or_none()
@@ -66,17 +65,27 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         )
 
         self.session.add(user)
-
         try:
-
             await self.session.commit()
-
         except IntegrityError:
-
             await self.session.rollback()
-
             raise
-
         await self.session.refresh(user)
 
         return user
+    
+
+    # ---------------------------------
+    # get_by_email
+    # ---------------------------------
+
+    async def get_by_id(
+        self,
+        user_id: int,
+    ) -> Users | None:
+
+        stmt = select(Users).where(
+            Users.id == user_id
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()

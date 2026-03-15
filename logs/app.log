@@ -32,3 +32,11 @@
 2026-03-14 21:07:09 | INFO | SpawnProcess-13-9919 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-14 21:07:09.052834+05:30 | 2026-03-14 21:07:09.065634+05:30 | 12 | None | 200
 2026-03-14 21:07:24 | INFO | SpawnProcess-14-9941 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-14 21:07:24.100205+05:30 | 2026-03-14 21:07:24.199461+05:30 | 99 | None | 200
 2026-03-14 21:48:54 | INFO | SpawnProcess-1-11078 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-14 21:48:53.541396+05:30 | 2026-03-14 21:48:54.002870+05:30 | 461 | None | 200
+2026-03-15 09:40:56 | INFO | SpawnProcess-1-9396 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-15 09:40:55.653945+05:30 | 2026-03-15 09:40:56.119760+05:30 | 465 | None | 200
+2026-03-15 09:41:24 | INFO | SpawnProcess-1-9396 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:41:24.139472+05:30 | 2026-03-15 09:41:24.143298+05:30 | 3 |  | 500
+2026-03-15 09:41:54 | INFO | SpawnProcess-1-9396 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:41:54.605647+05:30 | 2026-03-15 09:41:54.674799+05:30 | 69 | 'UsersSQLAlchemyRepository' object has no attribute 'get_by_id' | 500
+2026-03-15 09:45:09 | INFO | SpawnProcess-12-9659 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:45:08.973867+05:30 | 2026-03-15 09:45:09.069209+05:30 | 95 | None | 200
+2026-03-15 09:45:44 | INFO | SpawnProcess-13-9712 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:45:44.264898+05:30 | 2026-03-15 09:45:44.270254+05:30 | 5 | None | 200
+2026-03-15 09:46:38 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:46:38.529170+05:30 | 2026-03-15 09:46:38.536725+05:30 | 7 | None | 200
+2026-03-15 09:46:51 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:46:51.659517+05:30 | 2026-03-15 09:46:51.660684+05:30 | 1 |  | 500
+2026-03-15 09:47:00 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:47:00.359888+05:30 | 2026-03-15 09:47:00.361378+05:30 | 1 | None | 200

@@ -164,7 +164,7 @@ async def profile_details(
     )
     
     return success_response(
-        messages=["Success"],
+        messages=["User profile details found successfully"],
         data=user,
     )
 
