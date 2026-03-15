@@ -3,12 +3,10 @@ Users dependencies
 """
 
 from fastapi import Depends
-
 from app.domains.users.service import UsersService
 from app.domains.users.repository.base import (
     UsersRepositoryBase,
 )
-
 from app.dependencies.repositories import (
     get_users_repository,
 )
