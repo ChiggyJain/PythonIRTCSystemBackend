@@ -14,6 +14,12 @@ from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
 from app.dependencies.auth import get_current_user
+from app.dependencies.security import get_password_change_otp_service
+from app.domains.security.service import PasswordChangeOtpService
+from app.domains.security.schemas import (
+    PasswordChangeRequestOtpRequest,
+    PasswordChangeConfirmRequest,
+)
 
 
 router = APIRouter()
@@ -175,3 +181,100 @@ router.add_api_route(
     route_class_override=FeatureAPIRoute,
 )
 
+
+
+
+# ---------------------------------
+# password change request otp
+# ---------------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.password_change_request_otp",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 10,
+            "window": 60,
+        },
+    }
+)
+async def password_change_request_otp(
+    body: PasswordChangeRequestOtpRequest,
+    request: Request,
+    user_id: int = Depends(get_current_user),
+    service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
+):
+    result = await service.request_password_change_otp(
+        user_id=user_id,
+        channel=body.channel,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+
+    return success_response(
+        status_code=202,
+        messages=["OTP request accepted"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/password/change/request-otp",
+    password_change_request_otp,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+# ---------------------------------
+# password change confirm
+# ---------------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.password_change_confirm",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 10,
+            "window": 60,
+        },
+    }
+)
+async def password_change_confirm(
+    body: PasswordChangeConfirmRequest,
+    request: Request,
+    user_id: int = Depends(get_current_user),
+    service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
+):
+    result = await service.confirm_password_change(
+        user_id=user_id,
+        challenge_id=body.challenge_id,
+        otp=body.otp,
+        new_password=body.new_password,
+        confirm_password=body.confirm_password,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+
+    return success_response(
+        messages=["Password changed successfully"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/password/change/confirm",
+    password_change_confirm,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
