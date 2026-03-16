@@ -116,12 +116,8 @@ async def login_user(
 
     tokens = await token_service.create_tokens(
         user_id=user.id,
-        ip_address=request.client.host
-        if request.client
-        else None,
-        user_agent=request.headers.get(
-            "user-agent"
-        ),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
     )
 
     return success_response(
