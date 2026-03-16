@@ -14,7 +14,7 @@ from app.domains.security.repository.base import SecurityRepositoryBase
 settings = get_settings()
 
 
-class SecurityOutboxDispatcher:
+class PwdChangedOTPOutboxDispatcher:
     OTP_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
     def __init__(

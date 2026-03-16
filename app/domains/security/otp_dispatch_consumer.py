@@ -20,7 +20,7 @@ from app.domains.security.repository.base import SecurityRepositoryBase
 settings = get_settings()
 
 
-class OtpDispatchConsumerService:
+class PwdChangedOtpDispatchConsumerService:
 
     def __init__(
         self,

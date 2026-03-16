@@ -7,7 +7,7 @@ OUTBOX_EVENTS -> Kafka topic
 import asyncio
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-from app.domains.security.outbox_dispatcher import SecurityOutboxDispatcher
+from app.domains.security.pwdchanged_otp_outbox_dispatcher import PwdChangedOTPOutboxDispatcher
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.infrastructure.kafka.client import build_producer
@@ -32,7 +32,7 @@ async def run_worker() -> None:
             try:
                 async with AsyncSessionLocal() as db:
                     repo = SecuritySQLAlchemyRepository(db)
-                    dispatcher = SecurityOutboxDispatcher(
+                    dispatcher = PwdChangedOTPOutboxDispatcher(
                         repo=repo,
                         producer=producer,
                     )
