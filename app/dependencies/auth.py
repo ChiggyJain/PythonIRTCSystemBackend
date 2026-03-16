@@ -35,9 +35,9 @@ def get_token_service(
 
 
 
-# =========================
-# get current user id 
-# =========================
+# ==========================================
+# get current user id from access_token
+# ==========================================
 
 async def get_current_user_id_from_access_token(
     authorization: str | None = Header(
@@ -84,7 +84,6 @@ async def get_current_user_id_from_access_token(
             status_code=401,
         )
        
-
     return int(user_id)
 
 
@@ -138,5 +137,78 @@ async def get_current_user_details_from_access_token(
             status_code=401,
         )
        
+    return payload
+
+
+
+# ==========================================
+# get current user id from refresh token
+# ==========================================
+
+async def get_current_user_id_from_refresh_token(
+    refresh_token: str,
+):
+
+    # decode the refresh token
+    payload = decode_token(refresh_token)
+
+    if not payload:
+        raise BaseAppException(
+            messages=["Invalid refresh token"],
+            status_code=401,
+        )
+
+    if payload.get("type") != "refresh":
+        raise BaseAppException(
+            messages=["Invalid refresh token type"],
+            status_code=401,
+        )
+
+    user_id = payload.get("sub")
+
+    return int(user_id)
+
+
+# ===================================================
+# get current user details from refresh token
+# ===================================================
+
+async def get_current_user_details_from_refresh_token(
+    refresh_token: str,
+):
+
+    # decode the refresh token
+    payload = decode_token(refresh_token)
+
+    if not payload:
+        raise BaseAppException(
+            messages=["Invalid refresh token"],
+            status_code=401,
+        )
+
+    if payload.get("type") != "refresh":
+        raise BaseAppException(
+            messages=["Invalid refresh token type"],
+            status_code=401,
+        )
 
     return payload
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

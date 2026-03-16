@@ -13,6 +13,10 @@ from app.domains.auth.schemas import (
 )
 from app.common.security.jwt import decode_token
 from app.core.exceptions import BaseAppException
+from app.dependencies.auth import get_current_user_details_from_access_token
+from app.common.cache.redis_cache import (
+    cache_delete
+)
 
 
 router = APIRouter()
@@ -116,6 +120,7 @@ router.add_api_route(
 )
 async def logout(
     body: LogoutRequest,
+    user_details: dict = Depends(get_current_user_details_from_access_token),
     token_service: TokenService = Depends(
         get_token_service
     ),
@@ -139,9 +144,7 @@ async def logout(
         )
 
     token_id = payload.get("jti")
-    token_row = await token_service.get_refresh(
-        token_id
-    )
+    token_row = await token_service.get_refresh(token_id)
 
     if not token_row:
         raise BaseAppException(
@@ -155,9 +158,9 @@ async def logout(
             status_code=401,
         )
 
-    await token_service.revoke(
-        token_id
-    )
+    await token_service.revoke(token_id)
+
+
 
     return success_response(
         messages=["Logout successful"],
