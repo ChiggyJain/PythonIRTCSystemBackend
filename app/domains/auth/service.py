@@ -16,6 +16,10 @@ from app.core.settings import get_settings
 from app.domains.auth.repository.base import (
     TokenRepositoryBase,
 )
+from app.common.cache.redis_cache import (
+    build_cache_key,
+    cache_set
+)
 
 
 settings = get_settings()
@@ -118,6 +122,10 @@ class TokenService:
         refresh_token_row.updated_at = now_ist()
 
         await self.repo.db.commit()
+
+        # storing access-token into redis
+        cacheKey = build_cache_key(f"auth:access:{access_token_row.id}")
+        await cache_set(cacheKey, user_id)
 
         return {
             "access_token": access_token,

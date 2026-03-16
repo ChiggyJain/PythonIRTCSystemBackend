@@ -55,7 +55,10 @@ async def cache_set(
 ):
 
     redis = get_redis()
-    data = json.dumps(value)
+    if isinstance(value, str):
+        data = value
+    else:
+        data = json.dumps(value)
     await redis.set(
         key,
         data,
