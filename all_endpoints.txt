@@ -93,3 +93,15 @@ curl --location 'http://127.0.0.1:8000/api/v1/users/password/change/request-otp'
 --header 'Authorization: Bearer <ACCESS_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data '{"channel":"EMAIL"}'
+
+CURL fpr password confirmation with OTP =>
+
+curl --location 'http://127.0.0.1:8000/api/v1/users/password/change/confirm' \
+--header 'Authorization: Bearer <ACCESS_TOKEN>' \
+--header 'Content-Type: application/json' \
+--data '{
+  "challenge_id": "<CHALLENGE_ID_FROM_REQUEST_OTP_RESPONSE>",
+  "otp": "<OTP_FROM_EMAIL>",
+  "new_password": "<NewStrongPassword@123>",
+  "confirm_password": "<NewStrongPassword@123>"
+}'

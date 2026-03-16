@@ -177,6 +177,7 @@ class PasswordChangeOtpService:
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
             )
+            print(f"Challenge: {challenge}")
             if not challenge:
                 raise BaseAppException(
                     status_code=400,
@@ -191,7 +192,9 @@ class PasswordChangeOtpService:
                     messages=["OTP already used"],
                 )
 
+                
             if challenge.expires_at < now:
+                print(f"now:  {now}")
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now

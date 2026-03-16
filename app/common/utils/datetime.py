@@ -21,10 +21,10 @@ IST = ZoneInfo("Asia/Kolkata")
 
 def now_ist() -> datetime:
     """
-    Returns current datetime in IST
+    Returns IST datetime WITHOUT timezone (naive)
     """
 
-    return datetime.now(IST)
+    return datetime.now(IST).replace(tzinfo=None)
 
 
 # =========================================================
