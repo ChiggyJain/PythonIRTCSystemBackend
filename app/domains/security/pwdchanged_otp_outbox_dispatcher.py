@@ -34,6 +34,7 @@ class PwdChangedOTPOutboxDispatcher:
 
         now = now_ist()
         events = await self.repo.fetch_pending_outbox_events(
+            event_type=self.OTP_EVENT_TYPE,
             limit=batch_size,
             now_time=now,
         )
