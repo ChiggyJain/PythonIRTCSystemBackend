@@ -1,6 +1,6 @@
 
 from fastapi import (
-    APIRouter, Depends
+    APIRouter, Depends, Request
 )
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
@@ -37,6 +37,7 @@ router = APIRouter()
 )
 async def refresh_token(
     body: RefreshTokenRequest,
+    request: Request,
     token_service: TokenService = Depends(
         get_token_service
     ),
@@ -75,7 +76,9 @@ async def refresh_token(
     await token_service.revoke(token_id=token_id)
 
     tokens = await token_service.create_tokens(
-        user_id=int(payload["sub"])
+        user_id=int(payload["sub"]),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
     )
 
     return success_response(
