@@ -15,7 +15,7 @@ settings = get_settings()
 
 
 class SecurityOutboxDispatcher:
-    OTP_EVENT_TYPE = "OTP_DISPATCH_REQUESTED_V1"
+    OTP_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
     def __init__(
         self,
@@ -121,7 +121,7 @@ class SecurityOutboxDispatcher:
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.OTP_OUTBOX_MAX_RETRIES)
+        max_retries = int(settings.PWDCHANGED_OTP_OUTBOX_MAX_RETRIES)
 
         try:
             if retry_count_after >= max_retries:
@@ -173,5 +173,5 @@ class SecurityOutboxDispatcher:
     ) -> str | None:
 
         if event_type == self.OTP_EVENT_TYPE:
-            return settings.OTP_DISPATCH_TOPIC
+            return settings.PWDCHANGED_OTP_DISPATCH_TOPIC
         return None

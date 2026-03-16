@@ -49,14 +49,14 @@ class Settings(BaseSettings):
 
     KAFKA_BOOTSTRAP_SERVERS : str
     KAFKA_CLIENT_ID: str = "irtc-backend"
-    OTP_DISPATCH_TOPIC: str = "otp.dispatch.v1"
-    OTP_DISPATCH_CONSUMER_GROUP: str = "otp-dispatch-consumer-v1"
-    OTP_OUTBOX_MAX_RETRIES: int = 6
-
-    # my suggestion for password_changed otp concept
     PWDCHANGED_OTP_DISPATCH_TOPIC: str = "pwdchanged-otp-dispatch-v1"
     PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "pwdchanged-otp-dispatch-consumer-v1"
     PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
+
+    # my suggestion for password_changed otp concept
+    PWDCHANGED_PWDCHANGED_OTP_DISPATCH_TOPIC: str = "pwdchanged-otp-dispatch-v1"
+    PWDCHANGED_PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "pwdchanged-pwdchanged-otp-dispatch-consumer-v1"
+    PWDCHANGED_PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # =========================
     # SENDGRID CONFIG
