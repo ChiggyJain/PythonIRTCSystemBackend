@@ -128,6 +128,7 @@ async def get_current_user_details_from_access_token(
             status_code=401,
         )
 
+    
     user_id = payload.get("sub")
     jti = payload.get("jti")
     user_id_from_access_token_cache = await cache_get(key=f"cache:auth:access:jti:{jti}")
@@ -179,6 +180,7 @@ async def get_current_user_details_from_refresh_token(
 
     # decode the refresh token
     payload = decode_token(refresh_token)
+    print(f"dpayload: {payload}")
 
     if not payload:
         raise BaseAppException(

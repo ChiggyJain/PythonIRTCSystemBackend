@@ -127,11 +127,17 @@ router.add_api_route(
 async def logout(
     body: LogoutRequest,
     user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
-    user_details_from_refresh_token: dict = Depends(get_current_user_details_from_refresh_token),
     token_service: TokenService = Depends(
         get_token_service
     ),
 ):
+
+    # extracting refresh token
+    print(f"user_details_from_access_token: {user_details_from_access_token}")
+    user_details_from_refresh_token = get_current_user_details_from_refresh_token(body.refresh_token)
+    
+    print(f"user_details_from_access_token: {user_details_from_access_token}")
+    print(f"user_details_from_refresh_token: {user_details_from_refresh_token}")
 
     # handle case for access token
     access_token_id = user_details_from_access_token.get("jti")
@@ -146,7 +152,7 @@ async def logout(
     # remove keys from cache 
     cacheKey = build_cache_key(f"auth:access:jti:{access_token_id}")
     await cache_delete(cacheKey)
-    user_id = user_details_from_access_token.sub
+    user_id = user_details_from_access_token.get("sub")
     cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
     await cache_set_remove(cacheKey, access_token_id)
 
