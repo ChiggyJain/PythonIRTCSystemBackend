@@ -13,7 +13,7 @@ from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
-from app.dependencies.auth import get_current_user
+from app.dependencies.auth import get_current_user_id_from_access_token
 from app.dependencies.security import get_password_change_otp_service
 from app.domains.security.service import PasswordChangeOtpService
 from app.domains.security.schemas import (
@@ -154,7 +154,7 @@ router.add_api_route(
 )
 async def profile_details(
     user_id: int = Depends(
-        get_current_user
+        get_current_user_id_from_access_token
     ),
     service: UsersService = Depends(
         get_users_service
@@ -200,7 +200,7 @@ router.add_api_route(
 async def password_change_request_otp(
     body: PasswordChangeRequestOtpRequest,
     request: Request,
-    user_id: int = Depends(get_current_user),
+    user_id: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     result = await service.request_password_change_otp(
@@ -247,7 +247,7 @@ router.add_api_route(
 async def password_change_confirm(
     body: PasswordChangeConfirmRequest,
     request: Request,
-    user_id: int = Depends(get_current_user),
+    user_id: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     result = await service.confirm_password_change(
