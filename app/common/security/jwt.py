@@ -40,7 +40,6 @@ def _create_token(
     }
     if token_id:
         payload["tid"] = token_id
-    print(f"_create_token payload: {payload}")
     encoded = jwt.encode(
         payload,
         settings.JWT_SECRET_KEY,

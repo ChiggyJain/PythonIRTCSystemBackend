@@ -69,6 +69,7 @@ class TokenService:
         # ----------------------------
         access_token = create_access_token(
             user_id=user_id,
+            token_id=access_token_row.id,
         )
 
         # -----------------------------
