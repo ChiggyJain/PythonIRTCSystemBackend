@@ -39,7 +39,7 @@ def _create_token(
         "aud": settings.JWT_AUDIENCE,
     }
     if token_id:
-        payload["tid"] = token_id
+        payload["jti"] = token_id
     encoded = jwt.encode(
         payload,
         settings.JWT_SECRET_KEY,

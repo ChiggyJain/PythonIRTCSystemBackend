@@ -3,6 +3,8 @@
 Auth dependencies
 """
 
+from encodings import palmos
+
 from fastapi import (
     Depends, Header
 )
@@ -15,6 +17,9 @@ from app.domains.auth.repository.sqlalchemy_repo import (
 from app.core.exceptions import BaseAppException
 from app.common.security.jwt import decode_token
 from app.domains.auth.service import TokenService
+from app.common.cache.redis_cache import (
+    cache_get
+)
 
 
 # =========================
@@ -71,20 +76,13 @@ async def get_current_user(
         )
 
     user_id = payload.get("sub")
-
-    """
-    token_row = await token_service.repo.get_by_token(token)
-    if not token_row:
-
+    jti = payload.get("jti")
+    user_id_from_access_token_cache = cache_get(key=f"auth:access:jti:{jti}")
+    if int(user_id) != int(user_id_from_access_token_cache):
         raise BaseAppException(
-            messages=["Token not found"],
+            messages=["Access-Token (User-ID) is not matched with stored cache"],
             status_code=401,
         )
-    if token_row.revoked:
-        raise BaseAppException(
-            messages=["Token revoked"],
-            status_code=401,
-        )
-    """        
+       
 
     return int(user_id)
