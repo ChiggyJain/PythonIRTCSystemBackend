@@ -101,7 +101,7 @@ def decode_token(
 ) -> dict:
 
     try:
-
+        
         payload = jwt.decode(
             token,
             settings.JWT_SECRET_KEY,

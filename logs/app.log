@@ -105,3 +105,6 @@
 2026-03-16 18:03:39 | INFO | SpawnProcess-105-25224 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 18:03:39.143879 | 2026-03-16 18:03:39.149833 | 5 | None | 200
 2026-03-16 19:37:53 | INFO | SpawnProcess-1-8138 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 19:37:53.383344 | 2026-03-16 19:37:53.681027 | 297 | None | 200
 2026-03-16 19:39:39 | INFO | SpawnProcess-1-8138 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 19:39:39.171546 | 2026-03-16 19:39:39.470356 | 298 | None | 200
+2026-03-16 19:51:12 | INFO | SpawnProcess-18-9020 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 19:51:11.813395 | 2026-03-16 19:51:12.152833 | 339 | None | 200
+2026-03-16 19:51:55 | INFO | SpawnProcess-18-9020 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 19:51:55.925632 | 2026-03-16 19:51:55.928356 | 2 | None | 200
+2026-03-16 19:53:03 | INFO | SpawnProcess-20-9241 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 19:53:03.635038 | 2026-03-16 19:53:03.636333 | 1 |  | 500
