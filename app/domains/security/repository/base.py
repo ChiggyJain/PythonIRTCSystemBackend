@@ -88,6 +88,7 @@ class SecurityRepositoryBase(ABC):
     async def fetch_pending_outbox_events(
         self,
         *,
+        event_type: str,
         limit: int,
         now_time: datetime,
     ) -> list[OutboxEvents]:

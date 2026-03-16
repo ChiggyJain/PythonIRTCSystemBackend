@@ -7,7 +7,7 @@ import asyncio
 import json
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-from app.domains.security.otp_dispatch_consumer import PwdChangedOtpDispatchConsumerService
+from app.domains.security.pwdchanged_otp_dispatch_consumer import PwdChangedOtpDispatchConsumerService
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.infrastructure.kafka.client import build_consumer
