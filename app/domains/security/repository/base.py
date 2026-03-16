@@ -54,6 +54,25 @@ class SecurityRepositoryBase(ABC):
         pass
 
     @abstractmethod
+    async def get_otp_challenge_by_challenge_id_for_update(
+        self,
+        *,
+        challenge_id: str,
+    ) -> OtpChallenges | None:
+        pass
+
+    @abstractmethod
+    async def mark_otp_challenge_status(
+        self,
+        *,
+        challenge: OtpChallenges,
+        status: str,
+        last_error_code: str | None,
+        updated_at: datetime,
+    ) -> None:
+        pass
+
+    @abstractmethod
     async def add_outbox_event(
         self,
         *,
@@ -63,6 +82,45 @@ class SecurityRepositoryBase(ABC):
         payload_json: dict[str, Any],
         status: str,
     ) -> OutboxEvents:
+        pass
+
+    @abstractmethod
+    async def fetch_pending_outbox_events(
+        self,
+        *,
+        limit: int,
+        now_time: datetime,
+    ) -> list[OutboxEvents]:
+        pass
+
+    @abstractmethod
+    async def mark_outbox_published(
+        self,
+        *,
+        event: OutboxEvents,
+        published_at: datetime,
+    ) -> None:
+        pass
+
+    @abstractmethod
+    async def mark_outbox_retry(
+        self,
+        *,
+        event: OutboxEvents,
+        next_retry_at: datetime,
+        last_error: str,
+        updated_at: datetime,
+    ) -> None:
+        pass
+
+    @abstractmethod
+    async def mark_outbox_failed(
+        self,
+        *,
+        event: OutboxEvents,
+        last_error: str,
+        updated_at: datetime,
+    ) -> None:
         pass
 
     @abstractmethod

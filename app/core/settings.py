@@ -44,10 +44,14 @@ class Settings(BaseSettings):
     REDIS_DB: int
 
     # =========================
-    # KAFKA CONFIG
+    # KAFKA APP CONFIG
     # =========================
 
-    KAFKA_BOOTSTRAP_SERVERS: str
+    KAFKA_BOOTSTRAP_SERVERS : str
+    KAFKA_CLIENT_ID: str = "irtc-backend"
+    OTP_DISPATCH_TOPIC: str = "otp.dispatch.v1"
+    OTP_DISPATCH_CONSUMER_GROUP: str = "otp-dispatch-consumer-v1"
+    OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # =========================
     # SENDGRID CONFIG
@@ -66,6 +70,16 @@ class Settings(BaseSettings):
     JWT_ISSUER: str = "irtc-backend"
     JWT_AUDIENCE: str = "irtc-users"
     
+
+    # =========================
+    # OTP PROVIDER CONFIG
+    # =========================
+
+    OTP_EMAIL_PROVIDER: str = "SENDGRID"
+    OTP_SMS_PROVIDER: str = "NONE"
+    OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
+    OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
+
 
     # =========================
     # Pydantic Settings Config

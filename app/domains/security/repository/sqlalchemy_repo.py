@@ -1,11 +1,10 @@
-
 """
 Security SQLAlchemy Repository
 """
 
 from datetime import datetime
 from typing import Any
-from sqlalchemy import select, update
+from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.users.models import Users
 from app.domains.auth.models import UserTokens
@@ -95,6 +94,34 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
 
+    async def get_otp_challenge_by_challenge_id_for_update(
+        self,
+        *,
+        challenge_id: str,
+    ) -> OtpChallenges | None:
+
+        stmt = (
+            select(OtpChallenges)
+            .where(OtpChallenges.challenge_id == challenge_id)
+            .with_for_update()
+        )
+        res = await self.db.execute(stmt)
+        return res.scalar_one_or_none()
+
+    async def mark_otp_challenge_status(
+        self,
+        *,
+        challenge: OtpChallenges,
+        status: str,
+        last_error_code: str | None,
+        updated_at: datetime,
+    ) -> None:
+
+        challenge.status = status
+        challenge.last_error_code = last_error_code
+        challenge.updated_at = updated_at
+        await self.db.flush()
+
     async def add_outbox_event(
         self,
         *,
@@ -121,6 +148,70 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         self.db.add(row)
         await self.db.flush()
         return row
+
+    async def fetch_pending_outbox_events(
+        self,
+        *,
+        limit: int,
+        now_time: datetime,
+    ) -> list[OutboxEvents]:
+
+        stmt = (
+            select(OutboxEvents)
+            .where(
+                OutboxEvents.status == "PENDING",
+                or_(
+                    OutboxEvents.next_retry_at.is_(None),
+                    OutboxEvents.next_retry_at <= now_time,
+                ),
+            )
+            .order_by(OutboxEvents.id.asc())
+            .limit(limit)
+            .with_for_update(skip_locked=True)
+        )
+        res = await self.db.execute(stmt)
+        return list(res.scalars().all())
+
+    async def mark_outbox_published(
+        self,
+        *,
+        event: OutboxEvents,
+        published_at: datetime,
+    ) -> None:
+
+        event.status = "PUBLISHED"
+        event.published_at = published_at
+        event.updated_at = published_at
+        await self.db.flush()
+
+    async def mark_outbox_retry(
+        self,
+        *,
+        event: OutboxEvents,
+        next_retry_at: datetime,
+        last_error: str,
+        updated_at: datetime,
+    ) -> None:
+
+        event.status = "PENDING"
+        event.retry_count = int(event.retry_count) + 1
+        event.next_retry_at = next_retry_at
+        event.last_error = last_error[:2000]
+        event.updated_at = updated_at
+        await self.db.flush()
+
+    async def mark_outbox_failed(
+        self,
+        *,
+        event: OutboxEvents,
+        last_error: str,
+        updated_at: datetime,
+    ) -> None:
+
+        event.status = "FAILED"
+        event.last_error = last_error[:2000]
+        event.updated_at = updated_at
+        await self.db.flush()
 
     async def add_security_event(
         self,
