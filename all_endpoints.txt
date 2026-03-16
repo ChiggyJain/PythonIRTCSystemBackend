@@ -46,7 +46,7 @@ done
 
 Backgorund Workers =>
 python3 -m app.workers.pwdchanged_otp_outbox_worker
-python3 -m app.workers.otp_dispatch_consumer_worker
+python3 -m app.workers.pwdchanged_otp_dispatch_consumer_worker
 
 
 
