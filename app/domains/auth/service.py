@@ -159,6 +159,21 @@ class TokenService:
         )
 
 
+    
+    # =========================
+    # get access token
+    # =========================
+
+    async def get_access(
+        self,
+        token_id: int|str,
+    ):
+
+        return await self.repo.get_by_id(
+            token_id
+        )
+    
+    
     # =========================
     # get refresh token
     # =========================

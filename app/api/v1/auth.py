@@ -13,9 +13,15 @@ from app.domains.auth.schemas import (
 )
 from app.common.security.jwt import decode_token
 from app.core.exceptions import BaseAppException
-from app.dependencies.auth import get_current_user_details_from_access_token
+from app.dependencies.auth import (
+    get_current_user_details_from_access_token,
+    get_current_user_details_from_refresh_token
+)
 from app.common.cache.redis_cache import (
-    cache_delete
+    build_cache_key,
+    cache_delete,
+    build_cache_set_key,
+    cache_set_remove
 )
 
 
@@ -120,45 +126,44 @@ router.add_api_route(
 )
 async def logout(
     body: LogoutRequest,
-    user_details: dict = Depends(get_current_user_details_from_access_token),
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
+    user_details_from_refresh_token: dict = Depends(get_current_user_details_from_refresh_token),
     token_service: TokenService = Depends(
         get_token_service
     ),
 ):
 
-    # decode the refresh token
-    payload = decode_token(
-        body.refresh_token
-    )
-
-    if not payload:
+    # handle case for access token
+    access_token_id = user_details_from_access_token.get("jti")
+    access_token_row = await token_service.get_access(access_token_id)
+    if not access_token_row:
         raise BaseAppException(
-            messages=["Invalid refresh token"],
+            messages=["Access token not found"],
             status_code=401,
         )
+    await token_service.revoke(access_token_id)
 
-    if payload.get("type") != "refresh":
-        raise BaseAppException(
-            messages=["Invalid refresh token type"],
-            status_code=401,
-        )
+    # remove keys from cache 
+    cacheKey = build_cache_key(f"auth:access:jti:{access_token_id}")
+    await cache_delete(cacheKey)
+    user_id = user_details_from_access_token.sub
+    cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
+    await cache_set_remove(cacheKey, access_token_id)
 
-    token_id = payload.get("jti")
-    token_row = await token_service.get_refresh(token_id)
-
-    if not token_row:
+    # handle case for refresh token
+    refresh_token_id = user_details_from_refresh_token.get("jti")
+    refresh_token_row = await token_service.get_refresh(refresh_token_id)
+    if not refresh_token_row:
         raise BaseAppException(
             messages=["Refresh token not found"],
             status_code=401,
         )
-
-    if token_row.revoked:
+    if refresh_token_row.revoked:
         raise BaseAppException(
             messages=["Refresh token already revoked"],
             status_code=401,
         )
-
-    await token_service.revoke(token_id)
+    await token_service.revoke(refresh_token_id)
 
 
 
