@@ -40,7 +40,7 @@
 2026-03-15 09:46:38 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:46:38.529170+05:30 | 2026-03-15 09:46:38.536725+05:30 | 7 | None | 200
 2026-03-15 09:46:51 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:46:51.659517+05:30 | 2026-03-15 09:46:51.660684+05:30 | 1 |  | 500
 2026-03-15 09:47:00 | INFO | SpawnProcess-15-9782 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-15 09:47:00.359888+05:30 | 2026-03-15 09:47:00.361378+05:30 | 1 | None | 200
-2026-03-16 09:53:46 | INFO | security_outbox_worker started
+2026-03-16 09:53:46 | INFO | pwdchanged_otp_outbox_worker started
 2026-03-16 09:54:18 | INFO | SpawnProcess-1-16297 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 09:54:18.475798+05:30 | 2026-03-16 09:54:18.782754+05:30 | 306 | None | 200
 2026-03-16 09:55:18 | INFO | SpawnProcess-1-16297 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-16 09:55:18.070592+05:30 | 2026-03-16 09:55:18.102574+05:30 | 31 | None | 202
 2026-03-16 09:59:02 | INFO | otp_dispatch_consumer_worker started

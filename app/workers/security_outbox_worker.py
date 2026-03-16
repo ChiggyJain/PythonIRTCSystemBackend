@@ -25,7 +25,7 @@ async def run_worker() -> None:
         client_id=f"{settings.KAFKA_CLIENT_ID}-outbox-publisher"
     )
     await producer.start()
-    app_logger.info("security_outbox_worker started")
+    app_logger.info("pwdchanged_otp_outbox_worker started")
 
     try:
         while True:
@@ -46,7 +46,7 @@ async def run_worker() -> None:
                     await asyncio.sleep(POLL_INTERVAL_ACTIVE_SECONDS)
 
             except Exception as exc:
-                app_logger.error(f"security_outbox_worker error: {exc}")
+                app_logger.error(f"pwdchanged_otp_outbox_worker error: {exc}")
                 await asyncio.sleep(2)
 
     finally:
