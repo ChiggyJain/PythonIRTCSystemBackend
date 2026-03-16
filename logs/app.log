@@ -79,3 +79,5 @@
 2026-03-16 15:58:37 | INFO | SpawnProcess-1-15288 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-16 15:58:37.177659 | 2026-03-16 15:58:37.265483 | 87 | None | 202
 2026-03-16 15:59:50 | INFO | pwdchanged_otp_outbox_worker started
 2026-03-16 15:59:58 | INFO | otp_dispatch_consumer_worker started
+2026-03-16 16:02:58 | INFO | otp_dispatch_consumer_worker started
+2026-03-16 16:03:37 | INFO | SpawnProcess-4-16834 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 16:03:36.734855 | 2026-03-16 16:03:37.153380 | 418 | None | 200
