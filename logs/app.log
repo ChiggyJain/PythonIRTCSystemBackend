@@ -87,3 +87,19 @@
 2026-03-16 17:06:15 | INFO | SpawnProcess-4-21299 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:06:14.672642 | 2026-03-16 17:06:15.064468 | 391 | None | 200
 2026-03-16 17:19:37 | INFO | SpawnProcess-19-22564 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:19:37.364935 | 2026-03-16 17:19:37.828758 | 463 | None | 200
 2026-03-16 17:24:56 | INFO | SpawnProcess-30-23065 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:24:56.293540 | 2026-03-16 17:24:56.772304 | 478 | None | 200
+2026-03-16 17:46:04 | INFO | SpawnProcess-68-24167 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:46:04.514508 | 2026-03-16 17:46:04.990439 | 475 | cache_set_add() got an unexpected keyword argument 'members' | 500
+2026-03-16 17:46:56 | INFO | SpawnProcess-69-24242 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:46:56.388737 | 2026-03-16 17:46:56.840172 | 451 | cache_set_add() got an unexpected keyword argument 'members' | 500
+2026-03-16 17:48:17 | INFO | SpawnProcess-74-24322 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:48:17.165557 | 2026-03-16 17:48:17.622735 | 457 | cache_set_add() got multiple values for argument 'key' | 500
+2026-03-16 17:49:37 | INFO | SpawnProcess-77-24396 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:49:36.557220 | 2026-03-16 17:49:37.039744 | 482 | Invalid input of type: 'NoneType'. Convert to a bytes, string, int or float first. | 500
+2026-03-16 17:50:42 | INFO | SpawnProcess-79-24442 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:50:41.978701 | 2026-03-16 17:50:42.450101 | 471 | None | 200
+2026-03-16 17:54:04 | INFO | SpawnProcess-87-24574 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:54:03.872058 | 2026-03-16 17:54:04.352462 | 480 | None | 200
+2026-03-16 17:56:24 | INFO | SpawnProcess-94-24767 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:56:24.238965 | 2026-03-16 17:56:24.679968 | 441 | None | 200
+2026-03-16 17:56:51 | INFO | SpawnProcess-94-24767 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 17:56:51.019396 | 2026-03-16 17:56:51.020626 | 1 |  | 500
+2026-03-16 17:57:29 | INFO | SpawnProcess-94-24767 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 17:57:29.188043 | 2026-03-16 17:57:29.188941 | 0 |  | 500
+2026-03-16 17:59:04 | INFO | SpawnProcess-95-24891 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 17:59:04.778259 | 2026-03-16 17:59:04.786475 | 8 |  | 500
+2026-03-16 17:59:26 | INFO | SpawnProcess-96-24940 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 17:59:26.741220 | 2026-03-16 17:59:26.748895 | 7 |  | 500
+2026-03-16 17:59:56 | INFO | SpawnProcess-99-24994 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 17:59:56.830282 | 2026-03-16 17:59:56.837214 | 6 |  | 500
+2026-03-16 18:02:07 | INFO | SpawnProcess-101-25122 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 18:02:07.297853 | 2026-03-16 18:02:07.779155 | 481 | None | 200
+2026-03-16 18:02:25 | INFO | SpawnProcess-101-25122 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 18:02:25.357275 | 2026-03-16 18:02:25.358582 | 1 | int() argument must be a string, a bytes-like object or a real number, not 'coroutine' | 500
+2026-03-16 18:03:22 | INFO | SpawnProcess-105-25224 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 18:03:22.240654 | 2026-03-16 18:03:22.710693 | 470 | None | 200
+2026-03-16 18:03:39 | INFO | SpawnProcess-105-25224 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-16 18:03:39.143879 | 2026-03-16 18:03:39.149833 | 5 | None | 200

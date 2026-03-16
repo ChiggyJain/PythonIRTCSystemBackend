@@ -135,8 +135,8 @@ class TokenService:
 
         # storing all access-token-row-id into redis for respective user
         # set format
-        cacheKey = build_cache_set_key(f"auth:user_access_index:{user_id}")
-        await cache_set_add(key=cacheKey, members=access_token_row.id, ttl=None)
+        cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
+        await cache_set_add(cacheKey, str(access_token_row.id))
 
 
         return {

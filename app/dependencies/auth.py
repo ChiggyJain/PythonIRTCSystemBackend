@@ -62,7 +62,7 @@ async def get_current_user(
 
     token = authorization.split(" ")[1]
     payload = decode_token(token)
-
+    
     if not payload:
         raise BaseAppException(
             messages=["Invalid token"],
@@ -77,7 +77,7 @@ async def get_current_user(
 
     user_id = payload.get("sub")
     jti = payload.get("jti")
-    user_id_from_access_token_cache = cache_get(key=f"auth:access:jti:{jti}")
+    user_id_from_access_token_cache = await cache_get(key=f"cache:auth:access:jti:{jti}")
     if int(user_id) != int(user_id_from_access_token_cache):
         raise BaseAppException(
             messages=["Access-Token (User-ID) is not matched with stored cache"],

@@ -93,7 +93,7 @@ def build_cache_set_key(
         key = build_cache_set_key("auth:user_access_index", 101)
         # key -> "auth:user_access_index:101"
     """
-    key = namespace
+    key = f"cache:{namespace}"
     if parts:
         key = f"{namespace}:{':'.join(str(p) for p in parts)}"
     return key
