@@ -105,6 +105,7 @@ class TokenRepositorySQLAlchemy(
             .values(
                 revoked=True,
                 updated_at=now_ist(),
+                status="Z",
             )
         )
         await self.db.execute(stmt)

@@ -302,6 +302,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             .values(
                 revoked=True,
                 updated_at=changed_at,
+                status="Z",
             )
         )
         res = await self.db.execute(stmt)
