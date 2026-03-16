@@ -73,3 +73,9 @@
 2026-03-16 15:04:36 | INFO | pwdchanged_otp_outbox_worker started
 2026-03-16 15:05:07 | INFO | otp_dispatch_consumer_worker started
 2026-03-16 15:07:15 | INFO | SpawnProcess-1-9275 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 15:07:15.173066 | 2026-03-16 15:07:15.546496 | 373 | None | 200
+2026-03-16 15:56:00 | INFO | SpawnProcess-1-15288 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 15:55:59.696086 | 2026-03-16 15:56:00.092824 | 396 | None | 200
+2026-03-16 15:56:31 | INFO | SpawnProcess-1-15288 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-16 15:56:31.273744 | 2026-03-16 15:56:31.377641 | 103 | None | 200
+2026-03-16 15:57:53 | INFO | SpawnProcess-1-15288 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-16 15:57:53.528138 | 2026-03-16 15:57:53.530691 | 2 |  | 500
+2026-03-16 15:58:37 | INFO | SpawnProcess-1-15288 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-16 15:58:37.177659 | 2026-03-16 15:58:37.265483 | 87 | None | 202
+2026-03-16 15:59:50 | INFO | pwdchanged_otp_outbox_worker started
+2026-03-16 15:59:58 | INFO | otp_dispatch_consumer_worker started

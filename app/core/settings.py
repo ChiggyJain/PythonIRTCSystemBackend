@@ -82,10 +82,10 @@ class Settings(BaseSettings):
     # ========================================================
 
     PWDCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
-    PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
-    PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
+    PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
-
+    PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
+    
 
     # =========================
     # Pydantic Settings Config
