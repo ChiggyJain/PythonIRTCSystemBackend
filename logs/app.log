@@ -61,3 +61,9 @@
 2026-03-16 10:21:38 | INFO | SpawnProcess-6-18170 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 10:21:38.516975 | 2026-03-16 10:21:38.852357 | 335 | None | 200
 2026-03-16 10:22:56 | INFO | SpawnProcess-6-18170 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 10:22:56.646113 | 2026-03-16 10:22:56.943461 | 297 |  | 500
 2026-03-16 10:23:10 | INFO | SpawnProcess-6-18170 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 10:23:09.850036 | 2026-03-16 10:23:10.221795 | 371 | None | 200
+2026-03-16 11:23:08 | INFO | SpawnProcess-75-23129 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 11:23:08.525832 | 2026-03-16 11:23:08.899864 | 374 | None | 200
+2026-03-16 11:23:27 | INFO | SpawnProcess-75-23129 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-16 11:23:27.588458 | 2026-03-16 11:23:27.624965 | 36 | None | 202
+2026-03-16 11:34:14 | INFO | SpawnProcess-75-23129 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 11:34:14.389646 | 2026-03-16 11:34:14.399939 | 10 |  | 500
+2026-03-16 11:34:36 | INFO | SpawnProcess-75-23129 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 11:34:36.797100 | 2026-03-16 11:34:36.815234 | 18 |  | 500
+2026-03-16 11:35:49 | INFO | SpawnProcess-75-23129 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-16 11:35:49.884522 | 2026-03-16 11:35:49.976348 | 91 | None | 202
+2026-03-16 11:36:16 | INFO | SpawnProcess-75-23129 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 11:36:16.194877 | 2026-03-16 11:36:16.582525 | 387 | None | 200
