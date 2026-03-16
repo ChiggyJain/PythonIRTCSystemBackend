@@ -32,11 +32,11 @@ class PasswordChangeOtpService:
     OTP_STATUS_VERIFIED = "VERIFIED"
     OTP_STATUS_EXPIRED = "EXPIRED"
     OTP_STATUS_BLOCKED = "BLOCKED"
-    OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_OTP_DISPATCH_REQUESTED = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
     OTP_TTL_SECONDS = 300
     OTP_MAX_ATTEMPTS = 5
     OTP_CIPHER_KEY_VERSION = "v1"
+    OUTBOX_STATUS_PENDING = "PENDING"
+    OUTBOX_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
     def __init__(
         self,
@@ -47,6 +47,7 @@ class PasswordChangeOtpService:
         self._fernet = self._build_fernet(
             secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
         )
+
 
     # =========================
     # public: request OTP
@@ -63,7 +64,10 @@ class PasswordChangeOtpService:
         request_id: str | None = None,
     ) -> dict:
 
+        # normalize the channel (EMAIL/MOBILE)
         channel = self._normalize_channel(channel)
+
+        # fetching active user details
         user = await self.repo.get_active_user(user_id)
         if not user:
             raise BaseAppException(
@@ -71,21 +75,31 @@ class PasswordChangeOtpService:
                 messages=["User not found"],
             )
 
+        # making masked string of channel (EMAIL/MOBILE)
         destination_raw, destination_masked = self._get_destination(
             channel=channel,
             email=user.email,
             mobile=user.mobile,
         )
 
+        # generating the random six-digits OTP and I think we can move this functions in app/common/utils folder
         otp = self._generate_otp()
+
+        # generating the hashed-number of OTP and I think we can move this functions in app/common/utils folder
         otp_hash = self._hash_otp(otp)
+
+        # generating the cipher-text of OTP and I think we can move this functions in app/common/utils folder
         otp_ciphertext = self._encrypt_otp(otp)
 
+        # challengeId is generating
         challenge_id = self._build_challenge_id(user_id)
+
         now = now_ist()
         expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
 
         try:
+
+            # adding otp details
             await self.repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -100,11 +114,11 @@ class PasswordChangeOtpService:
                 status=self.OTP_STATUS_REQUESTED,
             )
 
-            # Outbox event only (Kafka publish is separate step)
+            # Outbox event only (Kafka publish is separate step independent worker)
             await self.repo.add_outbox_event(
                 aggregate_type="OTP_CHALLENGE",
                 aggregate_id=challenge_id,
-                event_type=self.OUTBOX_EVENT_OTP_DISPATCH_REQUESTED,
+                event_type=self.OUTBOX_EVENT_TYPE,
                 payload_json={
                     "challenge_id": challenge_id,
                     "user_id": user_id,
@@ -115,6 +129,7 @@ class PasswordChangeOtpService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
+            # adding logs into respective table
             await self.repo.add_security_event(
                 user_id=user_id,
                 event_name="otp_requested",
@@ -147,9 +162,10 @@ class PasswordChangeOtpService:
             "dispatch_status": "accepted",
         }
 
-    # =========================
+
+    # =======================================
     # public: confirm OTP + change password
-    # =========================
+    # =======================================
 
     async def confirm_password_change(
         self,
@@ -165,6 +181,7 @@ class PasswordChangeOtpService:
         request_id: str | None = None,
     ) -> dict:
 
+        # checking new password is match with confirm_password
         if new_password != confirm_password:
             raise BaseAppException(
                 status_code=400,
@@ -172,12 +189,13 @@ class PasswordChangeOtpService:
             )
 
         try:
+
+            # fetching otp_challenge details
             challenge = await self.repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
             )
-            print(f"Challenge: {challenge}")
             if not challenge:
                 raise BaseAppException(
                     status_code=400,
@@ -194,11 +212,9 @@ class PasswordChangeOtpService:
 
                 
             if challenge.expires_at < now:
-                print(f"now:  {now}")
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
-
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="otp_verification_failed",
@@ -214,7 +230,6 @@ class PasswordChangeOtpService:
                     metadata_json={"challenge_id": challenge_id},
                 )
                 await self.repo.commit()
-
                 raise BaseAppException(
                     status_code=400,
                     messages=["OTP expired"],
@@ -225,7 +240,6 @@ class PasswordChangeOtpService:
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
                 await self.repo.commit()
-
                 raise BaseAppException(
                     status_code=400,
                     messages=["OTP attempts exceeded"],
@@ -235,10 +249,8 @@ class PasswordChangeOtpService:
                 challenge.attempts_used += 1
                 challenge.updated_at = now
                 challenge.last_error_code = "OTP_INVALID"
-
                 if challenge.attempts_used >= challenge.max_attempts:
                     challenge.status = self.OTP_STATUS_BLOCKED
-
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="otp_verification_failed",
@@ -258,7 +270,6 @@ class PasswordChangeOtpService:
                     },
                 )
                 await self.repo.commit()
-
                 raise BaseAppException(
                     status_code=400,
                     messages=["Invalid OTP"],
@@ -278,12 +289,11 @@ class PasswordChangeOtpService:
                     status_code=404,
                     messages=["User not found"],
                 )
-
+            
             revoked_count = await self.repo.revoke_active_tokens_for_user(
                 user_id=user_id,
                 changed_at=changed_at,
             )
-
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED
             challenge.last_error_code = None
@@ -335,8 +345,9 @@ class PasswordChangeOtpService:
 
         return {
             "message": "Password changed successfully",
-            "sessions_revoked": revoked_count,
+            "account_session_revoked_count": revoked_count,
         }
+
 
     # =========================
     # internal helpers
@@ -410,7 +421,7 @@ class PasswordChangeOtpService:
 
         ts = now_ist().strftime("%Y%m%d%H%M%S")
         rand = secrets.token_hex(3).upper()
-        return f"PWDCHG_{user_id}_{ts}_{rand}"
+        return f"PWDCHG_OTP_{user_id}_{ts}_{rand}"
 
     def _hash_otp(
         self,
