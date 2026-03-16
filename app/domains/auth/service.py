@@ -18,7 +18,9 @@ from app.domains.auth.repository.base import (
 )
 from app.common.cache.redis_cache import (
     build_cache_key,
-    cache_set
+    cache_set,
+    build_cache_set_key,
+    cache_set_add
 )
 
 
@@ -123,9 +125,15 @@ class TokenService:
 
         await self.repo.db.commit()
 
-        # storing access-token into redis
+        # storing access-token-row-id into redis for respective user
         cacheKey = build_cache_key(f"auth:access:{access_token_row.id}")
         await cache_set(cacheKey, user_id)
+
+        # storing all access-token-row-id into redis for respective user
+        cacheKey = build_cache_set_key(f"auth:user_access_index:{user_id}")
+        await cache_set_add(cacheKey, access_token_row.id)
+
+
 
         return {
             "access_token": access_token,
