@@ -58,7 +58,7 @@ async def refresh_token(
             messages=["Invalid refresh token type"]
         )
     
-    token_id = payload.get("tid")
+    token_id = payload.get("jti")
     token_row = await token_service.get_refresh(token_id)
     
     if not token_row:
@@ -138,7 +138,7 @@ async def logout(
             status_code=401,
         )
 
-    token_id = payload.get("tid")
+    token_id = payload.get("jti")
     token_row = await token_service.get_refresh(
         token_id
     )

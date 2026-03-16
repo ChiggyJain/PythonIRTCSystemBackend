@@ -151,7 +151,7 @@ class TokenService:
 
     async def revoke(
         self,
-        token_id: int,
+        token_id: int|str,
     ):
 
         await self.repo.revoke_token(
@@ -165,7 +165,7 @@ class TokenService:
 
     async def get_refresh(
         self,
-        token_id: int,
+        token_id: int|str,
     ):
 
         return await self.repo.get_by_id(

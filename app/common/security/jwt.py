@@ -14,6 +14,8 @@ from datetime import timedelta
 from jose import jwt, JWTError
 from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist
+from app.core.exceptions import BaseAppException
+
 
 settings = get_settings()
 
@@ -110,5 +112,7 @@ def decode_token(
         return payload
 
     except JWTError as e:
-        print(f"e: {e}")
-        return {}
+        raise BaseAppException(
+            messages=[f"{str(e)}"],
+            status_code=404,
+        )
