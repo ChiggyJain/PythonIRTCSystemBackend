@@ -133,12 +133,8 @@ async def logout(
 ):
 
     # extracting refresh token
-    print(f"user_details_from_access_token: {user_details_from_access_token}")
-    user_details_from_refresh_token = get_current_user_details_from_refresh_token(body.refresh_token)
+    user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
     
-    print(f"user_details_from_access_token: {user_details_from_access_token}")
-    print(f"user_details_from_refresh_token: {user_details_from_refresh_token}")
-
     # handle case for access token
     access_token_id = user_details_from_access_token.get("jti")
     access_token_row = await token_service.get_access(access_token_id)

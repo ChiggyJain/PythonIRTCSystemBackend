@@ -180,7 +180,6 @@ async def get_current_user_details_from_refresh_token(
 
     # decode the refresh token
     payload = decode_token(refresh_token)
-    print(f"dpayload: {payload}")
 
     if not payload:
         raise BaseAppException(
