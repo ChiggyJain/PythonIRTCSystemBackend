@@ -6,9 +6,7 @@ Consumes otp topic events and sends OTP via provider abstraction.
 import asyncio
 import base64
 import hashlib
-
 from cryptography.fernet import Fernet
-
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.domains.security.providers.base import (

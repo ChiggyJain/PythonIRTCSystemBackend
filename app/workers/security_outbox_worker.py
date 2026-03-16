@@ -5,7 +5,6 @@ OUTBOX_EVENTS -> Kafka topic
 """
 
 import asyncio
-
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.domains.security.outbox_dispatcher import SecurityOutboxDispatcher

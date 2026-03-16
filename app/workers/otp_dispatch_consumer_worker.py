@@ -5,7 +5,6 @@ Kafka topic -> provider send
 
 import asyncio
 import json
-
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.domains.security.otp_dispatch_consumer import OtpDispatchConsumerService

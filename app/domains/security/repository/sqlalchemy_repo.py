@@ -25,6 +25,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
     ):
         self.db = db
 
+
     async def get_active_user(
         self,
         user_id: int,
@@ -36,6 +37,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         )
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
+
 
     async def add_otp_challenge(
         self,
@@ -74,6 +76,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         await self.db.flush()
         return row
 
+
     async def get_otp_challenge_for_update(
         self,
         *,
@@ -94,6 +97,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
 
+
     async def get_otp_challenge_by_challenge_id_for_update(
         self,
         *,
@@ -108,6 +112,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self.db.execute(stmt)
         return res.scalar_one_or_none()
 
+
     async def mark_otp_challenge_status(
         self,
         *,
@@ -121,6 +126,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         challenge.last_error_code = last_error_code
         challenge.updated_at = updated_at
         await self.db.flush()
+
 
     async def add_outbox_event(
         self,
@@ -149,6 +155,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         await self.db.flush()
         return row
 
+
     async def fetch_pending_outbox_events(
         self,
         *,
@@ -172,6 +179,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self.db.execute(stmt)
         return list(res.scalars().all())
 
+
     async def mark_outbox_published(
         self,
         *,
@@ -183,6 +191,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         event.published_at = published_at
         event.updated_at = published_at
         await self.db.flush()
+
 
     async def mark_outbox_retry(
         self,
@@ -200,6 +209,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         event.updated_at = updated_at
         await self.db.flush()
 
+
     async def mark_outbox_failed(
         self,
         *,
@@ -212,6 +222,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         event.last_error = last_error[:2000]
         event.updated_at = updated_at
         await self.db.flush()
+
 
     async def add_security_event(
         self,
@@ -248,6 +259,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         self.db.add(row)
         await self.db.flush()
         return row
+
 
     async def update_user_password(
         self,

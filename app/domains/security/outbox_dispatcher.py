@@ -5,9 +5,7 @@ Outbox -> Kafka publisher.
 
 from datetime import timedelta
 import json
-
 from aiokafka import AIOKafkaProducer
-
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.domains.security.repository.base import SecurityRepositoryBase
