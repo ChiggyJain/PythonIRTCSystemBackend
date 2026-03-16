@@ -159,6 +159,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
     async def fetch_pending_outbox_events(
         self,
         *,
+        event_type: str,
         limit: int,
         now_time: datetime,
     ) -> list[OutboxEvents]:
@@ -166,6 +167,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         stmt = (
             select(OutboxEvents)
             .where(
+                OutboxEvents.event_type == event_type,
                 OutboxEvents.status == "PENDING",
                 or_(
                     OutboxEvents.next_retry_at.is_(None),
