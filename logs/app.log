@@ -81,3 +81,5 @@
 2026-03-16 15:59:58 | INFO | otp_dispatch_consumer_worker started
 2026-03-16 16:02:58 | INFO | otp_dispatch_consumer_worker started
 2026-03-16 16:03:37 | INFO | SpawnProcess-4-16834 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-16 16:03:36.734855 | 2026-03-16 16:03:37.153380 | 418 | None | 200
+2026-03-16 16:09:54 | INFO | SpawnProcess-1-17481 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 16:09:53.711692 | 2026-03-16 16:09:54.125482 | 413 | None | 200
+2026-03-16 16:10:20 | INFO | SpawnProcess-1-17481 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-16 16:10:20.160981 | 2026-03-16 16:10:20.193844 | 32 | None | 200
