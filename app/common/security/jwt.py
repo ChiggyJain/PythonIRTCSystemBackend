@@ -40,6 +40,7 @@ def _create_token(
     }
     if token_id:
         payload["tid"] = token_id
+    print(f"_create_token payload: {payload}")
     encoded = jwt.encode(
         payload,
         settings.JWT_SECRET_KEY,
@@ -55,6 +56,7 @@ def _create_token(
 def create_access_token(
     *,
     user_id: int,
+    token_id: int,
 ) -> str:
 
     expire = timedelta(
@@ -64,6 +66,7 @@ def create_access_token(
         user_id=user_id,
         token_type="access",
         expires_delta=expire,
+        token_id=token_id,
     )
 
 

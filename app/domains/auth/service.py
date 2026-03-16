@@ -42,44 +42,56 @@ class TokenService:
         user_agent: str | None = None,
     ):
 
-        # -------------------------
-        # create access token
-        # -------------------------
-
-        access_token = create_access_token(
-            user_id=user_id,
-        )
 
         # -------------------------
-        # optional: log access token
+        # prepare access expiry
         # -------------------------
 
         access_expire = now_ist() + timedelta(
             minutes=settings.JWT_ACCESS_EXPIRE_MINUTES
         )
 
-        await self.repo.create_token(
+        # --------------------------------------------------------
+        # create DB row first for access-token to get generated row_id
+        # --------------------------------------------------------
+
+        access_token_row = await self.repo.create_token(
             user_id=user_id,
-            token=access_token,
+            token="temp",
             token_type="access",
             expires_at=access_expire,
             ip_address=ip_address,
             user_agent=user_agent,
         )
 
-        # -------------------------
+        # ----------------------------
+        # create access token with id
+        # ----------------------------
+        access_token = create_access_token(
+            user_id=user_id,
+        )
+
+        # -----------------------------
+        # update DB access token value
+        # -----------------------------
+
+        access_token_row.token = access_token
+        access_token_row.updated_at = now_ist()
+
+
+        # ---------------------------------------------
         # prepare refresh expiry
-        # -------------------------
+        # ---------------------------------------------
 
         refresh_expire = now_ist() + timedelta(
             days=settings.JWT_REFRESH_EXPIRE_DAYS
         )
 
-        # -------------------------
-        # create DB row first
-        # -------------------------
+        # -------------------------------------------------------------
+        # create DB row first for refresh token to get generated row id
+        # -------------------------------------------------------------
 
-        token_row = await self.repo.create_token(
+        refresh_token_row = await self.repo.create_token(
             user_id=user_id,
             token="temp",
             token_type="refresh",
@@ -88,21 +100,21 @@ class TokenService:
             user_agent=user_agent,
         )
 
-        # -------------------------
+        # -----------------------------
         # create refresh token with id
-        # -------------------------
+        # ------------------------------
 
         refresh_token = create_refresh_token(
             user_id=user_id,
-            token_id=token_row.id,
+            token_id=refresh_token_row.id,
         )
 
-        # -------------------------
-        # update DB token value
-        # -------------------------
+        # -----------------------------
+        # update DB refresh token value
+        # -----------------------------
 
-        token_row.token = refresh_token
-        token_row.updated_at = now_ist()
+        refresh_token_row.token = refresh_token
+        refresh_token_row.updated_at = now_ist()
 
         await self.repo.db.commit()
 
