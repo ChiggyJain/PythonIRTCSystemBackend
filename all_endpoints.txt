@@ -115,7 +115,7 @@ curl --location 'http://127.0.0.1:8000/api/v1/users/password/change/confirm' \
 --header 'Content-Type: application/json' \
 --data '{
   "challenge_id": "<CHALLENGE_ID_FROM_REQUEST_OTP_RESPONSE>",
-  "otp": "<PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL>",
+  "otp": "<PWDCHANGED_OTP_FROM_EMAIL>",
   "new_password": "<NewStrongPassword@123>",
   "confirm_password": "<NewStrongPassword@123>"
 }'

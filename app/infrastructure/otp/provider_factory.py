@@ -27,7 +27,7 @@ def get_email_otp_sender() -> EmailOtpSenderBase:
     if provider == "SENDGRID":
         _email_sender = SendGridEmailOtpSender(
             api_key=_settings.SENDGRID_API_KEY,
-            from_email=_settings.PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL,
+            from_email=_settings.PWDCHANGED_OTP_FROM_EMAIL,
             subject_prefix=_settings.PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX,
         )
         return _email_sender
