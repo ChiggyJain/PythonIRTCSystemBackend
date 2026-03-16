@@ -134,3 +134,5 @@
 2026-03-16 20:55:46 | INFO | SpawnProcess-157-14196 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 20:55:45.942966 | 2026-03-16 20:55:46.310798 | 367 | None | 200
 2026-03-16 20:56:34 | INFO | SpawnProcess-157-14196 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:56:33.911520 | 2026-03-16 20:56:34.001714 | 90 | None | 200
 2026-03-16 20:56:57 | INFO | SpawnProcess-157-14196 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:56:57.143472 | 2026-03-16 20:56:57.144450 | 0 | int() argument must be a string, a bytes-like object or a real number, not 'NoneType' | 500
+2026-03-16 20:58:11 | INFO | SpawnProcess-159-14507 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:58:11.710872 | 2026-03-16 20:58:11.715625 | 4 |  | 500
+2026-03-16 20:59:23 | INFO | SpawnProcess-163-14630 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:59:23.687421 | 2026-03-16 20:59:23.691420 | 3 |  | 500
