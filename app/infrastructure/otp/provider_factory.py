@@ -23,12 +23,12 @@ def get_email_otp_sender() -> EmailOtpSenderBase:
     if _email_sender is not None:
         return _email_sender
 
-    provider = _settings.OTP_EMAIL_PROVIDER.strip().upper()
+    provider = _settings.PWDCHANGED_OTP_EMAIL_PROVIDER.strip().upper()
     if provider == "SENDGRID":
         _email_sender = SendGridEmailOtpSender(
             api_key=_settings.SENDGRID_API_KEY,
-            from_email=_settings.OTP_FROM_EMAIL,
-            subject_prefix=_settings.OTP_EMAIL_SUBJECT_PREFIX,
+            from_email=_settings.PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL,
+            subject_prefix=_settings.PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX,
         )
         return _email_sender
 
@@ -41,7 +41,7 @@ def get_sms_otp_sender() -> SmsOtpSenderBase:
     if _sms_sender is not None:
         return _sms_sender
 
-    provider = _settings.OTP_SMS_PROVIDER.strip().upper()
+    provider = _settings.PWDCHANGED_OTP_SMS_PROVIDER.strip().upper()
     if provider == "NONE":
         _sms_sender = NoopSmsOtpSender()
         return _sms_sender

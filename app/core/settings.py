@@ -80,16 +80,16 @@ class Settings(BaseSettings):
     # OTP PROVIDER CONFIG
     # =========================
 
-    OTP_EMAIL_PROVIDER: str = "SENDGRID"
-    OTP_SMS_PROVIDER: str = "NONE"
-    OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
-    OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
-
-    # my suggestion for password_changed otp concept
     PWDCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
     PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
-    PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
+    PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
+
+    # my suggestion for password_changed otp concept
+    PWDCHANGED_PWDCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
+    PWDCHANGED_PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
+    PWDCHANGED_PWDCHANGED_PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
+    PWDCHANGED_PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
 
 
     # =========================
