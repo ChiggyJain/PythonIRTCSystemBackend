@@ -86,3 +86,4 @@
 2026-03-16 17:05:00 | INFO | SpawnProcess-1-21167 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:05:00.131671 | 2026-03-16 17:05:00.561038 | 429 | create_access_token() missing 1 required keyword-only argument: 'token_id' | 500
 2026-03-16 17:06:15 | INFO | SpawnProcess-4-21299 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:06:14.672642 | 2026-03-16 17:06:15.064468 | 391 | None | 200
 2026-03-16 17:19:37 | INFO | SpawnProcess-19-22564 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:19:37.364935 | 2026-03-16 17:19:37.828758 | 463 | None | 200
+2026-03-16 17:24:56 | INFO | SpawnProcess-30-23065 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-16 17:24:56.293540 | 2026-03-16 17:24:56.772304 | 478 | None | 200

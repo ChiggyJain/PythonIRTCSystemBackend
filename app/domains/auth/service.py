@@ -56,7 +56,10 @@ class TokenService:
         access_expire = now_ist() + timedelta(
             minutes=settings.JWT_ACCESS_EXPIRE_MINUTES
         )
-
+        access_expire_seconds = int(
+            (access_expire - now_ist()).total_seconds()
+        )
+        
         # --------------------------------------------------------
         # create DB row first for access-token to get generated row_id
         # --------------------------------------------------------
@@ -126,13 +129,14 @@ class TokenService:
         await self.repo.db.commit()
 
         # storing access-token-row-id into redis for respective user
-        cacheKey = build_cache_key(f"auth:access:{access_token_row.id}")
-        await cache_set(cacheKey, user_id)
+        # key-value with expire seconds
+        cacheKey = build_cache_key(f"auth:access:jti:{access_token_row.id}")
+        await cache_set(key=cacheKey, value=user_id, ttl=access_expire_seconds)
 
         # storing all access-token-row-id into redis for respective user
+        # set format
         cacheKey = build_cache_set_key(f"auth:user_access_index:{user_id}")
-        await cache_set_add(cacheKey, access_token_row.id)
-
+        await cache_set_add(key=cacheKey, members=access_token_row.id, ttl=None)
 
 
         return {
