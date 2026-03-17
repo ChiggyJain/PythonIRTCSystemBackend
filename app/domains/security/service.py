@@ -78,6 +78,15 @@ class PasswordChangeOtpService:
                 status_code=404,
                 messages=["User not found"],
             )
+        
+        if user.is_mobile_verified == "N":
+            print(f"In future we have to check mobile is verified or not. Pending-Task")
+
+        if user.is_email_verified == "N":
+            raise BaseAppException(
+                status_code=401,
+                messages=["Password change process is not allow without verifying email"],
+            )
 
         # making masked string of channel (EMAIL/MOBILE)
         destination_raw, destination_masked = self._get_destination(

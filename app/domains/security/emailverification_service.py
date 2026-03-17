@@ -78,7 +78,7 @@ class EmailVerificationOtpService:
 
         if user.is_email_verified == "Y":
             raise BaseAppException(status_code=400, messages=["Email already verified"])
-
+        
         destination_raw = user.email
         destination_masked = self._mask_email(user.email)
 
