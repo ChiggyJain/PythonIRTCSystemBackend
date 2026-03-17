@@ -40,6 +40,7 @@ class SecurityRepositoryBase(ABC):
         expires_at: datetime,
         max_attempts: int,
         status: str,
+        metadata_json: str | None = None,
     ) -> OtpChallenges:
         pass
 
@@ -185,5 +186,24 @@ class SecurityRepositoryBase(ABC):
                 verified_at=now_ist(),
             )
         """
+        pass
+
+
+    @abstractmethod
+    async def get_active_user_by_email(
+        self,
+        email: str,
+    ) -> Users | None:
+        pass
+
+
+    @abstractmethod
+    async def mark_user_email_changed_verified(
+        self,
+        *,
+        user_id: int,
+        new_email: str,
+        verified_at: datetime,
+    ) -> bool:
         pass
 

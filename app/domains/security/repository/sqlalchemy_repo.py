@@ -53,6 +53,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         expires_at: datetime,
         max_attempts: int,
         status: str,
+        metadata_json: str | None = None,
     ) -> OtpChallenges:
 
         row = OtpChallenges(
@@ -69,6 +70,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             attempts_used=0,
             status=status,
             last_error_code=None,
+            metadata_json=metadata_json,
             created_at=now_ist(),
             updated_at=now_ist(),
         )
@@ -336,4 +338,43 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         )
         res = await self.db.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
+    
+
+    async def get_active_user_by_email(
+        self,
+        email: str,
+    ) -> Users | None:
+
+        stmt = select(Users).where(
+            Users.email == email,
+            Users.status == "A",
+        )
+        res = await self.db.execute(stmt)
+        return res.scalar_one_or_none()
+    
+
+    async def mark_user_email_changed_verified(
+        self,
+        *,
+        user_id: int,
+        new_email: str,
+        verified_at: datetime,
+    ) -> bool:
+
+        stmt = (
+            update(Users)
+            .where(
+                Users.id == user_id,
+                Users.status == "A",
+            )
+            .values(
+                email=new_email,
+                is_email_verified="Y",
+                email_verified_last_datetime=verified_at,
+                updated_at=verified_at,
+            )
+        )
+        res = await self.db.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+
     
