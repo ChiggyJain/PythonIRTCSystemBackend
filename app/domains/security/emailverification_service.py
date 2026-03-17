@@ -13,8 +13,11 @@ import hmac
 import secrets
 from cryptography.fernet import Fernet
 from app.common.utils.datetime import now_ist
+from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
+from app.common.cache.config import CACHE_KEY_USER_PROFILE
+from app.common.cache.redis_cache import build_cache_key, cache_delete
 from app.domains.security.repository.base import SecurityRepositoryBase
 
 
@@ -287,6 +290,12 @@ class EmailVerificationOtpService:
 
             await self.repo.commit()
 
+            # Invalidate profile cache so frontend gets latest verification status.
+            # Example key:
+            # cache:v1.users.profile:101
+            user_profile_cache_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
+            await cache_delete(user_profile_cache_key)
+        
         except BaseAppException:
             raise
         except Exception:
