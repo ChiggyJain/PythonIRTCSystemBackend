@@ -16,6 +16,7 @@ _settings = get_settings()
 _email_sender: EmailOtpSenderBase | None = None
 _sms_sender: SmsOtpSenderBase | None = None
 _emailverification_email_sender: EmailOtpSenderBase | None = None
+_emailchanged_email_sender: EmailOtpSenderBase | None = None
 
 
 
@@ -63,3 +64,22 @@ def get_emailverification_email_otp_sender() -> EmailOtpSenderBase:
         )
         return _emailverification_email_sender
     raise RuntimeError(f"Unsupported EMAILVERIFICATION OTP email provider: {provider}")
+
+
+def get_emailchanged_email_otp_sender() -> EmailOtpSenderBase:
+    """
+    Sender for EMAIL CHANGED OTP flow.
+    Shared SENDGRID_API_KEY, flow-specific from/subject.
+    """
+    global _emailchanged_email_sender
+    if _emailchanged_email_sender is not None:
+        return _emailchanged_email_sender
+    provider = _settings.EMAILCHANGED_OTP_EMAIL_PROVIDER.strip().upper()
+    if provider == "SENDGRID":
+        _emailchanged_email_sender = SendGridEmailOtpSender(
+            api_key=_settings.SENDGRID_API_KEY,
+            from_email=_settings.EMAILCHANGED_OTP_FROM_EMAIL,
+            subject_prefix=_settings.EMAILCHANGED_OTP_EMAIL_SUBJECT_PREFIX,
+        )
+        return _emailchanged_email_sender
+    raise RuntimeError(f"Unsupported EMAILCHANGED OTP email provider: {provider}")
