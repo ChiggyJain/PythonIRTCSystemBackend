@@ -53,40 +53,28 @@ async def refresh_token(
     ),
 ):
 
-    # decode refresh token
-    payload = decode_token(body.refresh_token)
+    # decoding user-details from refresh token
+    user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
-    if not payload:
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid refresh token"]
-        )
+    refresh_token_id = user_details_from_refresh_token.get("jti")
+    refresh_token_row = await token_service.get_refresh(refresh_token_id)
     
-    if payload.get("type") != "refresh":
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid refresh token type"]
-        )
-    
-    token_id = payload.get("jti")
-    token_row = await token_service.get_refresh(token_id)
-    
-    if not token_row:
+    if not refresh_token_row:
         raise BaseAppException(
             status_code=401,
             messages=["Refresh token not found"]
         )
     
-    if token_row.revoked:
+    if refresh_token_row.revoked:
         raise BaseAppException(
             status_code=401,
             messages=["Refresh token not revoked"]
         )
 
-    await token_service.revoke(token_id=token_id)
+    await token_service.revoke(token_id=refresh_token_id)
 
     tokens = await token_service.create_tokens(
-        user_id=int(payload["sub"]),
+        user_id=int(user_details_from_refresh_token.get("sub")),
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
@@ -166,8 +154,6 @@ async def logout(
             status_code=401,
         )
     await token_service.revoke(refresh_token_id)
-
-
 
     return success_response(
         messages=["Logout successful"],
