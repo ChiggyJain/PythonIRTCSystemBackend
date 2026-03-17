@@ -6,7 +6,10 @@ Handles JWT + DB tokens
 """
 
 from datetime import timedelta
-
+from app.common.security.token_hash import (
+    build_token_hash,
+    is_token_hash_match,
+)
 from app.common.security.jwt import (
     create_access_token,
     create_refresh_token,
@@ -66,7 +69,7 @@ class TokenService:
 
         access_token_row = await self.repo.create_token(
             user_id=user_id,
-            token="temp",
+            token_hash="temp",
             token_type="access",
             expires_at=access_expire,
             ip_address=ip_address,
@@ -87,7 +90,7 @@ class TokenService:
 
         refresh_token_row = await self.repo.create_token(
             user_id=user_id,
-            token="temp",
+            token_hash="temp",
             token_type="refresh",
             expires_at=refresh_expire,
             ip_address=ip_address,
@@ -109,7 +112,7 @@ class TokenService:
         # update DB access token value
         # -----------------------------
 
-        access_token_row.token = access_token
+        access_token_row.token_hash = build_token_hash(access_token)
         access_token_row.updated_at = now_ist()
 
         # -----------------------------
@@ -127,7 +130,7 @@ class TokenService:
         # update DB refresh token value
         # -----------------------------
 
-        refresh_token_row.token = refresh_token
+        refresh_token_row.token_hash = build_token_hash(refresh_token)
         refresh_token_row.updated_at = now_ist()
 
         await self.repo.db.commit()
@@ -183,3 +186,15 @@ class TokenService:
     ):
 
         return await self.repo.get_by_id(token_id)
+    
+
+    def is_raw_token_matches_stored_hash(
+        self,
+        *,
+        raw_token: str,
+        stored_hash: str | None,
+    ) -> bool:
+        return is_token_hash_match(
+            raw_token=raw_token,
+            stored_hash=stored_hash,
+        )
