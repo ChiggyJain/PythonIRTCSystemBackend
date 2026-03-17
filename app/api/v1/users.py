@@ -18,10 +18,16 @@ from app.dependencies.auth import (
     get_current_user_details_from_access_token
 )
 from app.dependencies.security import get_password_change_otp_service
-from app.domains.security.service import PasswordChangeOtpService
+from app.domains.security.emailverification_service import EmailVerificationOtpService
+from app.domains.security.service import (
+    PasswordChangeOtpService,
+    get_email_verification_otp_service,
+)
 from app.domains.security.schemas import (
     PasswordChangeRequestOtpRequest,
     PasswordChangeConfirmRequest,
+    EmailVerificationRequestOtpRequest,
+    EmailVerificationConfirmOtpRequest,
 )
 
 
@@ -192,12 +198,12 @@ router.add_api_route(
 async def password_change_request_otp(
     body: PasswordChangeRequestOtpRequest,
     request: Request,
-    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     
     result = await service.request_password_change_otp(
-        user_id=user_id_fron_access_token,
+        user_id=user_id_from_access_token,
         channel=body.channel,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
@@ -240,12 +246,12 @@ router.add_api_route(
 async def password_change_confirm(
     body: PasswordChangeConfirmRequest,
     request: Request,
-    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     
     result = await service.confirm_password_change(
-        user_id=user_id_fron_access_token,
+        user_id=user_id_from_access_token,
         challenge_id=body.challenge_id,
         otp=body.otp,
         new_password=body.new_password,
@@ -265,6 +271,103 @@ async def password_change_confirm(
 router.add_api_route(
     "/password/change/confirm",
     password_change_confirm,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+
+# ---------------------------------
+# email verification request otp
+# ---------------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.email_verification_request_otp",
+        "logging": {
+            "console": True, 
+            "file": True
+        },
+        "rate_limit": {
+            "limit": 10, 
+            "window": 60
+        },
+    }
+)
+async def email_verification_request_otp(
+    body: EmailVerificationRequestOtpRequest,
+    request: Request,
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
+    service: EmailVerificationOtpService = Depends(get_email_verification_otp_service),
+):
+    
+    result = await service.request_email_verification_otp(
+        user_id=user_id_from_access_token,
+        channel=body.channel,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+
+    return success_response(
+        status_code=202,
+        messages=["Email verification OTP request accepted"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/email/verification/request-otp",
+    email_verification_request_otp,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+# ---------------------------------
+# email verification confirm otp
+# ---------------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.email_verification_confirm",
+        "logging": {
+            "console": True, 
+            "file": True
+        },
+        "rate_limit": {
+            "limit": 10, 
+            "window": 60
+        },
+    }
+)
+async def email_verification_confirm_otp(
+    body: EmailVerificationConfirmOtpRequest,
+    request: Request,
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
+    service: EmailVerificationOtpService = Depends(get_email_verification_otp_service),
+):
+    
+    result = await service.confirm_email_verification_otp(
+        user_id=user_id_from_access_token,
+        challenge_id=body.challenge_id,
+        otp=body.otp,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+
+    return success_response(
+        messages=["Email verified successfully"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/email/verification/confirm",
+    email_verification_confirm_otp,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
