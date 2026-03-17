@@ -56,22 +56,26 @@ APIs GET Request =>
 
 http://127.0.0.1:8000/health
 
+
 http://127.0.0.1:8000/api/v1/users/profile_details
+Add Authorization header access-token
 
 
 
 APIs POST Request =>
+
 
 http://127.0.0.1:8000/api/v1/users/signup
 {
   "first_name": "Chirag",
   "last_name": "Jain",
   "mobile": "9975967186",
-  "email": "c1@gmail.com",
+  "email": "cjain9975@gmail.com",
   "gender": "Male",
   "password": "Test1@23456",
   "confirm_password": "Test1@23456"
 }
+
 
 http://127.0.0.1:8000/api/v1/users/login
 {
@@ -79,15 +83,19 @@ http://127.0.0.1:8000/api/v1/users/login
   "password": "Test1@23456"
 }
 
+
 http://127.0.0.1:8000/api/v1/auth/refresh
 {
   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3NzQxMDU4MTQsImlzcyI6ImlydGMtYmFja2VuZCIsImF1ZCI6ImlydGMtdXNlcnMiLCJ0aWQiOjh9.O9hVILadVm0PY1MSwBUJCe3tE5FlCk5WUF2C1vBqJoA"
 }
 
+
 http://127.0.0.1:8000/api/v1/auth/logout
+Add Authorization header access-token
 {
   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwidHlwZSI6InJlZnJlc2giLCJleHAiOjE3NzQxMDU4MTQsImlzcyI6ImlydGMtYmFja2VuZCIsImF1ZCI6ImlydGMtdXNlcnMiLCJ0aWQiOjh9.O9hVILadVm0PY1MSwBUJCe3tE5FlCk5WUF2C1vBqJoA"
 }
+
 
 http://127.0.0.1:8000/api/v1/users/password/change/request-otp
 Add Authorization header access-token
@@ -114,10 +122,10 @@ curl --location 'http://127.0.0.1:8000/api/v1/users/password/change/confirm' \
 --header 'Authorization: Bearer <ACCESS_TOKEN>' \
 --header 'Content-Type: application/json' \
 --data '{
-  "challenge_id": "<CHALLENGE_ID_FROM_REQUEST_OTP_RESPONSE>",
-  "otp": "<PWDCHANGED_OTP_FROM_EMAIL>",
-  "new_password": "<NewStrongPassword@123>",
-  "confirm_password": "<NewStrongPassword@123>"
+  "challenge_id": "",
+  "otp": "",
+  "new_password": "",
+  "confirm_password": ""
 }'
 
 
