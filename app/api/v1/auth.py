@@ -77,7 +77,7 @@ async def refresh_token(
     await token_service.revoke(token_id=access_token_id)
 
     # remove keys from cache 
-    cacheKey = build_cache_key(f"auth:access:jti:{access_token_id}")
+    cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_id}")
     await cache_delete(cacheKey)
 
     # creating new access and refresh token
@@ -142,7 +142,7 @@ async def logout(
     await token_service.revoke(access_token_id)
 
     # remove keys from cache 
-    cacheKey = build_cache_key(f"auth:access:jti:{access_token_id}")
+    cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_id}")
     await cache_delete(cacheKey)
     user_id = user_details_from_access_token.get("sub")
     cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")

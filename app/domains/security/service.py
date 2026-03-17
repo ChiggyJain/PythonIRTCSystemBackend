@@ -19,6 +19,10 @@ from app.common.utils.password import hash_password
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
 from app.domains.security.repository.base import SecurityRepositoryBase
+from app.common.cache.redis_cache import(
+    build_cache_key, cache_delete,
+    build_cache_set_key, cache_set_members, cache_set_delete
+)
 
 
 settings = get_settings()
@@ -294,6 +298,15 @@ class PasswordChangeOtpService:
                 user_id=user_id,
                 changed_at=changed_at,
             )
+
+            # remove keys from cache 
+            cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
+            userAllAccessTokenIdSet = cache_set_members(key=cacheKey)
+            for userEachAccessTokenId in userAllAccessTokenIdSet:
+                cacheKey = build_cache_key(f"auth:user:access:jti:{userEachAccessTokenId}")
+                await cache_delete(cacheKey)
+            await cache_set_delete(cacheKey)
+
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED
             challenge.last_error_code = None

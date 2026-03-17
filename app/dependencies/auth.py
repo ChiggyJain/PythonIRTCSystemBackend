@@ -77,7 +77,7 @@ async def get_current_user_id_from_access_token(
 
     user_id = payload.get("sub")
     jti = payload.get("jti")
-    user_id_from_access_token_cache = await cache_get(key=f"cache:auth:access:jti:{jti}")
+    user_id_from_access_token_cache = await cache_get(key=f"cache:auth:user:access:jti:{jti}")
     if int(user_id) != int(user_id_from_access_token_cache):
         raise BaseAppException(
             messages=["Access-Token (User-ID) is not matched with stored cache"],
@@ -131,7 +131,7 @@ async def get_current_user_details_from_access_token(
     
     user_id = payload.get("sub")
     jti = payload.get("jti")
-    user_id_from_access_token_cache = await cache_get(key=f"cache:auth:access:jti:{jti}")
+    user_id_from_access_token_cache = await cache_get(key=f"cache:auth:user:access:jti:{jti}")
     if user_id_from_access_token_cache == None:
         raise BaseAppException(
             messages=["Invalid access token. Access token is not available into cache"],
