@@ -104,16 +104,10 @@ async def login_user(
     ),
 ):
 
-    # -------------------------
     # validate user
-    # -------------------------
-
     user = await service.login_user(email=body.email, password=body.password)
-
-    # -------------------------
+    
     # create tokens
-    # -------------------------
-
     tokens = await token_service.create_tokens(
         user_id=user.id,
         ip_address=request.client.host if request.client else None,
