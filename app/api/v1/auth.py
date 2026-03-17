@@ -148,7 +148,7 @@ async def logout(
         )
     await token_service.revoke(access_token_id)
 
-    # remove keys from cache 
+    # remove keys from cache related to access-token
     cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_id}")
     await cache_delete(cacheKey)
     user_id = user_details_from_access_token.get("sub")
@@ -168,6 +168,15 @@ async def logout(
             messages=["Refresh token already revoked"],
             status_code=401,
         )
+    if not token_service.is_raw_token_matches_stored_hash(
+        raw_token=body.refresh_token,
+        stored_hash=refresh_token_row.token_hash,
+    ):
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid refresh token"],
+        )
+
     await token_service.revoke(refresh_token_id)
 
     return success_response(
