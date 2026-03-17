@@ -167,3 +167,5 @@
 2026-03-17 14:31:22 | INFO | SpawnProcess-29-11637 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-03-17 14:31:22.397290 | 2026-03-17 14:31:22.490122 | 92 | None | 202
 2026-03-17 14:32:09 | INFO | SpawnProcess-29-11637 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-03-17 14:32:09.716756 | 2026-03-17 14:32:09.749184 | 32 | None | 200
 2026-03-17 14:33:13 | INFO | SpawnProcess-29-11637 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 14:33:13.783376 | 2026-03-17 14:33:13.786695 | 3 | None | 200
+2026-03-17 14:47:12 | INFO | SpawnProcess-1-12744 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 14:47:12.301158 | 2026-03-17 14:47:12.772618 | 471 | None | 200
+2026-03-17 14:47:29 | INFO | SpawnProcess-1-12744 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 14:47:29.101374 | 2026-03-17 14:47:29.192935 | 91 | None | 202

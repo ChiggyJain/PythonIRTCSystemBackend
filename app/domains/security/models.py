@@ -93,6 +93,15 @@ class OtpChallenges(Base):
     # Example: OTP_INVALID, OTP_EXPIRED, DISPATCH_FAILED
     last_error_code: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
+    # Encrypted JSON metadata for flow-specific context.
+    # For EMAIL_CHANGE purpose, example decrypted JSON:
+    # {
+    #   "old_email": "old@example.com",
+    #   "new_email": "new@example.com"
+    # }
+    # Stored encrypted as text only.
+    metadata_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+
     # Audit timestamps (IST utility in project).    
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
