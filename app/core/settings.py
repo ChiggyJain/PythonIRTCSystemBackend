@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     # =============================================
 
     PWDCHANGED_OTP_DISPATCH_TOPIC: str = "pwdchanged-otp-dispatch-v1"
-    PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "pwdchanged-pwdchanged-otp-dispatch-consumer-v1"
+    PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "pwdchanged-otp-dispatch-consumer-v1"
     PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # =========================

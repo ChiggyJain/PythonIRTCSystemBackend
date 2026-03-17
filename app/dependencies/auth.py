@@ -3,8 +3,6 @@
 Auth dependencies
 """
 
-from encodings import palmos
-
 from fastapi import (
     Depends, Header
 )

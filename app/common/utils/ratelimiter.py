@@ -86,7 +86,7 @@ class RateLimiter:
             )
 
             # Fail open (production rule)
-            return True
+            return False
 
 
 # Singleton-style instance

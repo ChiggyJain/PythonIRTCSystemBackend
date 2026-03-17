@@ -124,6 +124,6 @@ def decode_token(
 
     except JWTError as e:
         raise BaseAppException(
-            messages=[f"{str(e)}"],
-            status_code=404,
+            messages=[f"Error occured due to decoding the token and message: {str(e)}"],
+            status_code=401,
         )
