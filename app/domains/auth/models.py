@@ -5,7 +5,7 @@ USER_TOKENS table
 
 from datetime import datetime
 from sqlalchemy import (
-    String, DateTime, Enum, Text, Boolean
+    String, DateTime, Enum, Text, Boolean, Index
 )
 from sqlalchemy.orm import (
     Mapped, mapped_column
@@ -32,6 +32,9 @@ status_enum = Enum(
 class UserTokens(Base):
 
     __tablename__ = "USER_TOKENS"
+    __table_args__ = (
+        Index("ix_user_tokens_user_status_revoked", "user_id", "status", "revoked"),
+    )
 
     id: Mapped[int] = mapped_column(
         primary_key=True,
