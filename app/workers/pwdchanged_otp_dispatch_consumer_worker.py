@@ -36,7 +36,6 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-
                 async with AsyncSessionLocal() as db:
                     repo = SecuritySQLAlchemyRepository(db)
                     service = PwdChangedOtpDispatchConsumerService(
@@ -45,14 +44,12 @@ async def run_worker() -> None:
                         sms_sender=sms_sender,
                     )
                     await service.process_payload(payload)
-
+                # Commit only after successful processing.
+                await consumer.commit()
             except Exception as exc:
                 app_logger.error(f"otp_dispatch_consumer_worker message error: {exc}")
-
-            finally:
-                # Commit offset after handling to avoid poison-message loops.
-                await consumer.commit()
-
+                # Do NOT commit on failure; message will be retried.
+                await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
 

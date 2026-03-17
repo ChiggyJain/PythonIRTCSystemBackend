@@ -41,10 +41,12 @@ async def run_worker() -> None:
                         email_sender=email_sender,
                     )
                     await service.process_payload(payload)
+                # Commit only after successful processing.
+                await consumer.commit()
             except Exception as exc:
                 app_logger.error(f"emailverification_otp_dispatch_consumer_worker error: {exc}")
-            finally:
-                await consumer.commit()
+                # Do NOT commit on failure; message will be retried.
+                await asyncio.sleep(0.2)            
     finally:
         await consumer.stop()
 
