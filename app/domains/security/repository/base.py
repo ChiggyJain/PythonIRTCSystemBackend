@@ -169,3 +169,21 @@ class SecurityRepositoryBase(ABC):
     @abstractmethod
     async def rollback(self) -> None:
         pass
+
+    @abstractmethod
+    async def mark_user_email_verified(
+        self,
+        *,
+        user_id: int,
+        verified_at: datetime,
+    ) -> bool:
+        """
+        Mark user's current email as verified.
+        Example:
+            await repo.mark_user_email_verified(
+                user_id=101,
+                verified_at=now_ist(),
+            )
+        """
+        pass
+

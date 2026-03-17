@@ -313,3 +313,27 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
 
     async def rollback(self) -> None:
         await self.db.rollback()
+
+
+    async def mark_user_email_verified(
+        self,
+        *,
+        user_id: int,
+        verified_at: datetime,
+    ) -> bool:
+
+        stmt = (
+            update(Users)
+            .where(
+                Users.id == user_id,
+                Users.status == "A",
+            )
+            .values(
+                is_email_verified="Y",
+                email_verified_last_datetime=verified_at,
+                updated_at=verified_at,
+            )
+        )
+        res = await self.db.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+    
