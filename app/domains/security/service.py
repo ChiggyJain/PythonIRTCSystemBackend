@@ -301,7 +301,7 @@ class PasswordChangeOtpService:
 
             # remove keys from cache 
             userIdCacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-            userAllAccessTokenIdSet = cache_set_members(key=userIdCacheKey)
+            userAllAccessTokenIdSet = await cache_set_members(key=userIdCacheKey)
             for userEachAccessTokenId in userAllAccessTokenIdSet:
                 userAccessTokenIdCacheKey = build_cache_key(f"auth:user:access:jti:{userEachAccessTokenId}")
                 await cache_delete(key=userAccessTokenIdCacheKey)

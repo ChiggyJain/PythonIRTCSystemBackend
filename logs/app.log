@@ -143,3 +143,15 @@
 2026-03-17 09:58:51 | INFO | SpawnProcess-8-14456 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 09:58:51.460063 | 2026-03-17 09:58:51.467004 | 6 | None | 200
 2026-03-17 10:10:49 | INFO | SpawnProcess-1-15197 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 10:10:49.231876 | 2026-03-17 10:10:49.723623 | 491 | None | 200
 2026-03-17 10:11:50 | INFO | SpawnProcess-1-15197 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-17 10:11:50.217433 | 2026-03-17 10:11:50.322495 | 105 | None | 200
+2026-03-17 10:30:24 | INFO | SpawnProcess-44-16253 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 10:30:23.682658 | 2026-03-17 10:30:24.034234 | 351 | None | 200
+2026-03-17 10:30:44 | INFO | SpawnProcess-44-16253 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:30:44.069750 | 2026-03-17 10:30:44.176747 | 106 | None | 202
+2026-03-17 10:32:11 | INFO | pwdchanged_otp_outbox_worker started
+2026-03-17 10:32:43 | INFO | otp_dispatch_consumer_worker started
+2026-03-17 10:39:04 | INFO | SpawnProcess-44-16253 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-17 10:39:04.004268 | 2026-03-17 10:39:04.093184 | 88 |  | 500
+2026-03-17 10:39:28 | INFO | SpawnProcess-44-16253 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:39:28.639636 | 2026-03-17 10:39:28.656887 | 17 | None | 202
+2026-03-17 10:40:06 | INFO | SpawnProcess-44-16253 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-17 10:40:06.187801 | 2026-03-17 10:40:06.545644 | 357 | 'coroutine' object is not iterable | 500
+2026-03-17 10:41:52 | INFO | SpawnProcess-49-19052 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 10:41:52.323312 | 2026-03-17 10:41:52.805580 | 482 | None | 200
+2026-03-17 10:42:09 | INFO | SpawnProcess-49-19052 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 10:42:09.486155 | 2026-03-17 10:42:09.802599 | 316 | None | 200
+2026-03-17 10:42:35 | INFO | SpawnProcess-49-19052 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:42:35.700046 | 2026-03-17 10:42:35.701291 | 1 |  | 500
+2026-03-17 10:43:00 | INFO | SpawnProcess-49-19052 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:43:00.682943 | 2026-03-17 10:43:00.774404 | 91 | None | 202
+2026-03-17 10:43:51 | INFO | SpawnProcess-49-19052 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-17 10:43:51.276053 | 2026-03-17 10:43:51.658815 | 382 | None | 200
