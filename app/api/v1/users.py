@@ -18,12 +18,12 @@ from app.dependencies.auth import (
     get_current_user_details_from_access_token
 )
 from app.dependencies.security import get_password_change_otp_service
-from app.domains.security.emailverification_service import EmailVerificationOtpService
 from app.domains.security.service import (
     PasswordChangeOtpService,
 )
+from app.dependencies.security import get_email_verification_otp_service
 from app.domains.security.emailverification_service import (
-    get_email_verification_otp_service,
+    EmailVerificationOtpService,
 )
 from app.domains.security.schemas import (
     PasswordChangeRequestOtpRequest,
