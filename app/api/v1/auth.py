@@ -58,21 +58,25 @@ async def refresh_token(
 
     refresh_token_id = user_details_from_refresh_token.get("jti")
     refresh_token_row = await token_service.get_refresh(refresh_token_id)
-    
     if not refresh_token_row:
         raise BaseAppException(
             status_code=401,
             messages=["Refresh token not found"]
         )
-    
     if refresh_token_row.revoked:
         raise BaseAppException(
             status_code=401,
             messages=["Refresh token not revoked"]
         )
 
+    # revoke refresh token from table
     await token_service.revoke(token_id=refresh_token_id)
 
+    # remove keys from cache 
+    cacheKey = build_cache_key(f"auth:access:jti:{user_details_from_refresh_token.get("against_token_id")}")
+    await cache_delete(cacheKey)
+
+    # creating new access and refresh token
     tokens = await token_service.create_tokens(
         user_id=int(user_details_from_refresh_token.get("sub")),
         ip_address=request.client.host if request.client else None,
