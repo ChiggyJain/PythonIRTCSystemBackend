@@ -31,7 +31,7 @@ class TokenRepositorySQLAlchemy(
         self,
         *,
         user_id: int,
-        token: str,
+        token_hash: str,
         token_type: str,
         expires_at,
         ip_address: str | None = None,
@@ -40,7 +40,7 @@ class TokenRepositorySQLAlchemy(
 
         obj = UserTokens(
             user_id=user_id,
-            token=token,
+            token_hash=token_hash,
             token_type=token_type,
             expires_at=expires_at,
             ip_address=ip_address,
@@ -62,11 +62,11 @@ class TokenRepositorySQLAlchemy(
 
     async def get_by_token(
         self,
-        token: str,
+        token_hash: str,
     ) -> UserTokens | None:
 
         stmt = select(UserTokens).where(
-            UserTokens.token == token,
+            UserTokens.token_hash == token_hash,
             UserTokens.status == "A",
         )
         res = await self.db.execute(stmt)

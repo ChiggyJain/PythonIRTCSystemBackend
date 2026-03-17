@@ -18,7 +18,7 @@ class TokenRepositoryBase(ABC):
         self,
         *,
         user_id: int,
-        token: str,
+        token_hash: str,
         token_type: str,
         expires_at,
         ip_address: str | None = None,
@@ -29,7 +29,7 @@ class TokenRepositoryBase(ABC):
     @abstractmethod
     async def get_by_token(
         self,
-        token: str,
+        token_hash: str,
     ) -> Optional[UserTokens]:
         pass
 

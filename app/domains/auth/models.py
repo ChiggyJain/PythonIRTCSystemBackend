@@ -5,7 +5,7 @@ USER_TOKENS table
 
 from datetime import datetime
 from sqlalchemy import (
-    String, DateTime, Enum, Text, Boolean, Index
+    String, DateTime, Enum, Boolean, Index
 )
 from sqlalchemy.orm import (
     Mapped, mapped_column
@@ -51,8 +51,8 @@ class UserTokens(Base):
         nullable=False,
     )
 
-    token: Mapped[str] = mapped_column(
-        Text,
+    token_hash: Mapped[str] = mapped_column(
+        String(100),
         nullable=False,
     )
 
