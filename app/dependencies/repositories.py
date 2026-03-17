@@ -39,11 +39,7 @@ def get_users_repository(
         Memory repo
         Mock repo
     """
-
-    repo: UsersRepositoryBase = (
-        UsersSQLAlchemyRepository(db)
-    )
-
+    repo: UsersRepositoryBase = (UsersSQLAlchemyRepository(db))
     return repo
 
 
@@ -57,7 +53,5 @@ def get_security_repository(
     """
     Returns security repository implementation.
     """
-
     repo: SecurityRepositoryBase = SecuritySQLAlchemyRepository(db)
-    
     return repo
