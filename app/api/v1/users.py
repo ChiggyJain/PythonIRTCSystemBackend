@@ -161,11 +161,11 @@ async def profile_details(
     ),
 ):
     user_id = user_details_from_access_token.get("sub")
-    user = await service.get_profile_details(user_id=user_id)
+    user_profile_details = await service.get_profile_details(user_id=user_id)
     
     return success_response(
         messages=["User profile details found successfully"],
-        data=user,
+        data=user_profile_details,
     )
 
 router.add_api_route(
@@ -201,6 +201,7 @@ async def password_change_request_otp(
     user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
+    
     result = await service.request_password_change_otp(
         user_id=user_id_fron_access_token,
         channel=body.channel,
@@ -248,6 +249,7 @@ async def password_change_confirm(
     user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
+    
     result = await service.confirm_password_change(
         user_id=user_id_fron_access_token,
         challenge_id=body.challenge_id,
