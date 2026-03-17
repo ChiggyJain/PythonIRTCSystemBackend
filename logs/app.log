@@ -187,3 +187,6 @@
 (Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
 2026-03-17 16:31:23 | INFO | SpawnProcess-1-9361 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-03-17 16:31:23.219319 | 2026-03-17 16:31:23.302971 | 83 | None | 202
 2026-03-17 16:33:25 | INFO | SpawnProcess-1-9361 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-03-17 16:33:25.131567 | 2026-03-17 16:33:25.153338 | 21 | None | 200
+2026-03-17 18:00:47 | INFO | SpawnProcess-1-17413 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 18:00:47.476362 | 2026-03-17 18:00:47.805969 | 329 | None | 200
+2026-03-17 18:01:36 | INFO | SpawnProcess-1-17413 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 18:01:36.163228 | 2026-03-17 18:01:36.168688 | 5 | None | 200
+2026-03-17 18:02:05 | INFO | SpawnProcess-1-17413 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-17 18:02:04.997997 | 2026-03-17 18:02:05.113911 | 115 | None | 200
