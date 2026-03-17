@@ -237,7 +237,7 @@ class SecurityEventLog(Base):
     event_name: Mapped[str] = mapped_column(String(80), nullable=False)
     
     # Broad event group for filtering/reporting.
-    # Example: OTP, ACCOUNT_SECURITY, PROFILE_VERIFICATION, OUTBOX
+    # Example: OTP, ACCOUNT_SECURITY, EMAIL_VERIFICATION, OUTBOX
     event_category: Mapped[str] = mapped_column(String(60), nullable=False)
     
     # Delivery/verification channel if applicable.

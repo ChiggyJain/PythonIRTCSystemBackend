@@ -155,3 +155,8 @@
 2026-03-17 10:42:35 | INFO | SpawnProcess-49-19052 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:42:35.700046 | 2026-03-17 10:42:35.701291 | 1 |  | 500
 2026-03-17 10:43:00 | INFO | SpawnProcess-49-19052 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-17 10:43:00.682943 | 2026-03-17 10:43:00.774404 | 91 | None | 202
 2026-03-17 10:43:51 | INFO | SpawnProcess-49-19052 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-17 10:43:51.276053 | 2026-03-17 10:43:51.658815 | 382 | None | 200
+2026-03-17 14:03:14 | INFO | SpawnProcess-9-7976 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 14:03:13.730349 | 2026-03-17 14:03:14.146498 | 416 | None | 200
+2026-03-17 14:04:49 | INFO | SpawnProcess-9-7976 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-03-17 14:04:49.638269 | 2026-03-17 14:04:49.740353 | 102 | None | 202
+2026-03-17 14:06:35 | INFO | emailverification_otp_outbox_worker started
+2026-03-17 14:06:46 | INFO | emailverification_otp_dispatch_consumer_worker started
+2026-03-17 14:08:49 | INFO | SpawnProcess-9-7976 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-03-17 14:08:49.083829 | 2026-03-17 14:08:49.127302 | 43 | None | 200

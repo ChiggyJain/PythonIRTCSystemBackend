@@ -71,7 +71,7 @@ class EmailVerificationOtpDispatchConsumerService:
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_dispatched",
-                    event_category="PROFILE_VERIFICATION",
+                    event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=result.provider,
                     status="sent",
@@ -92,7 +92,7 @@ class EmailVerificationOtpDispatchConsumerService:
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_failed",
-                    event_category="PROFILE_VERIFICATION",
+                    event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=result.provider,
                     status="failed",

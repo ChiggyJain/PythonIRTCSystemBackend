@@ -119,7 +119,7 @@ class EmailVerificationOtpService:
             await self.repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verification_otp_requested",
-                event_category="PROFILE_VERIFICATION",
+                event_category="EMAIL_VERIFICATION",
                 channel="EMAIL",
                 provider=None,
                 status="accepted",
@@ -192,7 +192,7 @@ class EmailVerificationOtpService:
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_failed",
-                    event_category="PROFILE_VERIFICATION",
+                    event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=None,
                     status="expired",
@@ -223,7 +223,7 @@ class EmailVerificationOtpService:
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_failed",
-                    event_category="PROFILE_VERIFICATION",
+                    event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=None,
                     status="rejected",
@@ -258,7 +258,7 @@ class EmailVerificationOtpService:
             await self.repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verification_otp_verified",
-                event_category="PROFILE_VERIFICATION",
+                event_category="EMAIL_VERIFICATION",
                 channel="EMAIL",
                 provider=None,
                 status="verified",
@@ -273,7 +273,7 @@ class EmailVerificationOtpService:
             await self.repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verified",
-                event_category="PROFILE_VERIFICATION",
+                event_category="EMAIL_VERIFICATION",
                 channel="EMAIL",
                 provider=None,
                 status="success",

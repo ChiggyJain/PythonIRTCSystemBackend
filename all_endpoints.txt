@@ -14,7 +14,7 @@ uvicorn app.main:app --reload
 uvicorn app.main:app --reload --workers 1
 
 Alembic Command =>
-alembic revision --autogenerate -m "create USERS and USER_TOKENS table"
+alembic revision --autogenerate -m "create tables"
 alembic upgrade head
 
 
