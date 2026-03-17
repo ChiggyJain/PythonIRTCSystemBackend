@@ -160,3 +160,10 @@
 2026-03-17 14:06:35 | INFO | emailverification_otp_outbox_worker started
 2026-03-17 14:06:46 | INFO | emailverification_otp_dispatch_consumer_worker started
 2026-03-17 14:08:49 | INFO | SpawnProcess-9-7976 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-03-17 14:08:49.083829 | 2026-03-17 14:08:49.127302 | 43 | None | 200
+2026-03-17 14:29:50 | INFO | SpawnProcess-28-11249 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 14:29:49.931465 | 2026-03-17 14:29:50.315561 | 384 | None | 200
+2026-03-17 14:30:09 | INFO | SpawnProcess-28-11249 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 14:30:09.441968 | 2026-03-17 14:30:09.446431 | 4 | Object of type datetime is not JSON serializable | 500
+2026-03-17 14:30:43 | INFO | SpawnProcess-29-11637 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 14:30:43.248163 | 2026-03-17 14:30:43.268695 | 20 | None | 200
+2026-03-17 14:31:13 | INFO | SpawnProcess-29-11637 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-03-17 14:31:13.086248 | 2026-03-17 14:31:13.096876 | 10 |  | 500
+2026-03-17 14:31:22 | INFO | SpawnProcess-29-11637 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-03-17 14:31:22.397290 | 2026-03-17 14:31:22.490122 | 92 | None | 202
+2026-03-17 14:32:09 | INFO | SpawnProcess-29-11637 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-03-17 14:32:09.716756 | 2026-03-17 14:32:09.749184 | 32 | None | 200
+2026-03-17 14:33:13 | INFO | SpawnProcess-29-11637 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 14:33:13.783376 | 2026-03-17 14:33:13.786695 | 3 | None | 200
