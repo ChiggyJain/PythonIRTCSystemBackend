@@ -162,6 +162,7 @@ async def profile_details(
         get_users_service
     ),
 ):
+    
     user_id = user_details_from_access_token.get("sub")
     user_profile_details = await service.get_profile_details(user_id=user_id)
     

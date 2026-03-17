@@ -190,6 +190,8 @@ class UsersService:
             "first_name": user.first_name,
             "last_name": user.last_name,
             "email": user.email,
+            "is_email_verified" : user.is_email_verified,
+            "email_verified_last_datetime" : user.email_verified_last_datetime if user.email_verified_last_datetime!=None else "",
             "mobile": user.mobile,
             "gender": user.gender,
             "status": user.status,
