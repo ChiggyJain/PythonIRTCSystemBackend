@@ -26,6 +26,12 @@ from app.common.utils.datetime import now_ist
 # ENUMS
 # =========================================================
 
+email_verified_enum = Enum(
+    "Y",
+    "N",
+    name="email_verified_enum",
+)
+
 gender_enum = Enum(
     "Male",
     "Female",
@@ -76,6 +82,24 @@ class Users(Base):
         String(200),
         nullable=False,
         unique=True,
+    )
+
+    # Email verification flag used by frontend to show "Verify Email" button.
+    # Example:
+    # Y = verified
+    # N = not verified
+    is_email_verified: Mapped[str] = mapped_column(
+        email_verified_enum,
+        nullable=False,
+        default="N",
+    )
+
+    # Last successful email verification timestamp in IST.
+    # Example:
+    # 2026-03-17 20:45:10+05:30
+    email_verified_last_datetime: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
     )
 
     password: Mapped[str] = mapped_column(
