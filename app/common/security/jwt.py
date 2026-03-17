@@ -30,6 +30,8 @@ def _create_token(
     token_type: str,
     expires_delta: timedelta,
     token_id: int | None = None,
+    against_token_type: str,
+    against_token_id: int
 ) -> str:
 
     expire = now_ist() + expires_delta
@@ -39,9 +41,10 @@ def _create_token(
         "exp": expire,
         "iss": settings.JWT_ISSUER,
         "aud": settings.JWT_AUDIENCE,
+        "againt_token_type": against_token_type,
+        "against_token_id": str(against_token_id),
+        "jti" : str(token_id)
     }
-    if token_id:
-        payload["jti"] = str(token_id)
     encoded = jwt.encode(
         payload,
         settings.JWT_SECRET_KEY,
@@ -58,6 +61,8 @@ def create_access_token(
     *,
     user_id: int,
     token_id: int,
+    against_token_type: str,
+    against_token_id: int
 ) -> str:
 
     expire = timedelta(
@@ -68,6 +73,8 @@ def create_access_token(
         token_type="access",
         expires_delta=expire,
         token_id=token_id,
+        against_token_type=against_token_type,
+        against_token_id=against_token_id,
     )
 
 
@@ -79,6 +86,8 @@ def create_refresh_token(
     *,
     user_id: int,
     token_id: int,
+    against_token_type: str,
+    against_token_id: int
 ) -> str:
 
     expire = timedelta(
@@ -89,6 +98,8 @@ def create_refresh_token(
         token_type="refresh",
         expires_delta=expire,
         token_id=token_id,
+        against_token_type=against_token_type,
+        against_token_id=against_token_id,
     )
 
 

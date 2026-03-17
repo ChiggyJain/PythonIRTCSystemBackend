@@ -60,9 +60,9 @@ class TokenService:
             (access_expire - now_ist()).total_seconds()
         )
         
-        # --------------------------------------------------------
+        # ------------------------------------------------------------
         # create DB row first for access-token to get generated row_id
-        # --------------------------------------------------------
+        # ------------------------------------------------------------
 
         access_token_row = await self.repo.create_token(
             user_id=user_id,
@@ -72,22 +72,6 @@ class TokenService:
             ip_address=ip_address,
             user_agent=user_agent,
         )
-
-        # ----------------------------
-        # create access token with id
-        # ----------------------------
-        access_token = create_access_token(
-            user_id=user_id,
-            token_id=access_token_row.id,
-        )
-
-        # -----------------------------
-        # update DB access token value
-        # -----------------------------
-
-        access_token_row.token = access_token
-        access_token_row.updated_at = now_ist()
-
 
         # ---------------------------------------------
         # prepare refresh expiry
@@ -110,6 +94,24 @@ class TokenService:
             user_agent=user_agent,
         )
 
+
+        # ----------------------------
+        # create access token with id
+        # ----------------------------
+        access_token = create_access_token(
+            user_id=user_id,
+            token_id=access_token_row.id,
+            against_token_type="refresh",
+            against_token_id=refresh_token_row.id
+        )
+
+        # -----------------------------
+        # update DB access token value
+        # -----------------------------
+
+        access_token_row.token = access_token
+        access_token_row.updated_at = now_ist()
+
         # -----------------------------
         # create refresh token with id
         # ------------------------------
@@ -117,6 +119,8 @@ class TokenService:
         refresh_token = create_refresh_token(
             user_id=user_id,
             token_id=refresh_token_row.id,
+            against_token_type="access",
+            against_token_id=access_token_row.id
         )
 
         # -----------------------------
@@ -138,7 +142,6 @@ class TokenService:
         cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
         await cache_set_add(cacheKey, str(access_token_row.id))
 
-
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
@@ -154,9 +157,7 @@ class TokenService:
         token_id: int|str,
     ):
 
-        await self.repo.revoke_token(
-            token_id
-        )
+        await self.repo.revoke_token(token_id)
 
 
     
@@ -169,9 +170,7 @@ class TokenService:
         token_id: int|str,
     ):
 
-        return await self.repo.get_by_id(
-            token_id
-        )
+        return await self.repo.get_by_id(token_id)
     
     
     # =========================
@@ -183,6 +182,4 @@ class TokenService:
         token_id: int|str,
     ):
 
-        return await self.repo.get_by_id(
-            token_id
-        )
+        return await self.repo.get_by_id(token_id)

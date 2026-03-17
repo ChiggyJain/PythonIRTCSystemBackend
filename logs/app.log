@@ -136,3 +136,8 @@
 2026-03-16 20:56:57 | INFO | SpawnProcess-157-14196 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:56:57.143472 | 2026-03-16 20:56:57.144450 | 0 | int() argument must be a string, a bytes-like object or a real number, not 'NoneType' | 500
 2026-03-16 20:58:11 | INFO | SpawnProcess-159-14507 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:58:11.710872 | 2026-03-16 20:58:11.715625 | 4 |  | 500
 2026-03-16 20:59:23 | INFO | SpawnProcess-163-14630 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-03-16 20:59:23.687421 | 2026-03-16 20:59:23.691420 | 3 |  | 500
+2026-03-17 09:46:30 | INFO | SpawnProcess-1-13330 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 09:46:30.423054 | 2026-03-17 09:46:30.827760 | 404 | None | 200
+2026-03-17 09:46:47 | INFO | SpawnProcess-1-13330 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 09:46:47.963102 | 2026-03-17 09:46:47.968192 | 5 | None | 200
+2026-03-17 09:48:02 | INFO | SpawnProcess-1-13330 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-03-17 09:48:01.918651 | 2026-03-17 09:48:02.027420 | 108 | None | 200
+2026-03-17 09:58:35 | INFO | SpawnProcess-8-14456 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-17 09:58:35.204818 | 2026-03-17 09:58:35.666315 | 461 | None | 200
+2026-03-17 09:58:51 | INFO | SpawnProcess-8-14456 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-03-17 09:58:51.460063 | 2026-03-17 09:58:51.467004 | 6 | None | 200
