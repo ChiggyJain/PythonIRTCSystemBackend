@@ -13,7 +13,10 @@ from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
-from app.dependencies.auth import get_current_user_id_from_access_token
+from app.dependencies.auth import (
+    get_current_user_id_from_access_token,
+    get_current_user_details_from_access_token
+)
 from app.dependencies.security import get_password_change_otp_service
 from app.domains.security.service import PasswordChangeOtpService
 from app.domains.security.schemas import (
@@ -105,10 +108,7 @@ async def login_user(
     # validate user
     # -------------------------
 
-    user = await service.login_user(
-        email=body.email,
-        password=body.password,
-    )
+    user = await service.login_user(email=body.email, password=body.password)
 
     # -------------------------
     # create tokens
@@ -153,17 +153,15 @@ router.add_api_route(
     }
 )
 async def profile_details(
-    user_id: int = Depends(
-        get_current_user_id_from_access_token
+    user_details_from_access_token: dict = Depends(
+        get_current_user_details_from_access_token
     ),
     service: UsersService = Depends(
         get_users_service
     ),
 ):
-
-    user = await service.get_profile_details(
-        user_id=user_id
-    )
+    user_id = user_details_from_access_token.get("sub")
+    user = await service.get_profile_details(user_id=user_id)
     
     return success_response(
         messages=["User profile details found successfully"],
@@ -200,11 +198,11 @@ router.add_api_route(
 async def password_change_request_otp(
     body: PasswordChangeRequestOtpRequest,
     request: Request,
-    user_id: int = Depends(get_current_user_id_from_access_token),
+    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     result = await service.request_password_change_otp(
-        user_id=user_id,
+        user_id=user_id_fron_access_token,
         channel=body.channel,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
@@ -247,11 +245,11 @@ router.add_api_route(
 async def password_change_confirm(
     body: PasswordChangeConfirmRequest,
     request: Request,
-    user_id: int = Depends(get_current_user_id_from_access_token),
+    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     result = await service.confirm_password_change(
-        user_id=user_id,
+        user_id=user_id_fron_access_token,
         challenge_id=body.challenge_id,
         otp=body.otp,
         new_password=body.new_password,

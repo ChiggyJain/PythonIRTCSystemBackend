@@ -163,10 +163,7 @@ class UsersService:
         # build cache key
         # -------------------------
 
-        key = build_cache_key(
-            CACHE_KEY_USER_PROFILE,
-            user_id,
-        )
+        key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
 
         # -------------------------
         # try cache
@@ -180,9 +177,7 @@ class UsersService:
         # DB fetch
         # -------------------------
 
-        user = await self.repo.get_by_id(
-            user_id=user_id
-        )
+        user = await self.repo.get_by_id(user_id=user_id)
 
         if not user:
             raise BaseAppException(
@@ -204,10 +199,6 @@ class UsersService:
         # set cache
         # -------------------------
 
-        await cache_set(
-            key,
-            data,
-            ttl=CACHE_TTL_PROFILE,
-        )
+        await cache_set(key, data, ttl=CACHE_TTL_PROFILE,)
 
         return data
