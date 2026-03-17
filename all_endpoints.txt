@@ -51,6 +51,18 @@ Display created Topic =>
 ./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailverification-otp-dispatch-v1
 
 
+Create Email Changed OTP Topic =>
+./kafka/bin/kafka-topics.sh \
+  --bootstrap-server 127.0.0.1:9092 \
+  --create \
+  --topic emailchanged-otp-dispatch-v1 \
+  --partitions 6 \
+  --replication-factor 1
+
+Display created Topic =>
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailchanged-otp-dispatch-v1
+
+
 
 To Remove all Topics command =>
 for topic in $(./kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092); do
@@ -68,6 +80,11 @@ python3 -m app.workers.pwdchanged_otp_dispatch_consumer_worker
 Email Verification OTP:
 python3 -m app.workers.emailverification_otp_outbox_worker
 python3 -m app.workers.emailverification_otp_dispatch_consumer_worker
+
+Email Changed OTP:
+python -m app.workers.emailchanged_otp_outbox_worker
+python -m app.workers.emailchanged_otp_dispatch_consumer_worker
+
 
 
 
@@ -168,6 +185,32 @@ Add Authorization header access-token
   "challenge_id": "",
   "otp": ""
 }
+
+
+http://127.0.0.1:8000/api/v1/users/email/change/request-otp
+Add Authorization header access-token
+{
+  "channel" : "EMAIL",
+  "new_email" : ""
+}
+
+curl --location 'http://127.0.0.1:8000/api/v1/users/email/change/request-otp' \
+--header 'Authorization: Bearer <ACCESS_TOKEN>' \
+--header 'Content-Type: application/json' \
+--data '{"channel":"EMAIL","new_email":"newmail@example.com"}'
+
+
+http://127.0.0.1:8000/api/v1/users/email/change/confirm
+Add Authorization header access-token
+{
+  "challenge_id": "",
+  "otp": ""
+}
+
+curl --location 'http://127.0.0.1:8000/api/v1/users/email/change/confirm' \
+--header 'Authorization: Bearer <ACCESS_TOKEN>' \
+--header 'Content-Type: application/json' \
+--data '{"challenge_id":"<CHALLENGE_ID>","otp":"123456"}'
 
 
 
