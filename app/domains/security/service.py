@@ -300,12 +300,12 @@ class PasswordChangeOtpService:
             )
 
             # remove keys from cache 
-            cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-            userAllAccessTokenIdSet = cache_set_members(key=cacheKey)
+            userIdCacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
+            userAllAccessTokenIdSet = cache_set_members(key=userIdCacheKey)
             for userEachAccessTokenId in userAllAccessTokenIdSet:
-                cacheKey = build_cache_key(f"auth:user:access:jti:{userEachAccessTokenId}")
-                await cache_delete(cacheKey)
-            await cache_set_delete(cacheKey)
+                userAccessTokenIdCacheKey = build_cache_key(f"auth:user:access:jti:{userEachAccessTokenId}")
+                await cache_delete(key=userAccessTokenIdCacheKey)
+            await cache_set_delete(key=userIdCacheKey)
 
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED
