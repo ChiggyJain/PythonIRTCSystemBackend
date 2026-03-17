@@ -75,3 +75,58 @@ class PasswordChangeConfirmRequest(BaseModel):
         if self.new_password != self.confirm_password:
             raise ValueError("new_password and confirm_password must match")
         return self
+
+
+class EmailVerificationRequestOtpRequest(BaseModel):
+    """
+    Request OTP for current logged-in email verification.
+    Example body:
+    {
+      "channel": "EMAIL"
+    }
+    """
+
+    channel: str = "EMAIL"
+
+    @field_validator("channel", mode="before")
+    @classmethod
+    def strip_channel(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    @field_validator("channel")
+    @classmethod
+    def validate_channel(cls, v, info: ValidationInfo):
+        value = v.upper()
+        if value != "EMAIL":
+            raise ValueError("channel must be EMAIL")
+        return value
+
+
+class EmailVerificationConfirmOtpRequest(BaseModel):
+    """
+    Confirm OTP for email verification.
+    Example body:
+    {
+      "challenge_id": "EMAILVERIFY_101_20260317_A1B2C3",
+      "otp": "483921"
+    }
+    """
+
+    challenge_id: str
+    otp: str
+
+    @field_validator("challenge_id", "otp", mode="before")
+    @classmethod
+    def strip_values(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    @field_validator("otp")
+    @classmethod
+    def validate_otp(cls, v, info: ValidationInfo):
+        if not OTP_REGEX.match(v):
+            raise ValueError("otp must be a valid 6-digit number")
+        return v
