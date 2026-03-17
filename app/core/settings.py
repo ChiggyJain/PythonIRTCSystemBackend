@@ -105,6 +105,21 @@ class Settings(BaseSettings):
     EMAILVERIFICATION_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
     
 
+    # =====================================================
+    # EMAIL CHANGED OTP KAFKA TOPIC and CONSUMER
+    # =====================================================
+    EMAILCHANGED_OTP_DISPATCH_TOPIC: str = "emailchanged-otp-dispatch-v1"
+    EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumer-v1"
+    EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
+
+    # =====================================================
+    # EMAIL CHANGED OTP SENDER PROVIDER CONFIG (EMAIL only)
+    # =====================================================
+    EMAILCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
+    EMAILCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
+    EMAILCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
+
+    
     # =========================
     # Pydantic Settings Config
     # =========================
