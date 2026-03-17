@@ -56,6 +56,7 @@ async def refresh_token(
     # decoding user-details from refresh token
     user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
+    access_token_id = user_details_from_refresh_token.get("against_token_id")
     refresh_token_id = user_details_from_refresh_token.get("jti")
     refresh_token_row = await token_service.get_refresh(refresh_token_id)
     if not refresh_token_row:
@@ -72,8 +73,11 @@ async def refresh_token(
     # revoke refresh token from table
     await token_service.revoke(token_id=refresh_token_id)
 
+    # revoke access token from table
+    await token_service.revoke(token_id=access_token_id)
+
     # remove keys from cache 
-    cacheKey = build_cache_key(f"auth:access:jti:{user_details_from_refresh_token.get("against_token_id")}")
+    cacheKey = build_cache_key(f"auth:access:jti:{access_token_id}")
     await cache_delete(cacheKey)
 
     # creating new access and refresh token
