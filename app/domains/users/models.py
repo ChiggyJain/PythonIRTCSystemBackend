@@ -26,6 +26,12 @@ from app.common.utils.datetime import now_ist
 # ENUMS
 # =========================================================
 
+mobile_verified_enum = Enum(
+    "Y",
+    "N",
+    name="mobile_verified_enum",
+)
+
 email_verified_enum = Enum(
     "Y",
     "N",
@@ -76,6 +82,24 @@ class Users(Base):
     mobile: Mapped[str] = mapped_column(
         String(15),
         nullable=False,
+    )
+
+    # Mobile verification flag used by frontend to show "Verify Mobile" button.
+    # Example:
+    # Y = verified
+    # N = not verified
+    is_mobile_verified: Mapped[str] = mapped_column(
+        mobile_verified_enum,
+        nullable=False,
+        default="N",
+    )
+
+    # Last successful mobile verification timestamp in IST.
+    # Example:
+    # 2026-03-17 20:45:10+05:30
+    mobile_verified_last_datetime: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
     )
 
     email: Mapped[str] = mapped_column(
