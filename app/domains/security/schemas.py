@@ -1,7 +1,8 @@
 
 import re
 from pydantic import (
-    BaseModel, field_validator, model_validator, ValidationInfo
+    BaseModel, field_validator, 
+    model_validator, ValidationInfo, EmailStr
 )
 
 
@@ -114,6 +115,73 @@ class EmailVerificationConfirmOtpRequest(BaseModel):
     }
     """
 
+    challenge_id: str
+    otp: str
+
+    @field_validator("challenge_id", "otp", mode="before")
+    @classmethod
+    def strip_values(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    @field_validator("otp")
+    @classmethod
+    def validate_otp(cls, v, info: ValidationInfo):
+        if not OTP_REGEX.match(v):
+            raise ValueError("otp must be a valid 6-digit number")
+        return v
+
+
+class EmailChangeRequestOtpRequest(BaseModel):
+    """
+    Example request:
+    {
+      "channel": "EMAIL",
+      "new_email": "newmail@example.com"
+    }
+    """
+    
+    channel: str
+    new_email: EmailStr
+
+    @field_validator("channel", mode="before")
+    @classmethod
+    def strip_channel(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    @field_validator("new_email", mode="before")
+    @classmethod
+    def strip_email(cls, v, info: ValidationInfo):
+        if isinstance(v, str):
+            v = v.strip()
+        return v
+
+    @field_validator("channel")
+    @classmethod
+    def validate_channel(cls, v, info: ValidationInfo):
+        value = v.upper()
+        if value != "EMAIL":
+            raise ValueError("channel must be EMAIL")
+        return value
+
+    @field_validator("new_email")
+    @classmethod
+    def normalize_email(cls, v, info: ValidationInfo):
+        return str(v).lower()
+
+
+class EmailChangeConfirmOtpRequest(BaseModel):
+    """
+    Example request:
+    {
+      "challenge_id": "EMAILCHANGE_101_20260317_A1B2C3",
+      "otp": "123456"
+    }
+    """
+    
     challenge_id: str
     otp: str
 
