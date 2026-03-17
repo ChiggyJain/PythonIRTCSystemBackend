@@ -47,7 +47,7 @@ class EmailVerificationOtpDispatchConsumerService:
                 await self.repo.rollback()
                 return
 
-            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED"}:
+            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT"}:
                 await self.repo.commit()
                 return
 

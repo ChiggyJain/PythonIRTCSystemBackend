@@ -70,7 +70,7 @@ class PwdChangedOtpDispatchConsumerService:
                 await self.repo.commit()
                 return
 
-            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED"}:
+            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT"}:
                 await self.repo.add_security_event(
                     user_id=user_id,
                     event_name="otp_dispatch_skipped",
