@@ -25,6 +25,12 @@ from app.dependencies.security import get_email_verification_otp_service
 from app.domains.security.emailverification_service import (
     EmailVerificationOtpService,
 )
+from app.dependencies.security import get_email_changed_otp_service
+from app.domains.security.emailchanged_service import EmailChangedOtpService
+from app.domains.security.schemas import (
+    EmailChangeRequestOtpRequest,
+    EmailChangeConfirmOtpRequest,
+)
 from app.domains.security.schemas import (
     PasswordChangeRequestOtpRequest,
     PasswordChangeConfirmRequest,
@@ -371,6 +377,104 @@ async def email_verification_confirm_otp(
 router.add_api_route(
     "/email/verification/confirm",
     email_verification_confirm_otp,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+
+# ---------------------------------
+# email change otp request
+# ---------------------------------
+
+@feature_control(
+    {
+        "name": "v1.users.email_change_request_otp",
+        "logging": {""
+            "console": True, 
+            "file": True
+        },
+        "rate_limit": {
+            "limit": 10, 
+            "window": 60
+        },
+    }
+)
+async def email_change_request_otp(
+    body: EmailChangeRequestOtpRequest,
+    request: Request,
+    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    service: EmailChangedOtpService = Depends(get_email_changed_otp_service),
+):
+    
+    result = await service.request_email_change_otp(
+        user_id=user_id_fron_access_token,
+        channel=body.channel,
+        new_email=str(body.new_email),
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+    return success_response(
+        status_code=202,
+        messages=["Email change OTP request accepted"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/email/change/request-otp",
+    email_change_request_otp,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+
+# ---------------------------------
+# email change otp confirmation
+# ---------------------------------
+
+
+@feature_control(
+    {
+        "name": "v1.users.email_change_confirm",
+        "logging": {
+            "console": True, 
+            "file": True
+        },
+        "rate_limit": {
+            "limit": 10, 
+            "window": 60
+        },
+    }
+)
+async def email_change_confirm_otp(
+    body: EmailChangeConfirmOtpRequest,
+    request: Request,
+    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    service: EmailChangedOtpService = Depends(get_email_changed_otp_service),
+):
+    
+    result = await service.confirm_email_change_otp(
+        user_id=user_id_fron_access_token,
+        challenge_id=body.challenge_id,
+        otp=body.otp,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+    return success_response(
+        messages=["Email changed successfully"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/email/change/confirm",
+    email_change_confirm_otp,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
