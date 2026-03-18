@@ -10,7 +10,7 @@ export default function () {
   const password = 'PerfUser@123';
   const payload = {
     first_name: 'Perf',
-    last_name: `User${__VU}${__ITER}`,
+    last_name: `User`,
     mobile: uniqueMobile(),
     email: uniqueEmail('signup'),
     gender: 'Male',

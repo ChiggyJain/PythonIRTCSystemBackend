@@ -46,3 +46,11 @@ class TokenRepositoryBase(ABC):
         token_id: int,
     ) -> None:
         pass
+
+    @abstractmethod
+    async def commit(self) -> None:
+        pass
+
+    @abstractmethod
+    async def rollback(self) -> None:
+        pass

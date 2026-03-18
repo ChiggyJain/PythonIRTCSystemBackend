@@ -4,7 +4,7 @@ import { check } from 'k6';
 import { BASE_URL, JSON_HEADERS, buildLoadOptions } from '../lib/config.js';
 import { envOrFail, safeJson } from '../lib/helpers.js';
 
-export const options = buildLoadOptions('login', 400, Number(__ENV.VUS || 1), __ENV.DURATION || '20s');
+export const options = buildLoadOptions('login', 1000, Number(__ENV.VUS || 1), __ENV.DURATION || '20s');
 
 export default function () {
   const payload = {

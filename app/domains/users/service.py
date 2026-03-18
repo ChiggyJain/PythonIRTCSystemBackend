@@ -4,6 +4,7 @@ Users Service
 Business logic for users domain.
 """
 
+from anyio import to_thread
 from sqlalchemy.exc import IntegrityError
 from app.core.exceptions import BaseAppException
 from app.common.utils.password import (
@@ -138,6 +139,7 @@ class UsersService:
         # verify password
         # -------------------------
 
+        """
         is_valid = verify_password(password, user.password,)
         if not is_valid:
             raise BaseAppException(
@@ -146,6 +148,19 @@ class UsersService:
                 ],
                 status_code=400,
             )
+        """
+
+        # bcrypt verify is CPU-bound; run it in thread worker
+        # so FastAPI event loop remains responsive under concurrency.
+        is_valid = await to_thread.run_sync(verify_password, password, user.password)
+        if not is_valid:
+            raise BaseAppException(
+                messages=[
+                    "Invalid email or password"
+                ],
+                status_code=400,
+            )
+
 
         return user
 

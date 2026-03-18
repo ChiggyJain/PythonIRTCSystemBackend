@@ -51,8 +51,10 @@ class TokenRepositorySQLAlchemy(
             updated_at=now_ist(),
         )
         self.db.add(obj)
-        await self.db.commit()
-        await self.db.refresh(obj)
+        # await self.db.commit()
+        # await self.db.refresh(obj)
+        # Important: flush gets auto-increment ID without committing transaction.
+        await self.db.flush()
         return obj
 
 
@@ -110,3 +112,10 @@ class TokenRepositorySQLAlchemy(
         )
         await self.db.execute(stmt)
         await self.db.commit()
+
+
+    async def commit(self) -> None:
+        await self.db.commit()
+
+    async def rollback(self) -> None:
+        await self.db.rollback()
