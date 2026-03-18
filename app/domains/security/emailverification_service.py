@@ -33,6 +33,7 @@ class EmailVerificationOtpService:
     OTP_STATUS_BLOCKED = "BLOCKED"
     OTP_TTL_SECONDS = 300
     OTP_MAX_ATTEMPTS = 5
+    OTP_REQUEST_COOLDOWN_SECONDS = 60
     OTP_CIPHER_KEY_VERSION = "v1"
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TYPE = "EMAILVERIFICATION_OTP_DISPATCH_REQUESTED_V1"
@@ -59,14 +60,6 @@ class EmailVerificationOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
-        
-        """
-        Example:
-            await service.request_email_verification_otp(
-                user_id=101,
-                channel="EMAIL",
-            )
-        """
 
         channel = (channel or "").strip().upper()
         if channel != "EMAIL":
@@ -78,19 +71,49 @@ class EmailVerificationOtpService:
 
         if user.is_email_verified == "Y":
             raise BaseAppException(status_code=400, messages=["Email already verified"])
-        
+
         destination_raw = user.email
         destination_masked = self._mask_email(user.email)
+
+        now = now_ist()
+
+        # Cooldown + one-active policy
+        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+            user_id=user_id,
+            purpose=self.OTP_PURPOSE_EMAIL_VERIFICATION,
+            channel="EMAIL",
+            now_time=now,
+        )
+        if active_otp_challenge:
+            elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
+            if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
+                retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
+                raise BaseAppException(
+                    status_code=429,
+                    messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
+                    data={
+                        "retry_after_seconds": retry_after_seconds,
+                        "challenge_id": active_otp_challenge.challenge_id,
+                    },
+                )
+
+            expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
+            return {
+                "challenge_id": active_otp_challenge.challenge_id,
+                "expires_in_sec": expires_in_sec,
+                "destination_masked": active_otp_challenge.destination_masked,
+                "dispatch_status": "already_active",
+            }
 
         otp = self._generate_otp()
         otp_hash = self._hash_otp(otp)
         otp_ciphertext = self._encrypt_otp(otp)
 
         challenge_id = self._build_challenge_id(user_id)
-        expires_at = now_ist() + timedelta(seconds=self.OTP_TTL_SECONDS)
+        expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
 
         try:
-
+            
             await self.repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -163,18 +186,8 @@ class EmailVerificationOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
-        
-        """
-        Example:
-            await service.confirm_email_verification_otp(
-                user_id=101,
-                challenge_id="EMVERIFY_101_20260317_A1B2C3",
-                otp="483921",
-            )
-        """
 
         try:
-
             challenge = await self.repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -188,7 +201,8 @@ class EmailVerificationOtpService:
             if challenge.status == self.OTP_STATUS_VERIFIED:
                 raise BaseAppException(status_code=400, messages=["OTP already used"])
 
-            if challenge.expires_at < now:
+            # boundary-safe expiry check
+            if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
@@ -288,21 +302,27 @@ class EmailVerificationOtpService:
                 metadata_json={"challenge_id": challenge_id},
             )
 
+            # DB first
             await self.repo.commit()
 
-            # Invalidate profile cache so frontend gets latest verification status.
-            # Example key:
-            # cache:v1.users.profile:101
-            user_profile_cache_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-            await cache_delete(user_profile_cache_key)
-        
         except BaseAppException:
             raise
         except Exception:
             await self.repo.rollback()
             raise
 
-        return {"email_verified": True}
+        # cache cleanup best-effort (post-commit)
+        try:
+            user_profile_cache_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
+            await cache_delete(user_profile_cache_key)
+        except Exception as exc:
+            app_logger.warning(
+                f"email_verification cache_delete failed | user_id={user_id} | error={str(exc)}"
+            )
+
+        return {
+            "email_verified": True
+        }
 
 
     def _generate_otp(self) -> str:
