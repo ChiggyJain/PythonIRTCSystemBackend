@@ -1,11 +1,11 @@
 
 """
 Auth Token Service
-
 Handles JWT + DB tokens
 """
 
 from datetime import timedelta
+from app.common.utils.logger import app_logger
 from app.common.security.token_hash import (
     build_token_hash,
     is_token_hash_match,
@@ -265,4 +265,43 @@ class TokenService:
             "access_token": new_access_token,
             "refresh_token": new_refresh_token,
         }
+
+
+    async def logout_by_token_pair(
+        self,
+        *,
+        user_id: int,
+        access_token_id: int | str,
+        refresh_token_id: int | str,
+    ) -> None:
+
+        access_id = int(access_token_id)
+        refresh_id = int(refresh_token_id)
+
+        # Single DB transaction for both revokes
+        try:
+            await self.repo.revoke_token(access_id)
+            await self.repo.revoke_token(refresh_id)
+            await self.repo.commit()
+        except Exception:
+            await self.repo.rollback()
+            raise
+
+        # Cache cleanup: best-effort (DB already source of truth)
+        access_cache_key = build_cache_key(f"auth:user:access:jti:{access_id}")
+        user_access_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
+
+        try:
+            await cache_delete(key=access_cache_key)
+        except Exception as exc:
+            app_logger.warning(
+                f"logout cache_delete failed | key={access_cache_key} | error={str(exc)}"
+            )
+
+        try:
+            await cache_set_remove(user_access_index_key, str(access_id))
+        except Exception as exc:
+            app_logger.warning(
+                f"logout cache_set_remove failed | key={user_access_index_key} | access_id={access_id} | error={str(exc)}"
+            )
 
