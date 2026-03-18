@@ -85,8 +85,9 @@ class RateLimiter:
                 f"ratelimit error | key={key} | {e}"
             )
 
-            # Fail open (production rule)
-            return False
+            # Fail-open: if Redis limiter fails, allow request.
+            # (Do not block valid traffic because of limiter infra issue.)
+            return True
 
 
 # Singleton-style instance
