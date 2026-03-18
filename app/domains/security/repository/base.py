@@ -43,6 +43,21 @@ class SecurityRepositoryBase(ABC):
         metadata_json: str | None = None,
     ) -> OtpChallenges:
         pass
+    
+    @abstractmethod
+    async def get_latest_active_otp_challenge(
+        self,
+        *,
+        user_id: int,
+        purpose: str,
+        channel: str,
+        now_time: datetime,
+    ) -> OtpChallenges | None:
+        """
+        Return latest active (non-expired) OTP challenge for user+purpose+channel.
+        Active statuses considered: REQUESTED, SENT.
+        """
+        pass
 
     @abstractmethod
     async def get_otp_challenge_for_update(

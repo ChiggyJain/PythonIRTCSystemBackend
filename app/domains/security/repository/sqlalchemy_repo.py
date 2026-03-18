@@ -79,6 +79,31 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         return row
 
 
+    async def get_latest_active_otp_challenge(
+        self,
+        *,
+        user_id: int,
+        purpose: str,
+        channel: str,
+        now_time: datetime,
+    ) -> OtpChallenges | None:
+
+        stmt = (
+            select(OtpChallenges)
+            .where(
+                OtpChallenges.user_id == user_id,
+                OtpChallenges.purpose == purpose,
+                OtpChallenges.channel == channel,
+                OtpChallenges.status.in_(["REQUESTED", "SENT"]),
+                OtpChallenges.expires_at > now_time,
+            )
+            .order_by(OtpChallenges.created_at.desc())
+            .limit(1)
+        )
+        res = await self.db.execute(stmt)
+        return res.scalar_one_or_none()
+
+
     async def get_otp_challenge_for_update(
         self,
         *,

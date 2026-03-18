@@ -38,6 +38,7 @@ class PasswordChangeOtpService:
     OTP_STATUS_BLOCKED = "BLOCKED"
     OTP_TTL_SECONDS = 300
     OTP_MAX_ATTEMPTS = 5
+    OTP_REQUEST_COOLDOWN_SECONDS = 60
     OTP_CIPHER_KEY_VERSION = "v1"
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
@@ -109,6 +110,39 @@ class PasswordChangeOtpService:
 
         now = now_ist()
         expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
+
+        # =========================
+        # Cooldown + one-active policy
+        # =========================
+        # Rule:
+        # 1) If active challenge exists and requested very recently -> block (429)
+        # 2) If active challenge exists and cooldown passed -> reuse existing challenge
+        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+            user_id=user_id,
+            purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
+            channel=channel,
+            now_time=now,
+        )
+        if active_otp_challenge:
+            elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
+            if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
+                retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
+                raise BaseAppException(
+                    status_code=429,
+                    messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
+                    data={
+                        "retry_after_seconds": retry_after_seconds,
+                        "challenge_id": active_otp_challenge.challenge_id,
+                    },
+                )
+            # Reuse current active challenge instead of creating another row.
+            expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
+            return {
+                "challenge_id": active_otp_challenge.challenge_id,
+                "expires_in_sec": expires_in_sec,
+                "destination_masked": active_otp_challenge.destination_masked,
+                "dispatch_status": "already_active",
+            }
 
         try:
 
