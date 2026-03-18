@@ -568,6 +568,7 @@ async def email_change_confirm_otp(
         correlation_id=request.headers.get("x-correlation-id"),
         request_id=request.headers.get("x-request-id"),
     )
+    
     return success_response(
         messages=["Email changed successfully"],
         data=result,
