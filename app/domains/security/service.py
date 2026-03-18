@@ -111,9 +111,9 @@ class PasswordChangeOtpService:
         now = now_ist()
         expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
 
-        # =========================
+        # ==============================
         # Cooldown + one-active policy
-        # =========================
+        # ==============================
         # Rule:
         # 1) If active challenge exists and requested very recently -> block (429)
         # 2) If active challenge exists and cooldown passed -> reuse existing challenge
