@@ -1,9 +1,9 @@
-
 """
 Email Changed OTP Service
 Flow:
 1) request-otp:
    - validate new_email
+   - cooldown + active challenge policy
    - create OTP_CHALLENGES with purpose=EMAIL_CHANGE
    - store encrypted metadata_json {"old_email","new_email"}
    - create OUTBOX_EVENTS row
@@ -11,7 +11,7 @@ Flow:
    - verify OTP
    - decrypt metadata_json
    - update USERS.email + verification fields
-   - invalidate profile cache
+   - invalidate profile cache (best-effort post-commit)
 """
 
 from datetime import timedelta
@@ -34,7 +34,6 @@ settings = get_settings()
 
 
 class EmailChangedOtpService:
-
     OTP_PURPOSE_EMAIL_CHANGE = "EMAIL_CHANGE"
     OTP_STATUS_REQUESTED = "REQUESTED"
     OTP_STATUS_VERIFIED = "VERIFIED"
@@ -42,6 +41,7 @@ class EmailChangedOtpService:
     OTP_STATUS_BLOCKED = "BLOCKED"
     OTP_TTL_SECONDS = 300
     OTP_MAX_ATTEMPTS = 5
+    OTP_REQUEST_COOLDOWN_SECONDS = 60
     OTP_CIPHER_KEY_VERSION = "v1"
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
@@ -51,7 +51,6 @@ class EmailChangedOtpService:
         self._otp_hash_secret = f"{settings.JWT_SECRET_KEY}:otp-hash:v1"
         self._otp_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
         self._meta_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-metadata-cipher:v1")
-
 
     async def request_email_change_otp(
         self,
@@ -64,16 +63,6 @@ class EmailChangedOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
-        
-        """
-        Example:
-            await service.request_email_change_otp(
-                user_id=101,
-                channel="EMAIL",
-                new_email="newmail@example.com",
-            )
-        """
-
         channel = (channel or "").strip().upper()
         if channel != "EMAIL":
             raise BaseAppException(status_code=400, messages=["channel must be EMAIL"])
@@ -86,31 +75,69 @@ class EmailChangedOtpService:
         if not user:
             raise BaseAppException(status_code=404, messages=["User not found"])
 
-        if user.email.lower() == new_email:
+        old_email = (user.email or "").strip().lower()
+        if old_email == new_email:
             raise BaseAppException(status_code=400, messages=["New email must be different"])
 
         existing = await self.repo.get_active_user_by_email(new_email)
         if existing and int(existing.id) != int(user_id):
             raise BaseAppException(status_code=400, messages=["Email already in use"])
 
+        now = now_ist()
+
+        # Cooldown + one-active policy
+        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+            user_id=user_id,
+            purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
+            channel="EMAIL",
+            now_time=now,
+        )
+
+        if active_otp_challenge:
+            elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
+            if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
+                retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
+                raise BaseAppException(
+                    status_code=429,
+                    messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
+                    data={
+                        "retry_after_seconds": retry_after_seconds,
+                        "challenge_id": active_otp_challenge.challenge_id,
+                    },
+                )
+
+            active_meta = self._decrypt_metadata_json(active_otp_challenge.metadata_json)
+            active_new_email = (active_meta.get("new_email") or "").strip().lower()
+
+            # Same target email -> reuse active challenge
+            if active_new_email == new_email:
+                expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
+                return {
+                    "challenge_id": active_otp_challenge.challenge_id,
+                    "expires_in_sec": expires_in_sec,
+                    "destination_masked": active_otp_challenge.destination_masked,
+                    "dispatch_status": "already_active",
+                }
+
+            # Different new email after cooldown -> supersede old active challenge
+            active_otp_challenge.status = self.OTP_STATUS_EXPIRED
+            active_otp_challenge.last_error_code = "SUPERSEDED_BY_NEW_REQUEST"
+            active_otp_challenge.updated_at = now
+
         otp = self._generate_otp()
         otp_hash = self._hash_otp(otp)
         otp_ciphertext = self._encrypt_otp(otp)
         challenge_id = self._build_challenge_id(user_id)
-        expires_at = now_ist() + timedelta(seconds=self.OTP_TTL_SECONDS)
+        expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
 
-        # encrypted metadata_json for email change context
-        # decrypted example:
-        # {"old_email":"old@example.com","new_email":"new@example.com"}
         metadata_ciphertext = self._encrypt_metadata_json(
             {
-                "old_email": user.email,
+                "old_email": old_email,
                 "new_email": new_email,
             }
         )
 
         try:
-
             await self.repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -126,7 +153,6 @@ class EmailChangedOtpService:
                 metadata_json=metadata_ciphertext,
             )
 
-            # Security-first payload: no raw email in outbox
             await self.repo.add_outbox_event(
                 aggregate_type="OTP_CHALLENGE",
                 aggregate_id=challenge_id,
@@ -136,6 +162,8 @@ class EmailChangedOtpService:
                     "user_id": user_id,
                     "purpose": self.OTP_PURPOSE_EMAIL_CHANGE,
                     "channel": "EMAIL",
+                    "correlation_id": correlation_id,
+                    "request_id": request_id,
                 },
                 status=self.OUTBOX_STATUS_PENDING,
             )
@@ -172,7 +200,6 @@ class EmailChangedOtpService:
             "dispatch_status": "accepted",
         }
 
-
     async def confirm_email_change_otp(
         self,
         *,
@@ -184,18 +211,7 @@ class EmailChangedOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
-        
-        """
-        Example:
-            await service.confirm_email_change_otp(
-                user_id=101,
-                challenge_id="EMAILCHANGE_101_20260317_A1B2C3",
-                otp="123456",
-            )
-        """
-
         try:
-
             challenge = await self.repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -209,7 +225,7 @@ class EmailChangedOtpService:
             if challenge.status == self.OTP_STATUS_VERIFIED:
                 raise BaseAppException(status_code=400, messages=["OTP already used"])
 
-            if challenge.expires_at < now:
+            if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
@@ -276,8 +292,7 @@ class EmailChangedOtpService:
             if not user:
                 raise BaseAppException(status_code=404, messages=["User not found"])
 
-            # stale protection: if old email mismatch, reject flow
-            if old_email and user.email.lower() != old_email:
+            if old_email and (user.email or "").strip().lower() != old_email:
                 raise BaseAppException(status_code=409, messages=["Email change request no longer valid"])
 
             existing = await self.repo.get_active_user_by_email(new_email)
@@ -328,17 +343,12 @@ class EmailChangedOtpService:
                 user_agent=user_agent,
                 metadata_json={
                     "challenge_id": challenge_id,
-                    "old_email": old_email,
-                    "new_email": new_email,
+                    "old_email_masked": self._mask_email(old_email) if old_email else None,
+                    "new_email_masked": self._mask_email(new_email),
                 },
             )
 
             await self.repo.commit()
-
-            # Important cache invalidation
-            # key example: cache:v1.users.profile:101
-            profile_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-            await cache_delete(profile_key)
 
         except BaseAppException:
             raise
@@ -346,12 +356,20 @@ class EmailChangedOtpService:
             await self.repo.rollback()
             raise
 
+        # Best-effort cache invalidation (post-commit)
+        try:
+            profile_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
+            await cache_delete(profile_key)
+        except Exception as exc:
+            app_logger.warning(
+                f"email_change cache_delete failed | user_id={user_id} | error={str(exc)}"
+            )
+
         return {
             "email_changed": True,
             "email_verified": True,
             "new_email": new_email,
         }
-
 
     def _generate_otp(self) -> str:
         return f"{secrets.randbelow(900000) + 100000}"
@@ -388,10 +406,8 @@ class EmailChangedOtpService:
             return {}
         try:
             raw = self._meta_fernet.decrypt(ciphertext.encode("utf-8")).decode("utf-8")
-            value = json.loads(raw)
-            if not isinstance(value, dict):
-                return {}
-            return value
+            obj = json.loads(raw)
+            return obj if isinstance(obj, dict) else {}
         except Exception:
             return {}
 

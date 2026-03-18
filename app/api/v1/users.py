@@ -550,8 +550,8 @@ async def email_change_confirm_otp(
     user_rate_key = f"ratelimit:v1.users.email_change_confirm:user:{user_id_from_access_token}"
     user_allowed = await rate_limiter.check_window_limit(
         key=user_rate_key,
-        limit=settings.EMAILVERIFICATION_CONFIRM_USER_RATE_LIMIT,
-        window=settings.EMAILVERIFICATION_CONFIRM_USER_RATE_WINDOW_SECONDS,
+        limit=settings.EMAILCHANGE_CONFIRM_USER_RATE_LIMIT,
+        window=settings.EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS,
     )
     if not user_allowed:
         raise BaseAppException(
