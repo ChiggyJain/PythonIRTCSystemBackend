@@ -474,12 +474,28 @@ router.add_api_route(
 async def email_change_request_otp(
     body: EmailChangeRequestOtpRequest,
     request: Request,
-    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: EmailChangedOtpService = Depends(get_email_changed_otp_service),
 ):
     
+    # ---------------------------------------------
+    # extra user-level rate limit (in addition to IP)
+    # key example: ratelimit:v1.users.email_change_request_otp:user:101
+    # ---------------------------------------------
+    user_rate_key = f"ratelimit:v1.users.email_change_request_otp:user:{user_id_from_access_token}"
+    user_allowed = await rate_limiter.check_window_limit(
+        key=user_rate_key,
+        limit=settings.EMAILCHANGE_OTP_USER_RATE_LIMIT,
+        window=settings.EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS,
+    )
+    if not user_allowed:
+        raise BaseAppException(
+            status_code=429,
+            messages=["Too many OTP requests for this user. Please try again later."],
+        )
+    
     result = await service.request_email_change_otp(
-        user_id=user_id_fron_access_token,
+        user_id=user_id_from_access_token,
         channel=body.channel,
         new_email=str(body.new_email),
         ip_address=request.client.host if request.client else None,
@@ -524,12 +540,27 @@ router.add_api_route(
 async def email_change_confirm_otp(
     body: EmailChangeConfirmOtpRequest,
     request: Request,
-    user_id_fron_access_token: int = Depends(get_current_user_id_from_access_token),
+    user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: EmailChangedOtpService = Depends(get_email_changed_otp_service),
 ):
     
+    # Extra user-level rate limit (in addition to route IP-based limit)
+    # Example Redis key:
+    # ratelimit:v1.users.email_change_confirm:user:101
+    user_rate_key = f"ratelimit:v1.users.email_change_confirm:user:{user_id_from_access_token}"
+    user_allowed = await rate_limiter.check_window_limit(
+        key=user_rate_key,
+        limit=settings.EMAILVERIFICATION_CONFIRM_USER_RATE_LIMIT,
+        window=settings.EMAILVERIFICATION_CONFIRM_USER_RATE_WINDOW_SECONDS,
+    )
+    if not user_allowed:
+        raise BaseAppException(
+            status_code=429,
+            messages=["Too many email change confirm attempts for this user. Please try again later."],
+        )
+    
     result = await service.confirm_email_change_otp(
-        user_id=user_id_fron_access_token,
+        user_id=user_id_from_access_token,
         challenge_id=body.challenge_id,
         otp=body.otp,
         ip_address=request.client.host if request.client else None,
