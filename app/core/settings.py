@@ -120,6 +120,10 @@ class Settings(BaseSettings):
     EMAILCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     EMAILCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
 
+    # User-based rate limit for password change OTP request API
+    PWDCHANGED_OTP_USER_RATE_LIMIT: int = 5
+    PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS: int = 60
+
     
     # =========================
     # Pydantic Settings Config
