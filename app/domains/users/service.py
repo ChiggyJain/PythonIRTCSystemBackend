@@ -50,27 +50,10 @@ class UsersService:
         password: str,
         gender: str,
     ):
-
-        # -------------------------
-        # check email exists
-        # -------------------------
-
-        existing = await self.repo.get_by_email(email)
-        if existing:
-            raise BaseAppException(
-                messages=["Email already exists"],
-                status_code=400,
-            )
-
-        # -------------------------
-        # hash password
-        # -------------------------
-
-        hashed_password = hash_password(password)
-
-        # -------------------------
-        # create user
-        # -------------------------
+        
+        # bcrypt hashing is CPU-heavy; run in worker thread
+        # to avoid blocking async event loop under concurrency.
+        hashed_password = await to_thread.run_sync(hash_password, password)
 
         try:
 
