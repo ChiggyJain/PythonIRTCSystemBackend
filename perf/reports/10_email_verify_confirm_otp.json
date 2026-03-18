@@ -1,0 +1,146 @@
+{
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "email verify confirm http 200": {
+                    "passes": 1,
+                    "fails": 0,
+                    "name": "email verify confirm http 200",
+                    "path": "::email verify confirm http 200",
+                    "id": "686c39d0d67a3ceb7818d4c675ba9014"
+                }
+            },
+        "name": ""
+    },
+    "metrics": {
+        "iterations": {
+            "count": 1,
+            "rate": 57.6995489857054
+        },
+        "http_req_receiving": {
+            "max": 0.086901,
+            "avg": 0.086901,
+            "min": 0.086901,
+            "med": 0.086901,
+            "p(90)": 0.086901,
+            "p(95)": 0.086901,
+            "p(99)": 0.086901
+        },
+        "http_req_waiting": {
+            "p(95)": 16.59102,
+            "p(99)": 16.59102,
+            "max": 16.59102,
+            "avg": 16.59102,
+            "min": 16.59102,
+            "med": 16.59102,
+            "p(90)": 16.59102
+        },
+        "data_sent": {
+            "count": 545,
+            "rate": 31446.254197209444
+        },
+        "http_req_duration": {
+            "avg": 16.805292,
+            "min": 16.805292,
+            "med": 16.805292,
+            "p(90)": 16.805292,
+            "p(95)": 16.805292,
+            "p(99)": 16.805292,
+            "max": 16.805292
+        },
+        "http_reqs": {
+            "count": 1,
+            "rate": 57.6995489857054
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 1,
+            "value": 0
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 16.805292,
+            "avg": 16.805292,
+            "min": 16.805292,
+            "med": 16.805292,
+            "p(90)": 16.805292,
+            "p(95)": 16.805292,
+            "p(99)": 16.805292
+        },
+        "data_received": {
+            "rate": 12578.501678883777,
+            "count": 218
+        },
+        "http_req_duration{endpoint:email_verify_confirm}": {
+            "min": 16.805292,
+            "med": 16.805292,
+            "p(90)": 16.805292,
+            "p(95)": 16.805292,
+            "p(99)": 16.805292,
+            "max": 16.805292,
+            "avg": 16.805292,
+            "thresholds": {
+                "p(95)<1200": false
+            }
+        },
+        "http_req_connecting": {
+            "avg": 0.134019,
+            "min": 0.134019,
+            "med": 0.134019,
+            "p(90)": 0.134019,
+            "p(95)": 0.134019,
+            "p(99)": 0.134019,
+            "max": 0.134019
+        },
+        "http_req_blocked": {
+            "med": 0.187617,
+            "p(90)": 0.187617,
+            "p(95)": 0.187617,
+            "p(99)": 0.187617,
+            "max": 0.187617,
+            "avg": 0.187617,
+            "min": 0.187617
+        },
+        "iteration_duration": {
+            "avg": 17.242258,
+            "min": 17.242258,
+            "med": 17.242258,
+            "p(90)": 17.242258,
+            "p(95)": 17.242258,
+            "p(99)": 17.242258,
+            "max": 17.242258
+        },
+        "http_req_failed{endpoint:email_verify_confirm}": {
+            "passes": 0,
+            "fails": 1,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "http_req_sending": {
+            "p(99)": 0.127371,
+            "max": 0.127371,
+            "avg": 0.127371,
+            "min": 0.127371,
+            "med": 0.127371,
+            "p(90)": 0.127371,
+            "p(95)": 0.127371
+        },
+        "checks": {
+            "passes": 1,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0,
+            "max": 0
+        }
+    }
+}
