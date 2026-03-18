@@ -128,6 +128,16 @@ class Settings(BaseSettings):
     PWDCHANGED_CONFIRM_USER_RATE_LIMIT: int = 5
     PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
 
+
+    # User-based rate limit for email verfication OTP request API
+    EMAILVERIFICATION_OTP_USER_RATE_LIMIT: int = 5
+    EMAILVERIFICATION_OTP_USER_RATE_WINDOW_SECONDS: int = 60
+
+    # User-based rate limit for email verfication confirm API
+    EMAILVERIFICATION_CONFIRM_USER_RATE_LIMIT: int = 5
+    EMAILVERIFICATION_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
+
+
     # =========================
     # Pydantic Settings Config
     # =========================

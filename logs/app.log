@@ -4617,3 +4617,109 @@
 2026-03-18 14:52:58 | INFO | SpawnProcess-161-29470 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 14:52:58.567504 | 2026-03-18 14:52:58.886531 | 319 | None | 200
 2026-03-18 14:54:15 | INFO | SpawnProcess-161-29470 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-18 14:54:15.922809 | 2026-03-18 14:54:15.942673 | 19 |  | 500
 2026-03-18 14:55:29 | INFO | SpawnProcess-161-29470 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-18 14:55:29.519041 | 2026-03-18 14:55:29.606373 | 87 |  | 500
+2026-03-18 16:54:24 | INFO | pwdchanged_otp_outbox_worker started
+2026-03-18 16:54:34 | INFO | otp_dispatch_consumer_worker started
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:04.649294 | 2026-03-18 16:55:05.131065 | 481 | None | 200
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:05.134778 | 2026-03-18 16:55:05.182108 | 47 | None | 202
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:05.185169 | 2026-03-18 16:55:05.582980 | 397 | None | 200
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:05.585445 | 2026-03-18 16:55:05.598710 | 13 |  | 500
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:05.602079 | 2026-03-18 16:55:05.931330 | 329 | None | 200
+2026-03-18 16:55:05 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:05.932773 | 2026-03-18 16:55:05.938425 | 5 |  | 500
+2026-03-18 16:55:06 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:05.940301 | 2026-03-18 16:55:06.328316 | 388 | None | 200
+2026-03-18 16:55:06 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:06.331189 | 2026-03-18 16:55:06.342228 | 11 |  | 500
+2026-03-18 16:55:06 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:06.345735 | 2026-03-18 16:55:06.773879 | 428 | None | 200
+2026-03-18 16:55:06 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:06.776439 | 2026-03-18 16:55:06.785820 | 9 |  | 500
+2026-03-18 16:55:07 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:06.789057 | 2026-03-18 16:55:07.229828 | 440 | None | 200
+2026-03-18 16:55:07 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:07.233053 | 2026-03-18 16:55:07.237078 | 4 |  | 500
+2026-03-18 16:55:07 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:07.241401 | 2026-03-18 16:55:07.641367 | 399 | None | 200
+2026-03-18 16:55:07 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:07.643944 | 2026-03-18 16:55:07.646973 | 3 |  | 500
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:07.649395 | 2026-03-18 16:55:08.060038 | 410 | None | 200
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:08.062256 | 2026-03-18 16:55:08.065037 | 2 |  | 500
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:08.067292 | 2026-03-18 16:55:08.391128 | 323 | None | 200
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:08.392561 | 2026-03-18 16:55:08.394725 | 2 |  | 500
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:08.396402 | 2026-03-18 16:55:08.760983 | 364 | None | 200
+2026-03-18 16:55:08 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:08.763671 | 2026-03-18 16:55:08.766418 | 2 |  | 500
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:08.768422 | 2026-03-18 16:55:09.162579 | 394 | None | 200
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:09.165435 | 2026-03-18 16:55:09.168503 | 3 |  | 500
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:09.170869 | 2026-03-18 16:55:09.563184 | 392 | None | 200
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:09.565819 | 2026-03-18 16:55:09.568617 | 2 |  | 500
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:09.570890 | 2026-03-18 16:55:09.899238 | 328 | None | 200
+2026-03-18 16:55:09 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:09.900641 | 2026-03-18 16:55:09.902766 | 2 |  | 500
+2026-03-18 16:55:10 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:09.904525 | 2026-03-18 16:55:10.314817 | 410 | None | 200
+2026-03-18 16:55:10 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:10.317259 | 2026-03-18 16:55:10.320981 | 3 |  | 500
+2026-03-18 16:55:10 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:10.323654 | 2026-03-18 16:55:10.712123 | 388 | None | 200
+2026-03-18 16:55:10 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:10.714731 | 2026-03-18 16:55:10.718276 | 3 |  | 500
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:10.721013 | 2026-03-18 16:55:11.121031 | 400 | None | 200
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:11.123706 | 2026-03-18 16:55:11.127196 | 3 |  | 500
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:11.129773 | 2026-03-18 16:55:11.457563 | 327 | None | 200
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:11.459056 | 2026-03-18 16:55:11.460739 | 1 |  | 500
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:11.462245 | 2026-03-18 16:55:11.830275 | 368 | None | 200
+2026-03-18 16:55:11 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:11.833185 | 2026-03-18 16:55:11.836759 | 3 |  | 500
+2026-03-18 16:55:12 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:11.839502 | 2026-03-18 16:55:12.229782 | 390 | None | 200
+2026-03-18 16:55:12 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:12.232436 | 2026-03-18 16:55:12.236427 | 3 |  | 500
+2026-03-18 16:55:12 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:12.238927 | 2026-03-18 16:55:12.640675 | 401 | None | 200
+2026-03-18 16:55:12 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:12.643451 | 2026-03-18 16:55:12.646202 | 2 |  | 500
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:12.647383 | 2026-03-18 16:55:13.024316 | 376 | None | 200
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:13.027100 | 2026-03-18 16:55:13.030722 | 3 |  | 500
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:13.033769 | 2026-03-18 16:55:13.382292 | 348 | None | 200
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:13.384033 | 2026-03-18 16:55:13.385843 | 1 |  | 500
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:13.386952 | 2026-03-18 16:55:13.762970 | 376 | None | 200
+2026-03-18 16:55:13 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:13.765567 | 2026-03-18 16:55:13.768731 | 3 |  | 500
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:13.771130 | 2026-03-18 16:55:14.180827 | 409 | None | 200
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:14.183422 | 2026-03-18 16:55:14.186449 | 3 |  | 500
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:14.187903 | 2026-03-18 16:55:14.583221 | 395 | None | 200
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:14.585795 | 2026-03-18 16:55:14.588873 | 3 |  | 500
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:14.591161 | 2026-03-18 16:55:14.993327 | 402 | None | 200
+2026-03-18 16:55:14 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:14.995845 | 2026-03-18 16:55:14.999117 | 3 |  | 500
+2026-03-18 16:55:15 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:15.001387 | 2026-03-18 16:55:15.377376 | 375 | None | 200
+2026-03-18 16:55:15 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:15.380240 | 2026-03-18 16:55:15.383314 | 3 |  | 500
+2026-03-18 16:55:15 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:15.385625 | 2026-03-18 16:55:15.773457 | 387 | None | 200
+2026-03-18 16:55:15 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:15.775985 | 2026-03-18 16:55:15.779061 | 3 |  | 500
+2026-03-18 16:55:16 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:15.781617 | 2026-03-18 16:55:16.201710 | 420 | None | 200
+2026-03-18 16:55:16 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:16.204112 | 2026-03-18 16:55:16.207512 | 3 |  | 500
+2026-03-18 16:55:16 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:16.209637 | 2026-03-18 16:55:16.624232 | 414 | None | 200
+2026-03-18 16:55:16 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:16.626450 | 2026-03-18 16:55:16.630018 | 3 |  | 500
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:16.632542 | 2026-03-18 16:55:17.055682 | 423 | None | 200
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:17.058556 | 2026-03-18 16:55:17.061440 | 2 |  | 500
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:17.064020 | 2026-03-18 16:55:17.411224 | 347 | None | 200
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:17.412910 | 2026-03-18 16:55:17.414676 | 1 |  | 500
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:17.415883 | 2026-03-18 16:55:17.796985 | 381 | None | 200
+2026-03-18 16:55:17 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:17.799669 | 2026-03-18 16:55:17.803273 | 3 |  | 500
+2026-03-18 16:55:18 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:17.805822 | 2026-03-18 16:55:18.206130 | 400 | None | 200
+2026-03-18 16:55:18 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:18.209050 | 2026-03-18 16:55:18.213935 | 4 |  | 500
+2026-03-18 16:55:18 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:18.216918 | 2026-03-18 16:55:18.616260 | 399 | None | 200
+2026-03-18 16:55:18 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:18.618857 | 2026-03-18 16:55:18.622237 | 3 |  | 500
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:18.624698 | 2026-03-18 16:55:19.050633 | 425 | None | 200
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:19.052773 | 2026-03-18 16:55:19.055298 | 2 |  | 500
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:19.057153 | 2026-03-18 16:55:19.399933 | 342 | None | 200
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:19.401713 | 2026-03-18 16:55:19.403901 | 2 |  | 500
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:19.405735 | 2026-03-18 16:55:19.726236 | 320 | None | 200
+2026-03-18 16:55:19 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:19.727629 | 2026-03-18 16:55:19.729628 | 1 |  | 500
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:19.731269 | 2026-03-18 16:55:20.129678 | 398 | None | 200
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:20.132311 | 2026-03-18 16:55:20.136300 | 3 |  | 500
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:20.139242 | 2026-03-18 16:55:20.563977 | 424 | None | 200
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:20.566711 | 2026-03-18 16:55:20.570244 | 3 |  | 500
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:20.574102 | 2026-03-18 16:55:20.952382 | 378 | None | 200
+2026-03-18 16:55:20 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:20.954134 | 2026-03-18 16:55:20.956343 | 2 |  | 500
+2026-03-18 16:55:21 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:20.958004 | 2026-03-18 16:55:21.379389 | 421 | None | 200
+2026-03-18 16:55:21 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:21.381829 | 2026-03-18 16:55:21.385171 | 3 |  | 500
+2026-03-18 16:55:21 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:21.387917 | 2026-03-18 16:55:21.800848 | 412 | None | 200
+2026-03-18 16:55:21 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:21.803490 | 2026-03-18 16:55:21.807374 | 3 |  | 500
+2026-03-18 16:55:22 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:21.810414 | 2026-03-18 16:55:22.210449 | 400 | None | 200
+2026-03-18 16:55:22 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:22.213003 | 2026-03-18 16:55:22.217037 | 4 |  | 500
+2026-03-18 16:55:22 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:22.219411 | 2026-03-18 16:55:22.629080 | 409 | None | 200
+2026-03-18 16:55:22 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:22.631605 | 2026-03-18 16:55:22.634894 | 3 |  | 500
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:22.637438 | 2026-03-18 16:55:23.100658 | 463 | None | 200
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:23.103154 | 2026-03-18 16:55:23.106731 | 3 |  | 500
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:23.109579 | 2026-03-18 16:55:23.466395 | 356 | None | 200
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:23.467682 | 2026-03-18 16:55:23.469069 | 1 |  | 500
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:23.470797 | 2026-03-18 16:55:23.870768 | 399 | None | 200
+2026-03-18 16:55:23 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:23.873168 | 2026-03-18 16:55:23.876573 | 3 |  | 500
+2026-03-18 16:55:24 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:23.879234 | 2026-03-18 16:55:24.276529 | 397 | None | 200
+2026-03-18 16:55:24 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:24.279462 | 2026-03-18 16:55:24.282718 | 3 |  | 500
+2026-03-18 16:55:24 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:24.285264 | 2026-03-18 16:55:24.679244 | 393 | None | 200
+2026-03-18 16:55:24 | INFO | SpawnProcess-1-6996 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-03-18 16:55:24.681441 | 2026-03-18 16:55:24.685157 | 3 |  | 500
+2026-03-18 16:55:32 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:55:31.677070 | 2026-03-18 16:55:32.105549 | 428 | None | 200
+2026-03-18 16:56:23 | INFO | SpawnProcess-1-6996 | v1.users.password_change_confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-03-18 16:56:22.880942 | 2026-03-18 16:56:23.383428 | 502 | None | 200
+2026-03-18 16:57:23 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:57:23.638568 | 2026-03-18 16:57:23.963954 | 325 |  | 500
+2026-03-18 16:57:29 | INFO | SpawnProcess-1-6996 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-03-18 16:57:29.179780 | 2026-03-18 16:57:29.582860 | 403 | None | 200
