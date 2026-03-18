@@ -26,25 +26,17 @@ async def run_worker() -> None:
     )
     await producer.start()
     app_logger.info("pwdchanged_otp_outbox_worker started")
-
     try:
         while True:
             try:
                 async with AsyncSessionLocal() as db:
                     repo = SecuritySQLAlchemyRepository(db)
-                    dispatcher = PwdChangedOTPOutboxDispatcher(
-                        repo=repo,
-                        producer=producer,
-                    )
-                    stats = await dispatcher.process_batch(
-                        batch_size=BATCH_SIZE
-                    )
-
+                    dispatcher = PwdChangedOTPOutboxDispatcher(repo=repo, producer=producer)
+                    stats = await dispatcher.process_batch(batch_size=BATCH_SIZE)
                 if stats["processed"] == 0:
                     await asyncio.sleep(POLL_INTERVAL_IDLE_SECONDS)
                 else:
                     await asyncio.sleep(POLL_INTERVAL_ACTIVE_SECONDS)
-
             except Exception as exc:
                 app_logger.error(f"pwdchanged_otp_outbox_worker error: {exc}")
                 await asyncio.sleep(2)

@@ -25,19 +25,14 @@ async def run_worker() -> None:
     )
     await consumer.start()
     app_logger.info("emailchanged_otp_dispatch_consumer_worker started")
-
     email_sender = get_emailchanged_email_otp_sender()
-
     try:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 async with AsyncSessionLocal() as db:
                     repo = SecuritySQLAlchemyRepository(db)
-                    service = EmailChangedOtpDispatchConsumerService(
-                        repo=repo,
-                        email_sender=email_sender,
-                    )
+                    service = EmailChangedOtpDispatchConsumerService(repo=repo,email_sender=email_sender)
                     await service.process_payload(payload)
                 # Commit only after successful processing.
                 await consumer.commit()

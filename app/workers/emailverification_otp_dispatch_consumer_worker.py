@@ -27,9 +27,7 @@ async def run_worker() -> None:
     )
     await consumer.start()
     app_logger.info("emailverification_otp_dispatch_consumer_worker started")
-
     email_sender = get_emailverification_email_otp_sender()
-
     try:
         async for message in consumer:
             try:
