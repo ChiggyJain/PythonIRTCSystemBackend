@@ -1,4 +1,3 @@
-
 """
 Kafka consumer handler for email-verification OTP dispatch.
 """
@@ -20,6 +19,11 @@ settings = get_settings()
 
 
 class EmailVerificationOtpDispatchConsumerService:
+    OTP_PURPOSE_EMAIL_VERIFICATION = "EMAIL_VERIFICATION"
+
+    SEND_MAX_ATTEMPTS = 3
+    SEND_RETRY_BASE_SECONDS = 0.2
+    SEND_PROVIDER_TIMEOUT_SECONDS = 10.0
 
     def __init__(
         self,
@@ -29,14 +33,19 @@ class EmailVerificationOtpDispatchConsumerService:
     ):
         self.repo = repo
         self.email_sender = email_sender
-        self._fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
+        self._fernet = self._build_fernet(
+            secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
+        )
 
     async def process_payload(self, payload: dict) -> None:
-        user_id = int(payload.get("user_id") or 0)
-        challenge_id = str(payload.get("challenge_id") or "")
-        destination = str(payload.get("destination") or "")
 
-        if not challenge_id or not destination or user_id <= 0:
+        user_id = self._safe_int(payload.get("user_id"), default=0)
+        challenge_id = str(payload.get("challenge_id") or "").strip()
+        destination = str(payload.get("destination") or "").strip()
+        correlation_id = str(payload.get("correlation_id") or "") or None
+        request_id = str(payload.get("request_id") or "") or None
+
+        if user_id <= 0 or not challenge_id or not destination:
             return
 
         try:
@@ -44,10 +53,81 @@ class EmailVerificationOtpDispatchConsumerService:
                 challenge_id=challenge_id
             )
             if not challenge:
-                await self.repo.rollback()
+                await self.repo.add_security_event(
+                    user_id=user_id,
+                    event_name="email_verification_otp_failed",
+                    event_category="EMAIL_VERIFICATION",
+                    channel="EMAIL",
+                    provider=None,
+                    status="failed",
+                    reason_code="CHALLENGE_NOT_FOUND",
+                    correlation_id=correlation_id,
+                    request_id=request_id,
+                    ip_address=None,
+                    user_agent=None,
+                    metadata_json={"challenge_id": challenge_id},
+                )
+                await self.repo.commit()
                 return
 
-            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT"}:
+            if challenge.purpose != self.OTP_PURPOSE_EMAIL_VERIFICATION:
+                await self.repo.add_security_event(
+                    user_id=challenge.user_id,
+                    event_name="email_verification_otp_dispatch_skipped",
+                    event_category="EMAIL_VERIFICATION",
+                    channel=challenge.channel,
+                    provider=None,
+                    status="ignored",
+                    reason_code=f"PURPOSE_{challenge.purpose}",
+                    correlation_id=correlation_id,
+                    request_id=request_id,
+                    ip_address=None,
+                    user_agent=None,
+                    metadata_json={"challenge_id": challenge.challenge_id},
+                )
+                await self.repo.commit()
+                return
+
+            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT", "DISPATCH_FAILED"}:
+                await self.repo.add_security_event(
+                    user_id=challenge.user_id,
+                    event_name="email_verification_otp_dispatch_skipped",
+                    event_category="EMAIL_VERIFICATION",
+                    channel=challenge.channel,
+                    provider=None,
+                    status="ignored",
+                    reason_code=f"STATUS_{challenge.status}",
+                    correlation_id=correlation_id,
+                    request_id=request_id,
+                    ip_address=None,
+                    user_agent=None,
+                    metadata_json={"challenge_id": challenge.challenge_id},
+                )
+                await self.repo.commit()
+                return
+
+            now = now_ist()
+            if challenge.expires_at <= now:
+                await self.repo.mark_otp_challenge_status(
+                    challenge=challenge,
+                    status="EXPIRED",
+                    last_error_code="OTP_EXPIRED",
+                    updated_at=now,
+                )
+                await self.repo.add_security_event(
+                    user_id=challenge.user_id,
+                    event_name="email_verification_otp_dispatch_skipped",
+                    event_category="EMAIL_VERIFICATION",
+                    channel=challenge.channel,
+                    provider=None,
+                    status="expired",
+                    reason_code="OTP_EXPIRED",
+                    correlation_id=correlation_id,
+                    request_id=request_id,
+                    ip_address=None,
+                    user_agent=None,
+                    metadata_json={"challenge_id": challenge.challenge_id},
+                )
                 await self.repo.commit()
                 return
 
@@ -69,18 +149,21 @@ class EmailVerificationOtpDispatchConsumerService:
                     updated_at=now,
                 )
                 await self.repo.add_security_event(
-                    user_id=user_id,
+                    user_id=challenge.user_id,
                     event_name="email_verification_otp_dispatched",
                     event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=result.provider,
                     status="sent",
                     reason_code=None,
-                    correlation_id=None,
-                    request_id=None,
+                    correlation_id=correlation_id,
+                    request_id=request_id,
                     ip_address=None,
                     user_agent=None,
-                    metadata_json={"challenge_id": challenge.challenge_id},
+                    metadata_json={
+                        "challenge_id": challenge.challenge_id,
+                        "provider_message_id": result.provider_message_id,
+                    },
                 )
             else:
                 await self.repo.mark_otp_challenge_status(
@@ -90,15 +173,15 @@ class EmailVerificationOtpDispatchConsumerService:
                     updated_at=now,
                 )
                 await self.repo.add_security_event(
-                    user_id=user_id,
+                    user_id=challenge.user_id,
                     event_name="email_verification_otp_failed",
                     event_category="EMAIL_VERIFICATION",
                     channel="EMAIL",
                     provider=result.provider,
                     status="failed",
                     reason_code=result.error_code or "DISPATCH_FAILED",
-                    correlation_id=None,
-                    request_id=None,
+                    correlation_id=correlation_id,
+                    request_id=request_id,
                     ip_address=None,
                     user_agent=None,
                     metadata_json={
@@ -113,6 +196,7 @@ class EmailVerificationOtpDispatchConsumerService:
             await self.repo.rollback()
             raise
 
+
     async def _send_with_retry(
         self,
         *,
@@ -121,6 +205,7 @@ class EmailVerificationOtpDispatchConsumerService:
         purpose: str,
         challenge_id: str,
     ) -> OtpSendResult:
+        
         last_result = OtpSendResult(
             accepted=False,
             provider="UNKNOWN",
@@ -128,17 +213,28 @@ class EmailVerificationOtpDispatchConsumerService:
             error_message="unknown",
         )
 
-        for attempt in range(1, 4):
+        for attempt in range(1, self.SEND_MAX_ATTEMPTS + 1):
             try:
-                result = await self.email_sender.send_otp(
-                    to_email=to_email,
-                    otp=otp,
-                    purpose=purpose,
-                    challenge_id=challenge_id,
+                result = await asyncio.wait_for(
+                    self._send_once(
+                        to_email=to_email,
+                        otp=otp,
+                        purpose=purpose,
+                        challenge_id=challenge_id,
+                    ),
+                    timeout=self.SEND_PROVIDER_TIMEOUT_SECONDS,
                 )
                 if result.accepted:
                     return result
                 last_result = result
+
+            except asyncio.TimeoutError:
+                last_result = OtpSendResult(
+                    accepted=False,
+                    provider="UNKNOWN",
+                    error_code="PROVIDER_TIMEOUT",
+                    error_message=f"provider timeout > {self.SEND_PROVIDER_TIMEOUT_SECONDS}s",
+                )
             except Exception as exc:
                 last_result = OtpSendResult(
                     accepted=False,
@@ -147,10 +243,27 @@ class EmailVerificationOtpDispatchConsumerService:
                     error_message=str(exc),
                 )
 
-            if attempt < 3:
-                await asyncio.sleep(0.2 * attempt)
+            if attempt < self.SEND_MAX_ATTEMPTS:
+                await asyncio.sleep(self.SEND_RETRY_BASE_SECONDS * attempt)
 
         return last_result
+
+    async def _send_once(
+        self,
+        *,
+        to_email: str,
+        otp: str,
+        purpose: str,
+        challenge_id: str,
+    ) -> OtpSendResult:
+    
+        return await self.email_sender.send_otp(
+            to_email=to_email,
+            otp=otp,
+            purpose=purpose,
+            challenge_id=challenge_id,
+        )
+
 
     def _build_fernet(self, *, secret: str) -> Fernet:
         digest = hashlib.sha256(secret.encode("utf-8")).digest()
@@ -158,3 +271,10 @@ class EmailVerificationOtpDispatchConsumerService:
 
     def _decrypt_otp(self, ciphertext: str) -> str:
         return self._fernet.decrypt(ciphertext.encode("utf-8")).decode("utf-8")
+
+    @staticmethod
+    def _safe_int(value: object, default: int = 0) -> int:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return default
