@@ -154,39 +154,76 @@ async def logout(
     ),
 ):
 
-    # extracting refresh token
+    # Decode refresh token payload
     user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
-    
-    # handle case for access token
-    access_token_id = user_details_from_access_token.get("jti")
+
+    # Extract and normalize ids
+    access_user_id = int(user_details_from_access_token.get("sub"))
+    access_token_id = int(user_details_from_access_token.get("jti"))
+
+    refresh_user_id = int(user_details_from_refresh_token.get("sub"))
+    refresh_token_id = int(user_details_from_refresh_token.get("jti"))
+    refresh_against_access_id = int(user_details_from_refresh_token.get("against_token_id"))
+
+    # Token pair binding checks
+    if access_user_id != refresh_user_id:
+        raise BaseAppException(
+            messages=["Access and refresh token user mismatch"],
+            status_code=401,
+        )
+
+    if access_token_id != refresh_against_access_id:
+        raise BaseAppException(
+            messages=["Access and refresh token pair mismatch"],
+            status_code=401,
+        )
+
+    # Access row validations
     access_token_row = await token_service.get_access(access_token_id)
     if not access_token_row:
         raise BaseAppException(
             messages=["Access token not found"],
             status_code=401,
         )
-    await token_service.revoke(access_token_id)
 
-    # remove keys from cache related to access-token
-    cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_id}")
-    await cache_delete(cacheKey)
-    user_id = user_details_from_access_token.get("sub")
-    cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-    await cache_set_remove(cacheKey, access_token_id)
+    if access_token_row.token_type != "access":
+        raise BaseAppException(
+            messages=["Invalid access token type"],
+            status_code=401,
+        )
 
-    # handle case for refresh token
-    refresh_token_id = user_details_from_refresh_token.get("jti")
+    if int(access_token_row.user_id) != access_user_id:
+        raise BaseAppException(
+            messages=["Access token user mismatch"],
+            status_code=401,
+        )
+
+    # Refresh row validations
     refresh_token_row = await token_service.get_refresh(refresh_token_id)
     if not refresh_token_row:
         raise BaseAppException(
             messages=["Refresh token not found"],
             status_code=401,
         )
+
+    if refresh_token_row.token_type != "refresh":
+        raise BaseAppException(
+            messages=["Invalid refresh token type"],
+            status_code=401,
+        )
+
+    if int(refresh_token_row.user_id) != refresh_user_id:
+        raise BaseAppException(
+            messages=["Refresh token user mismatch"],
+            status_code=401,
+        )
+
     if refresh_token_row.revoked:
         raise BaseAppException(
             messages=["Refresh token already revoked"],
             status_code=401,
         )
+
     if not token_service.is_raw_token_matches_stored_hash(
         raw_token=body.refresh_token,
         stored_hash=refresh_token_row.token_hash,
@@ -196,11 +233,17 @@ async def logout(
             messages=["Invalid refresh token"],
         )
 
-    await token_service.revoke(refresh_token_id)
+    # Single transaction revoke + best-effort cache cleanup
+    await token_service.logout_by_token_pair(
+        user_id=access_user_id,
+        access_token_id=access_token_id,
+        refresh_token_id=refresh_token_id,
+    )
 
     return success_response(
         messages=["Logout successful"],
     )
+
 
 router.add_api_route(
     "/logout",
