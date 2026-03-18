@@ -22,7 +22,6 @@ async def run_worker() -> None:
     producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
     await producer.start()
     app_logger.info("emailchanged_otp_outbox_worker started")
-
     try:
         while True:
             try:
@@ -30,13 +29,10 @@ async def run_worker() -> None:
                     repo = SecuritySQLAlchemyRepository(db)
                     dispatcher = EmailChangedOTPOutboxDispatcher(repo=repo, producer=producer)
                     stats = await dispatcher.process_batch(batch_size=BATCH_SIZE)
-
                 await asyncio.sleep(POLL_INTERVAL_IDLE_SECONDS if stats["processed"] == 0 else POLL_INTERVAL_ACTIVE_SECONDS)
-
             except Exception as exc:
                 app_logger.error(f"emailchanged_otp_outbox_worker error: {exc}")
                 await asyncio.sleep(2)
-
     finally:
         await producer.stop()
 
