@@ -1,10 +1,10 @@
-
 """
 Outbox -> Kafka publisher.
 """
 
 from datetime import timedelta
 import json
+import random
 from aiokafka import AIOKafkaProducer
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
@@ -15,6 +15,7 @@ settings = get_settings()
 
 
 class PwdChangedOTPOutboxDispatcher:
+
     OTP_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
     def __init__(
@@ -31,13 +32,13 @@ class PwdChangedOTPOutboxDispatcher:
         *,
         batch_size: int = 100,
     ) -> dict:
-
-        now = now_ist()
-        events = await self.repo.fetch_pending_outbox_events(
-            event_type=self.OTP_EVENT_TYPE,
-            limit=batch_size,
-            now_time=now,
-        )
+        
+        """
+        Multi-worker safe loop:
+        - fetch one pending row with FOR UPDATE SKIP LOCKED
+        - publish
+        - mark status + commit
+        """
 
         stats = {
             "processed": 0,
@@ -46,12 +47,27 @@ class PwdChangedOTPOutboxDispatcher:
             "skipped": 0,
         }
 
-        for event in events:
+        for _ in range(batch_size):
+
+            now = now_ist()
+            events = await self.repo.fetch_pending_outbox_events(
+                event_type=self.OTP_EVENT_TYPE,
+                # important: avoid prefetch duplicates across workers
+                limit=1,
+                now_time=now,
+            )
+
+            if not events:
+                break
+
+            event = events[0]
             stats["processed"] += 1
+
             payload = event.payload_json or {}
-            user_id = int(payload.get("user_id") or 0)
+            user_id = self._safe_int(payload.get("user_id"), default=0)
 
             try:
+
                 topic = self._topic_for_event(event.event_type)
                 if not topic:
                     raise ValueError(f"unsupported event_type={event.event_type}")
@@ -65,7 +81,8 @@ class PwdChangedOTPOutboxDispatcher:
                     separators=(",", ":"),
                 ).encode("utf-8")
 
-                key = str(payload.get("user_id", "0")).encode("utf-8")
+                key = str(user_id if user_id > 0 else 0).encode("utf-8")
+
                 md = await self.producer.send_and_wait(
                     topic=topic,
                     key=key,
@@ -112,6 +129,7 @@ class PwdChangedOTPOutboxDispatcher:
 
         return stats
 
+
     async def _mark_retry_or_failed(
         self,
         *,
@@ -119,12 +137,13 @@ class PwdChangedOTPOutboxDispatcher:
         user_id: int,
         error_message: str,
     ) -> None:
-
+        
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
         max_retries = int(settings.PWDCHANGED_OTP_OUTBOX_MAX_RETRIES)
 
         try:
+
             if retry_count_after >= max_retries:
                 await self.repo.mark_outbox_failed(
                     event=event,
@@ -133,8 +152,11 @@ class PwdChangedOTPOutboxDispatcher:
                 )
                 outbox_status = "failed"
             else:
-                backoff_seconds = min(300, 2 ** min(retry_count_after, 8))
-                next_retry_at = now + timedelta(seconds=backoff_seconds)
+                # exponential backoff + jitter to avoid retry stampede
+                backoff_base = min(300, 2 ** min(retry_count_after, 8))
+                backoff_jitter = random.randint(0, 5)
+                next_retry_at = now + timedelta(seconds=backoff_base + backoff_jitter)
+
                 await self.repo.mark_outbox_retry(
                     event=event,
                     next_retry_at=next_retry_at,
@@ -168,11 +190,18 @@ class PwdChangedOTPOutboxDispatcher:
         except Exception:
             await self.repo.rollback()
 
+
     def _topic_for_event(
         self,
         event_type: str,
     ) -> str | None:
-
         if event_type == self.OTP_EVENT_TYPE:
             return settings.PWDCHANGED_OTP_DISPATCH_TOPIC
         return None
+
+    @staticmethod
+    def _safe_int(value: object, default: int = 0) -> int:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return default

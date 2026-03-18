@@ -155,6 +155,7 @@ class PwdChangedOtpDispatchConsumerService:
             await self.repo.rollback()
             raise
 
+
     async def _send_with_retry(
         self,
         *,
@@ -214,6 +215,7 @@ class PwdChangedOtpDispatchConsumerService:
 
         return last_result
 
+
     def _build_fernet(
         self,
         *,
@@ -223,6 +225,7 @@ class PwdChangedOtpDispatchConsumerService:
         digest = hashlib.sha256(secret.encode("utf-8")).digest()
         key = base64.urlsafe_b64encode(digest)
         return Fernet(key)
+
 
     def _decrypt_otp(
         self,
