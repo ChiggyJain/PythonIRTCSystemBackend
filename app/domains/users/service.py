@@ -5,6 +5,7 @@ Business logic for users domain.
 """
 
 from anyio import to_thread
+from app.common.utils.logger import app_logger
 from sqlalchemy.exc import IntegrityError
 from app.core.exceptions import BaseAppException
 from app.common.utils.password import (
@@ -88,16 +89,7 @@ class UsersService:
         password: str,
     ):
 
-        # -------------------------
-        # get user
-        # -------------------------
-
         user = await self.repo.get_by_email(email)
-
-        # -------------------------
-        # user not found
-        # -------------------------
-
         if not user:
             raise BaseAppException(
                 messages=[
@@ -105,11 +97,6 @@ class UsersService:
                 ],
                 status_code=400,
             )
-
-        # -------------------------
-        # status check
-        # -------------------------
-
         if user.status != "A":
             raise BaseAppException(
                 messages=[
@@ -117,21 +104,6 @@ class UsersService:
                 ],
                 status_code=403,
             )
-
-        # -------------------------
-        # verify password
-        # -------------------------
-
-        """
-        is_valid = verify_password(password, user.password,)
-        if not is_valid:
-            raise BaseAppException(
-                messages=[
-                    "Invalid email or password"
-                ],
-                status_code=400,
-            )
-        """
 
         # bcrypt verify is CPU-bound; run it in thread worker
         # so FastAPI event loop remains responsive under concurrency.
@@ -157,47 +129,49 @@ class UsersService:
         user_id: int,
     ):
 
-        # -------------------------
-        # build cache key
-        # -------------------------
-
+        
         key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-
-        # -------------------------
-        # try cache
-        # -------------------------
-
-        cached = await cache_get(key)
+        cached = None
+        try:
+            cached = await cache_get(key)
+        except Exception as exc:
+            app_logger.warning(
+                f"profile_details cache_get failed | user_id={user_id} | error={str(exc)}"
+            )
         if cached:
             return cached
 
-        # -------------------------
-        # DB fetch
-        # -------------------------
-
-        user = await self.repo.get_by_id(user_id=user_id)
-
-        if not user:
+        profile = await self.repo.get_profile_snapshot_by_id(user_id=user_id)
+        if not profile:
             raise BaseAppException(
                 messages=["User not found"],
                 status_code=404,
             )
-
+        
         data = {
-            "id": user.id,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "email": user.email,
-            "is_email_verified" : user.is_email_verified,
-            "email_verified_last_datetime" : str(user.email_verified_last_datetime) if user.email_verified_last_datetime!=None else "",
-            "mobile": user.mobile,
-            "gender": user.gender
+            "id": profile.get("id"),
+            "first_name": profile.get("first_name"),
+            "last_name": profile.get("last_name"),
+            "gender": profile.get("gender"),
+            "mobile": profile.get("mobile"),
+            "is_mobile_verified": profile.get("is_mobile_verified"),
+            "mobile_verified_last_datetime": (
+                str(profile.get("mobile_verified_last_datetime"))
+                if profile.get("mobile_verified_last_datetime") is not None else ""
+            ),
+            "email": profile.get("email"),
+            "is_email_verified": profile.get("is_email_verified"),
+            "email_verified_last_datetime": (
+                str(profile.get("email_verified_last_datetime"))
+                if profile.get("email_verified_last_datetime") is not None else ""
+            ),            
         }
 
-        # -------------------------
-        # set cache
-        # -------------------------
-
-        await cache_set(key, data, ttl=CACHE_TTL_PROFILE,)
+        try:
+            await cache_set(key, data, ttl=CACHE_TTL_PROFILE)
+        except Exception as exc:
+            app_logger.warning(
+                f"profile_details cache_set failed | user_id={user_id} | error={str(exc)}"
+            )
 
         return data
