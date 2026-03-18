@@ -111,7 +111,7 @@ class TokenRepositorySQLAlchemy(
             )
         )
         await self.db.execute(stmt)
-        await self.db.commit()
+        # await self.db.commit()
 
 
     async def commit(self) -> None:
