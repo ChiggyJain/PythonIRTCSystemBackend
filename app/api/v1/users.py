@@ -283,6 +283,22 @@ async def password_change_confirm(
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     
+    # Extra user-level rate limit (in addition to route IP-based limit)
+    # Example Redis key:
+    # ratelimit:v1.users.password_change_confirm:user:101
+    user_rate_key = f"ratelimit:v1.users.password_change_confirm:user:{user_id_from_access_token}"
+    user_allowed = await rate_limiter.check_window_limit(
+        key=user_rate_key,
+        limit=settings.PWDCHANGED_CONFIRM_USER_RATE_LIMIT,
+        window=settings.PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS,
+    )
+    if not user_allowed:
+        raise BaseAppException(
+            status_code=429,
+            messages=["Too many password change confirm attempts for this user. Please try again later."],
+        )
+    
+    
     result = await service.confirm_password_change(
         user_id=user_id_from_access_token,
         challenge_id=body.challenge_id,

@@ -8,6 +8,7 @@ Step 2 scope:
 - Password update + token revoke
 """
 
+from anyio import to_thread
 from datetime import timedelta
 import base64
 import hashlib
@@ -258,7 +259,7 @@ class PasswordChangeOtpService:
                 )
 
                 
-            if challenge.expires_at < now:
+            if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
@@ -323,7 +324,10 @@ class PasswordChangeOtpService:
                 )
 
             changed_at = now_ist()
-            password_hash = hash_password(new_password)
+
+            # with this:
+            # bcrypt hashing is CPU-bound, so run it in thread to avoid blocking event loop
+            password_hash = await to_thread.run_sync(hash_password, new_password)
 
             updated = await self.repo.update_user_password(
                 user_id=user_id,

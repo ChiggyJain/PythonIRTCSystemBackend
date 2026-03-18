@@ -124,7 +124,10 @@ class Settings(BaseSettings):
     PWDCHANGED_OTP_USER_RATE_LIMIT: int = 5
     PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS: int = 60
 
-    
+    # User-based rate limit for password change confirm API
+    PWDCHANGED_CONFIRM_USER_RATE_LIMIT: int = 5
+    PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
+
     # =========================
     # Pydantic Settings Config
     # =========================
