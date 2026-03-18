@@ -10,6 +10,7 @@ Step 2 scope:
 
 from anyio import to_thread
 from datetime import timedelta
+from app.common.utils.logger import app_logger
 import base64
 import hashlib
 import hmac
@@ -346,14 +347,6 @@ class PasswordChangeOtpService:
                 changed_at=changed_at,
             )
 
-            # remove keys from cache 
-            userIdCacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-            userAllAccessTokenIdSet = await cache_set_members(key=userIdCacheKey)
-            for userEachAccessTokenId in userAllAccessTokenIdSet:
-                userAccessTokenIdCacheKey = build_cache_key(f"auth:user:access:jti:{userEachAccessTokenId}")
-                await cache_delete(key=userAccessTokenIdCacheKey)
-            await cache_set_delete(key=userIdCacheKey)
-
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED
             challenge.last_error_code = None
@@ -396,6 +389,29 @@ class PasswordChangeOtpService:
             )
 
             await self.repo.commit()
+
+            # 2) Cache cleanup as post-commit side-effect (best effort)
+            user_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
+            try:
+                access_jti_set = await cache_set_members(key=user_index_key)
+                for access_jti in access_jti_set:
+                    access_key = build_cache_key(f"auth:user:access:jti:{access_jti}")
+                    try:
+                        await cache_delete(key=access_key)
+                    except Exception as exc:
+                        app_logger.warning(
+                            f"password_change cache_delete failed | user_id={user_id} | key={access_key} | error={str(exc)}"
+                        )
+                try:
+                    await cache_set_delete(key=user_index_key)
+                except Exception as exc:
+                    app_logger.warning(
+                        f"password_change cache_set_delete failed | user_id={user_id} | key={user_index_key} | error={str(exc)}"
+                    )
+            except Exception as exc:
+                app_logger.error(
+                    f"password_change cache_cleanup failed | user_id={user_id} | error={str(exc)}"
+                )
 
         except BaseAppException:
             raise
