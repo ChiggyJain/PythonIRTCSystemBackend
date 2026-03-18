@@ -141,7 +141,7 @@ router.add_api_route(
             "file" : True,
         },
         "rate_limit": {
-            "limit": 20,
+            "limit": 200000,
             "window": 60,
         },
     }
