@@ -53,43 +53,62 @@ async def refresh_token(
     ),
 ):
 
-    # decoding user-details from refresh token
+    # Decode refresh token payload
     user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
-    access_token_id = user_details_from_refresh_token.get("against_token_id")
-    refresh_token_id = user_details_from_refresh_token.get("jti")
+    user_id = int(user_details_from_refresh_token.get("sub"))
+    access_token_id = int(user_details_from_refresh_token.get("against_token_id"))
+    refresh_token_id = int(user_details_from_refresh_token.get("jti"))
+
     refresh_token_row = await token_service.get_refresh(refresh_token_id)
     if not refresh_token_row:
         raise BaseAppException(
             status_code=401,
             messages=["Refresh token not found"]
         )
+
+    # DB-level type safety check
+    if refresh_token_row.token_type != "refresh":
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid refresh token type"],
+        )
+
+    # DB-level ownership safety check
+    if int(refresh_token_row.user_id) != user_id:
+        raise BaseAppException(
+            status_code=401,
+            messages=["Refresh token user mismatch"],
+        )
+
     if refresh_token_row.revoked:
         raise BaseAppException(
             status_code=401,
-            messages=["Refresh token is already revoked"]
+            messages=["Refresh token already revoked"]
         )
+
     if not token_service.is_raw_token_matches_stored_hash(
-        raw_token=body.refresh_token, stored_hash=refresh_token_row.token_hash,
+        raw_token=body.refresh_token,
+        stored_hash=refresh_token_row.token_hash,
     ):
         raise BaseAppException(
             status_code=401,
             messages=["Invalid refresh token"],
         )
 
-    # revoke refresh token from table
-    await token_service.revoke(token_id=refresh_token_id)
+    # Optional linked access token type sanity check (if row still active)
+    access_token_row = await token_service.get_access(access_token_id)
+    if access_token_row and access_token_row.token_type != "access":
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid linked access token type"],
+        )
 
-    # revoke access token from table
-    await token_service.revoke(token_id=access_token_id)
-
-    # remove keys from cache 
-    cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_id}")
-    await cache_delete(cacheKey)
-
-    # creating new access and refresh token
-    tokens = await token_service.create_tokens(
-        user_id=int(user_details_from_refresh_token.get("sub")),
+    # Single flow: revoke old pair + issue new pair + cache cleanup
+    tokens = await token_service.rotate_tokens_by_refresh(
+        user_id=user_id,
+        current_access_token_id=access_token_id,
+        current_refresh_token_id=refresh_token_id,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
