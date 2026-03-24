@@ -1,4 +1,61 @@
 
+IRTC System Design Youtube URL =>
+https://www.youtube.com/watch?v=K_cTtCXCPeY&list=PLhNPruYZ0mVOF-poB1cDcU8ICktc_ehxs
+
+Project Prompt =>
+
+Hey,
+
+The following physical software/system/tools/applications are installed in my local machines with version: 
+1) UbuntuOS: 24
+2) Python: 3.12.3
+3) Redis: 7.0.15
+4) Kafka: 3.6.2
+5) VsCode: 1.110.1
+6) GIT: 2.43.0
+7) Docker: 29.3.0
+8) Postman: 11.72.3
+9) MYSQL: 8.0.45
+10) PhpMyAdmin
+11) 8Core CPU, 520gb Hardisk, 16gb RAM
+
+
+Credentials for MYSQL-DB:
+MYSQL-DB-Name: IRTC
+MYSQL-DB-User-Name: c
+MYSQL-DB-Password: Dharmilal@7186
+
+Credentials for SendGrid [Sending Email]:
+API-KEY: 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
+
+I want to develop only IRTC backend system in my local machine as a real production grade level application.
+This backend system will be develop totally in Python-FastAPI latest framework only.
+We will be developing the features/modules for this backend system as per requirement Or usage only but must be a real production grade level application.
+I have already created this Project-Directory [PythonIRTCSystemBackend] into my local machine only.
+I have already created virtual environment inside this Project-Directory [PythonIRTCSystemBackend] into my local machine only.
+I have already added these two files [.gitignore, .env] inside this Project-Directory [PythonIRTCSystemBackend] into my local machine only.
+
+In this backend system below given following things are must be implement in standard/generalize ways only:
+1) All apis will be return standard response format and JSON format will be:
+{
+  "status_code":"Any type of status code integer",
+  "messages" : "List of String",
+  "data" : "Any type of data"
+}
+2) All types of exception handling [system-error, notice-error, user-raise etc..] will be return standard response format and JSON format will be:
+{
+  "status_code":"Any type of status code integer",
+  "messages" : "List of String",
+  "data" : "Any type of data"
+}
+3) ASYNC functionality and ASYNC library/modules/tools system.
+4) Use Pydantic settings concept for environment variables
+5) Use Pdyantic models at wherever is required.
+6) Try to implement SINGLETON-SYSTEM-DESIGN code pattern at wherever is required.
+7) Use SQLAlchemy models concept only.
+
+
+
 Git Push Command =>
 git add . && git commit -m "IRTC Backend System"
 
