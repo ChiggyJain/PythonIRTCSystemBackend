@@ -1,12 +1,13 @@
 
-Git Command =>
+Git Push Command =>
 git add . && git commit -m "IRTC Backend System"
 
 
-Redis-Command =>
+Redis-Terminal-Command =>
 redis-cli flushdb
 redis-cli debug object ratelimit:v1.users.signup:ip:127.0.0.1
 redis-cli get ratelimit:v1.users.signup:ip:127.0.0.1
+keys *
 
 
 FastAPI Application Start Command =>
@@ -17,8 +18,24 @@ Alembic Command =>
 alembic revision --autogenerate -m "create tables"
 alembic upgrade head
 
+Drops Mysql Tables =>
+DROP TABLE USERS;
+DROP TABLE USER_TOKENS;
+DROP TABLE OTP_CHALLENGES;
+DROP TABLE OUTBOX_EVENTS;
+DROP TABLE SECURITY_EVENT_LOG;
 
-Kakfa =>
+Truncate Mysql Tables =>
+
+TRUNCATE TABLE USERS;
+TRUNCATE TABLE USER_TOKENS;
+TRUNCATE TABLE OTP_CHALLENGES;
+TRUNCATE TABLE OUTBOX_EVENTS;
+TRUNCATE TABLE SECURITY_EVENT_LOG;
+
+
+
+Kakfa Command =>
 
 Start Server =>
 ./kafka/bin/kafka-storage.sh format \
@@ -35,7 +52,7 @@ Create Password Changed OTP Topic =>
   --partitions 6 \
   --replication-factor 1
 
-Display created Topic =>
+Display created Topic [Password Changed OTP] =>
 ./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic pwdchanged-otp-dispatch-v1
 
 
@@ -47,11 +64,11 @@ Create Email Verification OTP Topic =>
   --partitions 6 \
   --replication-factor 1
 
-Display created Topic =>
+Display created Topic [Email Verification OTP] =>
 ./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailverification-otp-dispatch-v1
 
 
-Create Email Changed OTP Topic =>
+Create Email Changed OTP Topic [Email Changed OTP] =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
@@ -59,7 +76,7 @@ Create Email Changed OTP Topic =>
   --partitions 6 \
   --replication-factor 1
 
-Display created Topic =>
+Display created Topic [Email Changed OTP] =>
 ./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailchanged-otp-dispatch-v1
 
 
@@ -70,7 +87,7 @@ for topic in $(./kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9
 done
 
 
-Backgorund Workers =>
+Start Kakfa Background Workers =>
 
 Password Changed OTP:
 python3 -m app.workers.pwdchanged_otp_outbox_worker
@@ -86,6 +103,46 @@ python -m app.workers.emailchanged_otp_outbox_worker
 python -m app.workers.emailchanged_otp_dispatch_consumer_worker
 
 
+All Endpoints =>
+http://127.0.0.1:8000/health
+http://127.0.0.1:8000/api/v1/users/signup
+http://127.0.0.1:8000/api/v1/users/login
+http://127.0.0.1:8000/api/v1/users/profile_details
+http://127.0.0.1:8000/api/v1/auth/refresh
+http://127.0.0.1:8000/api/v1/auth/logout
+http://127.0.0.1:8000/api/v1/users/password/change/request-otp
+http://127.0.0.1:8000/api/v1/users/password/change/confirm
+http://127.0.0.1:8000/api/v1/users/email/verification/request-otp
+http://127.0.0.1:8000/api/v1/users/email/verification/confirm
+http://127.0.0.1:8000/api/v1/users/email/change/request-otp
+http://127.0.0.1:8000/api/v1/users/email/change/confirm
+
+
+k6 Testing =>
+
+k6 run --summary-export=perf/reports/01_health.json perf/scripts/01_health.js
+k6 run --summary-export=perf/reports/02_signup.json perf/scripts/02_signup.js
+k6 run --summary-export=perf/reports/03_login.json perf/scripts/03_login.js
+k6 run --summary-export=perf/reports/04_profile_details.json perf/scripts/04_profile_details.js
+k6 run --summary-export=perf/reports/05_refresh.json perf/scripts/05_refresh.js
+k6 run --summary-export=perf/reports/06_logout.json perf/scripts/06_logout.js
+k6 run --summary-export=perf/reports/07_pwd_change_request_otp.json perf/scripts/07_pwd_change_request_otp.js
+k6 run --summary-export=perf/reports/08_pwd_change_confrim_otp.json perf/scripts/08_pwd_change_confirm_single.js
+k6 run --summary-export=perf/reports/09_email_verify_request_otp.json perf/scripts/09_email_verify_request_otp.js
+k6 run --summary-export=perf/reports/10_email_verify_confirm_single.json perf/scripts/10_email_verify_confirm_single.js
+k6 run --summary-export=perf/reports/11_email_change_request_otp.json perf/scripts/11_email_change_request_otp.js
+k6 run --summary-export=perf/reports/12_email_change_confirm_single.json perf/scripts/12_email_change_confirm_single.js
+
+
+export TEST_USER_EMAIL_VERIFIED="cjain9975@gmail.com"
+export TEST_USER_PASSWORD_VERIFIED="NewStrong@123"
+export TEST_USER_EMAIL_UNVERIFIED="cjain9975@gmail.com"
+export TEST_USER_PASSWORD_UNVERIFIED="NewStrong@123"
+export ACCESS_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMTQiLCJ0eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzczODU4NTI3LCJpc3MiOiJpcnRjLWJhY2tlbmQiLCJhdWQiOiJpcnRjLXVzZXJzIiwiYWdhaW50X3Rva2VuX3R5cGUiOiJyZWZyZXNoIiwiYWdhaW5zdF90b2tlbl9pZCI6IjUxNzYiLCJqdGkiOiI1MTc1In0.ZDQlY55Vt2PnsB88OIcAo8BTL7T_aCG3x4V2wMZJW90"
+export CHALLENGE_ID="EMAILCHANGE_214_20260318175822_69F701"
+export OTP_CODE="634359"
+export NEW_PASSWORD="NewStrong@123"
+export CONFIRM_PASSWORD="NewStrong@123"
 
 
 
