@@ -243,7 +243,7 @@ async def logout(
     )
 
     return success_response(
-        messages=["Logout successful"],
+        messages=["Logout successful from current active device session"],
     )
 
 
@@ -253,3 +253,130 @@ router.add_api_route(
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
+
+
+# ---------------------------
+# logout all devices process
+# ---------------------------
+
+@feature_control(
+    {
+        "name": "v1.auth.logout",
+        "logging": {
+            "console" : True,
+            "file" : True,
+        },
+        "rate_limit": {
+            "limit": 200000,
+            "window": 60,
+        },
+    }
+)
+async def logout_all_devices(
+    body: LogoutRequest,
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
+    token_service: TokenService = Depends(
+        get_token_service
+    ),
+):
+
+    # Decode refresh token payload
+    user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
+
+    # Extract and normalize ids
+    access_user_id = int(user_details_from_access_token.get("sub"))
+    access_token_id = int(user_details_from_access_token.get("jti"))
+
+    refresh_user_id = int(user_details_from_refresh_token.get("sub"))
+    refresh_token_id = int(user_details_from_refresh_token.get("jti"))
+    refresh_against_access_id = int(user_details_from_refresh_token.get("against_token_id"))
+
+    # Token pair binding checks
+    if access_user_id != refresh_user_id:
+        raise BaseAppException(
+            messages=["Access and refresh token user mismatch"],
+            status_code=401,
+        )
+
+    if access_token_id != refresh_against_access_id:
+        raise BaseAppException(
+            messages=["Access and refresh token pair mismatch"],
+            status_code=401,
+        )
+
+    # Access row validations
+    access_token_row = await token_service.get_access(access_token_id)
+    if not access_token_row:
+        raise BaseAppException(
+            messages=["Access token not found"],
+            status_code=401,
+        )
+
+    if access_token_row.token_type != "access":
+        raise BaseAppException(
+            messages=["Invalid access token type"],
+            status_code=401,
+        )
+
+    if int(access_token_row.user_id) != access_user_id:
+        raise BaseAppException(
+            messages=["Access token user mismatch"],
+            status_code=401,
+        )
+
+    # Refresh row validations
+    refresh_token_row = await token_service.get_refresh(refresh_token_id)
+    if not refresh_token_row:
+        raise BaseAppException(
+            messages=["Refresh token not found"],
+            status_code=401,
+        )
+
+    if refresh_token_row.token_type != "refresh":
+        raise BaseAppException(
+            messages=["Invalid refresh token type"],
+            status_code=401,
+        )
+
+    if int(refresh_token_row.user_id) != refresh_user_id:
+        raise BaseAppException(
+            messages=["Refresh token user mismatch"],
+            status_code=401,
+        )
+
+    if refresh_token_row.revoked:
+        raise BaseAppException(
+            messages=["Refresh token already revoked"],
+            status_code=401,
+        )
+
+    if not token_service.is_raw_token_matches_stored_hash(
+        raw_token=body.refresh_token,
+        stored_hash=refresh_token_row.token_hash,
+    ):
+        raise BaseAppException(
+            status_code=401,
+            messages=["Invalid refresh token"],
+        )
+
+    # Single transaction revoke all (access-token, refresh-token) + best-effort cache cleanup
+    await token_service.logout_from_all_devices_by_user_id(
+        user_id=access_user_id,
+        access_token_id=access_token_id,
+        refresh_token_id=refresh_token_id,
+    )
+
+    return success_response(
+        messages=["Logout successful from all active devices session"],
+    )
+
+
+router.add_api_route(
+    "/logout_all_devices",
+    logout_all_devices,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+

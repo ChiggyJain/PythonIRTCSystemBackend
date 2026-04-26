@@ -48,6 +48,13 @@ class TokenRepositoryBase(ABC):
         pass
 
     @abstractmethod
+    async def revoke_token_by_user(
+        self,
+        user_id: int,
+    ) -> None:
+        pass
+
+    @abstractmethod
     async def commit(self) -> None:
         pass
 

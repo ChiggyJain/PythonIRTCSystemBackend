@@ -5,6 +5,7 @@ SQLAlchemy Token Repository
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 from app.domains.auth.models import UserTokens
 from app.domains.auth.repository.base import (
     TokenRepositoryBase,
@@ -112,6 +113,33 @@ class TokenRepositorySQLAlchemy(
         )
         await self.db.execute(stmt)
         # await self.db.commit()
+
+    
+    # -------------------------
+    # revoke by user
+    # -------------------------
+
+    async def revoke_token_by_user(
+        self,
+        user_id: int,
+    ) -> None:
+
+        stmt = (
+            update(UserTokens)
+            .where(
+                (UserTokens.user_id == user_id) 
+                    &
+                (UserTokens.revoked == 0) 
+                    &
+                (UserTokens.status == 'A')
+            )
+            .values(
+                revoked=True,
+                updated_at=now_ist(),
+                status="Z",
+            )
+        )
+        await self.db.execute(stmt)
 
 
     async def commit(self) -> None:
