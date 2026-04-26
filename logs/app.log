@@ -5461,3 +5461,7 @@
 2026-04-26 10:18:11 | INFO | SpawnProcess-9-13873 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 10:18:11.542470 | 2026-04-26 10:18:11.552439 | 9 | None | 200
 2026-04-26 10:43:47 | INFO | SpawnProcess-1-15779 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:43:47.558013 | 2026-04-26 10:43:47.577284 | 19 |  | 500
 2026-04-26 10:44:04 | INFO | SpawnProcess-1-15779 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:44:04.450315 | 2026-04-26 10:44:04.825730 | 375 | None | 200
+2026-04-26 10:55:48 | INFO | SpawnProcess-1-16416 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:55:48.238553 | 2026-04-26 10:55:48.612986 | 374 | None | 200
+2026-04-26 10:55:50 | INFO | SpawnProcess-1-16416 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:55:50.271109 | 2026-04-26 10:55:50.650665 | 379 | None | 200
+2026-04-26 10:57:55 | INFO | SpawnProcess-1-16416 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout_all_devices | 2026-04-26 10:57:55.076144 | 2026-04-26 10:57:55.168264 | 92 | None | 200
+2026-04-26 10:58:35 | INFO | SpawnProcess-1-16416 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 10:58:35.175611 | 2026-04-26 10:58:35.177419 | 1 |  | 500
