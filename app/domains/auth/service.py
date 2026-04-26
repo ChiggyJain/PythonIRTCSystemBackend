@@ -45,6 +45,7 @@ class TokenService:
         self,
         *,
         user_id: int,
+        user_profile: str = "User",
         ip_address: str | None = None,
         user_agent: str | None = None,
     ):
@@ -86,6 +87,7 @@ class TokenService:
             # Build JWTs with DB IDs.
             access_token = create_access_token(
                 user_id=user_id,
+                user_profile=user_profile,
                 token_id=access_token_row.id,
                 against_token_type="refresh",
                 against_token_id=refresh_token_row.id
@@ -93,6 +95,7 @@ class TokenService:
 
             refresh_token = create_refresh_token(
                 user_id=user_id,
+                user_profile=user_profile,
                 token_id=refresh_token_row.id,
                 against_token_type="access",
                 against_token_id=access_token_row.id

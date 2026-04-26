@@ -27,6 +27,7 @@ settings = get_settings()
 def _create_token(
     *,
     user_id: int,
+    user_profile: str = "User",
     token_type: str,
     expires_delta: timedelta,
     token_id: int | None = None,
@@ -36,6 +37,7 @@ def _create_token(
 
     expire = now_ist() + expires_delta
     payload = {
+        "profile" : user_profile,
         "sub": str(user_id),
         "type": token_type,
         "exp": expire,
@@ -60,6 +62,7 @@ def _create_token(
 def create_access_token(
     *,
     user_id: int,
+    user_profile: str = "User",
     token_id: int,
     against_token_type: str,
     against_token_id: int
@@ -70,6 +73,7 @@ def create_access_token(
     )
     return _create_token(
         user_id=user_id,
+        user_profile=user_profile,
         token_type="access",
         expires_delta=expire,
         token_id=token_id,
@@ -85,6 +89,7 @@ def create_access_token(
 def create_refresh_token(
     *,
     user_id: int,
+    user_profile: str = "User",
     token_id: int,
     against_token_type: str,
     against_token_id: int
@@ -95,6 +100,7 @@ def create_refresh_token(
     )
     return _create_token(
         user_id=user_id,
+        user_profile=user_profile,
         token_type="refresh",
         expires_delta=expire,
         token_id=token_id,
