@@ -18,19 +18,29 @@ from app.common.utils.datetime import now_ist
 # ENUMS
 # =========================================================
 
+seat_type_enum = Enum(
+    "LOWER",
+    "MIDDLE",
+    "UPPER",
+    "SIDE_LOWER",
+    "SIDE_UPPER",
+    name="seat_type_enum",
+)
+
 status_enum = Enum(
     "A",
     "Z",
     name="status_enum",
 )
 
-class Train(Base):
+
+class Seat(Base):
 
     """
-    Train table
+    Seat table
     """
 
-    __tablename__ = "TRAIN"
+    __tablename__ = "Seat"
     
     __table_args__ = (
         UniqueConstraint("train_number", name="uq_train_number"),
@@ -42,12 +52,16 @@ class Train(Base):
         autoincrement=True,
         nullable=False,
     )
-    train_number: Mapped[str] = mapped_column(String(30), nullable=False)
-    train_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    # right now each train can have only one coach only as AC [doing simplification purpose only]
-    coach_name: Mapped[str] = mapped_column(String(10), nullable=False, default="AC")
-    # total seats in the single coach
-    total_seats: Mapped[int] = mapped_column(nullable=False)
+    # this train_id is the primary key of Train table model only
+    # but i don't want to treat as foreign-key concept
+    train_id: Mapped[int] = mapped_column(nullable=False)
+    seat_number: Mapped[int] = mapped_column(nullable=False)
+    seat_type: Mapped[str] = mapped_column(
+        seat_type_enum,
+        nullable=False,
+        default="LOWER",
+    )
+    price: Mapped[float] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist(),
