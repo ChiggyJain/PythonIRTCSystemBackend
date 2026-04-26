@@ -18,5 +18,9 @@ Only import models.
 from app.domains.users import users_model  # noqa
 from app.domains.auth import usertokens_model  # noqa
 from app.domains.security import models # noqa
+from app.domains.master_data import (
+    stations_model, trains_model, seats_model,
+    routes_model, routestations_model, schedules_model
+) # noqa
 
 
