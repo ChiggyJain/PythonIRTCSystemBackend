@@ -106,13 +106,13 @@ class OtpChallenges(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=now_ist(),
+        default=now_ist,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
     )
 
     # Current lifecycle status.
@@ -187,13 +187,13 @@ class OutboxEvents(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=now_ist(),
+        default=now_ist,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
     )
 
     # Current publishing state.
@@ -281,7 +281,7 @@ class SecurityEventLog(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=now_ist(),
+        default=now_ist,
     )
 
     # Result state for this event.

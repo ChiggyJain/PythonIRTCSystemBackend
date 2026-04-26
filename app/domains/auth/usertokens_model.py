@@ -79,14 +79,14 @@ class UserTokens(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
+        default=now_ist,
         nullable=False,
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
         nullable=False,
     )
 
