@@ -11,3 +11,11 @@ Elastic search store data in inverted-index data structure format
 Data Mapping: 
 1) What will be json document schemas, schemas-on-write/dynamic-schemas
 2) Static/Strict: Incoming document will be not accept if schemas is different as per setup
+
+STATION_CREATED: admin.station-created
+key: station-${station-id}
+payload: {
+    eventType: 'STATION_CREATED',
+    data: station-data-obj,
+    timestamp: currentTimestamp
+}
