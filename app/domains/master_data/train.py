@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from fastapi.datastructures import Default
 from sqlalchemy import (
     String,
     DateTime,
@@ -23,18 +24,17 @@ status_enum = Enum(
     name="status_enum",
 )
 
-class Station(Base):
+class Train(Base):
 
     """
-    STATION table
+    Train table
     """
 
-    __tablename__ = "STATION"
+    __tablename__ = "TRAIN"
     
     __table_args__ = (
-        UniqueConstraint("name", name="uq_station_name"),
-        UniqueConstraint("code", name="uq_station_code"),
-        Index("ix_station_status", "status"),
+        UniqueConstraint("train_number", name="uq_train_number"),
+        Index("ix_train_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(
@@ -42,10 +42,11 @@ class Station(Base):
         autoincrement=True,
         nullable=False,
     )
-    name: Mapped[str] = mapped_column(String(150), nullable=False)
-    code: Mapped[str] = mapped_column(String(20), nullable=False)
-    city: Mapped[str] = mapped_column(String(100), nullable=False)
-    state: Mapped[str] = mapped_column(String(100), nullable=False)
+    train_number: Mapped[str] = mapped_column(String(30), nullable=False)
+    train_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    # right each train can have only one coach only as AC [doing simplification purpose only]
+    coach_name: Mapped[str] = mapped_column(String(10), nullable=False, default="AC")
+    total_seats: Mapped[int] = mapped_column(Integer(5), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist(),
