@@ -1,6 +1,6 @@
 
 from datetime import datetime
-import decimal
+from decimal import Decimal
 from fastapi.datastructures import Default
 from sqlalchemy import (
     String,
@@ -8,7 +8,8 @@ from sqlalchemy import (
     Integer,
     UniqueConstraint,
     Index,
-    Enum
+    Enum,
+    Numeric
 )
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import Base
@@ -61,7 +62,7 @@ class Seats(Base):
         nullable=False,
         default="LOWER",
     )
-    price: Mapped[float] = mapped_column(nullable=False)
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
