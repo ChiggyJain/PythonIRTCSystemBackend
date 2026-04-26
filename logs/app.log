@@ -5465,3 +5465,4 @@
 2026-04-26 10:55:50 | INFO | SpawnProcess-1-16416 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:55:50.271109 | 2026-04-26 10:55:50.650665 | 379 | None | 200
 2026-04-26 10:57:55 | INFO | SpawnProcess-1-16416 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout_all_devices | 2026-04-26 10:57:55.076144 | 2026-04-26 10:57:55.168264 | 92 | None | 200
 2026-04-26 10:58:35 | INFO | SpawnProcess-1-16416 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 10:58:35.175611 | 2026-04-26 10:58:35.177419 | 1 |  | 500
+2026-04-26 11:01:22 | INFO | SpawnProcess-1-16871 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout-all-devices | 2026-04-26 11:01:22.398083 | 2026-04-26 11:01:22.404051 | 5 |  | 500

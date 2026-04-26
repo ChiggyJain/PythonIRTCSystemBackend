@@ -182,8 +182,9 @@ Base prefix: `/api/v1`
 
 ### Authenticated (Bearer access token)
 - `GET /api/v1/users/profile_details`
-- `POST /api/v1/auth/refresh` (requires refresh token in body)
-- `POST /api/v1/auth/logout` (requires refresh token in body)
+- `POST /api/v1/auth/refresh` (requires refresh-token in body)
+- `POST /api/v1/auth/logout` (requires refresh-token in body and access-token in header)
+- `POST /api/v1/auth/logout-all-devices` (requires refresh-token in body and access-token is header)
 - `POST /api/v1/users/password/change/request-otp`
 - `POST /api/v1/users/password/change/confirm`
 - `POST /api/v1/users/email/verification/request-otp`
@@ -210,7 +211,8 @@ Validation errors return `422` with normalized message array.
 - Access token validity is checked against Redis (`cache:auth:user:access:jti:{jti}`)
 - Login creates access+refresh rows and writes access-token cache/index
 - Refresh rotates token pair atomically and updates cache/index
-- Logout revokes token pair and performs cache cleanup
+- Logout revokes access-token + refresh-token pair and performs cache cleanup [Current active session devices]
+- Logout all devices revokes access-token + refresh-token pair and performs cache cleanup [All active session devices]
 - Password change revokes all active user tokens and clears access token cache set
 
 ## OTP Flow Model

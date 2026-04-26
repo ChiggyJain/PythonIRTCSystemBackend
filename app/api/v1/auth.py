@@ -370,7 +370,7 @@ async def logout_all_devices(
 
 
 router.add_api_route(
-    "/logout_all_devices",
+    "/logout-all-devices",
     logout_all_devices,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
