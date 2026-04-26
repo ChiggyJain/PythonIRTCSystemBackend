@@ -151,18 +151,19 @@ class UsersService:
             )
         
         data = {
-            "id": profile.get("id"),
-            "first_name": profile.get("first_name"),
-            "last_name": profile.get("last_name"),
-            "gender": profile.get("gender"),
-            "mobile": profile.get("mobile"),
-            "is_mobile_verified": profile.get("is_mobile_verified"),
+            "id": profile.get("id", 0),
+            "first_name": profile.get("first_name", ""),
+            "last_name": profile.get("last_name", ""),
+            "gender": profile.get("gender", ""),
+            "profile": profile.get("profile", "User"),
+            "mobile": profile.get("mobile", ""),
+            "is_mobile_verified": profile.get("is_mobile_verified", "N"),
             "mobile_verified_last_datetime": (
                 str(profile.get("mobile_verified_last_datetime"))
                 if profile.get("mobile_verified_last_datetime") is not None else ""
             ),
             "email": profile.get("email"),
-            "is_email_verified": profile.get("is_email_verified"),
+            "is_email_verified": profile.get("is_email_verified", "N"),
             "email_verified_last_datetime": (
                 str(profile.get("email_verified_last_datetime"))
                 if profile.get("email_verified_last_datetime") is not None else ""

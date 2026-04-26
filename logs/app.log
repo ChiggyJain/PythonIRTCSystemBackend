@@ -5431,3 +5431,9 @@
 2026-03-18 17:58:52 | INFO | SpawnProcess-1-16064 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-03-18 17:58:52.560641 | 2026-03-18 17:58:52.561375 | 0 | Request limit exceeded | 429
 2026-03-18 17:58:52 | INFO | SpawnProcess-1-16064 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-03-18 17:58:52.563388 | 2026-03-18 17:58:52.563863 | 0 | Request limit exceeded | 429
 2026-03-18 17:59:16 | INFO | SpawnProcess-1-16064 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-03-18 17:59:16.299916 | 2026-03-18 17:59:16.367990 | 68 | None | 200
+2026-04-26 09:49:53 | INFO | SpawnProcess-1-12182 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 09:49:52.754725 | 2026-04-26 09:49:53.188303 | 433 | None | 200
+2026-04-26 09:51:27 | INFO | SpawnProcess-2-12293 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 09:51:27.719758 | 2026-04-26 09:51:27.740157 | 20 | None | 200
+2026-04-26 09:53:25 | INFO | SpawnProcess-10-12499 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 09:53:25.320601 | 2026-04-26 09:53:25.328287 | 7 | None | 200
+2026-04-26 09:53:57 | INFO | SpawnProcess-10-12499 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 09:53:57.725389 | 2026-04-26 09:53:57.726810 | 1 |  | 500
+2026-04-26 09:54:05 | INFO | SpawnProcess-10-12499 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 09:54:05.156269 | 2026-04-26 09:54:05.585157 | 428 | None | 200
+2026-04-26 09:54:34 | INFO | SpawnProcess-10-12499 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 09:54:34.833318 | 2026-04-26 09:54:34.842925 | 9 | None | 200
