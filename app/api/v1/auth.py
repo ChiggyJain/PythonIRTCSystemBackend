@@ -362,8 +362,6 @@ async def logout_all_devices(
     # Single transaction revoke all (access-token, refresh-token) + best-effort cache cleanup
     await token_service.logout_from_all_devices_by_user_id(
         user_id=access_user_id,
-        access_token_id=access_token_id,
-        refresh_token_id=refresh_token_id,
     )
 
     return success_response(

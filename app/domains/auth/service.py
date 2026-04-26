@@ -318,12 +318,7 @@ class TokenService:
         self,
         *,
         user_id: int,
-        access_token_id: int | str,
-        refresh_token_id: int | str,
     ) -> None:
-
-        access_id = int(access_token_id)
-        refresh_id = int(refresh_token_id)
 
         # Single DB transaction for both revokes
         try:
