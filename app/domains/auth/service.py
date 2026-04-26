@@ -179,6 +179,7 @@ class TokenService:
         self,
         *,
         user_id: int,
+        user_profile: str = "User",
         current_access_token_id: int | str,
         current_refresh_token_id: int | str,
         ip_address: str | None = None,
@@ -228,6 +229,7 @@ class TokenService:
 
             new_access_token = create_access_token(
                 user_id=user_id,
+                user_profile=user_profile,
                 token_id=new_access_row.id,
                 against_token_type="refresh",
                 against_token_id=new_refresh_row.id,
@@ -235,6 +237,7 @@ class TokenService:
 
             new_refresh_token = create_refresh_token(
                 user_id=user_id,
+                user_profile=user_profile,
                 token_id=new_refresh_row.id,
                 against_token_type="access",
                 against_token_id=new_access_row.id,

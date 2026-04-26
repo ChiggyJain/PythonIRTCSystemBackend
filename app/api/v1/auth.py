@@ -56,6 +56,7 @@ async def refresh_token(
     # Decode refresh token payload
     user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
+    user_profile = int(user_details_from_refresh_token.get("profile", "User"))
     user_id = int(user_details_from_refresh_token.get("sub"))
     access_token_id = int(user_details_from_refresh_token.get("against_token_id"))
     refresh_token_id = int(user_details_from_refresh_token.get("jti"))
@@ -107,6 +108,7 @@ async def refresh_token(
     # Single flow: revoke old pair + issue new pair + cache cleanup
     tokens = await token_service.rotate_tokens_by_refresh(
         user_id=user_id,
+        user_profile=user_profile,
         current_access_token_id=access_token_id,
         current_refresh_token_id=refresh_token_id,
         ip_address=request.client.host if request.client else None,
