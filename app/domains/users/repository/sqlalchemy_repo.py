@@ -96,6 +96,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             Users.last_name.label("last_name"),
             Users.gender.label("gender"),
             Users.mobile.label("mobile"),
+            Users.profile.label("profile"),
             Users.is_mobile_verified.label("is_mobile_verified"),
             Users.mobile_verified_last_datetime.label("mobile_verified_last_datetime"),
             Users.email.label("email"),
