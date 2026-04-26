@@ -35,7 +35,8 @@ class RouteStation(Base):
     __tablename__ = "ROUTE_STATION"
     
     __table_args__ = (
-        UniqueConstraint("train_id", name="uq_train_id"),
+        UniqueConstraint("route_id", "sequence_number", name="uq_routeId_seqNumber"),
+        UniqueConstraint("route_id", "station_id", name="uq_routeId_stationId"),
         Index("ix_train_status", "status"),
     )
 
@@ -50,6 +51,7 @@ class RouteStation(Base):
     # this station_id is the primary key of STATION table model only
     # but i don't want to treat as foreign-key concept
     station_id: Mapped[int] = mapped_column(nullable=False)
+    # order of station in route
     sequence_number: Mapped[int] = mapped_column(nullable=False)
     arrival_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
     departure_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)

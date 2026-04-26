@@ -34,7 +34,7 @@ class Route(Base):
     __tablename__ = "ROUTE"
     
     __table_args__ = (
-        UniqueConstraint("train_id", name="uq_train_id"),
+        UniqueConstraint("train_id", "arrival_time", name="uq_train_arrival"),
         Index("ix_train_status", "status"),
     )
 
