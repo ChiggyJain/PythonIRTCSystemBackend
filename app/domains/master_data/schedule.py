@@ -1,12 +1,15 @@
 
-from datetime import datetime
+from datetime import datetime, time, date
+from fastapi.datastructures import Default
 from sqlalchemy import (
     String,
     DateTime,
     Integer,
     UniqueConstraint,
     Index,
-    Enum
+    Enum,
+    Time,
+    Date
 )
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import Base
@@ -23,19 +26,17 @@ status_enum = Enum(
     name="status_enum",
 )
 
-class Stations(Base):
+
+class Schedules(Base):
 
     """
-    STATIONS table
+    SCHEDULES table
     """
 
-    __tablename__ = "STATIONS"
+    __tablename__ = "SCHEDULES"
     
     __table_args__ = (
-        UniqueConstraint("name", "code", name="uq_name"),
-        UniqueConstraint("code", name="uq_code"),
-        Index("ix_name", "name"),
-        Index("ix_code", "code"),
+        UniqueConstraint("train_id", "departure_date", name="uq_trainId_depDate"),
         Index("ix_status", "status"),
     )
 
@@ -44,10 +45,9 @@ class Stations(Base):
         autoincrement=True,
         nullable=False,
     )
-    name: Mapped[str] = mapped_column(String(150), nullable=False)
-    code: Mapped[str] = mapped_column(String(20), nullable=False)
-    city: Mapped[str] = mapped_column(String(100), nullable=False)
-    state: Mapped[str] = mapped_column(String(100), nullable=False)
+    # this train_id column is the primary key of TRAIN table model only but I don't want to treat as foreign-key concept
+    train_id: Mapped[int] = mapped_column(nullable=False)
+    departure_date: Mapped[date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist(),

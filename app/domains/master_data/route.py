@@ -25,13 +25,13 @@ status_enum = Enum(
 )
 
 
-class Route(Base):
+class Routes(Base):
 
     """
-    ROUTE table
+    ROUTES table
     """
 
-    __tablename__ = "ROUTE"
+    __tablename__ = "ROUTES"
     
     __table_args__ = (
         UniqueConstraint("train_id", name="uq_trainId"),

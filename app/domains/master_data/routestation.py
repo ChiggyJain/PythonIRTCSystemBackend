@@ -26,13 +26,13 @@ status_enum = Enum(
 )
 
 
-class RouteStation(Base):
+class RouteStations(Base):
 
     """
-    ROUTE_STATION table
+    ROUTE_STATIONS table
     """
 
-    __tablename__ = "ROUTE_STATION"
+    __tablename__ = "ROUTE_STATIONS"
     
     __table_args__ = (
         UniqueConstraint("route_id", "sequence_number", name="uq_routeId_seqNumber"),

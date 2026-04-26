@@ -34,13 +34,13 @@ status_enum = Enum(
 )
 
 
-class Seat(Base):
+class Seats(Base):
 
     """
-    SEAT table
+    SEATS table
     """
 
-    __tablename__ = "SEAT"
+    __tablename__ = "SEATS"
     
     __table_args__ = (
         UniqueConstraint("train_id", "seat_number", name="uq_trainId_seatNumber"),
