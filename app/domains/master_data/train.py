@@ -34,7 +34,7 @@ class Train(Base):
     
     __table_args__ = (
         UniqueConstraint("train_number", name="uq_train_number"),
-        Index("ix_train_status", "status"),
+        Index("ix_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(

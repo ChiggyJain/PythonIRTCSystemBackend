@@ -32,9 +32,11 @@ class Station(Base):
     __tablename__ = "STATION"
     
     __table_args__ = (
-        UniqueConstraint("name", name="uq_station_name"),
+        UniqueConstraint("name", "code", name="uq_station_name"),
         UniqueConstraint("code", name="uq_station_code"),
-        Index("ix_station_status", "status"),
+        Index("ix_name", "name"),
+        Index("ix_code", "code"),
+        Index("ix_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(

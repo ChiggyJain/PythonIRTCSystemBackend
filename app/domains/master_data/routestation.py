@@ -37,7 +37,7 @@ class RouteStation(Base):
     __table_args__ = (
         UniqueConstraint("route_id", "sequence_number", name="uq_routeId_seqNumber"),
         UniqueConstraint("route_id", "station_id", name="uq_routeId_stationId"),
-        Index("ix_train_status", "status"),
+        Index("ix_status", "status"),
     )
 
     id: Mapped[int] = mapped_column(
