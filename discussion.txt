@@ -1,4 +1,14 @@
 
+
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/domains/master_data/stations_schema.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/domains/master_data/repository/base.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/domains/master_data/repository/sqlalchemy_repo.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/domains/master_data/stations_service.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/dependencies/repositories.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/dependencies/master_data.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/api/v1/admin_master_data.py
+/home/chirag/CJPersonal/Learning/Projects/PythonIRTCSystemBackend/app/api/v1/router.py
+
 Elastic Search:
 Each Index (Group of Document) => Each Table (Group of Row)
 Each Index can have multiple Json Document => Each Table can have multiple Row
