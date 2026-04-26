@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import datetime, time
 from fastapi.datastructures import Default
 from sqlalchemy import (
     String,
@@ -7,7 +7,8 @@ from sqlalchemy import (
     Integer,
     UniqueConstraint,
     Index,
-    Enum
+    Enum,
+    Time
 )
 from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import Base
@@ -18,15 +19,6 @@ from app.common.utils.datetime import now_ist
 # ENUMS
 # =========================================================
 
-seat_type_enum = Enum(
-    "LOWER",
-    "MIDDLE",
-    "UPPER",
-    "SIDE_LOWER",
-    "SIDE_UPPER",
-    name="seat_type_enum",
-)
-
 status_enum = Enum(
     "A",
     "Z",
@@ -34,17 +26,16 @@ status_enum = Enum(
 )
 
 
-class Seat(Base):
+class RouteStation(Base):
 
     """
-    SEAT table
+    ROUTE_STATION table
     """
 
-    __tablename__ = "SEAT"
+    __tablename__ = "ROUTE_STATION"
     
     __table_args__ = (
         UniqueConstraint("train_id", name="uq_train_id"),
-        UniqueConstraint("seat_number", name="uq_seat_number"),
         Index("ix_train_status", "status"),
     )
 
@@ -53,16 +44,16 @@ class Seat(Base):
         autoincrement=True,
         nullable=False,
     )
-    # this train_id is the primary key of TRAIN table model only
+    # this route_id is the primary key of ROUTE table model only
     # but i don't want to treat as foreign-key concept
-    train_id: Mapped[int] = mapped_column(nullable=False)
-    seat_number: Mapped[int] = mapped_column(nullable=False)
-    seat_type: Mapped[str] = mapped_column(
-        seat_type_enum,
-        nullable=False,
-        default="LOWER",
-    )
-    price: Mapped[float] = mapped_column(nullable=False)
+    route_id: Mapped[int] = mapped_column(nullable=False)
+    # this station_id is the primary key of STATION table model only
+    # but i don't want to treat as foreign-key concept
+    station_id: Mapped[int] = mapped_column(nullable=False)
+    sequence_number: Mapped[int] = mapped_column(nullable=False)
+    arrival_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
+    departure_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
+    distance_from_origin: Mapped[float] = mapped_column(nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist(),

@@ -28,10 +28,10 @@ status_enum = Enum(
 class Route(Base):
 
     """
-    Route table
+    ROUTE table
     """
 
-    __tablename__ = "Route"
+    __tablename__ = "ROUTE"
     
     __table_args__ = (
         UniqueConstraint("train_id", name="uq_train_id"),
@@ -43,7 +43,7 @@ class Route(Base):
         autoincrement=True,
         nullable=False,
     )
-    # this train_id is the primary key of Train table model only
+    # this train_id is the primary key of TRAIN table model only
     # but i don't want to treat as foreign-key concept
     train_id: Mapped[int] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
