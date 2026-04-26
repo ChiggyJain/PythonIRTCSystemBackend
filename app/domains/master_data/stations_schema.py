@@ -8,13 +8,15 @@ STATION_CODE_REGEX = re.compile(r"^[A-Z0-9_]{2,20}$")
 
 
 class StationCreateRequest(BaseModel):
-    
+
     name: str
     code: str
     city: str
     state: str
 
-    @field_validator("name", "code", "city", "state", mode="before")
+    @field_validator(
+        "name", "code", "city", "state", mode="before"
+    )
     @classmethod
     def strip_values(cls, v, info: ValidationInfo):
         if isinstance(v, str):
