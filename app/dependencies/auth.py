@@ -204,6 +204,20 @@ async def get_current_user_details_from_refresh_token(
     return payload
 
 
+# =================================================
+# get admin current user details from access_token
+# =================================================
+
+async def get_current_admin_user_details_from_access_token(
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
+):
+    profile = str(user_details_from_access_token.get("profile") or "").strip()
+    if profile != "Admin":
+        raise BaseAppException(
+            messages=["Only Admin user can access this API"],
+            status_code=403,
+        )
+    return user_details_from_access_token
 
 
 
