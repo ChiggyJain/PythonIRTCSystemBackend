@@ -43,8 +43,7 @@ class Seat(Base):
     __tablename__ = "SEAT"
     
     __table_args__ = (
-        UniqueConstraint("train_id", name="uq_train_id"),
-        UniqueConstraint("seat_number", name="uq_seat_number"),
+        UniqueConstraint("train_id", "seat_number", name="uq_trainId_seatNumber"),
         Index("ix_train_status", "status"),
     )
 
