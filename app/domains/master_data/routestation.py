@@ -45,13 +45,11 @@ class RouteStation(Base):
         autoincrement=True,
         nullable=False,
     )
-    # this route_id is the primary key of ROUTE table model only
-    # but i don't want to treat as foreign-key concept
+    # this route_id column is the primary key of ROUTE table model only but I don't want to treat as foreign-key concept
     route_id: Mapped[int] = mapped_column(nullable=False)
-    # this station_id is the primary key of STATION table model only
-    # but i don't want to treat as foreign-key concept
+    # this station_id column is the primary key of STATION table model only but I don't want to treat as foreign-key concept
     station_id: Mapped[int] = mapped_column(nullable=False)
-    # order of station in route
+    # order of station in route like 1,2,3,4,5,6 etc
     sequence_number: Mapped[int] = mapped_column(nullable=False)
     arrival_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
     departure_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)

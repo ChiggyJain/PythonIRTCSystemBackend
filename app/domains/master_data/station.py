@@ -32,8 +32,8 @@ class Station(Base):
     __tablename__ = "STATION"
     
     __table_args__ = (
-        UniqueConstraint("name", "code", name="uq_station_name"),
-        UniqueConstraint("code", name="uq_station_code"),
+        UniqueConstraint("name", "code", name="uq_name"),
+        UniqueConstraint("code", name="uq_code"),
         Index("ix_name", "name"),
         Index("ix_code", "code"),
         Index("ix_status", "status"),
