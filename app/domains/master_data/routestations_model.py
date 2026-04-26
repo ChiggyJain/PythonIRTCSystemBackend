@@ -56,13 +56,13 @@ class RouteStations(Base):
     distance_from_origin: Mapped[float] = mapped_column(nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
+        default=now_ist,
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
         nullable=False,
     )
     status: Mapped[str] = mapped_column(

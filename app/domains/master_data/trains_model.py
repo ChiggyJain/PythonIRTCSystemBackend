@@ -1,6 +1,5 @@
 
 from datetime import datetime
-from fastapi.datastructures import Default
 from sqlalchemy import (
     String,
     DateTime,
@@ -50,13 +49,13 @@ class Trains(Base):
     total_seats: Mapped[int] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
+        default=now_ist,
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
         nullable=False,
     )
     status: Mapped[str] = mapped_column(
