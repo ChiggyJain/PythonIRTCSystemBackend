@@ -6,7 +6,7 @@ SQLAlchemy Token Repository
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-from app.domains.auth.models import UserTokens
+from app.domains.auth.usertokens_model import UserTokens
 from app.domains.auth.repository.base import (
     TokenRepositoryBase,
 )

@@ -6,8 +6,8 @@ from datetime import datetime
 from typing import Any
 from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.domains.users.models import Users
-from app.domains.auth.models import UserTokens
+from app.domains.users.users_model import Users
+from app.domains.auth.usertokens_model import UserTokens
 from app.domains.security.models import (
     OtpChallenges,
     OutboxEvents,
