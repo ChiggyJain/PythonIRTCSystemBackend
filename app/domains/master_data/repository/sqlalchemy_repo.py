@@ -32,6 +32,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             updated_at=now_ist(),
         )
         self.db.add(row)
+        # temporary stored data in memory not actual db level
         await self.db.flush()
         return row
 
