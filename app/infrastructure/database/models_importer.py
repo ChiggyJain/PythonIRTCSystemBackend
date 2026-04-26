@@ -15,7 +15,7 @@ Only import models.
 """
 
 
-from app.domains.users import models  # noqa
+from app.domains.users import users_model  # noqa
 from app.domains.auth import models  # noqa
 from app.domains.security import models # noqa
 
