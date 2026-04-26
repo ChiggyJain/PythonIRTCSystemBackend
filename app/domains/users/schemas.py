@@ -48,7 +48,7 @@ class UserSignupRequest(BaseModel):
     gender: str
     password: str
     confirm_password: str
-    profile: Optional[str]
+    profile: str = "User"
 
     # -------------------------
     # strip spaces
