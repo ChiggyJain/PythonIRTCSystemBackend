@@ -1,0 +1,13 @@
+
+Elastic Search:
+Each Index (Group of Document) => Each Table (Group of Row)
+Each Index can have multiple Json Document => Each Table can have multiple Row
+{
+    "trainId": "123",
+    "trainName": "ABC"
+}
+Index-Template: Create index (which settings to apply: data-mapping, priority-of-indexes)
+Elastic search store data in inverted-index data structure format
+Data Mapping: 
+1) What will be json document schemas, schemas-on-write/dynamic-schemas
+2) Static/Strict: Incoming document will be not accept if schemas is different as per setup
