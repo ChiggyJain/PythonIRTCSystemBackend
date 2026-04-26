@@ -56,7 +56,7 @@ async def refresh_token(
     # Decode refresh token payload
     user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
-    user_profile = int(user_details_from_refresh_token.get("profile", "User"))
+    user_profile = user_details_from_refresh_token.get("profile", "User")
     user_id = int(user_details_from_refresh_token.get("sub"))
     access_token_id = int(user_details_from_refresh_token.get("against_token_id"))
     refresh_token_id = int(user_details_from_refresh_token.get("jti"))

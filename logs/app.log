@@ -5441,3 +5441,9 @@
 2026-04-26 09:56:51 | INFO | SpawnProcess-12-12657 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 09:56:50.797497 | 2026-04-26 09:56:51.209551 | 412 | None | 200
 2026-04-26 09:57:04 | INFO | SpawnProcess-12-12657 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-04-26 09:57:04.281800 | 2026-04-26 09:57:04.282851 | 1 |  | 500
 2026-04-26 09:57:57 | INFO | SpawnProcess-12-12657 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-04-26 09:57:57.183845 | 2026-04-26 09:57:57.284949 | 101 | None | 200
+2026-04-26 10:00:46 | INFO | SpawnProcess-21-13000 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-26 10:00:46.193337 | 2026-04-26 10:00:46.617216 | 423 | None | 200
+2026-04-26 10:01:05 | INFO | SpawnProcess-21-13000 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-04-26 10:01:05.272260 | 2026-04-26 10:01:05.275183 | 2 | invalid literal for int() with base 10: 'User' | 500
+2026-04-26 10:01:07 | INFO | SpawnProcess-21-13000 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-04-26 10:01:07.169118 | 2026-04-26 10:01:07.170580 | 1 | invalid literal for int() with base 10: 'User' | 500
+2026-04-26 10:01:39 | INFO | SpawnProcess-22-13051 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-04-26 10:01:39.392970 | 2026-04-26 10:01:39.490712 | 97 | None | 200
+2026-04-26 10:01:52 | INFO | SpawnProcess-22-13051 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-26 10:01:52.480278 | 2026-04-26 10:01:52.492046 | 11 | None | 200
+2026-04-26 10:02:24 | INFO | SpawnProcess-22-13051 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-04-26 10:02:24.431727 | 2026-04-26 10:02:24.519692 | 87 | None | 200
