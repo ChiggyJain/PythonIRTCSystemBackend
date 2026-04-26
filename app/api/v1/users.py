@@ -179,7 +179,6 @@ async def profile_details(
     ),
 ):
     
-    print(f"user_details_from_access_token: {user_details_from_access_token}")
     user_id = user_details_from_access_token.get("sub")
     user_profile_details = await service.get_profile_details(user_id=user_id)
     
