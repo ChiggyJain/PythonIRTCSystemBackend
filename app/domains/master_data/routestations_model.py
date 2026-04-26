@@ -51,8 +51,8 @@ class RouteStations(Base):
     station_id: Mapped[int] = mapped_column(nullable=False)
     # order of station in route like 1,2,3,4,5,6 etc
     sequence_number: Mapped[int] = mapped_column(nullable=False)
-    arrival_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
-    departure_time: Mapped[time] = mapped_column(Time(fsp=0), nullable=False)
+    arrival_time: Mapped[time] = mapped_column(Time, nullable=False)
+    departure_time: Mapped[time] = mapped_column(Time, nullable=False)
     distance_from_origin: Mapped[float] = mapped_column(nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
