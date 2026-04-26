@@ -34,6 +34,7 @@ class UsersRepositoryBase(ABC):
         email: str,
         password: str,
         gender: str,
+        profile: str
     ) -> Users:
         pass
 

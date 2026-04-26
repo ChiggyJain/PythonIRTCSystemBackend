@@ -77,6 +77,7 @@ async def signup_user(
         email=body.email,
         password=body.password,
         gender=body.gender,
+        profile=body.get("profile", "User")
     )
 
     return success_response(

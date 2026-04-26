@@ -45,6 +45,13 @@ gender_enum = Enum(
     name="gender_enum",
 )
 
+profile_enum = Enum(
+    "User",
+    "Admin",
+    "Guest",
+    name="profile_enum",
+)
+
 status_enum = Enum(
     "A",
     "Z",
@@ -134,6 +141,12 @@ class Users(Base):
     gender: Mapped[str] = mapped_column(
         gender_enum,
         nullable=False,
+    )
+
+    profile: Mapped[str] = mapped_column(
+        profile_enum,
+        nullable=False,
+        default="User",
     )
 
     created_at: Mapped[datetime] = mapped_column(

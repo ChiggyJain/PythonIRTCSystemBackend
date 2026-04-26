@@ -50,6 +50,7 @@ class UsersService:
         email: str,
         password: str,
         gender: str,
+        profile: str,
     ):
         
         # bcrypt hashing is CPU-heavy; run in worker thread
@@ -65,6 +66,7 @@ class UsersService:
                 email=email,
                 password=hashed_password,
                 gender=gender,
+                profile=profile
             )
 
         except IntegrityError:

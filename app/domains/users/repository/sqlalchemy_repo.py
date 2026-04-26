@@ -45,6 +45,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         email: str,
         password: str,
         gender: str,
+        profile: str
     ) -> Users:
 
         user = Users(
@@ -54,6 +55,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             email=email,
             password=password,
             gender=gender,
+            profile=profile,
             status="A",
             created_at=now_ist(),
             updated_at=now_ist(),

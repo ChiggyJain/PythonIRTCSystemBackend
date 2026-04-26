@@ -1,5 +1,6 @@
 
 import re
+from typing import Optional
 from pydantic import (
     BaseModel,
     EmailStr,
@@ -28,6 +29,9 @@ PASSWORD_REGEX = re.compile(
 # allow gender
 ALLOWED_GENDERS = ["Male", "Female", "Transgender"]
 
+# allow profile
+ALLOWED_PROFILES = ["User", "Admin", "Guest"]
+
 
 
 # =========================================================
@@ -44,6 +48,7 @@ class UserSignupRequest(BaseModel):
     gender: str
     password: str
     confirm_password: str
+    profile: Optional[str]
 
     # -------------------------
     # strip spaces
@@ -57,6 +62,7 @@ class UserSignupRequest(BaseModel):
         "gender",
         "password",
         "confirm_password",
+        "profile",
         mode="before",
     )
     @classmethod
@@ -105,7 +111,7 @@ class UserSignupRequest(BaseModel):
     
 
     # -------------------------
-    # mobile validation
+    # gender validation
     # -------------------------
 
     @field_validator("gender")
@@ -116,6 +122,21 @@ class UserSignupRequest(BaseModel):
                 f"gender must be one of: {', '.join(ALLOWED_GENDERS)}"
             )
         return v
+    
+
+    # -------------------------
+    # profile validation
+    # -------------------------
+
+    @field_validator("profile")
+    @classmethod
+    def validate_profile(cls, v, info:ValidationInfo):
+        if v!="" and v!=None and v not in ALLOWED_PROFILES:
+            raise ValueError(
+                f"profile must be one of: {', '.join(ALLOWED_PROFILES)}"
+            )
+        return v
+    
     
 
     # -------------------------
