@@ -19,6 +19,8 @@ from app.domains.users.repository.sqlalchemy_repo import (
 )
 from app.domains.security.repository.base import SecurityRepositoryBase
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+from app.domains.master_data.repository.base import MasterDataRepositoryBase
+from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
 
 
 
@@ -54,4 +56,15 @@ def get_security_repository(
     Returns security repository implementation.
     """
     repo: SecurityRepositoryBase = SecuritySQLAlchemyRepository(db)
+    return repo
+
+
+# =========================================================
+# Master-Data repository provider
+# =========================================================
+
+def get_master_data_repository(
+    db: AsyncSession = Depends(get_db),
+) -> MasterDataRepositoryBase:
+    repo: MasterDataRepositoryBase = MasterDataSQLAlchemyRepository(db)
     return repo
