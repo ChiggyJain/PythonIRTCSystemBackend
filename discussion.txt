@@ -33,35 +33,20 @@ payload: {
 TrainId and Stations are required
 
 
-Creating train-wtih-seats details part is done with (DB + Outbox now, Kafka publisher later) and tested properly.
-Now, I want to create an protected POST api for creating the train-route-with-stations (DB + Outbox now, Kafka publisher later) details.
+Creating train-wtih-route-stations details part is done with (DB + Outbox now, Kafka publisher later) and tested properly.
+Now, I want to create an protected POST api for creating the train-schedule (DB + Outbox now, Kafka publisher later) details.
 Sample Parameters:
 {
   "train_id" : 1,
-  "station_details" : [
-    {
-      "station_id" : 1,
-      "sequence_number" : 1,
-      "arrival_time" : "15:00",
-      "departure_time" : "15:10",
-      "distance_from_origin" : 0
-    },
-    {
-      "station_id" : 2,
-      "sequence_number" : 2,
-      "arrival_time" : "15:30",
-      "departure_time" : "15:40",
-      "distance_from_origin" : 10
-    }
-  ]
+  "departure_date" : "2026-04-27"
 }
 All fields are compulsory.
 train_id must be exists in TRAINS table. If not exists then return error.
-train_id must be unique in ROUTES table. Each train_id can have only one ROUTES details.
-Given all station_id must be exists in STATIONS table. If any station is not exists then return error.
-sequence_number must be in sequence format 1..N. If not then return error
-distance_from_origin must be zero for first station who have sequence_number=1 only.
-distance_from_origin must be >0 except first station who have sequence_number=1 only.
-arrival_time and departure_time must not overlap for any stations
-train_id details will be stored into ROUTES table only.
-station_details (station_id, sequence_number, arrival_time, departure_time, distance_from_origin) will be stored into ROUTE_STATIONS using route_id only.
+train_id must be exists in ROUTES table. Each train_id can have only one ROUTES details.
+Fetch all route_station details using given train_id from ROUTE_STATTIONS table only.
+  - Check all station sequence_number must be in sequence number from 1..Now. If not return error.
+  - Check all station arrival_time and departure_time must not be overlap. If not return error.
+  - Check distance_from_origin from must be 0 for first station whose sequence_number=1. If not return error.
+  - Check distance_from_origin from must be >0 for next all station. If not return error.
+Create schedule using (train_id, departure_date) into SCHEDULES table only. 
+  - Check unique indexes based on (train_id, departure_date). If not return error.
