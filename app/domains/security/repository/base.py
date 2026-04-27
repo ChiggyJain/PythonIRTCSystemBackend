@@ -53,10 +53,6 @@ class SecurityRepositoryBase(ABC):
         channel: str,
         now_time: datetime,
     ) -> OtpChallenges | None:
-        """
-        Return latest active (non-expired) OTP challenge for user+purpose+channel.
-        Active statuses considered: REQUESTED, SENT.
-        """
         pass
 
     @abstractmethod
@@ -179,28 +175,12 @@ class SecurityRepositoryBase(ABC):
         pass
 
     @abstractmethod
-    async def commit(self) -> None:
-        pass
-
-    @abstractmethod
-    async def rollback(self) -> None:
-        pass
-
-    @abstractmethod
     async def mark_user_email_verified(
         self,
         *,
         user_id: int,
         verified_at: datetime,
     ) -> bool:
-        """
-        Mark user's current email as verified.
-        Example:
-            await repo.mark_user_email_verified(
-                user_id=101,
-                verified_at=now_ist(),
-            )
-        """
         pass
 
 
@@ -222,3 +202,11 @@ class SecurityRepositoryBase(ABC):
     ) -> bool:
         pass
 
+    
+    @abstractmethod
+    async def commit(self) -> None:
+        pass
+
+    @abstractmethod
+    async def rollback(self) -> None:
+        pass
