@@ -1,4 +1,5 @@
 
+from datetime import date
 from typing import Any
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +8,7 @@ from app.domains.master_data.trains_model import Trains
 from app.domains.master_data.seats_model import Seats
 from app.domains.master_data.routes_model import Routes
 from app.domains.master_data.routestations_model import RouteStations
+from app.domains.master_data.schedules_model import Schedules
 from app.domains.master_data.repository.base import MasterDataRepositoryBase
 from app.domains.security.models import OutboxEvents
 from app.common.utils.datetime import now_ist
@@ -156,6 +158,60 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         await self.db.flush()
         return rows
     
+
+    async def get_route_by_train_id(
+        self,
+        *,
+        train_id: int,
+    ) -> Routes | None:
+        stmt = (
+            select(Routes)
+            .where(
+                Routes.train_id == train_id,
+                Routes.status == "A",
+            )
+            .limit(1)
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none()
+
+
+    async def get_route_stations_by_route_id(
+        self,
+        *,
+        route_id: int,
+    ) -> list[RouteStations]:
+        stmt = (
+            select(RouteStations)
+            .where(
+                RouteStations.route_id == route_id,
+                RouteStations.status == "A",
+            )
+            .order_by(RouteStations.sequence_number.asc())
+        )
+        result = await self.db.execute(stmt)
+        return list(result.scalars().all())
+
+
+    async def create_schedule(
+        self,
+        *,
+        train_id: int,
+        departure_date: date,
+        status: str = "A",
+    ) -> Schedules:
+        row = Schedules(
+            train_id=train_id,
+            departure_date=departure_date,
+            status=status,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+        )
+        self.db.add(row)
+        await self.db.flush()
+        # temporary stored data in memory not actual db level
+        return row
+
 
     async def add_outbox_event(
         self,
