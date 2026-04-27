@@ -7,11 +7,17 @@ from app.core.response import success_response
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.core.settings import get_settings
 from app.dependencies.auth import get_current_admin_user_details_from_access_token
-from app.dependencies.master_data import get_stations_service, get_trains_service
+from app.dependencies.master_data import (
+    get_stations_service, 
+    get_trains_service,
+    get_routes_service
+)
 from app.domains.master_data.stations_schema import StationCreateRequest
 from app.domains.master_data.stations_service import StationsService
 from app.domains.master_data.trains_schema import TrainCreateRequest
 from app.domains.master_data.trains_service import TrainsService
+from app.domains.master_data.routes_schema import TrainRouteCreateRequest
+from app.domains.master_data.routes_service import RoutesService
 
 
 settings = get_settings()
@@ -142,6 +148,68 @@ async def create_train(
 router.add_api_route(
     "/trains",
     create_train,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+
+# -----------------------------------------
+# train route with stations create process
+# -----------------------------------------
+
+@feature_control(
+    {
+        "name": "v1.admin.master_data.train_routes.create",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 30,
+            "window": 60,
+        },
+    }
+)
+async def create_train_route(
+    body: TrainRouteCreateRequest,
+    request: Request,
+    admin_user_details: dict = Depends(get_current_admin_user_details_from_access_token),
+    service: RoutesService = Depends(get_routes_service),
+):
+    
+    admin_user_id = int(admin_user_details.get("sub"))
+
+    user_rate_key = f"ratelimit:v1.admin.master_data.train_routes.create:user:{admin_user_id}"
+    allowed = await rate_limiter.check_window_limit(
+        key=user_rate_key,
+        limit=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT,
+        window=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS,
+    )
+    if not allowed:
+        raise BaseAppException(
+            status_code=429,
+            messages=["Too many train-route create requests for this admin. Please try again later."],
+        )
+
+    result = await service.create_train_route(
+        train_id=body.train_id,
+        station_details=[row.model_dump() for row in body.station_details],
+        admin_user_id=admin_user_id,
+        correlation_id=request.headers.get("x-correlation-id"),
+        request_id=request.headers.get("x-request-id"),
+    )
+
+    return success_response(
+        status_code=201,
+        messages=["Train route created successfully"],
+        data=result,
+    )
+
+
+router.add_api_route(
+    "/train-routes",
+    create_train_route,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
