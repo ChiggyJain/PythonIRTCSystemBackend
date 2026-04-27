@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any
 from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.domains.users.users_model import Users
+from app.domains.users.models.users_model import Users
 from app.domains.auth.models.usertokens_model import UserTokens
 from app.domains.security.models import (
     OtpChallenges,

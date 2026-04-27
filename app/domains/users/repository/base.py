@@ -9,7 +9,7 @@ from abc import (
     ABC, abstractmethod
 )
 from typing import Any
-from app.domains.users.users_model import Users
+from app.domains.users.models.users_model import Users
 
 
 class UsersRepositoryBase(ABC):
