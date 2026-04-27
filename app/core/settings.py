@@ -154,11 +154,18 @@ class Settings(BaseSettings):
     MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
     # Train KAFKA TOPIC and CONSUMER
-    MASTERDATA_TRAIN_EVENT_TOPIC: str ="masterdata-train-events-v1"
-    MASTERDATA_TRAIN_CONSUMER_GROUP: str ="masterdata-train-events-dispatch-consumer-v1"
-    MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int =6
-    MASTERDATA_TRAIN_CREATE_USER_RATE_LIMIT: int =10
-    MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS: int =60
+    MASTERDATA_TRAIN_EVENT_TOPIC: str = "masterdata-train-events-v1"
+    MASTERDATA_TRAIN_CONSUMER_GROUP: str = "masterdata-train-events-dispatch-consumer-v1"
+    MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int = 6
+    MASTERDATA_TRAIN_CREATE_USER_RATE_LIMIT: int = 10
+    MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+
+    # Route KAFKA TOPIC and CONSUMER
+    MASTERDATA_ROUTE_EVENT_TOPIC: str = "masterdata-route-events-v1"
+    MASTERDATA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumer-v1"
+    MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
+    MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT: int = 10
+    MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
 
     # =========================
