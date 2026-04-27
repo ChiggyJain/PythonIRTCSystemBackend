@@ -13,7 +13,6 @@ def get_stations_service(
 ) -> StationsService:
     return StationsService(repo)
 
-
 def get_trains_service(
     repo: MasterDataRepositoryBase = Depends(get_master_data_repository),
 ) -> TrainsService:
