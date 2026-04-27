@@ -335,12 +335,6 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self.db.execute(stmt)
         return int(res.rowcount or 0)
 
-    async def commit(self) -> None:
-        await self.db.commit()
-
-    async def rollback(self) -> None:
-        await self.db.rollback()
-
 
     async def mark_user_email_verified(
         self,
@@ -403,3 +397,9 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         return bool(res.rowcount and res.rowcount > 0)
 
     
+    
+    async def commit(self) -> None:
+        await self.db.commit()
+
+    async def rollback(self) -> None:
+        await self.db.rollback()
