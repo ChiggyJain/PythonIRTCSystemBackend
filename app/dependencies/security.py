@@ -8,7 +8,7 @@ from app.domains.security.services.services import PasswordChangeOtpService
 from app.domains.security.services.emailverification_services import EmailVerificationOtpService
 from app.domains.security.repository.base import SecurityRepositoryBase
 from app.dependencies.repositories import get_security_repository
-from app.domains.security.emailchanged_service import EmailChangedOtpService
+from app.domains.security.emailchanged_services import EmailChangedOtpService
 
 
 

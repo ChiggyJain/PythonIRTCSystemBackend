@@ -29,7 +29,7 @@ from app.domains.security.services.emailverification_services import (
     EmailVerificationOtpService,
 )
 from app.dependencies.security import get_email_changed_otp_service
-from app.domains.security.emailchanged_service import EmailChangedOtpService
+from app.domains.security.emailchanged_services import EmailChangedOtpService
 from app.domains.security.schemas import (
     EmailChangeRequestOtpRequest,
     EmailChangeConfirmOtpRequest,
