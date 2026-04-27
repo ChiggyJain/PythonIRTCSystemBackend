@@ -153,6 +153,13 @@ class Settings(BaseSettings):
     MASTERDATA_STATION_CREATE_USER_RATE_LIMIT: int = 10
     MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
+    # Train KAFKA TOPIC and CONSUMER
+    MASTERDATA_TRAIN_EVENT_TOPIC="masterdata-train-events-v1"
+    MASTERDATA_TRAIN_CONSUMER_GROUP="masterdata-train-events-dispatch-consumer-v1"
+    MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES=6
+    MASTERDATA_TRAIN_CREATE_USER_RATE_LIMIT=10
+    MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS=60
+
 
     # =========================
     # Pydantic Settings Config
