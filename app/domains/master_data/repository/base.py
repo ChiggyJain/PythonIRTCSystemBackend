@@ -4,6 +4,8 @@ from typing import Any
 from app.domains.master_data.stations_model import Stations
 from app.domains.master_data.trains_model import Trains
 from app.domains.master_data.seats_model import Seats
+from app.domains.master_data.routes_model import Routes
+from app.domains.master_data.routestations_model import RouteStations
 
 
 class MasterDataRepositoryBase(ABC):
@@ -31,15 +33,6 @@ class MasterDataRepositoryBase(ABC):
         total_seats: int,
         status: str = "A",
     ) -> Trains:
-        """
-        Example:
-        create_train(
-            train_number="TRAIN1233",
-            train_name="T1",
-            coach_name="AC",
-            total_seats=20,
-        )
-        """
         pass
     
     @abstractmethod
@@ -50,13 +43,37 @@ class MasterDataRepositoryBase(ABC):
         seat_details: list[dict[str, Any]],
         status: str = "A",
     ) -> list[Seats]:
-        """
-        Example seat_details:
-        [
-            {"seat_number": 1, "seat_type": "LOWER", "price": 500},
-            {"seat_number": 2, "seat_type": "UPPER", "price": 300},
-        ]
-        """
+        pass
+    
+    @abstractmethod
+    async def train_exists(self, *, train_id: int) -> bool:
+        pass
+
+    @abstractmethod
+    async def count_existing_station_ids(
+        self,
+        *,
+        station_ids: list[int],
+    ) -> int:
+        pass
+
+    @abstractmethod
+    async def create_route(
+        self,
+        *,
+        train_id: int,
+        status: str = "A",
+    ) -> Routes:
+        pass
+
+    @abstractmethod
+    async def create_route_stations(
+        self,
+        *,
+        route_id: int,
+        station_details: list[dict[str, Any]],
+        status: str = "A",
+    ) -> list[RouteStations]:
         pass
 
 
