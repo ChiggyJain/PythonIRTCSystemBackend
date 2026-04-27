@@ -13,14 +13,14 @@ from app.dependencies.master_data import (
     get_routes_service,
     get_train_schedules_service,
 )
-from app.domains.master_data.schemas.stations_schema import StationCreateRequest
-from app.domains.master_data.services.stations_service import StationsService
-from app.domains.master_data.schemas.trains_schema import TrainCreateRequest
-from app.domains.master_data.services.trains_service import TrainsService
-from app.domains.master_data.schemas.routes_schema import TrainRouteCreateRequest
-from app.domains.master_data.services.routes_service import RoutesService
-from app.domains.master_data.schemas.schedules_schema import TrainScheduleCreateRequest
-from app.domains.master_data.services.schedules_service import TrainSchedulesService
+from app.domains.master_data.schemas.stations_schemas import StationCreateRequest
+from app.domains.master_data.services.stations_services import StationsService
+from app.domains.master_data.schemas.trains_schemas import TrainCreateRequest
+from app.domains.master_data.services.trains_services import TrainsService
+from app.domains.master_data.schemas.routes_schemas import TrainRouteCreateRequest
+from app.domains.master_data.services.routes_services import RoutesService
+from app.domains.master_data.schemas.schedules_schemas import TrainScheduleCreateRequest
+from app.domains.master_data.services.schedules_services import TrainSchedulesService
 
 
 settings = get_settings()
