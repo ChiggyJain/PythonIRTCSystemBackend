@@ -20,8 +20,8 @@ from app.domains.auth.models import usertokens_models  # noqa
 from app.domains.security import models # noqa
 from app.infrastructure.outbox.models import outbox_events_model # noqa
 from app.domains.master_data.models import (
-    routes_model, routestations_model, 
-    schedules_model, seats_model, stations_model,
-    trains_model
+    routes_models, routestations_models, 
+    schedules_models, seats_models, stations_models,
+    trains_models
 ) # noqa
 

@@ -2,12 +2,12 @@
 from datetime import date
 from abc import ABC, abstractmethod
 from typing import Any
-from app.domains.master_data.models.stations_model import Stations
-from app.domains.master_data.models.trains_model import Trains
-from app.domains.master_data.models.seats_model import Seats
-from app.domains.master_data.models.routes_model import Routes
-from app.domains.master_data.models.routestations_model import RouteStations
-from app.domains.master_data.models.schedules_model import Schedules
+from app.domains.master_data.models.stations_models import Stations
+from app.domains.master_data.models.trains_models import Trains
+from app.domains.master_data.models.seats_models import Seats
+from app.domains.master_data.models.routes_models import Routes
+from app.domains.master_data.models.routestations_models import RouteStations
+from app.domains.master_data.models.schedules_models import Schedules
 
 
 class MasterDataRepositoryBase(ABC):
