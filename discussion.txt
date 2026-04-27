@@ -32,6 +32,18 @@ payload: {
 
 TrainId and Stations are required
 
+Elastic-Search:
+esClient = client()
+creating 4 index: indxStation, indexTrainRoute, indexSchedule, cancelSchedule
+fuzzy-search + autocomplete + full-text
+Each-Indexes can have 
+mappings and 
+settings (how text will be processed):
+  tokenizor, lowercase, autocomplete-analyzer, search-analyzer
+initIndexes-method
+reCreateIndexes-method 
+Kibana
+
 
 Creating train-wtih-route-stations details part is done with (DB + Outbox now, Kafka publisher later) and tested properly.
 Now, I want to create an protected POST api for creating the train-schedule (DB + Outbox now, Kafka publisher later) details.
