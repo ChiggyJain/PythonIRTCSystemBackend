@@ -8,13 +8,13 @@ from fastapi import (
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.database.session import get_db
-from app.domains.auth.services.service import TokenService
+from app.domains.auth.services.services import TokenService
 from app.domains.auth.repository.sqlalchemy_repo import (
     TokenRepositorySQLAlchemy,
 )
 from app.core.exceptions import BaseAppException
 from app.common.security.jwt import decode_token
-from app.domains.auth.services.service import TokenService
+from app.domains.auth.services.services import TokenService
 from app.common.cache.redis_cache import (
     cache_get
 )

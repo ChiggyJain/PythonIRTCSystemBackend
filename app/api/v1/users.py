@@ -15,7 +15,7 @@ from app.domains.users.schemas import (
 from app.domains.users.service import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
-from app.domains.auth.services.service import TokenService
+from app.domains.auth.services.services import TokenService
 from app.dependencies.auth import (
     get_current_user_id_from_access_token,
     get_current_user_details_from_access_token
