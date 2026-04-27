@@ -5483,3 +5483,4 @@
 2026-04-26 17:19:01 | INFO | SpawnProcess-1-21348 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-26 17:19:01.861587 | 2026-04-26 17:19:01.937125 | 75 |  | 500
 2026-04-26 17:19:03 | INFO | SpawnProcess-1-21348 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-26 17:19:03.094394 | 2026-04-26 17:19:03.109312 | 14 |  | 500
 2026-04-26 17:19:04 | INFO | SpawnProcess-1-21348 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-26 17:19:04.320191 | 2026-04-26 17:19:04.322726 | 2 |  | 500
+2026-04-27 08:33:40 | INFO | SpawnProcess-3-8389 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-27 08:33:40.292421 | 2026-04-27 08:33:40.717804 | 425 | None | 200
