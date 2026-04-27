@@ -5529,3 +5529,14 @@
 2026-04-27 16:31:20 | INFO | SpawnProcess-8-38455 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-04-27 16:31:20.739860 | 2026-04-27 16:31:20.827471 | 87 | None | 200
 2026-04-27 16:31:30 | INFO | SpawnProcess-8-38455 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-27 16:31:30.609485 | 2026-04-27 16:31:30.982930 | 373 | None | 200
 2026-04-27 16:32:04 | INFO | SpawnProcess-8-38455 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout-all-devices | 2026-04-27 16:32:04.048074 | 2026-04-27 16:32:04.134630 | 86 | None | 200
+2026-04-27 16:32:19 | INFO | SpawnProcess-8-38455 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-27 16:32:18.967077 | 2026-04-27 16:32:19.365880 | 398 | None | 200
+2026-04-27 16:32:32 | INFO | SpawnProcess-8-38455 | v1.auth.refresh | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-04-27 16:32:32.596938 | 2026-04-27 16:32:32.678980 | 82 | None | 200
+2026-04-27 16:32:47 | INFO | SpawnProcess-8-38455 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-27 16:32:47.314560 | 2026-04-27 16:32:47.316231 | 1 | None | 200
+2026-04-27 16:32:49 | INFO | SpawnProcess-8-38455 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-27 16:32:49.488001 | 2026-04-27 16:32:49.489716 | 1 | None | 200
+2026-04-27 16:33:14 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-27 16:33:14.815714 | 2026-04-27 16:33:14.897835 | 82 |  | 500
+2026-04-27 16:33:21 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-27 16:33:21.665714 | 2026-04-27 16:33:21.746567 | 80 | None | 201
+2026-04-27 16:33:38 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-04-27 16:33:38.252787 | 2026-04-27 16:33:38.341464 | 88 | None | 201
+2026-04-27 16:33:55 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-27 16:33:55.121791 | 2026-04-27 16:33:55.191895 | 70 |  | 500
+2026-04-27 16:34:09 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-27 16:34:09.768829 | 2026-04-27 16:34:09.772895 | 4 |  | 500
+2026-04-27 16:34:16 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-27 16:34:16.896749 | 2026-04-27 16:34:16.984614 | 87 | None | 201
+2026-04-27 16:34:31 | INFO | SpawnProcess-8-38455 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-04-27 16:34:31.044803 | 2026-04-27 16:34:31.141412 | 96 | None | 201
