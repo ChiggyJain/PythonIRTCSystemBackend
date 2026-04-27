@@ -174,6 +174,18 @@ class Settings(BaseSettings):
     MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
     MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
     
+    
+    # ELASTICSEARCH CONFIG
+    ELASTICSEARCH_URL: str = "http://127.0.0.1:9200"
+    ELASTICSEARCH_USERNAME: str | None = None
+    ELASTICSEARCH_PASSWORD: str | None = None
+    ELASTICSEARCH_VERIFY_CERTS: bool = False
+    ELASTICSEARCH_REQUEST_TIMEOUT_SECONDS: int = 10
+
+    # Station index in Elasticsearch
+    ELASTICSEARCH_STATIONS_INDEX: str = "stations_v1"
+    
+
     # =========================
     # Pydantic Settings Config
     # =========================

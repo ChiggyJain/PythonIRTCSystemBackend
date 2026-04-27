@@ -172,6 +172,9 @@ python -m app.workers.emailchanged_otp_outbox_worker
 python -m app.workers.emailchanged_otp_dispatch_consumer_worker
 
 
+Docker Commands =>
+docker compose down -v && docker compose build --no-cache && docker compose up -d --force-recreate
+
 All Endpoints =>
 http://127.0.0.1:8000/health
 http://127.0.0.1:8000/api/v1/users/signup

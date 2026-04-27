@@ -62,3 +62,10 @@ Fetch all route_station details using given train_id from ROUTE_STATTIONS table 
   - Check distance_from_origin from must be >0 for next all station. If not return error.
 Create schedule using (train_id, departure_date) into SCHEDULES table only. 
   - Check unique indexes based on (train_id, departure_date). If not return error.
+
+
+Now we want to do task of
+1) Publish created station data into kafka topics from OUTBOX-EVENTS table (via outbox worker like we have done for emailchanged-otp_outbox_worker.py file)
+2) Kafka consumer will consume the created station data and stored into ElasticSearch
+3) I don't know about anything of ElasticSearch. I want to implement ElasticSearch.
+4) Steps (1,2,3) can be similar for others also (TRAINS, SEATS, SCHEDULES etc) but first we go ahead with STATION only. 
