@@ -167,7 +167,13 @@ class Settings(BaseSettings):
     MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT: int = 10
     MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
-
+    # Schedule KAFKA TOPIC and CONSUMER
+    MASTERDATA_SCHEDULE_EVENT_TOPIC: str = "masterdata-schedule-events-v1"
+    MASTERDATA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumer-v1"
+    MASTERDATA_SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
+    MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
+    MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+    
     # =========================
     # Pydantic Settings Config
     # =========================
