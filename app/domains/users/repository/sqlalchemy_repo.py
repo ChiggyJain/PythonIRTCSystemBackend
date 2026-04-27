@@ -9,7 +9,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.domains.users.models.users_model import Users
+from app.domains.users.models.users_models import Users
 from app.domains.users.repository.base import UsersRepositoryBase
 from app.common.utils.datetime import now_ist
 
