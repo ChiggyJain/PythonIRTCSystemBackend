@@ -5523,3 +5523,4 @@
 2026-04-27 10:19:14 | INFO | SpawnProcess-1-23499 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-04-27 10:19:14.638413 | 2026-04-27 10:19:14.644598 | 6 |  | 500
 2026-04-27 10:19:51 | INFO | SpawnProcess-1-23499 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-04-27 10:19:51.326991 | 2026-04-27 10:19:51.409349 | 82 |  | 500
 2026-04-27 10:20:06 | INFO | SpawnProcess-1-23499 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-04-27 10:20:05.920566 | 2026-04-27 10:20:06.003996 | 83 | None | 201
+2026-04-27 10:20:46 | INFO | SpawnProcess-1-24006 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-04-27 10:20:46.199078 | 2026-04-27 10:20:46.229867 | 30 |  | 500
