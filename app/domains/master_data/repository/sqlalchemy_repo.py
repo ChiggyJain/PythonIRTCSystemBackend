@@ -1,9 +1,12 @@
 
 from typing import Any
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.master_data.stations_model import Stations
 from app.domains.master_data.trains_model import Trains
 from app.domains.master_data.seats_model import Seats
+from app.domains.master_data.routes_model import Routes
+from app.domains.master_data.routestations_model import RouteStations
 from app.domains.master_data.repository.base import MasterDataRepositoryBase
 from app.domains.security.models import OutboxEvents
 from app.common.utils.datetime import now_ist
@@ -79,6 +82,70 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
                 seat_number=seat["seat_number"],
                 seat_type=seat["seat_type"],
                 price=seat["price"],
+                status=status,
+                created_at=now_ist(),
+                updated_at=now_ist(),
+            )
+            rows.append(row)
+        self.db.add_all(rows)
+        # temporary stored data in memory not actual db level
+        await self.db.flush()
+        return rows
+    
+
+    async def train_exists(self, *, train_id: int) -> bool:
+        stmt = (
+            select(Trains.id)
+            .where(
+                Trains.id == train_id,
+                Trains.status == "A",
+            )
+            .limit(1)
+        )
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none() is not None
+    
+
+    async def count_existing_station_ids(self, *, station_ids: list[int],) -> int:
+        if not station_ids:
+            return 0
+        stmt = select(func.count(Stations.id)).where(
+            Stations.id.in_(station_ids),
+            Stations.status == "A",
+        )
+        result = await self.db.execute(stmt)
+        return int(result.scalar_one())
+    
+
+    async def create_route(self, *, train_id: int, status: str = "A",) -> Routes:
+        row = Routes(
+            train_id=train_id,
+            status=status,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+        )
+        self.db.add(row)
+        # temporary stored data in memory not actual db level
+        await self.db.flush()
+        return row
+
+    async def create_route_stations(
+        self,
+        *,
+        route_id: int,
+        station_details: list[dict[str, Any]],
+        status: str = "A",
+    ) -> list[RouteStations]:
+        
+        rows: list[RouteStations] = []
+        for item in station_details:
+            row = RouteStations(
+                route_id=route_id,
+                station_id=item["station_id"],
+                sequence_number=item["sequence_number"],
+                arrival_time=item["arrival_time"],
+                departure_time=item["departure_time"],
+                distance_from_origin=item["distance_from_origin"],
                 status=status,
                 created_at=now_ist(),
                 updated_at=now_ist(),
