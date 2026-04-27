@@ -7,7 +7,7 @@ from app.common.decorators.feature_control import feature_control
 from app.core.response import success_response
 from app.dependencies.auth import get_token_service
 from app.domains.auth.service import TokenService
-from app.domains.auth.schemas import (
+from app.domains.auth.schemas.schemas import (
     RefreshTokenRequest,
     LogoutRequest,
 )
