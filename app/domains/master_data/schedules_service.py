@@ -15,7 +15,7 @@ class SchedulesService:
         self.repo = repo
 
 
-    async def create_schedule(
+    async def create_train_schedule(
         self,
         *,
         train_id: int,
@@ -139,7 +139,7 @@ class SchedulesService:
 
 
     def _validate_route_stations(self, *, route_stations: list) -> None:
-        
+
         """
         Validates existing ROUTE_STATIONS data before creating schedule:
         - sequence must be 1..N
