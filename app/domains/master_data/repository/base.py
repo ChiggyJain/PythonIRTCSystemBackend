@@ -1,4 +1,5 @@
 
+from datetime import date
 from abc import ABC, abstractmethod
 from typing import Any
 from app.domains.master_data.stations_model import Stations
@@ -6,6 +7,7 @@ from app.domains.master_data.trains_model import Trains
 from app.domains.master_data.seats_model import Seats
 from app.domains.master_data.routes_model import Routes
 from app.domains.master_data.routestations_model import RouteStations
+from app.domains.master_data.schedules_model import Schedules
 
 
 class MasterDataRepositoryBase(ABC):
@@ -74,6 +76,33 @@ class MasterDataRepositoryBase(ABC):
         station_details: list[dict[str, Any]],
         status: str = "A",
     ) -> list[RouteStations]:
+        pass
+
+    
+    @abstractmethod
+    async def get_route_by_train_id(
+        self,
+        *,
+        train_id: int,
+    ) -> Routes | None:
+        pass
+
+    @abstractmethod
+    async def get_route_stations_by_route_id(
+        self,
+        *,
+        route_id: int,
+    ) -> list[RouteStations]:
+        pass
+
+    @abstractmethod
+    async def create_schedule(
+        self,
+        *,
+        train_id: int,
+        departure_date: date,
+        status: str = "A",
+    ) -> Schedules:
         pass
 
 
