@@ -8,11 +8,11 @@ from app.core.settings import get_settings
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
 from app.core.response import success_response
-from app.domains.users.schemas import (
+from app.domains.users.schemas.schemas import (
     UserSignupRequest, 
     UserLoginRequest
 )
-from app.domains.users.services import UsersService
+from app.domains.users.services.services import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.services.services import TokenService
@@ -30,11 +30,11 @@ from app.domains.security.services.emailverification_services import (
 )
 from app.dependencies.security import get_email_changed_otp_service
 from app.domains.security.services.emailchanged_services import EmailChangedOtpService
-from app.domains.security.schemas import (
+from app.domains.security.schemas.schemas import (
     EmailChangeRequestOtpRequest,
     EmailChangeConfirmOtpRequest,
 )
-from app.domains.security.schemas import (
+from app.domains.security.schemas.schemas import (
     PasswordChangeRequestOtpRequest,
     PasswordChangeConfirmRequest,
     EmailVerificationRequestOtpRequest,

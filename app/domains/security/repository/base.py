@@ -9,7 +9,7 @@ from abc import (
 from datetime import datetime
 from typing import Any
 from app.domains.users.models.users_model import Users
-from app.domains.security.models import (
+from app.domains.security.models.models import (
     OtpChallenges,
     OutboxEvents,
     SecurityEventLog,
