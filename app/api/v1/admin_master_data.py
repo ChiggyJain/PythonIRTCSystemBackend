@@ -11,7 +11,7 @@ from app.dependencies.master_data import (
     get_stations_service, 
     get_trains_service,
     get_routes_service,
-    get_schedules_service,
+    get_train_schedules_service,
 )
 from app.domains.master_data.stations_schema import StationCreateRequest
 from app.domains.master_data.stations_service import StationsService
@@ -20,7 +20,7 @@ from app.domains.master_data.trains_service import TrainsService
 from app.domains.master_data.routes_schema import TrainRouteCreateRequest
 from app.domains.master_data.routes_service import RoutesService
 from app.domains.master_data.schedules_schema import TrainScheduleCreateRequest
-from app.domains.master_data.schedules_service import SchedulesService
+from app.domains.master_data.schedules_service import TrainSchedulesService
 
 
 settings = get_settings()
@@ -239,7 +239,7 @@ async def create_train_schedule(
     body: TrainScheduleCreateRequest,
     request: Request,
     admin_user_details: dict = Depends(get_current_admin_user_details_from_access_token),
-    service: SchedulesService = Depends(get_schedules_service),
+    service: TrainSchedulesService = Depends(get_train_schedules_service),
 ):
     
     admin_user_id = int(admin_user_details.get("sub"))

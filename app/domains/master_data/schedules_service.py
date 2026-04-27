@@ -6,7 +6,7 @@ from app.core.exceptions import BaseAppException
 from app.domains.master_data.repository.base import MasterDataRepositoryBase
 
 
-class SchedulesService:
+class TrainSchedulesService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_SCHEDULE_CREATED = "MASTERDATA_SCHEDULE_CREATED_V1"

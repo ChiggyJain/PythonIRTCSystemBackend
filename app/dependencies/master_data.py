@@ -3,7 +3,7 @@ from fastapi import Depends
 from app.domains.master_data.stations_service import StationsService
 from app.domains.master_data.trains_service import TrainsService
 from app.domains.master_data.routes_service import RoutesService
-from app.domains.master_data.schedules_service import SchedulesService
+from app.domains.master_data.schedules_service import TrainSchedulesService
 from app.domains.master_data.repository.base import MasterDataRepositoryBase
 from app.dependencies.repositories import get_master_data_repository
 
@@ -24,7 +24,7 @@ def get_routes_service(
 ) -> RoutesService:
     return RoutesService(repo)
 
-def get_schedules_service(
+def get_train_schedules_service(
     repo: MasterDataRepositoryBase = Depends(get_master_data_repository),
-) -> SchedulesService:
-    return SchedulesService(repo)
+) -> TrainSchedulesService:
+    return TrainSchedulesService(repo)
