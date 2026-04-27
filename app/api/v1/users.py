@@ -25,7 +25,7 @@ from app.domains.security.services.services import (
     PasswordChangeOtpService,
 )
 from app.dependencies.security import get_email_verification_otp_service
-from app.domains.security.emailverification_service import (
+from app.domains.security.emailverification_services import (
     EmailVerificationOtpService,
 )
 from app.dependencies.security import get_email_changed_otp_service
