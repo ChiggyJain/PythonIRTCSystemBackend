@@ -8,7 +8,7 @@ from abc import (
     ABC, abstractmethod
 )
 from typing import Optional
-from app.domains.auth.models.usertokens_model import UserTokens
+from app.domains.auth.models.usertokens_models import UserTokens
 
 
 class TokenRepositoryBase(ABC):
