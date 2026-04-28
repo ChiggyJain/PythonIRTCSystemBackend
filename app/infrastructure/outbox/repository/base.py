@@ -24,7 +24,14 @@ class OutboxEventsRepositoryBase(ABC):
         status: str,
     ) -> OutboxEvents:
         pass
-
+    
+    @abstractmethod
+    async def get_by_id(
+        self,
+        id: int,
+    ) -> OutboxEvents | None:
+        pass
+    
     @abstractmethod
     async def fetch_pending_outbox_events(
         self,
@@ -33,6 +40,15 @@ class OutboxEventsRepositoryBase(ABC):
         limit: int,
         now_time: datetime,
     ) -> list[OutboxEvents]:
+        pass
+    
+    @abstractmethod
+    async def mark_outbox_processing(
+        self,
+        *,
+        event: OutboxEvents,
+        updated_at: datetime,
+    ) -> None:
         pass
 
     @abstractmethod
