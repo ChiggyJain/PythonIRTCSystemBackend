@@ -23,7 +23,7 @@ class EmailChangedOTPOutboxDispatcher:
     def __init__(self, *, security_repo: SecurityRepositoryBase, outbox_events_repo: OutboxEventsSQLAlchemyRepository, producer: AIOKafkaProducer):
         self.security_repo = security_repo
         self.outbox_events_repo = outbox_events_repo
-        self.producer = producer
+        self.producer = produceruser_id = self._safe_int(payload.get("user_id"), default=0)
 
 
     async def process_single_event(self) -> dict:
