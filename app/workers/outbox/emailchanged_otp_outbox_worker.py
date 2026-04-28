@@ -19,7 +19,7 @@ import json
 settings = get_settings()
 POLL_INTERVAL_IDLE_SECONDS = 2
 POLL_INTERVAL_ACTIVE_SECONDS = 0.2
-BATCH_SIZE = 100
+BATCH_SIZE = 5
 
 
 async def run_worker() -> None:
