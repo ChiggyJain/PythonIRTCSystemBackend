@@ -6,7 +6,7 @@ Worker: OUTBOX_EVENTS -> Kafka for EMAIL CHANGED OTP flow.
 import asyncio
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-from app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher import EmailChangedOTPOutboxDispatcher
+# from app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher import EmailChangedOTPOutboxDispatcher
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.infrastructure.kafka.client import build_producer

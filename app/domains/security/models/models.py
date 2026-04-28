@@ -121,7 +121,7 @@ class OtpChallenges(Base):
 
 
 
-class OutboxEvents(Base):
+class OutboxEvents1(Base):
 
     """
     OUTBOX_EVENTS
@@ -137,7 +137,7 @@ class OutboxEvents(Base):
     4) Row marked PUBLISHED (or retry/failed based on result).
     """
 
-    __tablename__ = "OUTBOX_EVENTS"
+    __tablename__ = "OUTBOX_EVENTS1"
     __table_args__ = (
         Index("ix_outbox_events_status_next_retry", "status", "next_retry_at"),
         Index("ix_outbox_events_created_at", "created_at"),
