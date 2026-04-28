@@ -139,7 +139,7 @@ class EmailChangedOTPOutboxDispatcher:
                 outbox_status = "retry_scheduled"
 
             if user_id > 0:
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_change_outbox_publish_failed",
                     event_category="OUTBOX",
