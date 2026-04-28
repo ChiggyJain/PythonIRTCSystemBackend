@@ -31,7 +31,15 @@ async def run_worker() -> None:
                     outbox_events_repo = OutboxEventsSQLAlchemyRepository(db)
                     security_repo = SecuritySQLAlchemyRepository(db)
                     dispatcher = EmailChangedOTPOutboxDispatcher(db_session=db, security_repo=security_repo, outbox_events_repo=outbox_events_repo, producer=producer)
-                    stats = await dispatcher.process_batch(batch_size=BATCH_SIZE)
+                    stats = {"processed": 0, "published": 0, "failed": 0}
+                    for _ in range(BATCH_SIZE):
+                        # ONE EVENT = ONE TRANSACTION
+                        async with db.begin():
+                            result = await dispatcher.process_single_event()
+                            if not result:
+                                break
+                            stats["processed"] += 1
+                            pass
                 await asyncio.sleep(POLL_INTERVAL_IDLE_SECONDS if stats["processed"] == 0 else POLL_INTERVAL_ACTIVE_SECONDS)
             except Exception as exc:
                 app_logger.error(f"emailchanged_otp_outbox_worker error: {exc}")

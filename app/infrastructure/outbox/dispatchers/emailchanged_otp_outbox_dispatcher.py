@@ -27,88 +27,74 @@ class EmailChangedOTPOutboxDispatcher:
         self.producer = producer
 
 
-    async def process_batch(self, *, batch_size: int = 100) -> dict:
+    async def process_single_event(self) -> dict:
 
-        stats = {
-            "processed": 0, 
-            "published": 0, 
-            "failed": 0, 
-            "skipped": 0
-        }
+        # fetching pending/retry/ event details only
+        now = now_ist()
+        events = await self.outbox_events_repo.fetch_pending_outbox_events(
+            event_type=self.OTP_EVENT_TYPE, limit=1, now_time=now,
+        )
+        if not events:
+            return False
 
-        for _ in range(batch_size):
+        event = events[0]
+        payload = event.payload_json or {}
+        user_id = self._safe_int(payload.get("user_id"), default=0)
 
-            now = now_ist()
-            events = await self.outbox_events_repo.fetch_pending_outbox_events(
-                event_type=self.OTP_EVENT_TYPE, limit=1, now_time=now,
-            )
-            if not events:
-                break
+        try:
 
-            event = events[0]
-            stats["processed"] += 1
-            payload = event.payload_json or {}
-            user_id = self._safe_int(payload.get("user_id"), default=0)
+            # getting topic-name based on event-type
+            topic = self._topic_for_event(event.event_type)
+            if not topic:
+                raise ValueError(f"unsupported event_type={event.event_type}")
 
-            try:
+            # preparing message for publishing to the topic
+            message = json.dumps(
+                {"outbox_id": event.id, "event_type": event.event_type, **payload},
+                separators=(",", ":"),
+            ).encode("utf-8")
 
-                # getting topic-name based on event-type
-                topic = self._topic_for_event(event.event_type)
-                if not topic:
-                    raise ValueError(f"unsupported event_type={event.event_type}")
-
-                # preparing message for publishing to the topic
-                message = json.dumps(
-                    {"outbox_id": event.id, "event_type": event.event_type, **payload},
-                    separators=(",", ":"),
-                ).encode("utf-8")
-
-                # preparing key to used for publishing to the topic partition
-                key = str(user_id if user_id > 0 else 0).encode("utf-8")
+            # preparing key to used for publishing to the topic partition
+            key = str(user_id if user_id > 0 else 0).encode("utf-8")
                 
-                # sending messages to kafka topic
-                md = await self.producer.send_and_wait(topic=topic, key=key, value=message,)
+            # Kafka publish
+            md = await self.producer.send_and_wait(topic=topic, key=key, value=message,)
 
-                # status updating into the outbox_events table
-                published_at = now_ist()
-                await self.outbox_events_repo.mark_outbox_published(event=event, published_at=published_at)
+            # updating status into outbox_events table
+            published_at = now_ist()
+            await self.outbox_events_repo.mark_outbox_published(event=event, published_at=published_at)
 
-                # adding logs into security_event table
-                if user_id > 0:
-                    await self.security_repo.add_security_event(
-                        user_id=user_id,
-                        event_name="email_change_outbox_published",
-                        event_category="OUTBOX",
-                        channel="EMAIL",
-                        provider="KAFKA",
-                        status="published",
-                        reason_code=None,
-                        correlation_id=None,
-                        request_id=None,
-                        ip_address=None,
-                        user_agent=None,
-                        metadata_json={
-                            "outbox_id": event.id,
-                            "topic": md.topic,
-                            "partition": md.partition,
-                            "offset": md.offset,
-                        },
-                    )
-                
-                # increasing the counter
-                stats["published"] += 1
-
-            except Exception as exc:
-                # retry processing handling case
-                await self._mark_retry_or_failed(
-                    event=event,
+            # adding logs into security_event table
+            if user_id > 0:
+                await self.security_repo.add_security_event(
                     user_id=user_id,
-                    error_message=str(exc),
+                    event_name="email_change_outbox_published",
+                    event_category="OUTBOX",
+                    channel="EMAIL",
+                    provider="KAFKA",
+                    status="published",
+                    reason_code=None,
+                    correlation_id=None,
+                    request_id=None,
+                    ip_address=None,
+                    user_agent=None,
+                    metadata_json={
+                        "outbox_id": event.id,
+                        "topic": md.topic,
+                        "partition": md.partition,
+                        "offset": md.offset,
+                    },
                 )
-                stats["failed"] += 1
 
-        return stats
-
+            return True
+        
+        except Exception as exc:
+            # retry processing handling case
+            await self._mark_retry_or_failed(
+                event=event, user_id=user_id, error_message=str(exc),
+            )
+            return True 
+    
 
     async def _mark_retry_or_failed(
         self,
