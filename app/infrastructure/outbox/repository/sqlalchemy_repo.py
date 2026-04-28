@@ -74,6 +74,18 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         return list(res.scalars().all())
 
 
+    async def mark_outbox_processing(
+        self,
+        *,
+        event: OutboxEvents,
+        updated_at: datetime,
+    ) -> None:
+
+        event.status = "PROCESSING"
+        event.updated_at = updated_at
+        await self.db.flush()
+
+
     async def mark_outbox_published(
         self,
         *,
