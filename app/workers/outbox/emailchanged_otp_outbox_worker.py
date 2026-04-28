@@ -35,11 +35,10 @@ async def run_worker() -> None:
                     for _ in range(BATCH_SIZE):
                         # ONE EVENT = ONE TRANSACTION
                         async with db.begin():
-                            result = await dispatcher.process_single_event()
-                            if not result:
+                            result_status = await dispatcher.process_single_event()
+                            if not result_status:
                                 break
-                            stats["processed"] += 1
-                            pass
+                            stats["processed"]+= 1
                 await asyncio.sleep(POLL_INTERVAL_IDLE_SECONDS if stats["processed"] == 0 else POLL_INTERVAL_ACTIVE_SECONDS)
             except Exception as exc:
                 app_logger.error(f"emailchanged_otp_outbox_worker error: {exc}")

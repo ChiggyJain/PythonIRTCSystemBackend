@@ -144,7 +144,7 @@ class EmailChangedOTPOutboxDispatcher:
                 )
 
         except Exception:
-            await self.repo.rollback()
+            pass
 
 
     def _topic_for_event(self, event_type: str) -> str | None:
