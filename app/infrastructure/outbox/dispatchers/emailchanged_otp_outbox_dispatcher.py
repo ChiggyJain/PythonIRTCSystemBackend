@@ -20,8 +20,7 @@ class EmailChangedOTPOutboxDispatcher:
     OTP_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
 
-    def __init__(self, *, db_session = None, security_repo: SecurityRepositoryBase, outbox_events_repo: OutboxEventsSQLAlchemyRepository, producer: AIOKafkaProducer):
-        self.db = db_session
+    def __init__(self, *, security_repo: SecurityRepositoryBase, outbox_events_repo: OutboxEventsSQLAlchemyRepository, producer: AIOKafkaProducer):
         self.security_repo = security_repo
         self.outbox_events_repo = outbox_events_repo
         self.producer = producer

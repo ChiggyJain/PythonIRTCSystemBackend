@@ -30,7 +30,7 @@ async def run_worker() -> None:
                 async with AsyncSessionLocal() as db:
                     outbox_events_repo = OutboxEventsSQLAlchemyRepository(db)
                     security_repo = SecuritySQLAlchemyRepository(db)
-                    dispatcher = EmailChangedOTPOutboxDispatcher(db_session=db, security_repo=security_repo, outbox_events_repo=outbox_events_repo, producer=producer)
+                    dispatcher = EmailChangedOTPOutboxDispatcher(security_repo=security_repo, outbox_events_repo=outbox_events_repo, producer=producer)
                     stats = {"processed": 0, "published": 0, "failed": 0}
                     for _ in range(BATCH_SIZE):
                         # ONE EVENT = ONE TRANSACTION
