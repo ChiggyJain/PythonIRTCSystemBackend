@@ -40,9 +40,7 @@ class EmailChangedOTPOutboxDispatcher:
 
             now = now_ist()
             events = await self.outbox_events_repo.fetch_pending_outbox_events(
-                event_type=self.OTP_EVENT_TYPE,
-                limit=1,
-                now_time=now,
+                event_type=self.OTP_EVENT_TYPE, limit=1, now_time=now,
             )
             if not events:
                 break
