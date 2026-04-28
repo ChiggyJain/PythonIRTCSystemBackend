@@ -23,6 +23,7 @@ BATCH_SIZE = 5
 
 
 async def run_worker() -> None:
+    # breakpoint()
     producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
     await producer.start()
     app_logger.info("emailchanged_otp_outbox_worker started")
@@ -30,8 +31,9 @@ async def run_worker() -> None:
         while True:
             processed = False
 
-            for _ in range(BATCH_SIZE):
+            for loopNo in range(1, BATCH_SIZE):
 
+                print(f"BatchSize: {BATCH_SIZE}, LoopNo: {loopNo}")
                 # STEP1: LOCK + MARK PROCESSING
                 async with AsyncSessionLocal() as db:
                     async with db.begin():
@@ -41,6 +43,7 @@ async def run_worker() -> None:
                         events = await outbox_repo.fetch_pending_outbox_events(
                             event_type="EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
                         )
+                        print(f"events: {events}")
                         if not events:
                             break
                         event = events[0]
@@ -55,7 +58,7 @@ async def run_worker() -> None:
                     
                     # kafka topic
                     topic = settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
-
+                    print(f"topic: {topic}")
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
