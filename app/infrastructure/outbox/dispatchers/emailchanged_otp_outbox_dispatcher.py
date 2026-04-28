@@ -10,24 +10,35 @@ from aiokafka import AIOKafkaProducer
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.domains.security.repository.base import SecurityRepositoryBase
-
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 settings = get_settings()
 
 
 class EmailChangedOTPOutboxDispatcher:
+
     OTP_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
-    def __init__(self, *, repo: SecurityRepositoryBase, producer: AIOKafkaProducer):
-        self.repo = repo
+    def __init__(self, *, db_session = None, security_repo: SecurityRepositoryBase, outbox_events_repo: OutboxEventsSQLAlchemyRepository, producer: AIOKafkaProducer):
+        self.db = db_session
+        self.security_repo = security_repo
+        self.outbox_events_repo = outbox_events_repo
         self.producer = producer
 
+
     async def process_batch(self, *, batch_size: int = 100) -> dict:
-        stats = {"processed": 0, "published": 0, "failed": 0, "skipped": 0}
+
+        stats = {
+            "processed": 0, 
+            "published": 0, 
+            "failed": 0, 
+            "skipped": 0
+        }
 
         for _ in range(batch_size):
+
             now = now_ist()
-            events = await self.repo.fetch_pending_outbox_events(
+            events = await self.outbox_events_repo.fetch_pending_outbox_events(
                 event_type=self.OTP_EVENT_TYPE,
                 limit=1,
                 now_time=now,
@@ -95,6 +106,7 @@ class EmailChangedOTPOutboxDispatcher:
 
         return stats
 
+
     async def _mark_retry_or_failed(
         self,
         *,
@@ -156,6 +168,7 @@ class EmailChangedOTPOutboxDispatcher:
         if event_type == self.OTP_EVENT_TYPE:
             return settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
         return None
+
 
     @staticmethod
     def _safe_int(value: object, default: int = 0) -> int:

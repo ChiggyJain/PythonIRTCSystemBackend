@@ -11,6 +11,8 @@ from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRe
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.infrastructure.kafka.client import build_producer
 
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
+
 
 settings = get_settings()
 POLL_INTERVAL_IDLE_SECONDS = 2
@@ -26,8 +28,9 @@ async def run_worker() -> None:
         while True:
             try:
                 async with AsyncSessionLocal() as db:
-                    repo = SecuritySQLAlchemyRepository(db)
-                    dispatcher = EmailChangedOTPOutboxDispatcher(repo=repo, producer=producer)
+                    outbox_events_repo = OutboxEventsSQLAlchemyRepository(db)
+                    security_repo = SecuritySQLAlchemyRepository(db)
+                    dispatcher = EmailChangedOTPOutboxDispatcher(db_session=db, security_repo=security_repo, outbox_events_repo=outbox_events_repo, producer=producer)
                     stats = await dispatcher.process_batch(batch_size=BATCH_SIZE)
                 await asyncio.sleep(POLL_INTERVAL_IDLE_SECONDS if stats["processed"] == 0 else POLL_INTERVAL_ACTIVE_SECONDS)
             except Exception as exc:
