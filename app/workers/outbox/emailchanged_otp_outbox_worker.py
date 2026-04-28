@@ -48,7 +48,7 @@ async def run_worker() -> None:
                             break
                         event = events[0]
                         payload = event.payload_json or {}
-                        user_id = int(payload.get("user_id"), default=0)
+                        user_id = int(payload.get("user_id") or 0)
                         # updating outbox_events status as processing
                         updated_at = now_ist()
                         await outbox_repo.mark_outbox_processing(events, updated_at)
@@ -77,7 +77,7 @@ async def run_worker() -> None:
                             outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                             security_repo = SecuritySQLAlchemyRepository(db)
                             # fetching outbox event by given ID
-                            event = await outbox_repo.get_by_id(event["id"])
+                            event = await outbox_repo.get_by_id(event.id)
                             # updating outbox event status as published
                             published_at = now_ist()
                             await outbox_repo.mark_outbox_published(event, published_at)
