@@ -17,7 +17,9 @@ Only import models.
 
 from app.domains.users.models import users_models  # noqa
 from app.domains.auth.models import usertokens_models  # noqa
-from app.domains.security import models # noqa
+from app.domains.security.models import (
+    OtpChallenges, SecurityEventLog
+) # noqa
 from app.infrastructure.outbox.models import outbox_events_models # noqa
 from app.domains.master_data.models import (
     routes_models, routestations_models, 
