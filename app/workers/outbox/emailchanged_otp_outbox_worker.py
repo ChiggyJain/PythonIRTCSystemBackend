@@ -99,6 +99,7 @@ async def run_worker() -> None:
                             )
                  
                 except Exception as exc:
+                    print(f"exc: {exc}")
                     # STEP4: RETRY / FAIL
                     async with AsyncSessionLocal() as db:
                         async with db.begin():

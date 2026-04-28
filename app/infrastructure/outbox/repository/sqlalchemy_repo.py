@@ -48,6 +48,18 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         return row
 
 
+    async def get_by_id(
+        self,
+        id: int,
+    ) -> OutboxEvents | None:
+
+        stmt = select(OutboxEvents).where(
+            OutboxEvents.id == id
+        )
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+    
+    
     async def fetch_pending_outbox_events(
         self,
         *,
