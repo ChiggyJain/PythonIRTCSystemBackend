@@ -2,7 +2,7 @@
 from typing import Any, Optional
 from app.common.utils.logger import app_logger
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
-from app.infrastructure.elasticsearch.mappings.station_mapping import STATION_INDEX_MAPPING
+from app.infrastructure.elasticsearch.mappings.stations_mapping import STATION_INDEX_MAPPING
 
 
 class RoutesElasticsearchRepository:
