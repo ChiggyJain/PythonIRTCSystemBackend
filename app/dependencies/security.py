@@ -8,19 +8,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.database.session import get_db
 from app.domains.security.services.passwordchanged_services import PasswordChangeOtpService
 from app.domains.security.services.emailverification_services import EmailVerificationOtpService
-from app.domains.security.repository.base import SecurityRepositoryBase
-from app.dependencies.repositories import get_security_repository
 from app.domains.security.services.emailchanged_services import EmailChangedOtpService
 
 
 
 def get_password_change_otp_service(
-    repo: SecurityRepositoryBase = Depends(get_security_repository),
+    db_session: AsyncSession = Depends(get_db),
 ) -> PasswordChangeOtpService:
-    """
-    Provide PasswordChangeOtpService
-    """
-    return PasswordChangeOtpService(repo)
+    return PasswordChangeOtpService(db_session)
 
 
 def get_email_verification_otp_service(
