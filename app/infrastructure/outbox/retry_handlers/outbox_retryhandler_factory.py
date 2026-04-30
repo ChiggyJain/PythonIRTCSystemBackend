@@ -17,5 +17,5 @@ class OutboxRetryHandlerFactory:
             return EmailVerificationOtpOutboxRetryHandler(**kwargs)
         if retry_handler_type == "PWDCHANGED_OTP":
             return PwdChangedOtpOutboxRetryHandler(**kwargs)
-        if retry_handler_type == "PWDCHANGED_OTP":
+        if retry_handler_type == "MASTERDATA_STATIONS":
             return MasterDataStationsOutboxRetryHandler(**kwargs)
