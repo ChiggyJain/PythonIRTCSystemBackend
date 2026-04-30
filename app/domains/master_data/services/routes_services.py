@@ -83,7 +83,14 @@ class RoutesService:
                 event_type=self.OUTBOX_EVENT_ROUTE_CREATED,
                 payload_json={
                     "route_id": route.id,
-                    "train_id": route.train_id,
+                    "train_details" : {
+                        "train_id": train_details.id,
+                        "train_number": train_details.train_number,
+                        "train_name": train_details.train_name,
+                        "coach_name": train_details.coach_name,
+                        "total_seats": train_details.total_seats,
+                        "status": train_details.status,
+                    },
                     "seat_details": [
                         {
                             "id": seat.id,
