@@ -1,0 +1,1 @@
+# app/infrastructure/elasticsearch/mappings/__init__.py

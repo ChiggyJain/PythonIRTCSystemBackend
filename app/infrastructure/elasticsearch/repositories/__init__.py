@@ -1,0 +1,1 @@
+# app/infrastructure/elasticsearch/repositories/__init__.py
