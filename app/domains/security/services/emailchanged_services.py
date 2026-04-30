@@ -27,8 +27,8 @@ from app.common.cache.config import CACHE_KEY_USER_PROFILE
 from app.common.cache.redis_cache import build_cache_key, cache_delete
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
-from app.domains.security.repository.base import SecurityRepositoryBase
-
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 settings = get_settings()
 
@@ -46,8 +46,10 @@ class EmailChangedOtpService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
-    def __init__(self, repo: SecurityRepositoryBase):
-        self.repo = repo
+    def __init__(self, db):
+        self.repo = db
+        self.security_repo = SecuritySQLAlchemyRepository(db)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db)
         self._otp_hash_secret = f"{settings.JWT_SECRET_KEY}:otp-hash:v1"
         self._otp_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
         self._meta_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-metadata-cipher:v1")
@@ -88,7 +90,7 @@ class EmailChangedOtpService:
         now = now_ist()
 
         # Cooldown + one-active policy
-        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+        active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
             user_id=user_id,
             purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
             channel="EMAIL",
@@ -141,7 +143,10 @@ class EmailChangedOtpService:
 
         try:
 
-            await self.repo.add_otp_challenge(
+            # Begin transaction explicitly
+            await self._db.begin()
+
+            await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
@@ -156,7 +161,7 @@ class EmailChangedOtpService:
                 metadata_json=metadata_ciphertext,
             )
 
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="OTP_CHALLENGE",
                 aggregate_id=challenge_id,
                 event_type=self.OUTBOX_EVENT_TYPE,
@@ -171,7 +176,7 @@ class EmailChangedOtpService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_change_otp_requested",
                 event_category="EMAIL_CHANGE",
@@ -190,10 +195,11 @@ class EmailChangedOtpService:
                 },
             )
 
-            await self.repo.commit()
+            # Single commit for ALL
+            await self._db.commit()
 
         except Exception:
-            await self.repo.rollback()
+            await self._db.rollback()
             raise
 
         return {
@@ -217,7 +223,7 @@ class EmailChangedOtpService:
     ) -> dict:
         
         try:
-            
+
             challenge = await self.repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
