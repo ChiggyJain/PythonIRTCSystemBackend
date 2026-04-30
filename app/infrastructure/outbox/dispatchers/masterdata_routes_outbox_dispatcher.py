@@ -5,7 +5,7 @@ from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
 from app.infrastructure.elasticsearch.client import build_elasticsearch_client
-from app.infrastructure.elasticsearch.repositories.station_repository import StationElasticsearchRepository
+from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
 
 settings = get_settings()
 
@@ -13,9 +13,9 @@ settings = get_settings()
 async def index_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
-        station_repo = StationElasticsearchRepository(es_client)
+        routes_repo = RoutesElasticsearchRepository(es_client)
         # Create index with mapping if not exists
-        await station_repo.create_index_if_not_exists()
+        await routes_repo.create_index_if_not_exists()
         # Prepare ES document (only required fields)
         seatSummary = {
             "total" : 0, "LOWER" : 0, "MIDDLE" : 0, "UPPER" : 0, 
@@ -45,7 +45,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             "schedules" : []
         }
         # Index/upsert the document
-        await station_repo.index(es_document)
+        await routes_repo.index(es_document)
         app_logger.info(f"Indexed routes to ES using RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
         await es_client.close()
         return True
