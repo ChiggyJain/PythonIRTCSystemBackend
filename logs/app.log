@@ -5670,3 +5670,6 @@
 2026-04-30 14:44:58 | INFO | SpawnProcess-153-13671 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:44:58.086166 | 2026-04-30 14:44:58.090363 | 4 |  | 500
 2026-04-30 14:45:10 | INFO | SpawnProcess-153-13671 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:45:10.055275 | 2026-04-30 14:45:10.095539 | 40 | None | 202
 2026-04-30 14:45:10 | ERROR | pwdchanged_otp_dispatch_consumer_worker error: 'PwdChangedOtpDispatchConsumerService' object has no attribute '_db_session'
+2026-04-30 14:46:36 | INFO | SpawnProcess-157-14356 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:46:36.829990 | 2026-04-30 14:46:36.866973 | 36 | None | 202
+2026-04-30 14:47:08 | INFO | SpawnProcess-157-14356 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:47:08.366273 | 2026-04-30 14:47:08.456682 | 90 | None | 202
+2026-04-30 14:47:09 | ERROR | pwdchanged_otp_dispatch_consumer_worker error: 'PwdChangedOtpDispatchConsumerService' object has no attribute '_db_session'
