@@ -5647,3 +5647,11 @@
 2026-04-30 12:01:35 | INFO | SpawnProcess-59-21609 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-04-30 12:01:35.400128 | 2026-04-30 12:01:35.415915 | 15 | None | 200
 2026-04-30 12:01:40 | INFO | SpawnProcess-59-21609 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 12:01:40.368582 | 2026-04-30 12:01:40.371704 | 3 |  | 500
 2026-04-30 12:01:46 | INFO | SpawnProcess-59-21609 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 12:01:46.035184 | 2026-04-30 12:01:46.396359 | 361 | None | 200
+2026-04-30 13:51:28 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 13:51:38 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 13:51:49 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:51:49.441755 | 2026-04-30 13:51:49.745017 | 303 | None | 200
+2026-04-30 13:52:03 | INFO | SpawnProcess-1-7782 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 13:52:03.195132 | 2026-04-30 13:52:03.296133 | 101 | None | 202
+2026-04-30 13:52:34 | INFO | SpawnProcess-1-7782 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-04-30 13:52:34.221780 | 2026-04-30 13:52:34.222748 | 0 |  | 500
+2026-04-30 13:52:48 | INFO | SpawnProcess-1-7782 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-04-30 13:52:48.087068 | 2026-04-30 13:52:48.180774 | 93 | None | 200
+2026-04-30 13:52:51 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:52:51.899483 | 2026-04-30 13:52:51.901389 | 1 |  | 500
+2026-04-30 13:52:57 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:52:57.216767 | 2026-04-30 13:52:57.460562 | 243 | None | 200
