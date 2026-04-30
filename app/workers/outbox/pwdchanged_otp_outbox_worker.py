@@ -19,9 +19,9 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchnaged-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-pwdchanged-outbox-publisher")
     await producer.start()
-    app_logger.info("emailchanged_otp_outbox_worker started")
+    app_logger.info("pwdchanged_otp_outbox_worker started")
 
     try:
 
@@ -38,7 +38,7 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            event_type="EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
+                            event_type="PWDCHANGED_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
@@ -53,7 +53,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
+                    topic = settings.PWDCHANGED_OTP_DISPATCH_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
@@ -79,7 +79,7 @@ async def run_worker() -> None:
                             # adding logs into security_event
                             await security_repo.add_security_event(
                                 user_id=user_id,
-                                event_name="email_change_outbox_published",
+                                event_name="pwd_change_outbox_published",
                                 event_category="OUTBOX",
                                 channel="EMAIL",
                                 provider="KAFKA",
@@ -106,13 +106,13 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo, "security_repo": security_repo
+                                    "retry_handler_type": "PWDCHANGED_OTP", "outbox_repo": outbox_repo, "security_repo": security_repo
                                 }
-                                emailchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                pwdchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "user_id": user_id, "error_message": str(exc)
                                 }
-                                await emailchanged_otp_outbox_retry_handler_class_obj.handle(**params)
+                                await pwdchanged_otp_outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True
