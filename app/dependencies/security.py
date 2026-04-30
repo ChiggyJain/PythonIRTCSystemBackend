@@ -24,16 +24,12 @@ def get_password_change_otp_service(
 
 
 def get_email_verification_otp_service(
-    repo: SecurityRepositoryBase = Depends(get_security_repository),
+    db_session: AsyncSession = Depends(get_db),
 ) -> EmailVerificationOtpService:
-    """
-    Example:
-        service = Depends(get_email_verification_otp_service)
-    """
-    return EmailVerificationOtpService(repo)
+    return EmailVerificationOtpService(db_session)
 
 
 def get_email_changed_otp_service(
-    db: AsyncSession = Depends(get_db),
+    db_session: AsyncSession = Depends(get_db),
 ) -> EmailChangedOtpService:
-    return EmailChangedOtpService(db)
+    return EmailChangedOtpService(db_session)

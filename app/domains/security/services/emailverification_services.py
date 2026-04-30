@@ -12,13 +12,15 @@ import hashlib
 import hmac
 import secrets
 from cryptography.fernet import Fernet
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
 from app.common.cache.config import CACHE_KEY_USER_PROFILE
 from app.common.cache.redis_cache import build_cache_key, cache_delete
-from app.domains.security.repository.base import SecurityRepositoryBase
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 settings = get_settings()
@@ -39,11 +41,10 @@ class EmailVerificationOtpService:
     OUTBOX_EVENT_TYPE = "EMAILVERIFICATION_OTP_DISPATCH_REQUESTED_V1"
 
 
-    def __init__(
-        self,
-        repo: SecurityRepositoryBase,
-    ):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.security_repo = SecuritySQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
         self._otp_hash_secret = f"{settings.JWT_SECRET_KEY}:otp-hash:v1"
         self._fernet = self._build_fernet(
             secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
@@ -65,7 +66,7 @@ class EmailVerificationOtpService:
         if channel != "EMAIL":
             raise BaseAppException(status_code=400, messages=["channel must be EMAIL"])
 
-        user = await self.repo.get_active_user(user_id)
+        user = await self.security_repo.get_active_user(user_id)
         if not user:
             raise BaseAppException(status_code=404, messages=["User not found"])
 
@@ -78,7 +79,7 @@ class EmailVerificationOtpService:
         now = now_ist()
 
         # Cooldown + one-active policy
-        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+        active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
             user_id=user_id,
             purpose=self.OTP_PURPOSE_EMAIL_VERIFICATION,
             channel="EMAIL",
@@ -114,7 +115,7 @@ class EmailVerificationOtpService:
 
         try:
             
-            await self.repo.add_otp_challenge(
+            await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_EMAIL_VERIFICATION,
@@ -128,7 +129,7 @@ class EmailVerificationOtpService:
                 status=self.OTP_STATUS_REQUESTED,
             )
 
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="OTP_CHALLENGE",
                 aggregate_id=challenge_id,
                 event_type=self.OUTBOX_EVENT_TYPE,
@@ -142,7 +143,7 @@ class EmailVerificationOtpService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verification_otp_requested",
                 event_category="EMAIL_VERIFICATION",
@@ -161,10 +162,10 @@ class EmailVerificationOtpService:
                 },
             )
 
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         return {
@@ -188,7 +189,8 @@ class EmailVerificationOtpService:
     ) -> dict:
 
         try:
-            challenge = await self.repo.get_otp_challenge_for_update(
+            
+            challenge = await self.security_repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_EMAIL_VERIFICATION,
@@ -206,7 +208,7 @@ class EmailVerificationOtpService:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_failed",
                     event_category="EMAIL_VERIFICATION",
@@ -220,14 +222,14 @@ class EmailVerificationOtpService:
                     user_agent=user_agent,
                     metadata_json={"challenge_id": challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["OTP expired"])
 
             if challenge.attempts_used >= challenge.max_attempts:
                 challenge.status = self.OTP_STATUS_BLOCKED
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["OTP attempts exceeded"])
 
             if not self._verify_otp(otp=otp, otp_hash=challenge.otp_hash):
@@ -237,7 +239,7 @@ class EmailVerificationOtpService:
                 if challenge.attempts_used >= challenge.max_attempts:
                     challenge.status = self.OTP_STATUS_BLOCKED
 
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_verification_otp_failed",
                     event_category="EMAIL_VERIFICATION",
@@ -255,16 +257,16 @@ class EmailVerificationOtpService:
                         "max_attempts": challenge.max_attempts,
                     },
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["Invalid OTP"])
 
             verified_at = now_ist()
-            updated = await self.repo.mark_user_email_verified(
+            updated = await self.security_repo.mark_user_email_verified(
                 user_id=user_id,
                 verified_at=verified_at,
             )
             if not updated:
-                await self.repo.rollback()
+                await self._db_session.rollback()
                 raise BaseAppException(status_code=404, messages=["User not found"])
 
             challenge.attempts_used += 1
@@ -272,7 +274,7 @@ class EmailVerificationOtpService:
             challenge.last_error_code = None
             challenge.updated_at = verified_at
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verification_otp_verified",
                 event_category="EMAIL_VERIFICATION",
@@ -287,7 +289,7 @@ class EmailVerificationOtpService:
                 metadata_json={"challenge_id": challenge_id},
             )
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_verified",
                 event_category="EMAIL_VERIFICATION",
@@ -303,12 +305,12 @@ class EmailVerificationOtpService:
             )
 
             # DB first
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except BaseAppException:
             raise
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         # cache cleanup best-effort (post-commit)

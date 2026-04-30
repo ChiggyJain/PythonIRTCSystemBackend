@@ -5655,3 +5655,8 @@
 2026-04-30 13:52:48 | INFO | SpawnProcess-1-7782 | v1.users.email_change_confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-04-30 13:52:48.087068 | 2026-04-30 13:52:48.180774 | 93 | None | 200
 2026-04-30 13:52:51 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:52:51.899483 | 2026-04-30 13:52:51.901389 | 1 |  | 500
 2026-04-30 13:52:57 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:52:57.216767 | 2026-04-30 13:52:57.460562 | 243 | None | 200
+2026-04-30 13:54:09 | INFO | emailverification_otp_outbox_worker started
+2026-04-30 13:54:21 | INFO | emailverification_otp_dispatch_consumer_worker started
+2026-04-30 13:54:22 | INFO | SpawnProcess-1-7782 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 13:54:21.898387 | 2026-04-30 13:54:22.193175 | 294 | None | 200
+2026-04-30 13:54:43 | INFO | SpawnProcess-1-7782 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-04-30 13:54:43.514626 | 2026-04-30 13:54:43.522114 | 7 |  | 500
+2026-04-30 13:55:02 | INFO | SpawnProcess-1-7782 | v1.users.email_verification_request_otp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-04-30 13:55:02.409374 | 2026-04-30 13:55:02.439975 | 30 | 'SecuritySQLAlchemyRepository' object has no attribute 'add_outbox_event' | 500
