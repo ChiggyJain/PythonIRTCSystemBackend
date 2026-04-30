@@ -18,9 +18,9 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-stations-outbox-publisher")
     await producer.start()
-    app_logger.info("emailchanged_otp_outbox_worker started")
+    app_logger.info("masterdata_stations_outbox_worker started")
 
     try:
 
@@ -37,13 +37,13 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            event_type="EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
+                            event_type="MASTERDATA_STATION_CREATED_V1", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
                         event = events[0]
                         payload = event.payload_json or {}
-                        user_id = int(payload.get("user_id") or 0)
+                        user_id = int(payload.get("created_by_admin_user_id") or 0)
                         # updating outbox_events status as processing
                         updated_at = now_ist()
                         await outbox_repo.mark_outbox_processing(event=event, updated_at=updated_at)
@@ -52,7 +52,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
+                    topic = settings.MASTERDATA_STATION_EVENT_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
@@ -69,43 +69,21 @@ async def run_worker() -> None:
                     async with AsyncSessionLocal() as db:
                         async with db.begin():
                             outbox_repo = OutboxEventsSQLAlchemyRepository(db)
-                            security_repo = SecuritySQLAlchemyRepository(db)
                             # fetching outbox event by given ID
                             event = await outbox_repo.get_by_id(event.id)
                             # updating outbox event status as published
                             published_at = now_ist()
                             await outbox_repo.mark_outbox_published(event=event, published_at=published_at)
-                            # adding logs into security_event
-                            await security_repo.add_security_event(
-                                user_id=user_id,
-                                event_name="email_change_outbox_published",
-                                event_category="OUTBOX",
-                                channel="EMAIL",
-                                provider="KAFKA",
-                                status="published",
-                                reason_code=None,
-                                correlation_id=None,
-                                request_id=None,
-                                ip_address=None,
-                                user_agent=None,
-                                metadata_json={
-                                    "outbox_id": event.id,
-                                    "topic": md.topic,
-                                    "partition": md.partition,
-                                    "offset": md.offset,
-                                },
-                            )
                  
                 except Exception as exc:
                     # STEP4: RETRY / FAIL
                     async with AsyncSessionLocal() as db:
                         async with db.begin():
                             outbox_repo = OutboxEventsSQLAlchemyRepository(db)
-                            security_repo = SecuritySQLAlchemyRepository(db)
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo, "security_repo": security_repo
+                                    "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo
                                 }
                                 emailchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
