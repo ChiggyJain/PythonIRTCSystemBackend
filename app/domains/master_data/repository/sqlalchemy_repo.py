@@ -16,8 +16,8 @@ from app.common.utils.datetime import now_ist
 
 class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
 
-    def __init__(self, db: AsyncSession):
-        self.db = db
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
 
 
     async def create_station(
@@ -38,9 +38,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
+        self._db_session.add(row)
         # temporary stored data in memory not actual db level
-        await self.db.flush()
+        await self._db_session.flush()
         return row
 
 
@@ -63,9 +63,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
+        self._db_session.add(row)
         # temporary stored data in memory not actual db level
-        await self.db.flush()
+        await self._db_session.flush()
         return row
     
 
@@ -89,9 +89,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
                 updated_at=now_ist(),
             )
             rows.append(row)
-        self.db.add_all(rows)
+        self._db_session.add_all(rows)
         # temporary stored data in memory not actual db level
-        await self.db.flush()
+        await self._db_session.flush()
         return rows
     
 
@@ -104,7 +104,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             )
             .limit(1)
         )
-        result = await self.db.execute(stmt)
+        result = await self._db_session.execute(stmt)
         return result.scalar_one_or_none() is not None
     
 
@@ -115,7 +115,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             Stations.id.in_(station_ids),
             Stations.status == "A",
         )
-        result = await self.db.execute(stmt)
+        result = await self._db_session.execute(stmt)
         return int(result.scalar_one())
     
 
@@ -126,9 +126,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
+        self._db_session.add(row)
         # temporary stored data in memory not actual db level
-        await self.db.flush()
+        await self._db_session.flush()
         return row
 
     async def create_route_stations(
@@ -153,9 +153,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
                 updated_at=now_ist(),
             )
             rows.append(row)
-        self.db.add_all(rows)
+        self._db_session.add_all(rows)
         # temporary stored data in memory not actual db level
-        await self.db.flush()
+        await self._db_session.flush()
         return rows
     
 
@@ -172,7 +172,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             )
             .limit(1)
         )
-        result = await self.db.execute(stmt)
+        result = await self._db_session.execute(stmt)
         return result.scalar_one_or_none()
 
 
@@ -189,7 +189,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             )
             .order_by(RouteStations.sequence_number.asc())
         )
-        result = await self.db.execute(stmt)
+        result = await self._db_session.execute(stmt)
         return list(result.scalars().all())
 
 
@@ -207,8 +207,8 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
         # temporary stored data in memory not actual db level
         return row
 
@@ -235,12 +235,12 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
 
 
     async def commit(self) -> None:
-        await self.db.commit()
+        await self._db_session.commit()
 
     async def rollback(self) -> None:
-        await self.db.rollback()
+        await self._db_session.rollback()

@@ -1,8 +1,9 @@
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
-from app.domains.master_data.repository.base import MasterDataRepositoryBase
+from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
 
 
 class StationsService:
@@ -10,8 +11,9 @@ class StationsService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_STATION_CREATED = "MASTERDATA_STATION_CREATED_V1"
 
-    def __init__(self, repo: MasterDataRepositoryBase):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
 
 
     async def create_station(
@@ -31,7 +33,7 @@ class StationsService:
         try:
 
             # creating entries into station
-            station = await self.repo.create_station(
+            station = await self.masterdata_repo.create_station(
                 name=name,
                 code=code,
                 city=city,
@@ -40,7 +42,7 @@ class StationsService:
             )
 
             # creating entries into outbox
-            await self.repo.add_outbox_event(
+            await self.masterdata_repo.add_outbox_event(
                 aggregate_type="STATION",
                 aggregate_id=str(station.id),
                 event_type=self.OUTBOX_EVENT_STATION_CREATED,
@@ -63,17 +65,17 @@ class StationsService:
             )
 
             # committing the records at db level
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except IntegrityError:
             # rollback is happening here if station-code is duplicate
-            await self.repo.rollback()
+            await self._db_session_rollback()
             raise BaseAppException(
                 status_code=400,
                 messages=["Station code already exists"],
             )
         except Exception:
-            await self.repo.rollback()
+            await self._db_session_rollback()
             raise
 
         return {
