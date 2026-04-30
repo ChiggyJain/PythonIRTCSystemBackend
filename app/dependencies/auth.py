@@ -25,11 +25,9 @@ from app.common.cache.redis_cache import (
 # =========================
 
 def get_token_service(
-    db: AsyncSession = Depends(get_db),
+    db_session: AsyncSession = Depends(get_db),
 ) -> TokenService:
-
-    repo = TokenRepositorySQLAlchemy(db)
-    return TokenService(repo)
+    return TokenService(db_session)
 
 
 

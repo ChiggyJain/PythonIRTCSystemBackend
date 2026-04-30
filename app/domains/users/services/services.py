@@ -127,7 +127,6 @@ class UsersService:
         self,
         user_id: int,
     ):
-
         
         key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
         cached = None

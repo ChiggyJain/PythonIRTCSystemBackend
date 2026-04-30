@@ -5,6 +5,7 @@ Handles JWT + DB tokens
 """
 
 from datetime import timedelta
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.common.security.token_hash import (
     build_token_hash,
@@ -16,9 +17,7 @@ from app.common.security.jwt import (
 )
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.domains.auth.repository.base import (
-    TokenRepositoryBase,
-)
+from app.domains.auth.repository.sqlalchemy_repo import TokenRepositorySQLAlchemy
 from app.common.cache.redis_cache import (
     build_cache_key,
     cache_set,
@@ -36,11 +35,10 @@ settings = get_settings()
 
 class TokenService:
 
-    def __init__(
-        self,
-        repo: TokenRepositoryBase,
-    ):
-        self.repo = repo
+
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.user_tokens_repo = TokenRepositorySQLAlchemy(db_session)
 
 
     async def create_tokens(
@@ -68,7 +66,7 @@ class TokenService:
         try:
 
             # Create rows first (flush-only) to get IDs.
-            access_token_row = await self.repo.create_token(
+            access_token_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
                 token_type="access",
@@ -77,7 +75,7 @@ class TokenService:
                 user_agent=user_agent,
             )
             
-            refresh_token_row = await self.repo.create_token(
+            refresh_token_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
                 token_type="refresh",
@@ -113,11 +111,11 @@ class TokenService:
             refresh_token_row.updated_at = now_time
 
             # Single DB commit for whole token creation flow.
-            await self.repo.db.commit()
+            await self._db_session.commit()
 
             
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         # storing access-token-row-id into redis for respective user

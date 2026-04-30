@@ -17,11 +17,8 @@ class TokenRepositorySQLAlchemy(
     TokenRepositoryBase
 ):
 
-    def __init__(
-        self,
-        db: AsyncSession,
-    ):
-        self.db = db
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
 
 
     # -------------------------
@@ -51,11 +48,9 @@ class TokenRepositorySQLAlchemy(
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(obj)
-        # await self.db.commit()
-        # await self.db.refresh(obj)
+        self._db_session.add(obj)
         # Important: flush gets auto-increment ID without committing transaction.
-        await self.db.flush()
+        await self._db_session.flush()
         return obj
 
 
@@ -72,7 +67,7 @@ class TokenRepositorySQLAlchemy(
             UserTokens.token_hash == token_hash,
             UserTokens.status == "A",
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
     
 
@@ -89,7 +84,7 @@ class TokenRepositorySQLAlchemy(
             UserTokens.id == token_id,
             UserTokens.status == "A",
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
 
@@ -111,8 +106,8 @@ class TokenRepositorySQLAlchemy(
                 status="Z",
             )
         )
-        await self.db.execute(stmt)
-        # await self.db.commit()
+        await self._db_session.execute(stmt)
+        # await self._db_session.commit()
 
     
     # -------------------------
@@ -139,11 +134,11 @@ class TokenRepositorySQLAlchemy(
                 status="Z",
             )
         )
-        await self.db.execute(stmt)
+        await self._db_session.execute(stmt)
 
 
     async def commit(self) -> None:
-        await self.db.commit()
+        await self._db_session.commit()
 
     async def rollback(self) -> None:
-        await self.db.rollback()
+        await self._db_session.rollback()

@@ -119,12 +119,8 @@ router.add_api_route(
 async def login_user(
     body: UserLoginRequest,
     request: Request,
-    service: UsersService = Depends(
-        get_users_service
-    ),
-    token_service: TokenService = Depends(
-        get_token_service
-    ),
+    service: UsersService = Depends(get_users_service),
+    token_service: TokenService = Depends(get_token_service),
 ):
 
     # validate user
