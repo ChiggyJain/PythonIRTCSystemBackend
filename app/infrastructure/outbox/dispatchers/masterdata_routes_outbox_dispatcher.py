@@ -46,7 +46,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         }
         # Index/upsert the document
         await station_repo.index(es_document)
-        app_logger.info(f"Indexed station to ES: {payload.get('station_id')}")
+        app_logger.info(f"Indexed routes to ES using RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
         await es_client.close()
         return True
     except Exception as e:
