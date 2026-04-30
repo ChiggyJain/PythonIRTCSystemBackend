@@ -84,7 +84,7 @@ class RoutesService:
                 payload_json={
                     "route_id": route.id,
                     "train_id": route.train_id,
-                    "train_seats": [
+                    "seat_details": [
                         {
                             "id": seat.id,
                             "seat_type": seat.seat_type,
