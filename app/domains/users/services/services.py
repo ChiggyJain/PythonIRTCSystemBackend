@@ -5,15 +5,16 @@ Business logic for users domain.
 """
 
 from anyio import to_thread
-from app.common.utils.logger import app_logger
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.common.utils.password import (
     hash_password, 
     verify_password
 )
-from app.domains.users.repository.base import (
-    UsersRepositoryBase,
+from app.domains.users.repository.sqlalchemy_repo import (
+    UsersSQLAlchemyRepository
 )
 from app.common.cache.redis_cache import (
     cache_get,
@@ -27,15 +28,15 @@ from app.common.cache.config import (
 
 
 class UsersService:
+
     """
     Users business logic
     """
 
-    def __init__(
-        self,
-        repo: UsersRepositoryBase,
-    ):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.users_repo = UsersSQLAlchemyRepository(db_session)
+
 
     # ---------------------------------
     # signup user
@@ -58,8 +59,7 @@ class UsersService:
         hashed_password = await to_thread.run_sync(hash_password, password)
 
         try:
-
-            user = await self.repo.create_user(
+            user = await self.users_repo.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 mobile=mobile,
@@ -68,14 +68,11 @@ class UsersService:
                 gender=gender,
                 profile=profile
             )
-
         except IntegrityError:
-
             raise BaseAppException(
                 messages=["Email already exists"],
                 status_code=400,
             )
-
         return user
     
 
@@ -91,7 +88,7 @@ class UsersService:
         password: str,
     ):
 
-        user = await self.repo.get_by_email(email)
+        user = await self.users_repo.get_by_email(email)
         if not user:
             raise BaseAppException(
                 messages=[
@@ -143,7 +140,7 @@ class UsersService:
         if cached:
             return cached
 
-        profile = await self.repo.get_profile_snapshot_by_id(user_id=user_id)
+        profile = await self.users_repo.get_profile_snapshot_by_id(user_id=user_id)
         if not profile:
             raise BaseAppException(
                 messages=["User not found"],

@@ -15,6 +15,7 @@ from app.common.utils.datetime import now_ist
 
 
 class UsersSQLAlchemyRepository(UsersRepositoryBase):
+
     """
     SQLAlchemy implementation of UsersRepositoryBase
     """
@@ -60,7 +61,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-
         self.session.add(user)
         try:
             await self.session.commit()
@@ -68,7 +68,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             await self.session.rollback()
             raise
         await self.session.refresh(user)
-
         return user
     
 
