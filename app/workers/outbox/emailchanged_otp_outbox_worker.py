@@ -32,7 +32,6 @@ async def run_worker() -> None:
 
             for loopNo in range(1, BATCH_SIZE):
 
-                print(f"BatchSize: {BATCH_SIZE}, LoopNo: {loopNo}")
                 # STEP1: LOCK + MARK PROCESSING
                 async with AsyncSessionLocal() as db:
                     async with db.begin():
@@ -42,7 +41,6 @@ async def run_worker() -> None:
                         events = await outbox_repo.fetch_pending_outbox_events(
                             event_type="EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
                         )
-                        print(f"events: {events}")
                         if not events:
                             break
                         event = events[0]
@@ -57,7 +55,6 @@ async def run_worker() -> None:
                     
                     # kafka topic
                     topic = settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
-                    print(f"topic: {topic}")
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
@@ -102,7 +99,6 @@ async def run_worker() -> None:
                             )
                  
                 except Exception as exc:
-                    print(f"exc: {exc}")
                     # STEP4: RETRY / FAIL
                     async with AsyncSessionLocal() as db:
                         async with db.begin():
