@@ -47,7 +47,7 @@ class EmailChangedOtpService:
     OUTBOX_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
     def __init__(self, db):
-        self.repo = db
+        self._db_session = db
         self.security_repo = SecuritySQLAlchemyRepository(db)
         self.outbox_repo = OutboxEventsSQLAlchemyRepository(db)
         self._otp_hash_secret = f"{settings.JWT_SECRET_KEY}:otp-hash:v1"
@@ -75,7 +75,7 @@ class EmailChangedOtpService:
         if not new_email:
             raise BaseAppException(status_code=400, messages=["new_email is required"])
 
-        user = await self.repo.get_active_user(user_id)
+        user = await self.security_repo.get_active_user(user_id)
         if not user:
             raise BaseAppException(status_code=404, messages=["User not found"])
 
@@ -83,7 +83,7 @@ class EmailChangedOtpService:
         if old_email == new_email:
             raise BaseAppException(status_code=400, messages=["New email must be different"])
 
-        existing = await self.repo.get_active_user_by_email(new_email)
+        existing = await self.security_repo.get_active_user_by_email(new_email)
         if existing and int(existing.id) != int(user_id):
             raise BaseAppException(status_code=400, messages=["Email already in use"])
 
@@ -144,7 +144,7 @@ class EmailChangedOtpService:
         try:
 
             # Begin transaction explicitly
-            await self._db.begin()
+            # await self._db_session.begin()
 
             await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
@@ -196,10 +196,10 @@ class EmailChangedOtpService:
             )
 
             # Single commit for ALL
-            await self._db.commit()
+            await self._db_session.commit()
 
         except Exception:
-            await self._db.rollback()
+            await self._db_session.rollback()
             raise
 
         return {

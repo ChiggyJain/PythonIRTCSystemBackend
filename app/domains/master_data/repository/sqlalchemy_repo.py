@@ -10,7 +10,7 @@ from app.domains.master_data.models.routes_models import Routes
 from app.domains.master_data.models.routestations_models import RouteStations
 from app.domains.master_data.models.schedules_models import Schedules
 from app.domains.master_data.repository.base import MasterDataRepositoryBase
-from app.domains.security.models.models import OutboxEvents
+from app.infrastructure.outbox.models.outbox_events_models import OutboxEvents
 from app.common.utils.datetime import now_ist
 
 

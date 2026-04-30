@@ -5547,3 +5547,12 @@
 2026-04-28 11:15:24 | INFO | emailchanged_otp_outbox_worker started
 2026-04-28 11:15:54 | INFO | emailchanged_otp_outbox_worker started
 2026-04-28 11:21:01 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 09:31:35 | INFO | SpawnProcess-1-9491 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 09:31:35.404407 | 2026-04-30 09:31:35.804292 | 399 | None | 200
+2026-04-30 09:32:05 | INFO | SpawnProcess-1-9491 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:32:05.677400 | 2026-04-30 09:32:05.679326 | 1 | 'AsyncSession' object has no attribute 'get_active_user' | 500
+2026-04-30 09:33:12 | INFO | SpawnProcess-2-10035 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:33:12.584984 | 2026-04-30 09:33:12.602498 | 17 | 'AsyncSession' object has no attribute 'get_active_user' | 500
+2026-04-30 09:33:54 | INFO | SpawnProcess-3-10087 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:33:54.529938 | 2026-04-30 09:33:54.645380 | 115 | 'EmailChangedOtpService' object has no attribute '_db' | 500
+2026-04-30 09:34:28 | INFO | SpawnProcess-5-10133 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:34:28.111236 | 2026-04-30 09:34:28.226176 | 114 | A transaction is already begun on this Session. | 500
+2026-04-30 09:37:01 | INFO | SpawnProcess-6-10225 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:37:01.606180 | 2026-04-30 09:37:01.730115 | 123 | None | 202
+2026-04-30 09:37:28 | INFO | SpawnProcess-8-10305 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:37:27.965014 | 2026-04-30 09:37:28.014100 | 49 |  | 500
+2026-04-30 09:37:47 | INFO | SpawnProcess-8-10305 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:37:47.827095 | 2026-04-30 09:37:47.917007 | 89 | 'EmailChangedOtpService' object has no attribute 'OUTBOX_STATUS_PENDING1' | 500
+2026-04-30 09:38:54 | INFO | SpawnProcess-12-10360 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:38:54.370871 | 2026-04-30 09:38:54.489373 | 118 | None | 202
