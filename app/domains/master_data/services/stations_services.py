@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 class StationsService:
@@ -14,6 +15,7 @@ class StationsService:
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
         self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def create_station(
@@ -42,7 +44,7 @@ class StationsService:
             )
 
             # creating entries into outbox
-            await self.masterdata_repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="STATION",
                 aggregate_id=str(station.id),
                 event_type=self.OUTBOX_EVENT_STATION_CREATED,
