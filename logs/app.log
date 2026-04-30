@@ -5596,3 +5596,5 @@
 2026-04-30 10:53:55 | INFO | emailchanged_otp_outbox_worker started
 2026-04-30 10:55:02 | INFO | emailchanged_otp_outbox_worker started
 2026-04-30 10:55:56 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 11:22:12 | INFO | SpawnProcess-1-18933 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 11:22:12.503182 | 2026-04-30 11:22:12.960126 | 456 | None | 200
+2026-04-30 11:24:13 | INFO | emailchanged_otp_outbox_worker started
