@@ -8,7 +8,6 @@ from app.infrastructure.kafka.client import build_consumer
 
 settings = get_settings()
 
-
 async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.EMAILVERIFICATION_OTP_DISPATCH_TOPIC,
