@@ -15,9 +15,9 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
 
     def __init__(
         self,
-        db: AsyncSession,
+        db_session: AsyncSession,
     ):
-        self.db = db
+        self._db_session = db_session
 
 
     async def add_outbox_event(
@@ -43,8 +43,8 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
         return row
 
 
@@ -82,7 +82,7 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
             .limit(limit)
             .with_for_update(skip_locked=True)
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return list(res.scalars().all())
 
 
@@ -95,7 +95,7 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
 
         event.status = "PROCESSING"
         event.updated_at = updated_at
-        await self.db.flush()
+        await self._db_session.flush()
 
 
     async def mark_outbox_published(
@@ -108,7 +108,7 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         event.status = "PUBLISHED"
         event.published_at = published_at
         event.updated_at = published_at
-        await self.db.flush()
+        await self._db_session.flush()
 
 
     async def mark_outbox_retry(
@@ -125,7 +125,7 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         event.next_retry_at = next_retry_at
         event.last_error = last_error[:2000]
         event.updated_at = updated_at
-        await self.db.flush()
+        await self._db_session.flush()
 
 
     async def mark_outbox_failed(
@@ -139,13 +139,13 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         event.status = "FAILED"
         event.last_error = last_error[:2000]
         event.updated_at = updated_at
-        await self.db.flush()
+        await self._db_session.flush()
 
 
 
     
     async def commit(self) -> None:
-        await self.db.commit()
+        await self._db_session.commit()
 
     async def rollback(self) -> None:
-        await self.db.rollback()
+        await self._db_session.rollback()
