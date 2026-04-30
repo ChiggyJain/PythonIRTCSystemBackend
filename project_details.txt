@@ -161,6 +161,19 @@ Display created Topic =>
 ./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic masterdata-station-events-v1
 
 
+Create MasterData-Routes Topic =>
+./kafka/bin/kafka-topics.sh \
+  --bootstrap-server 127.0.0.1:9092 \
+  --create \
+  --topic masterdata-route-events-v1 \
+  --partitions 6 \
+  --replication-factor 1
+
+Display created Topic =>
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic masterdata-route-events-v1
+
+
+
 To Remove all Topics command =>
 for topic in $(./kafka/bin/kafka-topics.sh --list --bootstrap-server localhost:9092); do
   ./kafka/bin/kafka-topics.sh --delete --topic $topic --bootstrap-server localhost:9092
@@ -186,6 +199,10 @@ python -m app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatch
 Master Data Stations Created:
 python -m app.workers.outbox.masterdata_stations_outbox_worker
 python -m app.infrastructure.outbox.dispatchers.masterdata_stations_outbox_dispatcher
+
+Master Data Routes Created:
+python -m app.workers.outbox.masterdata_routes_outbox_worker
+python -m app.infrastructure.outbox.dispatchers.masterdata_routes_outbox_dispatcher
 
 
 
