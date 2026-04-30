@@ -15,11 +15,11 @@ ROUTES_INDEX_MAPPING = {
     },
     "mappings": {
         "properties": {
-            "station_id": {
+            "train_id": {
                 "type": "integer",
                 "index": True
             },
-            "name": {
+            "train_name": {
                 "type": "text",
                 "analyzer": "station_analyzer",
                 "fields": {
@@ -32,15 +32,7 @@ ROUTES_INDEX_MAPPING = {
                     }
                 }
             },
-            "code": {
-                "type": "keyword",
-                "normalizer": "lowercase"
-            },
-            "city": {
-                "type": "keyword",
-                "normalizer": "lowercase"
-            },
-            "state": {
+            "train_number": {
                 "type": "keyword",
                 "normalizer": "lowercase"
             }
