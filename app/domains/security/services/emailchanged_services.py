@@ -144,9 +144,6 @@ class EmailChangedOtpService:
 
         try:
 
-            # Begin transaction explicitly
-            # await self._db_session.begin()
-
             await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -196,7 +193,6 @@ class EmailChangedOtpService:
                 },
             )
 
-            # Single commit for ALL
             await self._db_session.commit()
 
         except Exception:
