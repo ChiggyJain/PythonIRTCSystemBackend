@@ -168,9 +168,6 @@ python3 -m app.workers.emailverification_otp_outbox_worker
 python3 -m app.workers.emailverification_otp_dispatch_consumer_worker
 
 Email Changed OTP:
-python -m app.workers.emailchanged_otp_outbox_worker
-python -m app.workers.emailchanged_otp_dispatch_consumer_worker
-
 python -m app.workers.outbox.emailchanged_otp_outbox_worker
 python -m app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher
 
