@@ -10,17 +10,19 @@ Step 2 scope:
 
 from anyio import to_thread
 from datetime import timedelta
-from app.common.utils.logger import app_logger
 import base64
 import hashlib
 import hmac
 import secrets
 from cryptography.fernet import Fernet
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.common.utils.logger import app_logger
 from app.common.utils.datetime import now_ist
 from app.common.utils.password import hash_password
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
-from app.domains.security.repository.base import SecurityRepositoryBase
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 from app.common.cache.redis_cache import(
     build_cache_key, cache_delete,
     build_cache_set_key, cache_set_members, cache_set_delete
@@ -45,20 +47,16 @@ class PasswordChangeOtpService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TYPE = "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1"
 
-    def __init__(
-        self,
-        repo: SecurityRepositoryBase,
-    ):
-        self.repo = repo
+
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.security_repo = SecuritySQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
         self._otp_hash_secret = f"{settings.JWT_SECRET_KEY}:otp-hash:v1"
         self._fernet = self._build_fernet(
             secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
         )
 
-
-    # =========================
-    # public: request OTP
-    # =========================
 
     async def request_password_change_otp(
         self,
@@ -75,7 +73,7 @@ class PasswordChangeOtpService:
         channel = self._normalize_channel(channel)
 
         # fetching active user details
-        user = await self.repo.get_active_user(user_id)
+        user = await self.security_repo.get_active_user(user_id)
         if not user:
             raise BaseAppException(
                 status_code=404,
@@ -119,7 +117,7 @@ class PasswordChangeOtpService:
         # Rule:
         # 1) If active challenge exists and requested very recently -> block (429)
         # 2) If active challenge exists and cooldown passed -> reuse existing challenge
-        active_otp_challenge = await self.repo.get_latest_active_otp_challenge(
+        active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
             user_id=user_id,
             purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
             channel=channel,
@@ -149,7 +147,7 @@ class PasswordChangeOtpService:
         try:
 
             # adding otp details
-            await self.repo.add_otp_challenge(
+            await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
@@ -164,7 +162,7 @@ class PasswordChangeOtpService:
             )
 
             # Outbox event only (Kafka publish is separate step independent worker)
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="OTP_CHALLENGE",
                 aggregate_id=challenge_id,
                 event_type=self.OUTBOX_EVENT_TYPE,
@@ -179,7 +177,7 @@ class PasswordChangeOtpService:
             )
 
             # adding logs into respective table
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="otp_requested",
                 event_category="OTP",
@@ -198,10 +196,10 @@ class PasswordChangeOtpService:
                 },
             )
 
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         return {
@@ -212,10 +210,7 @@ class PasswordChangeOtpService:
         }
 
 
-    # =======================================
-    # public: confirm OTP + change password
-    # =======================================
-
+    
     async def confirm_password_change(
         self,
         *,
@@ -240,7 +235,7 @@ class PasswordChangeOtpService:
         try:
 
             # fetching otp_challenge details
-            challenge = await self.repo.get_otp_challenge_for_update(
+            challenge = await self.security_repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
@@ -264,7 +259,7 @@ class PasswordChangeOtpService:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="otp_verification_failed",
                     event_category="OTP",
@@ -278,7 +273,7 @@ class PasswordChangeOtpService:
                     user_agent=user_agent,
                     metadata_json={"challenge_id": challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(
                     status_code=400,
                     messages=["OTP expired"],
@@ -288,7 +283,7 @@ class PasswordChangeOtpService:
                 challenge.status = self.OTP_STATUS_BLOCKED
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(
                     status_code=400,
                     messages=["OTP attempts exceeded"],
@@ -300,7 +295,7 @@ class PasswordChangeOtpService:
                 challenge.last_error_code = "OTP_INVALID"
                 if challenge.attempts_used >= challenge.max_attempts:
                     challenge.status = self.OTP_STATUS_BLOCKED
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="otp_verification_failed",
                     event_category="OTP",
@@ -318,7 +313,7 @@ class PasswordChangeOtpService:
                         "max_attempts": challenge.max_attempts,
                     },
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(
                     status_code=400,
                     messages=["Invalid OTP"],
@@ -330,19 +325,19 @@ class PasswordChangeOtpService:
             # bcrypt hashing is CPU-bound, so run it in thread to avoid blocking event loop
             password_hash = await to_thread.run_sync(hash_password, new_password)
 
-            updated = await self.repo.update_user_password(
+            updated = await self.security_repo.update_user_password(
                 user_id=user_id,
                 password_hash=password_hash,
                 changed_at=changed_at,
             )
             if not updated:
-                await self.repo.rollback()
+                await self._db_session.rollback()
                 raise BaseAppException(
                     status_code=404,
                     messages=["User not found"],
                 )
             
-            revoked_count = await self.repo.revoke_active_tokens_for_user(
+            revoked_count = await self.security_repo.revoke_active_tokens_for_user(
                 user_id=user_id,
                 changed_at=changed_at,
             )
@@ -352,7 +347,7 @@ class PasswordChangeOtpService:
             challenge.last_error_code = None
             challenge.updated_at = changed_at
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="otp_verified",
                 event_category="OTP",
@@ -370,7 +365,7 @@ class PasswordChangeOtpService:
                 },
             )
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="password_changed",
                 event_category="ACCOUNT_SECURITY",
@@ -388,7 +383,7 @@ class PasswordChangeOtpService:
                 },
             )
 
-            await self.repo.commit()
+            await self._db_session.commit()
 
             # 2) Cache cleanup as post-commit side-effect (best effort)
             user_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
@@ -414,9 +409,10 @@ class PasswordChangeOtpService:
                 )
 
         except BaseAppException:
+            await self._db_session.rollback()
             raise
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         return {
