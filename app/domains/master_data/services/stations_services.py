@@ -69,13 +69,13 @@ class StationsService:
 
         except IntegrityError:
             # rollback is happening here if station-code is duplicate
-            await self._db_session_rollback()
+            await self._db_session.rollback()
             raise BaseAppException(
                 status_code=400,
                 messages=["Station code already exists"],
             )
         except Exception:
-            await self._db_session_rollback()
+            await self._db_session.rollback()
             raise
 
         return {
