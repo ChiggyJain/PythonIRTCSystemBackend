@@ -17,10 +17,19 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         # Create index with mapping if not exists
         await station_repo.create_index_if_not_exists()
         # Prepare ES document (only required fields)
+        seatSummary = {
+            "total" : 0, "LOWER" : 0, "MIDDLE" : 0, "UPPER" : 0, 
+            "SIDE_UPPER" : 0, "SIDE_LOWER" : 0
+        }
+        for eachSeatObj in payload.get("seat_details"):
+            seatSummary["total"]+= 1
+            if eachSeatObj.seat_type in seatSummary:
+                seatSummary[eachSeatObj.seat_type]+= 1
         es_document = {
             "train_id": payload.get("train_details").get("train_id", 0),
             "train_name": payload.get("train_details").get("train_name", ""),
             "train_number": payload.get("train_details").get("train_number", ""),
+            "seatSummary" : seatSummary,
             "routes" : [
                 {
                     "id": rs.id,
@@ -32,7 +41,8 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                     "status": rs.status,
                 }
                 for rs in payload.get("station_details")
-            ]
+            ],
+            "schedules" : []
         }
         # Index/upsert the document
         await station_repo.index(es_document)
