@@ -93,7 +93,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         return rows
     
 
-    async def get_train_by_id(self, *, train_id: int) -> bool:
+    async def get_train_by_id(self, *, train_id: int) -> Trains | None:
         stmt = (
             select(Trains)
             .where(
@@ -103,7 +103,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             .limit(1)
         )
         result = await self._db_session.execute(stmt)
-        return result.scalar_one_or_none() is not None
+        return result.scalar_one_or_none()
     
 
     async def count_existing_station_ids(self, *, station_ids: list[int],) -> int:

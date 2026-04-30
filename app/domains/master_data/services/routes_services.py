@@ -41,6 +41,7 @@ class RoutesService:
 
         # 1) train existence check
         train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
+        print(f"train_details: {train_details}")
         if not train_details:
             raise BaseAppException(
                 status_code=400,
