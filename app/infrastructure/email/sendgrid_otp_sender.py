@@ -36,15 +36,15 @@ class SendGridEmailOtpSender(EmailOtpSenderBase):
     ) -> OtpSendResult:
 
         ## for testing purpose only
-        ## print(f"challenge_id: {challenge_id}, OTP: {otp}")
+        print(f"challenge_id: {challenge_id}, OTP: {otp}")
 
-        
+        """
         return OtpSendResult(
             accepted=False,
             provider=self._provider,
             provider_message_id="TestEmailMsgId",
         )
-        
+        """
 
         subject = f"{self._subject_prefix} OTP"
         content = (

@@ -232,7 +232,6 @@ class EmailChangedOtpDispatchConsumerService:
 
         for attempt in range(1, self.SEND_MAX_ATTEMPTS + 1):
             try:
-                print(f"attempt: {attempt}")
                 result = await asyncio.wait_for(
                     self._send_once(
                         to_email=to_email,
