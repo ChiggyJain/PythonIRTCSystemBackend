@@ -184,8 +184,8 @@ python -m app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatch
 
 
 Master Data Stations Created:
-python -m app.workers.outbox.masterdata_stations_created_outbox_worker
-python -m app.infrastructure.outbox.dispatchers.masterdata_stations_created_outbox_dispatcher
+python -m app.workers.outbox.masterdata_stations_outbox_worker
+python -m app.infrastructure.outbox.dispatchers.masterdata_stations_outbox_dispatcher
 
 
 
