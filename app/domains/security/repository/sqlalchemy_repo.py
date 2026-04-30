@@ -20,9 +20,9 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
 
     def __init__(
         self,
-        db: AsyncSession,
+        db_session: AsyncSession,
     ):
-        self.db = db
+        self._db_session = db_session
 
 
     async def get_active_user(
@@ -34,7 +34,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             Users.id == user_id,
             Users.status == "A",
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
 
@@ -73,8 +73,8 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
         return row
 
 
@@ -99,7 +99,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             .order_by(OtpChallenges.created_at.desc())
             .limit(1)
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
 
@@ -120,7 +120,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             )
             .with_for_update()
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
 
@@ -135,7 +135,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             .where(OtpChallenges.challenge_id == challenge_id)
             .with_for_update()
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
 
@@ -151,7 +151,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         challenge.status = status
         challenge.last_error_code = last_error_code
         challenge.updated_at = updated_at
-        await self.db.flush()
+        await self._db_session.flush()
 
 
     async def add_security_event(
@@ -186,8 +186,8 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             metadata_json=metadata_json,
             created_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
         return row
 
 
@@ -210,7 +210,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
                 updated_at=changed_at,
             )
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
 
     async def revoke_active_tokens_for_user(
@@ -233,7 +233,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
                 status="Z",
             )
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return int(res.rowcount or 0)
 
 
@@ -256,7 +256,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
                 updated_at=verified_at,
             )
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
     
 
@@ -269,7 +269,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
             Users.email == email,
             Users.status == "A",
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
     
 
@@ -294,13 +294,13 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
                 updated_at=verified_at,
             )
         )
-        res = await self.db.execute(stmt)
+        res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
 
     
     
     async def commit(self) -> None:
-        await self.db.commit()
+        await self._db_session.commit()
 
     async def rollback(self) -> None:
-        await self.db.rollback()
+        await self._db_session.rollback()
