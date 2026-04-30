@@ -1,9 +1,11 @@
 
 from decimal import Decimal
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
-from app.domains.master_data.repository.base import MasterDataRepositoryBase
+from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 class TrainsService:
@@ -11,8 +13,10 @@ class TrainsService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_TRAIN_CREATED = "MASTERDATA_TRAIN_CREATED_V1"
 
-    def __init__(self, repo: MasterDataRepositoryBase):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def create_train(
@@ -46,7 +50,7 @@ class TrainsService:
         try:
 
             # 1) create train
-            train = await self.repo.create_train(
+            train = await self.masterdata_repo.create_train(
                 train_number=normalized_train_number,
                 train_name=train_name,
                 coach_name=normalized_coach_name,
@@ -55,14 +59,14 @@ class TrainsService:
             )
 
             # 2) create seats under same train_id
-            seats = await self.repo.create_seats(
+            seats = await self.masterdata_repo.create_seats(
                 train_id=train.id,
                 seat_details=normalized_seat_details,
                 status="A",
             )
 
             # 3) create outbox event snapshot
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="TRAIN",
                 aggregate_id=str(train.id),
                 event_type=self.OUTBOX_EVENT_TRAIN_CREATED,
@@ -95,11 +99,11 @@ class TrainsService:
             )
 
             # 4) single commit for train + seats + outbox
-            await self.repo.commit()
+            await self._db_session.commit()
 
         # handling rollback cases if any exception is occured
         except IntegrityError as ex:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
             if "uq_train_number" in msg or "train_number" in msg:
                 raise BaseAppException(
@@ -116,7 +120,7 @@ class TrainsService:
                 messages=["Unable to create train due to data constraint violation"],
             )
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         return {
