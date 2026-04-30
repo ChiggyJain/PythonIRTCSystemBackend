@@ -37,6 +37,7 @@ class ElasticsearchClient:
     async def search(self, query: dict) -> dict:
         return await self.client.search(index=self.index_name, body=query)
     
+    
     async def delete(self, doc_id: str) -> bool:
         try:
             await self.client.delete(index=self.index_name, id=doc_id)
