@@ -7,7 +7,7 @@ import asyncio
 import json
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-from app.domains.security.emailverification_otp_dispatch_consumer import (
+from app.domains.security.emailverification_otp_dispatch_consumer_copy import (
     EmailVerificationOtpDispatchConsumerService,
 )
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository

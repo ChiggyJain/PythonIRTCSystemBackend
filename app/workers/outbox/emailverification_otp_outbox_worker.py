@@ -22,7 +22,7 @@ async def run_worker() -> None:
 
     producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
     await producer.start()
-    app_logger.info("emailchanged_otp_outbox_worker started")
+    app_logger.info("emailverification_otp_outbox_worker started")
 
     try:
 
@@ -39,7 +39,7 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            event_type="EMAILVEIFICATION_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
+                            event_type="EMAILVERIFICATION_OTP_DISPATCH_REQUESTED_V1", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
