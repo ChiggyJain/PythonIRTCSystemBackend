@@ -6,56 +6,36 @@ from cryptography.fernet import Fernet
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.infrastructure.otp.provider_factory import get_emailverification_email_otp_sender
+from app.infrastructure.otp.provider_factory import get_pwdchanged_sms_otp_sender
+from app.infrastructure.otp.provider_factory import get_pwdchanged_email_otp_sender
 from app.domains.security.providers.base import OtpSendResult
-from app.domains.security.repository.base import SecurityRepositoryBase
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 
 
 settings = get_settings()
 
 
 class PwdChangedOtpDispatchConsumerService:
-    OTP_PURPOSE_PASSWORD_CHANGE = "PASSWORD_CHANGE"
 
-    # Provider send tuning (kept local so no settings.py change needed right now)
+    OTP_PURPOSE_PASSWORD_CHANGE = "PASSWORD_CHANGE"
     SEND_MAX_ATTEMPTS = 3
     SEND_RETRY_BASE_SECONDS = 0.2
     SEND_PROVIDER_TIMEOUT_SECONDS = 10.0
 
-    def __init__(
-        self,
-        *,
-        repo: SecurityRepositoryBase,
-        email_sender: EmailOtpSenderBase,
-        sms_sender: SmsOtpSenderBase,
-    ):
-        self.repo = repo
-        self.email_sender = email_sender
-        self.sms_sender = sms_sender
+    def __init__(self):
+        self.security_repo = None
+        self.sms_sender = get_pwdchanged_sms_otp_sender()
+        self.email_sender = get_pwdchanged_email_otp_sender()
         self._fernet = self._build_fernet(
             secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
         )
+
 
     async def process_payload(
         self,
         payload: dict,
     ) -> None:
         
-        """
-        Example payload:
-        {
-          "outbox_id": 101,
-          "event_type": "PWDCHANGED_OTP_DISPATCH_REQUESTED_V1",
-          "challenge_id": "PWDCHG_101_20260318_ABC123",
-          "user_id": 101,
-          "purpose": "PASSWORD_CHANGE",
-          "channel": "EMAIL",
-          "destination": "user@example.com",
-          "correlation_id": "corr-123",
-          "request_id": "req-456"
-        }
-        """
-
         user_id = self._safe_int(payload.get("user_id"), default=0)
         challenge_id = str(payload.get("challenge_id") or "").strip()
         destination = str(payload.get("destination") or "").strip()
@@ -66,160 +46,164 @@ class PwdChangedOtpDispatchConsumerService:
         if user_id <= 0 or not challenge_id or not destination:
             return
 
-        try:
+        async with AsyncSessionLocal() as db_session:
 
-            challenge = await self.repo.get_otp_challenge_by_challenge_id_for_update(
-                challenge_id=challenge_id
-            )
-            if not challenge:
-                await self.repo.add_security_event(
-                    user_id=user_id,
-                    event_name="otp_dispatch_failed",
-                    event_category="OTP",
-                    channel=None,
-                    provider=None,
-                    status="failed",
-                    reason_code="CHALLENGE_NOT_FOUND",
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={"challenge_id": challenge_id},
+            try:
+
+                self.security_repo = SecuritySQLAlchemyRepository(db_session)
+
+                challenge = await self.security_repo.get_otp_challenge_by_challenge_id_for_update(
+                    challenge_id=challenge_id
                 )
-                await self.repo.commit()
-                return
+                if not challenge:
+                    await self.security_repo.add_security_event(
+                        user_id=user_id,
+                        event_name="otp_dispatch_failed",
+                        event_category="OTP",
+                        channel=None,
+                        provider=None,
+                        status="failed",
+                        reason_code="CHALLENGE_NOT_FOUND",
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={"challenge_id": challenge_id},
+                    )
+                    await self._db_session.commit()
+                    return
 
-            # Ensure this consumer handles only password-change OTP
-            if challenge.purpose != self.OTP_PURPOSE_PASSWORD_CHANGE:
-                await self.repo.add_security_event(
-                    user_id=challenge.user_id,
-                    event_name="otp_dispatch_skipped",
-                    event_category="OTP",
+                # Ensure this consumer handles only password-change OTP
+                if challenge.purpose != self.OTP_PURPOSE_PASSWORD_CHANGE:
+                    await self.security_repo.add_security_event(
+                        user_id=challenge.user_id,
+                        event_name="otp_dispatch_skipped",
+                        event_category="OTP",
+                        channel=challenge.channel,
+                        provider=None,
+                        status="ignored",
+                        reason_code=f"PURPOSE_{challenge.purpose}",
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={"challenge_id": challenge.challenge_id},
+                    )
+                    await self._db_session.commit()
+                    return
+
+                # Terminal/idempotent statuses (duplicate Kafka deliveries should not resend OTP)
+                if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT", "DISPATCH_FAILED"}:
+                    await self.security_repo.add_security_event(
+                        user_id=challenge.user_id,
+                        event_name="otp_dispatch_skipped",
+                        event_category="OTP",
+                        channel=challenge.channel,
+                        provider=None,
+                        status="ignored",
+                        reason_code=f"STATUS_{challenge.status}",
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={"challenge_id": challenge.challenge_id},
+                    )
+                    await self._db_session.commit()
+                    return
+
+                now = now_ist()
+
+                # Do not send expired OTP even if event arrives late from Kafka
+                if challenge.expires_at <= now:
+                    await self.security_repo.mark_otp_challenge_status(
+                        challenge=challenge,
+                        status="EXPIRED",
+                        last_error_code="OTP_EXPIRED",
+                        updated_at=now,
+                    )
+                    await self.security_repo.add_security_event(
+                        user_id=challenge.user_id,
+                        event_name="otp_dispatch_skipped",
+                        event_category="OTP",
+                        channel=challenge.channel,
+                        provider=None,
+                        status="expired",
+                        reason_code="OTP_EXPIRED",
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={"challenge_id": challenge.challenge_id},
+                    )
+                    await self._db_session.commit()
+                    return
+
+                otp = self._decrypt_otp(challenge.otp_ciphertext)
+
+                result = await self._send_with_retry(
                     channel=challenge.channel,
-                    provider=None,
-                    status="ignored",
-                    reason_code=f"PURPOSE_{challenge.purpose}",
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={"challenge_id": challenge.challenge_id},
-                )
-                await self.repo.commit()
-                return
-
-            # Terminal/idempotent statuses (duplicate Kafka deliveries should not resend OTP)
-            if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT", "DISPATCH_FAILED"}:
-                await self.repo.add_security_event(
-                    user_id=challenge.user_id,
-                    event_name="otp_dispatch_skipped",
-                    event_category="OTP",
-                    channel=challenge.channel,
-                    provider=None,
-                    status="ignored",
-                    reason_code=f"STATUS_{challenge.status}",
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={"challenge_id": challenge.challenge_id},
-                )
-                await self.repo.commit()
-                return
-
-            now = now_ist()
-
-            # Do not send expired OTP even if event arrives late from Kafka
-            if challenge.expires_at <= now:
-                await self.repo.mark_otp_challenge_status(
-                    challenge=challenge,
-                    status="EXPIRED",
-                    last_error_code="OTP_EXPIRED",
-                    updated_at=now,
-                )
-                await self.repo.add_security_event(
-                    user_id=challenge.user_id,
-                    event_name="otp_dispatch_skipped",
-                    event_category="OTP",
-                    channel=challenge.channel,
-                    provider=None,
-                    status="expired",
-                    reason_code="OTP_EXPIRED",
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={"challenge_id": challenge.challenge_id},
-                )
-                await self.repo.commit()
-                return
-
-            otp = self._decrypt_otp(challenge.otp_ciphertext)
-
-            result = await self._send_with_retry(
-                channel=challenge.channel,
-                destination=destination,
-                otp=otp,
-                purpose=challenge.purpose,
-                challenge_id=challenge.challenge_id,
-            )
-
-            now = now_ist()
-
-            if result.accepted:
-                await self.repo.mark_otp_challenge_status(
-                    challenge=challenge,
-                    status="SENT",
-                    last_error_code=None,
-                    updated_at=now,
-                )
-                await self.repo.add_security_event(
-                    user_id=challenge.user_id,
-                    event_name="otp_dispatched",
-                    event_category="OTP",
-                    channel=challenge.channel,
-                    provider=result.provider,
-                    status="sent",
-                    reason_code=None,
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={
-                        "challenge_id": challenge.challenge_id,
-                        "provider_message_id": result.provider_message_id,
-                    },
-                )
-            else:
-                await self.repo.mark_otp_challenge_status(
-                    challenge=challenge,
-                    status="DISPATCH_FAILED",
-                    last_error_code=result.error_code or "DISPATCH_FAILED",
-                    updated_at=now,
-                )
-                await self.repo.add_security_event(
-                    user_id=challenge.user_id,
-                    event_name="otp_dispatch_failed",
-                    event_category="OTP",
-                    channel=challenge.channel,
-                    provider=result.provider,
-                    status="failed",
-                    reason_code=result.error_code or "DISPATCH_FAILED",
-                    correlation_id=correlation_id,
-                    request_id=request_id,
-                    ip_address=None,
-                    user_agent=None,
-                    metadata_json={
-                        "challenge_id": challenge.challenge_id,
-                        "error": (result.error_message or "")[:500],
-                    },
+                    destination=destination,
+                    otp=otp,
+                    purpose=challenge.purpose,
+                    challenge_id=challenge.challenge_id,
                 )
 
-            await self.repo.commit()
+                now = now_ist()
 
-        except Exception:
-            await self.repo.rollback()
-            raise
+                if result.accepted:
+                    await self.security_repo.mark_otp_challenge_status(
+                        challenge=challenge,
+                        status="SENT",
+                        last_error_code=None,
+                        updated_at=now,
+                    )
+                    await self.security_repo.add_security_event(
+                        user_id=challenge.user_id,
+                        event_name="otp_dispatched",
+                        event_category="OTP",
+                        channel=challenge.channel,
+                        provider=result.provider,
+                        status="sent",
+                        reason_code=None,
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={
+                            "challenge_id": challenge.challenge_id,
+                            "provider_message_id": result.provider_message_id,
+                        },
+                    )
+                else:
+                    await self.security_repo.mark_otp_challenge_status(
+                        challenge=challenge,
+                        status="DISPATCH_FAILED",
+                        last_error_code=result.error_code or "DISPATCH_FAILED",
+                        updated_at=now,
+                    )
+                    await self.security_repo.add_security_event(
+                        user_id=challenge.user_id,
+                        event_name="otp_dispatch_failed",
+                        event_category="OTP",
+                        channel=challenge.channel,
+                        provider=result.provider,
+                        status="failed",
+                        reason_code=result.error_code or "DISPATCH_FAILED",
+                        correlation_id=correlation_id,
+                        request_id=request_id,
+                        ip_address=None,
+                        user_agent=None,
+                        metadata_json={
+                            "challenge_id": challenge.challenge_id,
+                            "error": (result.error_message or "")[:500],
+                        },
+                    )
+
+                await self._db_session.commit()
+
+            except Exception:
+                await self._db_session.rollback()
+                raise
 
 
     async def _send_with_retry(
@@ -232,10 +216,6 @@ class PwdChangedOtpDispatchConsumerService:
         challenge_id: str,
     ) -> OtpSendResult:
         
-        """
-        Retries provider call with small backoff and per-attempt timeout.
-        """
-
         last_result = OtpSendResult(
             accepted=False,
             provider="UNKNOWN",

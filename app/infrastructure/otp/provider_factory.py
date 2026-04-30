@@ -21,7 +21,7 @@ _emailchanged_email_sender: EmailOtpSenderBase | None = None
 
 
 
-def get_sms_otp_sender() -> SmsOtpSenderBase:
+def get_pwdchanged_sms_otp_sender() -> SmsOtpSenderBase:
     global _sms_sender
     if _sms_sender is not None:
         return _sms_sender
