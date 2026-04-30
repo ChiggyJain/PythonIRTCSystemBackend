@@ -1,6 +1,6 @@
 
 
-from app.infrastructure.outbox.retry_handlers.emailchanged_retryhandler import EmailChangedOutboxRetryHandler
+from app.infrastructure.outbox.retry_handlers.emailchanged_otp_outbox_retryhandler import EmailChangedOtpOutboxRetryHandler
 
 
 class OutboxRetryHandlerFactory:
@@ -9,4 +9,4 @@ class OutboxRetryHandlerFactory:
     def getOutboxRetryHandler(**kwargs):
         retry_handler_type =  kwargs.get("retry_handler_type", None)
         if retry_handler_type == "EMAILCHANGED_OTP":
-            pass
+            return EmailChangedOtpOutboxRetryHandler(kwargs)

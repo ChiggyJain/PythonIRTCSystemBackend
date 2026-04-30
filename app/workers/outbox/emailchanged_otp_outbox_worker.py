@@ -3,17 +3,16 @@
 Worker: OUTBOX_EVENTS -> Kafka for EMAIL CHANGED OTP flow.
 """
 
+import json
 import asyncio
+from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-# from app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher import EmailChangedOTPOutboxDispatcher
-from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
-from app.infrastructure.database.session import AsyncSessionLocal
-from app.infrastructure.kafka.client import build_producer
-
-from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 from app.common.utils.datetime import now_ist
-import json
+from app.infrastructure.kafka.client import build_producer
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
+from app.infrastructure.outbox.retry_handlers.outbox_retryhandler_factory import OutboxRetryHandlerFactory
 
 
 settings = get_settings()
@@ -108,9 +107,19 @@ async def run_worker() -> None:
                     async with AsyncSessionLocal() as db:
                         async with db.begin():
                             outbox_repo = OutboxEventsSQLAlchemyRepository(db)
-                            event = await outbox_repo.get_by_id(event["id"])
-                            await outbox_repo.mark_retry(event, str(exc))
-                
+                            security_repo = SecuritySQLAlchemyRepository(db)
+                            event = await outbox_repo.get_by_id(event.id)
+                            if event!=None:
+                                params = {
+                                    "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo, "security_repo": security_repo
+                                }
+                                emailchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                params = {
+                                    "event": event, "user_id": user_id, "error_message": str(exc)
+                                }
+                                await emailchanged_otp_outbox_retry_handler_class_obj.handle(**params)
+
+
                 processed = True
 
             await asyncio.sleep(POLL_INTERVAL_ACTIVE_SECONDS if processed else POLL_INTERVAL_IDLE_SECONDS)
