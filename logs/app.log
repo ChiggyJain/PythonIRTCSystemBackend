@@ -5598,3 +5598,11 @@
 2026-04-30 10:55:56 | INFO | emailchanged_otp_outbox_worker started
 2026-04-30 11:22:12 | INFO | SpawnProcess-1-18933 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 11:22:12.503182 | 2026-04-30 11:22:12.960126 | 456 | None | 200
 2026-04-30 11:24:13 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 11:24:39 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:24:39 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
+2026-04-30 11:24:39 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
+2026-04-30 11:24:39 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
+2026-04-30 11:24:39 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
+2026-04-30 11:24:43 | INFO | SpawnProcess-2-19109 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 11:24:43.134580 | 2026-04-30 11:24:43.556383 | 421 | None | 200
+2026-04-30 11:24:54 | INFO | SpawnProcess-2-19109 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:24:54.876690 | 2026-04-30 11:24:54.974174 | 97 | None | 202
+2026-04-30 11:24:55 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
