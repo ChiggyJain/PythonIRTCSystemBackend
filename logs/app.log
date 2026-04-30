@@ -5628,3 +5628,6 @@
 2026-04-30 11:41:34 | INFO | SpawnProcess-30-20236 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:41:34.038308 | 2026-04-30 11:41:34.138149 | 99 | None | 202
 2026-04-30 11:41:35 | INFO | emailchanged_otp_outbox_worker started
 2026-04-30 11:41:40 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:46:38 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 11:46:43 | INFO | SpawnProcess-32-20695 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:46:43.373200 | 2026-04-30 11:46:43.511090 | 137 | None | 202
+2026-04-30 11:46:43 | INFO | emailchanged_otp_dispatch_consumer_worker started
