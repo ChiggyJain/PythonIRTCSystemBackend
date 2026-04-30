@@ -1,9 +1,4 @@
 
-"""
-EMAIL CHANGED OTP Kafka consumer logic.
-Reads challenge_id -> fetch OTP_CHALLENGES -> decrypt metadata_json -> send OTP to new email.
-"""
-
 import asyncio
 import base64
 import hashlib
