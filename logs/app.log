@@ -5556,3 +5556,12 @@
 2026-04-30 09:37:28 | INFO | SpawnProcess-8-10305 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:37:27.965014 | 2026-04-30 09:37:28.014100 | 49 |  | 500
 2026-04-30 09:37:47 | INFO | SpawnProcess-8-10305 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:37:47.827095 | 2026-04-30 09:37:47.917007 | 89 | 'EmailChangedOtpService' object has no attribute 'OUTBOX_STATUS_PENDING1' | 500
 2026-04-30 09:38:54 | INFO | SpawnProcess-12-10360 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 09:38:54.370871 | 2026-04-30 09:38:54.489373 | 118 | None | 202
+2026-04-30 10:03:09 | INFO | SpawnProcess-1-11876 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 10:03:09.003787 | 2026-04-30 10:03:09.395218 | 391 | None | 200
+2026-04-30 10:04:22 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:22.405809 | 2026-04-30 10:04:22.412320 | 6 | None | 200
+2026-04-30 10:04:24 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:24.735947 | 2026-04-30 10:04:24.737568 | 1 | None | 200
+2026-04-30 10:04:25 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:25.850481 | 2026-04-30 10:04:25.851912 | 1 | None | 200
+2026-04-30 10:04:27 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:27.366588 | 2026-04-30 10:04:27.368680 | 2 | None | 200
+2026-04-30 10:04:27 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:27.901432 | 2026-04-30 10:04:27.903353 | 1 | None | 200
+2026-04-30 10:04:29 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:29.156780 | 2026-04-30 10:04:29.158120 | 1 | None | 200
+2026-04-30 10:04:30 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:30.257694 | 2026-04-30 10:04:30.260091 | 2 | None | 200
+2026-04-30 10:04:30 | INFO | SpawnProcess-1-11876 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-04-30 10:04:30.757364 | 2026-04-30 10:04:30.761141 | 3 | None | 200
