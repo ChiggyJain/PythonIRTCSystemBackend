@@ -48,7 +48,7 @@ class MasterDataRepositoryBase(ABC):
         pass
     
     @abstractmethod
-    async def train_exists(self, *, train_id: int) -> bool:
+    async def get_train_by_id(self, *, train_id: int) -> bool:
         pass
 
     @abstractmethod

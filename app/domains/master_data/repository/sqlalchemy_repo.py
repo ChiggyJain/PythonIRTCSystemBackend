@@ -93,9 +93,9 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         return rows
     
 
-    async def train_exists(self, *, train_id: int) -> bool:
+    async def get_train_by_id(self, *, train_id: int) -> bool:
         stmt = (
-            select(Trains.id)
+            select(Trains)
             .where(
                 Trains.id == train_id,
                 Trains.status == "A",
