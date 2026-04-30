@@ -1,3 +1,4 @@
+
 """
 EMAIL CHANGED OTP Kafka consumer logic.
 Reads challenge_id -> fetch OTP_CHALLENGES -> decrypt metadata_json -> send OTP to new email.
@@ -7,30 +8,35 @@ import asyncio
 import base64
 import hashlib
 import json
+from sqlalchemy.ext.asyncio import AsyncSession
 from cryptography.fernet import Fernet
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.domains.security.providers.base import EmailOtpSenderBase, OtpSendResult
-from app.domains.security.repository.base import SecurityRepositoryBase
-
+from app.infrastructure.database.session import get_db
+from app.infrastructure.otp.provider_factory import get_emailchanged_email_otp_sender
+from app.domains.security.providers.base import OtpSendResult
+from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 
 settings = get_settings()
 
 
 class EmailChangedOtpDispatchConsumerService:
-    OTP_PURPOSE_EMAIL_CHANGE = "EMAIL_CHANGE"
 
+    OTP_PURPOSE_EMAIL_CHANGE = "EMAIL_CHANGE"
     SEND_MAX_ATTEMPTS = 3
     SEND_RETRY_BASE_SECONDS = 0.2
     SEND_PROVIDER_TIMEOUT_SECONDS = 10.0
 
-    def __init__(self, *, repo: SecurityRepositoryBase, email_sender: EmailOtpSenderBase):
-        self.repo = repo
-        self.email_sender = email_sender
+    def __init__(self):
+        self._db_session = get_db()
+        self.security_repo = SecuritySQLAlchemyRepository(self._db_session)
+        self.email_sender = get_emailchanged_email_otp_sender()
         self._otp_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
         self._meta_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-metadata-cipher:v1")
 
+
     async def process_payload(self, payload: dict) -> None:
+
         user_id = self._safe_int(payload.get("user_id"), default=0)
         challenge_id = str(payload.get("challenge_id") or "").strip()
         correlation_id = str(payload.get("correlation_id") or "") or None
@@ -40,9 +46,10 @@ class EmailChangedOtpDispatchConsumerService:
             return
 
         try:
-            challenge = await self.repo.get_otp_challenge_by_challenge_id_for_update(challenge_id=challenge_id)
+
+            challenge = await self.security_repo.get_otp_challenge_by_challenge_id_for_update(challenge_id=challenge_id)
             if not challenge:
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_change_otp_failed",
                     event_category="EMAIL_CHANGE",
@@ -56,11 +63,11 @@ class EmailChangedOtpDispatchConsumerService:
                     user_agent=None,
                     metadata_json={"challenge_id": challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 return
 
             if challenge.purpose != self.OTP_PURPOSE_EMAIL_CHANGE:
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_dispatch_skipped",
                     event_category="EMAIL_CHANGE",
@@ -74,11 +81,11 @@ class EmailChangedOtpDispatchConsumerService:
                     user_agent=None,
                     metadata_json={"challenge_id": challenge.challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 return
 
             if challenge.status in {"VERIFIED", "EXPIRED", "BLOCKED", "SENT", "DISPATCH_FAILED"}:
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_dispatch_skipped",
                     event_category="EMAIL_CHANGE",
@@ -92,18 +99,18 @@ class EmailChangedOtpDispatchConsumerService:
                     user_agent=None,
                     metadata_json={"challenge_id": challenge.challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 return
 
             now = now_ist()
             if challenge.expires_at <= now:
-                await self.repo.mark_otp_challenge_status(
+                await self.security_repo.mark_otp_challenge_status(
                     challenge=challenge,
                     status="EXPIRED",
                     last_error_code="OTP_EXPIRED",
                     updated_at=now,
                 )
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_dispatch_skipped",
                     event_category="EMAIL_CHANGE",
@@ -117,19 +124,19 @@ class EmailChangedOtpDispatchConsumerService:
                     user_agent=None,
                     metadata_json={"challenge_id": challenge.challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 return
 
             meta = self._decrypt_metadata_json(challenge.metadata_json)
             destination = (meta.get("new_email") or "").strip().lower()
             if not destination:
-                await self.repo.mark_otp_challenge_status(
+                await self.security_repo.mark_otp_challenge_status(
                     challenge=challenge,
                     status="DISPATCH_FAILED",
                     last_error_code="MISSING_NEW_EMAIL",
                     updated_at=now_ist(),
                 )
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_failed",
                     event_category="EMAIL_CHANGE",
@@ -143,7 +150,7 @@ class EmailChangedOtpDispatchConsumerService:
                     user_agent=None,
                     metadata_json={"challenge_id": challenge.challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 return
 
             otp = self._decrypt_otp(challenge.otp_ciphertext)
@@ -157,13 +164,13 @@ class EmailChangedOtpDispatchConsumerService:
 
             now = now_ist()
             if result.accepted:
-                await self.repo.mark_otp_challenge_status(
+                await self.security_repo.mark_otp_challenge_status(
                     challenge=challenge,
                     status="SENT",
                     last_error_code=None,
                     updated_at=now,
                 )
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_dispatched",
                     event_category="EMAIL_CHANGE",
@@ -181,13 +188,13 @@ class EmailChangedOtpDispatchConsumerService:
                     },
                 )
             else:
-                await self.repo.mark_otp_challenge_status(
+                await self.security_repo.mark_otp_challenge_status(
                     challenge=challenge,
                     status="DISPATCH_FAILED",
                     last_error_code=result.error_code or "DISPATCH_FAILED",
                     updated_at=now,
                 )
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=challenge.user_id,
                     event_name="email_change_otp_failed",
                     event_category="EMAIL_CHANGE",
@@ -205,10 +212,10 @@ class EmailChangedOtpDispatchConsumerService:
                     },
                 )
 
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
     async def _send_with_retry(self, *, to_email: str, otp: str, purpose: str, challenge_id: str) -> OtpSendResult:
@@ -252,6 +259,7 @@ class EmailChangedOtpDispatchConsumerService:
                 await asyncio.sleep(self.SEND_RETRY_BASE_SECONDS * attempt)
 
         return last_result
+
 
     async def _send_once(self, *, to_email: str, otp: str, purpose: str, challenge_id: str) -> OtpSendResult:
         return await self.email_sender.send_otp(
