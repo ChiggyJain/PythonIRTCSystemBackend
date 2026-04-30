@@ -55,6 +55,7 @@ async def run_worker() -> None:
                 # STEP2: Kafka (OUTSIDE transaction)
                 try:
                     
+                    aa
                     # kafka topic
                     topic = settings.EMAILCHANGED_OTP_DISPATCH_TOPIC
                     print(f"topic: {topic}")

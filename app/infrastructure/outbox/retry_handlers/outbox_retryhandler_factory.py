@@ -9,4 +9,4 @@ class OutboxRetryHandlerFactory:
     def getOutboxRetryHandler(**kwargs):
         retry_handler_type =  kwargs.get("retry_handler_type", None)
         if retry_handler_type == "EMAILCHANGED_OTP":
-            return EmailChangedOtpOutboxRetryHandler(kwargs)
+            return EmailChangedOtpOutboxRetryHandler(**kwargs)
