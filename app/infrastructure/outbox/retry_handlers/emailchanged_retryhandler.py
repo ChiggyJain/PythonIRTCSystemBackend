@@ -3,11 +3,11 @@ from datetime import timedelta
 import random
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.infrastructure.outbox.retry_handlers.base import BaseRetryHandler
+from app.infrastructure.outbox.retry_handlers.outbox_base_retryhandler import OutboxBaseRetryHandler
 
 settings = get_settings()
 
-class EmailChangedtRetryHandler(BaseRetryHandler):
+class EmailChangedOutboxRetryHandler(OutboxBaseRetryHandler):
 
     def __init__(self, **kwargs):
         self.outbox_repo = kwargs.get("outbox_repo", None)
