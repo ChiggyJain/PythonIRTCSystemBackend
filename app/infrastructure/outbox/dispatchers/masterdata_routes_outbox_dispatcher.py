@@ -71,9 +71,9 @@ async def run_worker() -> None:
                 """
                     success = await index_to_elasticsearch(payload)
                     if success:
-                        app_logger.info(f"Successfully indexed station_id: {payload.get('station_id')}")
+                        app_logger.info(f"Successfully indexed route_id: {payload.get('route_id')}, train_id: {payload.get("train_details").get("train_id", 0)}")
                     else:
-                        app_logger.error(f"Failed to index station_id: {payload.get('station_id')}")
+                        app_logger.error(f"Failed to index route_id: {payload.get('route_id')}, train_id: {payload.get("train_details").get("train_id", 0)}")
                 """
                 await consumer.commit()                
             except Exception as exc:
