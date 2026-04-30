@@ -37,13 +37,12 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            event_type="MASTERDATA_STATION_CREATED_V1", limit=1, now_time=now_ist(),
+                            aggregate_type="STATIONS", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
                         event = events[0]
                         payload = event.payload_json or {}
-                        user_id = int(payload.get("created_by_admin_user_id") or 0)
                         # updating outbox_events status as processing
                         updated_at = now_ist()
                         await outbox_repo.mark_outbox_processing(event=event, updated_at=updated_at)
@@ -60,7 +59,7 @@ async def run_worker() -> None:
                     ).encode("utf-8")
 
                     # preparing key to used for publishing to the topic partition
-                    key = str(user_id if user_id > 0 else 0).encode("utf-8")
+                    key = str(payload.get("station_id", 0)).encode("utf-8")
 
                     # publish message to kafka topic
                     md = await producer.send_and_wait(topic=topic, key=key, value=message,)

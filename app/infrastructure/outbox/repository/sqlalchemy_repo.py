@@ -4,7 +4,7 @@ OutboxEvents SQLAlchemy Repository
 
 from datetime import datetime
 from typing import Any
-from sqlalchemy import select, update, or_
+from sqlalchemy import select, update, or_, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.outbox.models.outbox_events_models import OutboxEvents
 from app.infrastructure.outbox.repository.base import OutboxEventsRepositoryBase
@@ -63,25 +63,38 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
     async def fetch_pending_outbox_events(
         self,
         *,
-        event_type: str,
-        limit: int,
+        aggregate_type: str | None = None,
+        aggregate_id: int | None = None,
+        event_type: str | None = None,
+        limit: int = 1,
         now_time: datetime,
     ) -> list[OutboxEvents]:
 
+        conditions = [
+            OutboxEvents.status == "PENDING",
+            or_(
+                OutboxEvents.next_retry_at.is_(None),
+                OutboxEvents.next_retry_at <= now_time,
+            ),
+        ]
+
+        if aggregate_type is not None:
+            conditions.append(OutboxEvents.aggregate_type == aggregate_type)
+
+        if aggregate_id is not None:
+            conditions.append(OutboxEvents.aggregate_id == aggregate_id)
+
+        if event_type is not None:
+            conditions.append(OutboxEvents.event_type == event_type)
+            
         stmt = (
             select(OutboxEvents)
-            .where(
-                OutboxEvents.event_type == event_type,
-                OutboxEvents.status == "PENDING",
-                or_(
-                    OutboxEvents.next_retry_at.is_(None),
-                    OutboxEvents.next_retry_at <= now_time,
-                ),
-            )
+            .where(and_(*conditions))
             .order_by(OutboxEvents.id.asc())
             .limit(limit)
             .with_for_update(skip_locked=True)
         )
+            
         res = await self._db_session.execute(stmt)
         return list(res.scalars().all())
 
