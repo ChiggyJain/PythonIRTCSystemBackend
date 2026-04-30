@@ -5577,3 +5577,6 @@
 2026-04-30 10:26:43 | INFO | SpawnProcess-40-13495 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 10:26:43.296464 | 2026-04-30 10:26:43.361706 | 65 |  | 500
 2026-04-30 10:31:06 | INFO | SpawnProcess-54-13884 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 10:31:05.734238 | 2026-04-30 10:31:06.198148 | 463 | None | 200
 2026-04-30 10:31:27 | INFO | SpawnProcess-54-13884 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-04-30 10:31:27.257079 | 2026-04-30 10:31:27.349111 | 92 | None | 201
+2026-04-30 10:34:11 | INFO | SpawnProcess-65-14177 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 10:34:10.736457 | 2026-04-30 10:34:11.170334 | 433 | None | 200
+2026-04-30 10:34:42 | INFO | SpawnProcess-65-14177 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-30 10:34:42.338015 | 2026-04-30 10:34:42.424890 | 86 |  | 500
+2026-04-30 10:34:51 | INFO | SpawnProcess-65-14177 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-30 10:34:51.628187 | 2026-04-30 10:34:51.723845 | 95 | None | 201
