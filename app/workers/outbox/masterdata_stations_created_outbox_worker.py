@@ -86,7 +86,7 @@ async def run_worker() -> None:
                                 }
                                 masterdata_stations_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
-                                    "event": event, "user_id": user_id, "error_message": str(exc)
+                                    "event": event, "error_message": str(exc)
                                 }
                                 await masterdata_stations_outbox_retry_handler_class_obj.handle(**params)
 
