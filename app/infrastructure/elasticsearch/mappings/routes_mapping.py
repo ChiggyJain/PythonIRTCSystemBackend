@@ -1,4 +1,3 @@
-# filepath: app/infrastructure/elasticsearch/mappings/station_mapping.py
 
 ROUTES_INDEX_MAPPING = {
     "settings": {
