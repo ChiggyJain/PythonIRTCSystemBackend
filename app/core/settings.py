@@ -184,7 +184,8 @@ class Settings(BaseSettings):
 
     # Station index in Elasticsearch
     ELASTICSEARCH_STATIONS_INDEX: str = "stations_v1"
-    
+    ELASTICSEARCH_TRAINROUTES_INDEX: str = "trainroutes_v1"
+
 
     # =========================
     # Pydantic Settings Config

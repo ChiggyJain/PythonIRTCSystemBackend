@@ -29,6 +29,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         state: str,
         status: str = "A",
     ) -> Stations:
+        
         row = Stations(
             name=name,
             code=code,
@@ -39,7 +40,6 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             updated_at=now_ist(),
         )
         self._db_session.add(row)
-        # temporary stored data in memory not actual db level
         await self._db_session.flush()
         return row
 
@@ -53,7 +53,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         total_seats: int,
         status: str = "A",
     ) -> Trains:
-        # Create train row first; flush gives generated train_id
+        
         row = Trains(
             train_number=train_number,
             train_name=train_name,
@@ -64,7 +64,6 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             updated_at=now_ist(),
         )
         self._db_session.add(row)
-        # temporary stored data in memory not actual db level
         await self._db_session.flush()
         return row
     
@@ -76,7 +75,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         seat_details: list[dict[str, Any]],
         status: str = "A",
     ) -> list[Seats]:
-        # Bulk-create seats for same train_id in same transaction
+        
         rows: list[Seats] = []
         for seat in seat_details:
             row = Seats(
@@ -90,7 +89,6 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             )
             rows.append(row)
         self._db_session.add_all(rows)
-        # temporary stored data in memory not actual db level
         await self._db_session.flush()
         return rows
     
@@ -127,7 +125,6 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             updated_at=now_ist(),
         )
         self._db_session.add(row)
-        # temporary stored data in memory not actual db level
         await self._db_session.flush()
         return row
 
@@ -154,7 +151,6 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
             )
             rows.append(row)
         self._db_session.add_all(rows)
-        # temporary stored data in memory not actual db level
         await self._db_session.flush()
         return rows
     
@@ -164,6 +160,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         *,
         train_id: int,
     ) -> Routes | None:
+        
         stmt = (
             select(Routes)
             .where(
@@ -181,6 +178,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         *,
         route_id: int,
     ) -> list[RouteStations]:
+        
         stmt = (
             select(RouteStations)
             .where(
@@ -200,6 +198,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         departure_date: date,
         status: str = "A",
     ) -> Schedules:
+        
         row = Schedules(
             train_id=train_id,
             departure_date=departure_date,
@@ -209,34 +208,26 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         )
         self._db_session.add(row)
         await self._db_session.flush()
-        # temporary stored data in memory not actual db level
         return row
 
 
-    async def add_outbox_event(
+    async def get_train_seats_by_train_id(
         self,
         *,
-        aggregate_type: str,
-        aggregate_id: str,
-        event_type: str,
-        payload_json: dict[str, Any],
-        status: str,
-    ) -> None:
-        row = OutboxEvents(
-            aggregate_type=aggregate_type,
-            aggregate_id=aggregate_id,
-            event_type=event_type,
-            payload_json=payload_json,
-            status=status,
-            retry_count=0,
-            next_retry_at=None,
-            last_error=None,
-            published_at=None,
-            created_at=now_ist(),
-            updated_at=now_ist(),
+        train_id: int,
+    ) -> list[Seats]:
+        
+        stmt = (
+            select(Seats)
+            .where(
+                Seats.train_id == train_id,
+                Seats.status == "A",
+            )
+            .order_by(Seats.seat_number.asc())
         )
-        self._db_session.add(row)
-        await self._db_session.flush()
+        result = await self._db_session.execute(stmt)
+        return list(result.scalars().all())
+    
 
 
     async def commit(self) -> None:

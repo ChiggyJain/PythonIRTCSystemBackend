@@ -58,28 +58,42 @@ class RoutesService:
 
         try:
 
-            # 3) create ROUTES row
+            # create ROUTES row
             route = await self.masterdata_repo.create_route(
                 train_id=train_id,
                 status="A",
             )
 
-            # 4) create ROUTE_STATIONS rows
+            # create ROUTE_STATIONS rows
             route_stations = await self.masterdata_repo.create_route_stations(
                 route_id=route.id,
                 station_details=station_details,
                 status="A",
             )
 
-            # 5) outbox event
+            # fetching train-seats details
+            train_seats = await self.masterdata_repo.get_train_seats_by_train_id(
+                train=train_id
+            )
+
+            # outbox event
             await self.outbox_repo.add_outbox_event(
-                aggregate_type="ROUTE",
+                aggregate_type="ROUTES",
                 aggregate_id=str(route.id),
                 event_type=self.OUTBOX_EVENT_ROUTE_CREATED,
                 payload_json={
                     "route_id": route.id,
                     "train_id": route.train_id,
-                    "status": route.status,
+                    "train_seats": [
+                        {
+                            "id": seat.id,
+                            "seat_type": seat.seat_type,
+                            "seat_number": seat.seat_number,
+                            "seat_price": seat.price,
+                            "status": seat.status,
+                        }
+                        for seat in train_seats
+                    ],
                     "station_details": [
                         {
                             "id": rs.id,
@@ -92,6 +106,7 @@ class RoutesService:
                         }
                         for rs in route_stations
                     ],
+                    "route_status": route.status,
                     "event_type": self.OUTBOX_EVENT_ROUTE_CREATED,
                     "event_version": 1,
                     "created_by_admin_user_id": admin_user_id,
@@ -102,7 +117,6 @@ class RoutesService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
-            # 6) single commit
             await self._db_session.commit()
 
         # handling rollback cases if any exception occurs
