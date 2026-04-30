@@ -1,19 +1,13 @@
-"""
-Kafka OTP dispatch consumer service.
-Consumes pwdchanged OTP topic events and sends OTP via provider abstraction.
-"""
 
 import asyncio
 import base64
 import hashlib
 from cryptography.fernet import Fernet
+from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.domains.security.providers.base import (
-    EmailOtpSenderBase,
-    SmsOtpSenderBase,
-    OtpSendResult,
-)
+from app.infrastructure.otp.provider_factory import get_emailverification_email_otp_sender
+from app.domains.security.providers.base import OtpSendResult
 from app.domains.security.repository.base import SecurityRepositoryBase
 
 
