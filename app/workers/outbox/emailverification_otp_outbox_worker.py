@@ -1,5 +1,4 @@
 
-
 import json
 import asyncio
 from app.infrastructure.database.session import AsyncSessionLocal
@@ -20,7 +19,7 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailverification-outbox-publisher")
     await producer.start()
     app_logger.info("emailverification_otp_outbox_worker started")
 
