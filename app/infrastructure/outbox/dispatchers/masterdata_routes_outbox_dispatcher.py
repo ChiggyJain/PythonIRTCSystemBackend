@@ -22,9 +22,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             "SIDE_UPPER" : 0, "SIDE_LOWER" : 0
         }
         for eachSeatObj in payload.get("seat_details"):
+            print(eachSeatObj)
             seatSummary["total"]+= 1
-            if eachSeatObj.seat_type in seatSummary:
-                seatSummary[eachSeatObj.seat_type]+= 1
+            if eachSeatObj['seat_type'] in seatSummary:
+                seatSummary[eachSeatObj['seat_type']]+= 1
         es_document = {
             "train_id": payload.get("train_details").get("train_id", 0),
             "train_name": payload.get("train_details").get("train_name", ""),
