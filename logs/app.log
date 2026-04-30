@@ -5623,3 +5623,5 @@
 2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
 2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
 2026-04-30 11:38:55 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:40:19 | INFO | SpawnProcess-27-19945 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:40:19.143016 | 2026-04-30 11:40:19.203091 | 60 | None | 202
+2026-04-30 11:40:20 | INFO | emailchanged_otp_dispatch_consumer_worker started
