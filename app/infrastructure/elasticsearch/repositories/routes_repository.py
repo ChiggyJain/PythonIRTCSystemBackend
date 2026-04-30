@@ -29,11 +29,11 @@ class RoutesElasticsearchRepository:
         return await self.es.index(document=document, doc_id=doc_id)
     
 
-    async def get_by_id(self, station_id: int) -> Optional[dict]:
-        return await self.es.get(doc_id=str(station_id))
+    async def get_by_id(self, train_id: int) -> Optional[dict]:
+        return await self.es.get(doc_id=str(train_id))
     
-    async def delete(self, station_id: int) -> bool:
-        return await self.es.delete(doc_id=str(station_id))
+    async def delete(self, train_id: int) -> bool:
+        return await self.es.delete(doc_id=str(train_id))
     
 
     async def search(
