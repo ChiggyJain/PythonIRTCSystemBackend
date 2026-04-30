@@ -19,7 +19,7 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchnaged-outbox-publisher")
     await producer.start()
     app_logger.info("emailchanged_otp_outbox_worker started")
 
