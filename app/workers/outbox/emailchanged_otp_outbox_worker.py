@@ -1,7 +1,4 @@
 
-"""
-Worker: OUTBOX_EVENTS -> Kafka for EMAIL CHANGED OTP flow.
-"""
 
 import json
 import asyncio
@@ -18,16 +15,19 @@ from app.infrastructure.outbox.retry_handlers.outbox_retryhandler_factory import
 settings = get_settings()
 POLL_INTERVAL_IDLE_SECONDS = 2
 POLL_INTERVAL_ACTIVE_SECONDS = 0.2
-BATCH_SIZE = 5
+BATCH_SIZE = 100
 
 
 async def run_worker() -> None:
-    # breakpoint()
+
     producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-outbox-publisher")
     await producer.start()
     app_logger.info("emailchanged_otp_outbox_worker started")
+
     try:
+
         while True:
+            
             processed = False
 
             for loopNo in range(1, BATCH_SIZE):

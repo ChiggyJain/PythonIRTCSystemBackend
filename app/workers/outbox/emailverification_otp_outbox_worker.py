@@ -1,8 +1,4 @@
 
-"""
-Worker: publish email-verification outbox events to Kafka.
-"""
-
 import asyncio
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
