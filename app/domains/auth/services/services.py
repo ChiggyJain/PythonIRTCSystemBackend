@@ -140,10 +140,10 @@ class TokenService:
     ):
 
         try:
-            await self.repo.revoke_token(int(token_id))
-            await self.repo.commit()
+            await self.user_tokens_repo.revoke_token(int(token_id))
+            await self.user_tokens_repo.commit()
         except Exception:
-            await self.repo.rollback()
+            await self.user_tokens_repo.rollback()
             raise
 
     
@@ -152,7 +152,7 @@ class TokenService:
         token_id: int|str,
     ):
 
-        return await self.repo.get_by_id(token_id)
+        return await self.user_tokens_repo.get_by_id(token_id)
     
     
     async def get_refresh(
@@ -160,7 +160,7 @@ class TokenService:
         token_id: int|str,
     ):
 
-        return await self.repo.get_by_id(token_id)
+        return await self.user_tokens_repo.get_by_id(token_id)
     
 
     def is_raw_token_matches_stored_hash(
@@ -205,11 +205,11 @@ class TokenService:
         try:
 
             # Revoke old pair in same transaction
-            await self.repo.revoke_token(old_access_id)
-            await self.repo.revoke_token(old_refresh_id)
+            await self.user_tokens_repo.revoke_token(old_access_id)
+            await self.user_tokens_repo.revoke_token(old_refresh_id)
             
             # Create new pair
-            new_access_row = await self.repo.create_token(
+            new_access_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
                 token_type="access",
@@ -218,7 +218,7 @@ class TokenService:
                 user_agent=user_agent,
             )
 
-            new_refresh_row = await self.repo.create_token(
+            new_refresh_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
                 token_type="refresh",
@@ -249,10 +249,10 @@ class TokenService:
             new_refresh_row.token_hash = build_token_hash(new_refresh_token)
             new_refresh_row.updated_at = now_time
 
-            await self.repo.commit()
+            await self.user_tokens_repo.commit()
 
         except Exception:
-            await self.repo.rollback()
+            await self.user_tokens_repo.rollback()
             raise
 
         # Cache cleanup for old access token
@@ -286,11 +286,11 @@ class TokenService:
 
         # Single DB transaction for both revokes
         try:
-            await self.repo.revoke_token(access_id)
-            await self.repo.revoke_token(refresh_id)
-            await self.repo.commit()
+            await self.user_tokens_repo.revoke_token(access_id)
+            await self.user_tokens_repo.revoke_token(refresh_id)
+            await self.user_tokens_repo.commit()
         except Exception:
-            await self.repo.rollback()
+            await self.user_tokens_repo.rollback()
             raise
 
         # Cache cleanup: best-effort (DB already source of truth)
@@ -320,10 +320,10 @@ class TokenService:
 
         # Single DB transaction for both revokes
         try:
-            await self.repo.revoke_token_by_user(user_id)
-            await self.repo.commit()
+            await self.user_tokens_repo.revoke_token_by_user(user_id)
+            await self.user_tokens_repo.commit()
         except Exception:
-            await self.repo.rollback()
+            await self.user_tokens_repo.rollback()
             raise
 
 

@@ -107,7 +107,6 @@ class TokenRepositorySQLAlchemy(
             )
         )
         await self._db_session.execute(stmt)
-        # await self._db_session.commit()
 
     
     # -------------------------
