@@ -204,11 +204,11 @@ class TokenService:
 
         try:
 
-            # Revoke old pair in same transaction
+            # Revoke old toekn pair in same transaction
             await self.user_tokens_repo.revoke_token(old_access_id)
             await self.user_tokens_repo.revoke_token(old_refresh_id)
             
-            # Create new pair
+            # Create access token
             new_access_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
@@ -218,6 +218,7 @@ class TokenService:
                 user_agent=user_agent,
             )
 
+            # Create refresh token
             new_refresh_row = await self.user_tokens_repo.create_token(
                 user_id=user_id,
                 token_hash="temp",
@@ -249,10 +250,10 @@ class TokenService:
             new_refresh_row.token_hash = build_token_hash(new_refresh_token)
             new_refresh_row.updated_at = now_time
 
-            await self.user_tokens_repo.commit()
+            await self._db_session.commit()
 
         except Exception:
-            await self.user_tokens_repo.rollback()
+            await self._db_session.rollback()
             raise
 
         # Cache cleanup for old access token
