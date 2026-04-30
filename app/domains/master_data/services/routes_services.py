@@ -73,7 +73,7 @@ class RoutesService:
 
             # fetching train-seats details
             train_seats = await self.masterdata_repo.get_train_seats_by_train_id(
-                train=train_id
+                train_id=train_id
             )
 
             # outbox event

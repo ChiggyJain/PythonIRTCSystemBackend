@@ -34,3 +34,14 @@
 2026-04-30 17:38:58 | INFO | Created ES index: stations_v1
 2026-04-30 17:38:58 | INFO | Indexed station to ES: 1
 2026-04-30 17:38:58 | INFO | Successfully indexed station_id: 1
+2026-04-30 19:58:25 | INFO | masterdata_routes_outbox_worker started
+2026-04-30 19:58:43 | INFO | masterdata_routes_dispatch_consumer_worker started
+2026-04-30 19:58:49 | INFO | SpawnProcess-1-22857 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 19:58:49.359495 | 2026-04-30 19:58:49.382936 | 23 |  | 500
+2026-04-30 19:58:59 | INFO | SpawnProcess-1-22857 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 19:58:59.072178 | 2026-04-30 19:58:59.369008 | 296 | None | 200
+2026-04-30 19:59:17 | INFO | SpawnProcess-1-22857 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 19:59:17.443350 | 2026-04-30 19:59:17.528983 | 85 | None | 201
+2026-04-30 19:59:27 | INFO | SpawnProcess-1-22857 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-04-30 19:59:27.907168 | 2026-04-30 19:59:27.907993 | 0 |  | 500
+2026-04-30 19:59:35 | INFO | SpawnProcess-1-22857 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-04-30 19:59:35.641464 | 2026-04-30 19:59:35.697438 | 55 | None | 201
+2026-04-30 19:59:54 | INFO | SpawnProcess-1-22857 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-30 19:59:53.938918 | 2026-04-30 19:59:54.030615 | 91 | MasterDataSQLAlchemyRepository.get_train_seats_by_train_id() got an unexpected keyword argument 'train' | 500
+2026-04-30 20:00:17 | INFO | SpawnProcess-3-24733 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-04-30 20:00:17.635397 | 2026-04-30 20:00:17.708230 | 72 | (builtins.TypeError) Object of type Decimal is not JSON serializable
+[SQL: INSERT INTO `OUTBOX_EVENTS` (aggregate_type, aggregate_id, event_type, payload_json, retry_count, next_retry_at, last_error, published_at, created_at, updated_at, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)]
+[parameters: [{'aggregate_id': '2', 'created_at': datetime.datetime(2026, 4, 30, 20, 0, 17, 659367), 'retry_count': 0, 'event_type': 'MASTERDATA_ROUTE_CREATED_V1',  ... (675 characters truncated) ... 'updated_at': datetime.datetime(2026, 4, 30, 20, 0, 17, 659369), 'status': 'PENDING', 'published_at': None, 'next_retry_at': None, 'last_error': None}]] | 500
