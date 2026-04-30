@@ -1,9 +1,7 @@
 
-class BaseRetryHandler:
+from abc import ABC, abstractmethod
 
-    def __init__(self, outbox_repo=None, security_repo=None):
-        self.outbox_repo = outbox_repo
-        self.security_repo = security_repo
-
-    async def handle(self, event, **kwargs):
+class BaseRetryHandler(ABC):
+    @abstractmethod
+    async def handle(self, **kwargs):
         raise NotImplementedError

@@ -9,8 +9,14 @@ settings = get_settings()
 
 class EmailChangedtRetryHandler(BaseRetryHandler):
 
-    async def handle(self, event, **kwargs):
+    def __init__(self, **kwargs):
+        self.outbox_repo = kwargs.get("outbox_repo", None)
+        self.security_repo = kwargs.get("security_repo", None)
 
+
+    async def handle(self, **kwargs):
+
+        event = kwargs.get("event", None)
         user_id = int(kwargs.get("user_id", 0))
         error_message = kwargs.get("error_message", "")
 
