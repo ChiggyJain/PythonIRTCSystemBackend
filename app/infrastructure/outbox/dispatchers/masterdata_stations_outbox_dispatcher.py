@@ -19,6 +19,7 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
+                print(f"Payload: {payload}")
                 # await consumer.commit()
             except Exception as exc:
                 app_logger.error(f"emailchanged_otp_dispatch_consumer_worker error: {exc}")
