@@ -35,6 +35,7 @@ settings = get_settings()
 
 
 class EmailChangedOtpService:
+
     OTP_PURPOSE_EMAIL_CHANGE = "EMAIL_CHANGE"
     OTP_STATUS_REQUESTED = "REQUESTED"
     OTP_STATUS_VERIFIED = "VERIFIED"
@@ -221,7 +222,7 @@ class EmailChangedOtpService:
         
         try:
 
-            challenge = await self.repo.get_otp_challenge_for_update(
+            challenge = await self.security_repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
@@ -238,7 +239,7 @@ class EmailChangedOtpService:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
                 challenge.updated_at = now
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_change_otp_failed",
                     event_category="EMAIL_CHANGE",
@@ -252,14 +253,14 @@ class EmailChangedOtpService:
                     user_agent=user_agent,
                     metadata_json={"challenge_id": challenge_id},
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["OTP expired"])
 
             if challenge.attempts_used >= challenge.max_attempts:
                 challenge.status = self.OTP_STATUS_BLOCKED
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["OTP attempts exceeded"])
 
             if not self._verify_otp(otp=otp, otp_hash=challenge.otp_hash):
@@ -269,7 +270,7 @@ class EmailChangedOtpService:
                 if challenge.attempts_used >= challenge.max_attempts:
                     challenge.status = self.OTP_STATUS_BLOCKED
 
-                await self.repo.add_security_event(
+                await self.security_repo.add_security_event(
                     user_id=user_id,
                     event_name="email_change_otp_failed",
                     event_category="EMAIL_CHANGE",
@@ -287,7 +288,7 @@ class EmailChangedOtpService:
                         "max_attempts": challenge.max_attempts,
                     },
                 )
-                await self.repo.commit()
+                await self._db_session.commit()
                 raise BaseAppException(status_code=400, messages=["Invalid OTP"])
 
             meta = self._decrypt_metadata_json(challenge.metadata_json)
@@ -297,25 +298,25 @@ class EmailChangedOtpService:
             if not new_email:
                 raise BaseAppException(status_code=400, messages=["Invalid email change metadata"])
 
-            user = await self.repo.get_active_user(user_id)
+            user = await self.security_repo.get_active_user(user_id)
             if not user:
                 raise BaseAppException(status_code=404, messages=["User not found"])
 
             if old_email and (user.email or "").strip().lower() != old_email:
                 raise BaseAppException(status_code=409, messages=["Email change request no longer valid"])
 
-            existing = await self.repo.get_active_user_by_email(new_email)
+            existing = await self.security_repo.get_active_user_by_email(new_email)
             if existing and int(existing.id) != int(user_id):
                 raise BaseAppException(status_code=400, messages=["Email already in use"])
 
             changed_at = now_ist()
-            updated = await self.repo.mark_user_email_changed_verified(
+            updated = await self.security_repo.mark_user_email_changed_verified(
                 user_id=user_id,
                 new_email=new_email,
                 verified_at=changed_at,
             )
             if not updated:
-                await self.repo.rollback()
+                await self._db_session.rollback()
                 raise BaseAppException(status_code=404, messages=["User not found"])
 
             challenge.attempts_used += 1
@@ -323,7 +324,7 @@ class EmailChangedOtpService:
             challenge.last_error_code = None
             challenge.updated_at = changed_at
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_change_otp_verified",
                 event_category="EMAIL_CHANGE",
@@ -338,7 +339,7 @@ class EmailChangedOtpService:
                 metadata_json={"challenge_id": challenge_id},
             )
 
-            await self.repo.add_security_event(
+            await self.security_repo.add_security_event(
                 user_id=user_id,
                 event_name="email_changed",
                 event_category="EMAIL_CHANGE",
@@ -357,12 +358,13 @@ class EmailChangedOtpService:
                 },
             )
 
-            await self.repo.commit()
+            await self._db_session.commit()
 
         except BaseAppException:
+            await self._db_session.rollback()
             raise
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         # Best-effort cache invalidation (post-commit)
@@ -379,6 +381,7 @@ class EmailChangedOtpService:
             "email_verified": True,
             "new_email": new_email,
         }
+
 
 
     def _generate_otp(self) -> str:
