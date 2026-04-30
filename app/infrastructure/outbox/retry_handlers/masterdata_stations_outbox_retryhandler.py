@@ -7,7 +7,7 @@ from app.infrastructure.outbox.retry_handlers.outbox_base_retryhandler import Ou
 
 settings = get_settings()
 
-class MasterDataStationsCreatedOutboxRetryHandler(OutboxBaseRetryHandler):
+class MasterDataStationsOutboxRetryHandler(OutboxBaseRetryHandler):
 
     def __init__(self, **kwargs):
         self.outbox_repo = kwargs.get("outbox_repo", None)

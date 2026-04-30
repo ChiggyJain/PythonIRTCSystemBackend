@@ -3,7 +3,7 @@
 from app.infrastructure.outbox.retry_handlers.emailchanged_otp_outbox_retryhandler import EmailChangedOtpOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.emailverification_otp_outbox_retryhandler import EmailVerificationOtpOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.pwdchanged_otp_outbox_retryhandler import PwdChangedOtpOutboxRetryHandler
-from app.infrastructure.outbox.retry_handlers.masterdata_stations_created_outbox_retryhandler import MasterDataStationsCreatedOutboxRetryHandler
+from app.infrastructure.outbox.retry_handlers.masterdata_stations_outbox_retryhandler import MasterDataStationsOutboxRetryHandler
 
 
 class OutboxRetryHandlerFactory:
@@ -18,4 +18,4 @@ class OutboxRetryHandlerFactory:
         if retry_handler_type == "PWDCHANGED_OTP":
             return PwdChangedOtpOutboxRetryHandler(**kwargs)
         if retry_handler_type == "PWDCHANGED_OTP":
-            return MasterDataStationsCreatedOutboxRetryHandler(**kwargs)
+            return MasterDataStationsOutboxRetryHandler(**kwargs)
