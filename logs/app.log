@@ -5,3 +5,32 @@
 2026-04-30 16:34:22 | INFO | SpawnProcess-1-22759 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 16:34:22.247818 | 2026-04-30 16:34:22.624939 | 377 | None | 200
 2026-04-30 16:34:33 | INFO | SpawnProcess-1-22759 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 16:34:33.700825 | 2026-04-30 16:34:33.785636 | 84 | None | 201
 2026-04-30 16:35:40 | INFO | masterdata_stations_outbox_worker started
+2026-04-30 17:33:06 | INFO | SpawnProcess-1-28533 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 17:33:05.857246 | 2026-04-30 17:33:06.164526 | 307 | None | 200
+2026-04-30 17:33:21 | INFO | masterdata_stations_outbox_worker started
+2026-04-30 17:33:57 | INFO | SpawnProcess-1-28533 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 17:33:57.802423 | 2026-04-30 17:33:57.860554 | 58 | None | 201
+2026-04-30 17:35:07 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-04-30 17:35:07 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 16:34:33.703668', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 16:34:33.707184', 'created_by_admin_user_id': 1}
+2026-04-30 17:35:07 | ERROR | ES indexing error: You must have 'aiohttp' installed to use AiohttpHttpNode
+2026-04-30 17:35:07 | ERROR | Failed to index station_id: 1
+2026-04-30 17:35:07 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 17:33:57.804469', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 17:33:57.807194', 'created_by_admin_user_id': 1}
+2026-04-30 17:35:07 | ERROR | ES indexing error: You must have 'aiohttp' installed to use AiohttpHttpNode
+2026-04-30 17:35:07 | ERROR | Failed to index station_id: 1
+2026-04-30 17:35:20 | INFO | masterdata_stations_outbox_worker started
+2026-04-30 17:35:28 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 17:33:57.804469', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 17:33:57.807194', 'created_by_admin_user_id': 1}
+2026-04-30 17:35:28 | ERROR | ES indexing error: You must have 'aiohttp' installed to use AiohttpHttpNode
+2026-04-30 17:35:28 | ERROR | Failed to index station_id: 1
+2026-04-30 17:37:37 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 17:33:57.804469', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 17:33:57.807194', 'created_by_admin_user_id': 1}
+2026-04-30 17:37:37 | ERROR | ES indexing error: You must have 'aiohttp' installed to use AiohttpHttpNode
+2026-04-30 17:37:37 | ERROR | Failed to index station_id: 1
+2026-04-30 17:38:05 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-04-30 17:38:05 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 17:33:57.804469', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 17:33:57.807194', 'created_by_admin_user_id': 1}
+2026-04-30 17:38:05 | INFO | ES client created for index: stations_v1
+2026-04-30 17:38:05 | ERROR | Failed to create ES index: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
+2026-04-30 17:38:05 | ERROR | ES indexing error: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
+2026-04-30 17:38:05 | ERROR | Failed to index station_id: 1
+2026-04-30 17:38:58 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-04-30 17:38:58 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-04-30 17:33:57.804469', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-04-30 17:33:57.807194', 'created_by_admin_user_id': 1}
+2026-04-30 17:38:58 | INFO | ES client created for index: stations_v1
+2026-04-30 17:38:58 | INFO | Created ES index: stations_v1
+2026-04-30 17:38:58 | INFO | Indexed station to ES: 1
+2026-04-30 17:38:58 | INFO | Successfully indexed station_id: 1
