@@ -45,7 +45,7 @@ class StationsService:
 
             # creating entries into outbox
             await self.outbox_repo.add_outbox_event(
-                aggregate_type="STATION",
+                aggregate_type="STATIONS",
                 aggregate_id=str(station.id),
                 event_type=self.OUTBOX_EVENT_STATION_CREATED,
                 payload_json={
