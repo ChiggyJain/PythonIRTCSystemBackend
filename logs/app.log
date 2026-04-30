@@ -5606,3 +5606,20 @@
 2026-04-30 11:24:43 | INFO | SpawnProcess-2-19109 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 11:24:43.134580 | 2026-04-30 11:24:43.556383 | 421 | None | 200
 2026-04-30 11:24:54 | INFO | SpawnProcess-2-19109 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:24:54.876690 | 2026-04-30 11:24:54.974174 | 97 | None | 202
 2026-04-30 11:24:55 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'async_generator' object has no attribute 'rollback'
+2026-04-30 11:36:16 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 11:36:23 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:36:23 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:36:23 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:36:23 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:36:23 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:36:23 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:36:24 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'EmailChangedOtpDispatchConsumerService' object has no attribute 'security_repo'
+2026-04-30 11:37:19 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:37:19 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:19 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:19 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:37:20 | ERROR | emailchanged_otp_dispatch_consumer_worker error: 'AsyncSession' object has no attribute 'get_otp_challenge_by_challenge_id_for_update'
+2026-04-30 11:38:55 | INFO | emailchanged_otp_dispatch_consumer_worker started

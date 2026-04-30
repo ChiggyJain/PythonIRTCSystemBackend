@@ -27,6 +27,7 @@ class EmailChangedOtpDispatchConsumerService:
     SEND_PROVIDER_TIMEOUT_SECONDS = 10.0
 
     def __init__(self):
+        self.security_repo = None
         self.email_sender = get_emailchanged_email_otp_sender()
         self._otp_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
         self._meta_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-metadata-cipher:v1")
@@ -45,6 +46,8 @@ class EmailChangedOtpDispatchConsumerService:
         async with AsyncSessionLocal() as db_session:
 
             try:
+                
+                self.security_repo = SecuritySQLAlchemyRepository(db_session)
 
                 challenge = await self.security_repo.get_otp_challenge_by_challenge_id_for_update(challenge_id=challenge_id)
                 if not challenge:
