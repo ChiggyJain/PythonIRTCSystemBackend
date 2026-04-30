@@ -5625,3 +5625,6 @@
 2026-04-30 11:38:55 | INFO | emailchanged_otp_dispatch_consumer_worker started
 2026-04-30 11:40:19 | INFO | SpawnProcess-27-19945 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:40:19.143016 | 2026-04-30 11:40:19.203091 | 60 | None | 202
 2026-04-30 11:40:20 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-04-30 11:41:34 | INFO | SpawnProcess-30-20236 | v1.users.email_change_request_otp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-04-30 11:41:34.038308 | 2026-04-30 11:41:34.138149 | 99 | None | 202
+2026-04-30 11:41:35 | INFO | emailchanged_otp_outbox_worker started
+2026-04-30 11:41:40 | INFO | emailchanged_otp_dispatch_consumer_worker started
