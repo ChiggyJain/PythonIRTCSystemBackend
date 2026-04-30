@@ -18,9 +18,9 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-stations-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-stations-created-outbox-publisher")
     await producer.start()
-    app_logger.info("masterdata_stations_outbox_worker started")
+    app_logger.info("masterdata_stations_created_outbox_worker started")
 
     try:
 
@@ -83,13 +83,13 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo
+                                    "retry_handler_type": "MASTERDATA_STATIONS", "outbox_repo": outbox_repo
                                 }
-                                emailchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                masterdata_stations_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "user_id": user_id, "error_message": str(exc)
                                 }
-                                await emailchanged_otp_outbox_retry_handler_class_obj.handle(**params)
+                                await masterdata_stations_outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True
