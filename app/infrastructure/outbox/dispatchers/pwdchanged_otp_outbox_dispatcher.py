@@ -3,7 +3,7 @@ import asyncio
 import json
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
-from app.domains.security.consumers.emailchanged_otp_dispatch_consumer import EmailChangedOtpDispatchConsumerService
+from app.domains.security.consumers.pwdchanged_otp_dispatch_consumer import PwdChangedOtpDispatchConsumerService
 from app.infrastructure.kafka.client import build_consumer
 
 settings = get_settings()
@@ -20,7 +20,7 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                service = EmailChangedOtpDispatchConsumerService()
+                service = PwdChangedOtpDispatchConsumerService()
                 await service.process_payload(payload)
                 await consumer.commit()
             except Exception as exc:
