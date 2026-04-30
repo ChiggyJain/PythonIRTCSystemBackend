@@ -321,9 +321,9 @@ class TokenService:
         # Single DB transaction for both revokes
         try:
             await self.user_tokens_repo.revoke_token_by_user(user_id)
-            await self.user_tokens_repo.commit()
+            await self._db_session.commit()
         except Exception:
-            await self.user_tokens_repo.rollback()
+            await self._db_session.rollback()
             raise
 
 
