@@ -56,7 +56,7 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         stmt = select(OutboxEvents).where(
             OutboxEvents.id == id
         )
-        result = await self.session.execute(stmt)
+        result = await self._db_session.execute(stmt)
         return result.scalar_one_or_none()
     
     

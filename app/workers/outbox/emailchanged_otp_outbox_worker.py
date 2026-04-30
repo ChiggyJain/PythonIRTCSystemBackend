@@ -50,7 +50,7 @@ async def run_worker() -> None:
                         user_id = int(payload.get("user_id") or 0)
                         # updating outbox_events status as processing
                         updated_at = now_ist()
-                        await outbox_repo.mark_outbox_processing(events, updated_at)
+                        await outbox_repo.mark_outbox_processing(event=event, updated_at=updated_at)
                 
                 # STEP2: Kafka (OUTSIDE transaction)
                 try:
