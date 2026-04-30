@@ -1,21 +1,12 @@
 
-"""
-Worker: Kafka -> send email OTP for EMAIL CHANGED flow.
-"""
-
-
 import asyncio
 import json
-from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.domains.security.consumers.emailchanged_otp_dispatch_consumer import EmailChangedOtpDispatchConsumerService
 from app.infrastructure.kafka.client import build_consumer
-from app.infrastructure.otp.provider_factory import get_emailchanged_email_otp_sender
-
 
 settings = get_settings()
-
 
 async def run_worker() -> None:
     consumer = build_consumer(
