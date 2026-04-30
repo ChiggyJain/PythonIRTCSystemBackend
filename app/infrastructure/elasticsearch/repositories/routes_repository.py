@@ -2,7 +2,7 @@
 from typing import Any, Optional
 from app.common.utils.logger import app_logger
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
-from app.infrastructure.elasticsearch.mappings.stations_mapping import STATION_INDEX_MAPPING
+from app.infrastructure.elasticsearch.mappings.routes_mapping import ROUTES_INDEX_MAPPING
 
 
 class RoutesElasticsearchRepository:
@@ -17,7 +17,7 @@ class RoutesElasticsearchRepository:
             if not exists:
                 await self.es.client.indices.create(
                     index=self.es.index_name,
-                    body=STATION_INDEX_MAPPING
+                    body=ROUTES_INDEX_MAPPING
                 )
                 app_logger.info(f"Created ES index: {self.es.index_name}")
         except Exception as e:
