@@ -1,7 +1,7 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.exc import IntegrityError
+from decimal import Decimal
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
@@ -89,7 +89,7 @@ class RoutesService:
                             "id": seat.id,
                             "seat_type": seat.seat_type,
                             "seat_number": seat.seat_number,
-                            "seat_price": seat.price,
+                            "price": float(seat.price) if isinstance(seat.price, Decimal) else seat.price,
                             "status": seat.status,
                         }
                         for seat in train_seats
