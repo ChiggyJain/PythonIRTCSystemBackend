@@ -52,6 +52,7 @@ class EmailChangedOtpService:
         self._otp_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1")
         self._meta_fernet = self._build_fernet(secret=f"{settings.JWT_SECRET_KEY}:otp-metadata-cipher:v1")
 
+
     async def request_email_change_otp(
         self,
         *,
@@ -63,6 +64,7 @@ class EmailChangedOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
+        
         channel = (channel or "").strip().upper()
         if channel != "EMAIL":
             raise BaseAppException(status_code=400, messages=["channel must be EMAIL"])
@@ -138,6 +140,7 @@ class EmailChangedOtpService:
         )
 
         try:
+
             await self.repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -200,6 +203,7 @@ class EmailChangedOtpService:
             "dispatch_status": "accepted",
         }
 
+
     async def confirm_email_change_otp(
         self,
         *,
@@ -211,7 +215,9 @@ class EmailChangedOtpService:
         correlation_id: str | None = None,
         request_id: str | None = None,
     ) -> dict:
+        
         try:
+            
             challenge = await self.repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -370,6 +376,7 @@ class EmailChangedOtpService:
             "email_verified": True,
             "new_email": new_email,
         }
+
 
     def _generate_otp(self) -> str:
         return f"{secrets.randbelow(900000) + 100000}"
