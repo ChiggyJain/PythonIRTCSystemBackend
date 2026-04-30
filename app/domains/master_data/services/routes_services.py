@@ -1,8 +1,11 @@
 
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
-from app.domains.master_data.repository.base import MasterDataRepositoryBase
+from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 class RoutesService:
@@ -10,8 +13,10 @@ class RoutesService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_ROUTE_CREATED = "MASTERDATA_ROUTE_CREATED_V1"
 
-    def __init__(self, repo: MasterDataRepositoryBase):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def create_train_route(
@@ -35,7 +40,7 @@ class RoutesService:
         """
 
         # 1) train existence check
-        is_train_exists = await self.repo.train_exists(train_id=train_id)
+        is_train_exists = await self.masterdata_repo.train_exists(train_id=train_id)
         if not is_train_exists:
             raise BaseAppException(
                 status_code=400,
@@ -44,7 +49,7 @@ class RoutesService:
 
         # 2) station existence check
         station_ids = [item["station_id"] for item in station_details]
-        existing_station_count = await self.repo.count_existing_station_ids(station_ids=station_ids)
+        existing_station_count = await self.masterdata_repo.count_existing_station_ids(station_ids=station_ids)
         if existing_station_count != len(station_ids):
             raise BaseAppException(
                 status_code=400,
@@ -54,20 +59,20 @@ class RoutesService:
         try:
 
             # 3) create ROUTES row
-            route = await self.repo.create_route(
+            route = await self.masterdata_repo.create_route(
                 train_id=train_id,
                 status="A",
             )
 
             # 4) create ROUTE_STATIONS rows
-            route_stations = await self.repo.create_route_stations(
+            route_stations = await self.masterdata_repo.create_route_stations(
                 route_id=route.id,
                 station_details=station_details,
                 status="A",
             )
 
             # 5) outbox event
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="ROUTE",
                 aggregate_id=str(route.id),
                 event_type=self.OUTBOX_EVENT_ROUTE_CREATED,
@@ -98,12 +103,12 @@ class RoutesService:
             )
 
             # 6) single commit
-            await self.repo.commit()
+            await self._db_session.commit()
 
         # handling rollback cases if any exception occurs
         except IntegrityError as ex:
 
-            await self.repo.rollback()
+            await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
 
             # ROUTES unique(train_id)
@@ -126,7 +131,7 @@ class RoutesService:
             )
 
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
 

@@ -5575,3 +5575,5 @@
 2026-04-30 10:25:07 | INFO | SpawnProcess-34-13359 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 10:25:06.735711 | 2026-04-30 10:25:07.171226 | 435 | None | 200
 2026-04-30 10:26:24 | INFO | SpawnProcess-40-13495 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 10:26:24.077885 | 2026-04-30 10:26:24.186911 | 109 | None | 201
 2026-04-30 10:26:43 | INFO | SpawnProcess-40-13495 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 10:26:43.296464 | 2026-04-30 10:26:43.361706 | 65 |  | 500
+2026-04-30 10:31:06 | INFO | SpawnProcess-54-13884 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 10:31:05.734238 | 2026-04-30 10:31:06.198148 | 463 | None | 200
+2026-04-30 10:31:27 | INFO | SpawnProcess-54-13884 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-04-30 10:31:27.257079 | 2026-04-30 10:31:27.349111 | 92 | None | 201
