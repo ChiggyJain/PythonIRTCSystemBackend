@@ -1,9 +1,11 @@
 
 from datetime import date
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
-from app.domains.master_data.repository.base import MasterDataRepositoryBase
+from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 class TrainSchedulesService:
@@ -11,8 +13,10 @@ class TrainSchedulesService:
     OUTBOX_STATUS_PENDING = "PENDING"
     OUTBOX_EVENT_SCHEDULE_CREATED = "MASTERDATA_SCHEDULE_CREATED_V1"
 
-    def __init__(self, repo: MasterDataRepositoryBase):
-        self.repo = repo
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+        self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def create_train_schedule(
@@ -37,7 +41,7 @@ class TrainSchedulesService:
         """
 
         # 1) train must exist
-        is_train_exists = await self.repo.train_exists(train_id=train_id)
+        is_train_exists = await self.masterdata_repo.train_exists(train_id=train_id)
         if not is_train_exists:
             raise BaseAppException(
                 status_code=400,
@@ -45,7 +49,7 @@ class TrainSchedulesService:
             )
 
         # 2) route must exist for this train
-        route = await self.repo.get_route_by_train_id(train_id=train_id)
+        route = await self.masterdata_repo.get_route_by_train_id(train_id=train_id)
         if not route:
             raise BaseAppException(
                 status_code=400,
@@ -53,7 +57,7 @@ class TrainSchedulesService:
             )
 
         # 3) route stations must exist
-        route_stations = await self.repo.get_route_stations_by_route_id(route_id=route.id)
+        route_stations = await self.masterdata_repo.get_route_stations_by_route_id(route_id=route.id)
         if not route_stations:
             raise BaseAppException(
                 status_code=400,
@@ -66,14 +70,14 @@ class TrainSchedulesService:
         try:
 
             # 5) create schedule
-            schedule = await self.repo.create_schedule(
+            schedule = await self.masterdata_repo.create_schedule(
                 train_id=train_id,
                 departure_date=departure_date,
                 status="A",
             )
 
             # 6) create outbox event
-            await self.repo.add_outbox_event(
+            await self.outbox_repo.add_outbox_event(
                 aggregate_type="SCHEDULE",
                 aggregate_id=str(schedule.id),
                 event_type=self.OUTBOX_EVENT_SCHEDULE_CREATED,
@@ -106,11 +110,11 @@ class TrainSchedulesService:
             )
 
             # 7) single commit
-            await self.repo.commit()
+            await self._db_session.commit()
 
         # handling the rollback cases if any exception is occured
         except IntegrityError as ex:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
             # unique(train_id, departure_date)
             if "uq_trainid_depdate" in msg or (
@@ -126,7 +130,7 @@ class TrainSchedulesService:
             )
 
         except Exception:
-            await self.repo.rollback()
+            await self._db_session.rollback()
             raise
 
         return {
