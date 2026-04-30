@@ -79,7 +79,7 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             # updating outbox event status as published
                             published_at = now_ist()
-                            await outbox_repo.mark_outbox_published(event, published_at)
+                            await outbox_repo.mark_outbox_published(event=event, published_at=published_at)
                             # adding logs into security_event
                             await security_repo.add_security_event(
                                 user_id=user_id,
