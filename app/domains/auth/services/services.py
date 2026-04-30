@@ -288,9 +288,9 @@ class TokenService:
         try:
             await self.user_tokens_repo.revoke_token(access_id)
             await self.user_tokens_repo.revoke_token(refresh_id)
-            await self.user_tokens_repo.commit()
+            await self._db_session.commit()
         except Exception:
-            await self.user_tokens_repo.rollback()
+            await self._db_session.rollback()
             raise
 
         # Cache cleanup: best-effort (DB already source of truth)
