@@ -1,3 +1,7 @@
 2026-04-30 15:01:34 | INFO | SpawnProcess-1-15415 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 15:01:34.479515 | 2026-04-30 15:01:34.928365 | 448 | None | 200
 2026-04-30 15:01:50 | INFO | SpawnProcess-1-15415 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 15:01:50.077422 | 2026-04-30 15:01:50.086199 | 8 |  | 500
 2026-04-30 15:02:01 | INFO | SpawnProcess-1-15415 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 15:02:01.582029 | 2026-04-30 15:02:01.964561 | 382 | None | 200
+2026-04-30 16:34:04 | INFO | SpawnProcess-1-22759 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 16:34:04.794439 | 2026-04-30 16:34:04.798313 | 3 |  | 500
+2026-04-30 16:34:22 | INFO | SpawnProcess-1-22759 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 16:34:22.247818 | 2026-04-30 16:34:22.624939 | 377 | None | 200
+2026-04-30 16:34:33 | INFO | SpawnProcess-1-22759 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-04-30 16:34:33.700825 | 2026-04-30 16:34:33.785636 | 84 | None | 201
+2026-04-30 16:35:40 | INFO | masterdata_stations_outbox_worker started
