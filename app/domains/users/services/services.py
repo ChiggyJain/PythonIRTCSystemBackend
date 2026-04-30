@@ -70,7 +70,7 @@ class UsersService:
             )
         except IntegrityError:
             raise BaseAppException(
-                messages=["Email already exists"],
+                messages=["Email already exists1"],
                 status_code=400,
             )
         return user

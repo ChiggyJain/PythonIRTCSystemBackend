@@ -2,7 +2,7 @@
 """
 Users SQLAlchemy Repository
 Implementation of UsersRepositoryBase
-using SQLAlchemy async session.
+using SQLAlchemy async db_session.
 """
 
 from typing import Any
@@ -20,8 +20,8 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
     SQLAlchemy implementation of UsersRepositoryBase
     """
 
-    def __init__(self, session: AsyncSession):
-        self.session = session
+    def __init__(self, db_session: AsyncSession):
+        self.db_session = db_session
 
     
     async def get_by_email(
@@ -32,7 +32,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         stmt = select(Users).where(
             Users.email == email
         )
-        result = await self.session.execute(stmt)
+        result = await self.db_session.execute(stmt)
 
         return result.scalar_one_or_none()
 
@@ -61,13 +61,14 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.session.add(user)
+        self.db_session.add(user)
         try:
-            await self.session.commit()
+            await self.db_session.commit()
         except IntegrityError:
-            await self.session.rollback()
+            print(f"ddd1")
+            await self.db_session.rollback()
             raise
-        await self.session.refresh(user)
+        await self.db_session.refresh(user)
         return user
     
 
@@ -79,7 +80,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         stmt = select(Users).where(
             Users.id == user_id
         )
-        result = await self.session.execute(stmt)
+        result = await self.db_session.execute(stmt)
         return result.scalar_one_or_none()
     
 
@@ -106,7 +107,7 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             Users.id == user_id
         )
 
-        result = await self.session.execute(stmt)
+        result = await self.db_session.execute(stmt)
         row = result.mappings().first()
         if not row:
             return None
