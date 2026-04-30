@@ -11,7 +11,6 @@ class MasterDataStationsCreatedOutboxRetryHandler(OutboxBaseRetryHandler):
 
     def __init__(self, **kwargs):
         self.outbox_repo = kwargs.get("outbox_repo", None)
-        self.security_repo = kwargs.get("security_repo", None)
 
 
     async def handle(self, **kwargs):
@@ -22,7 +21,7 @@ class MasterDataStationsCreatedOutboxRetryHandler(OutboxBaseRetryHandler):
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES)
+        max_retries = int(settings.MASTERDATA_STATION_OUTBOX_MAX_RETRIES)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(
@@ -42,7 +41,7 @@ class MasterDataStationsCreatedOutboxRetryHandler(OutboxBaseRetryHandler):
         if self.security_repo and user_id > 0:
             await self.security_repo.add_security_event(
                 user_id=user_id,
-                event_name="email_change_outbox_publish_failed",
+                event_name="masterdata_stations_created_outbox_publish_failed",
                 event_category="OUTBOX",
                 channel="EMAIL",
                 provider="KAFKA",
