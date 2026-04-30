@@ -70,7 +70,7 @@ class PwdChangedOtpDispatchConsumerService:
                         user_agent=None,
                         metadata_json={"challenge_id": challenge_id},
                     )
-                    await self._db_session.commit()
+                    await db_session.commit()
                     return
 
                 # Ensure this consumer handles only password-change OTP
@@ -89,7 +89,7 @@ class PwdChangedOtpDispatchConsumerService:
                         user_agent=None,
                         metadata_json={"challenge_id": challenge.challenge_id},
                     )
-                    await self._db_session.commit()
+                    await db_session.commit()
                     return
 
                 # Terminal/idempotent statuses (duplicate Kafka deliveries should not resend OTP)
@@ -108,7 +108,7 @@ class PwdChangedOtpDispatchConsumerService:
                         user_agent=None,
                         metadata_json={"challenge_id": challenge.challenge_id},
                     )
-                    await self._db_session.commit()
+                    await db_session.commit()
                     return
 
                 now = now_ist()
@@ -135,7 +135,7 @@ class PwdChangedOtpDispatchConsumerService:
                         user_agent=None,
                         metadata_json={"challenge_id": challenge.challenge_id},
                     )
-                    await self._db_session.commit()
+                    await db_session.commit()
                     return
 
                 otp = self._decrypt_otp(challenge.otp_ciphertext)
@@ -199,10 +199,10 @@ class PwdChangedOtpDispatchConsumerService:
                         },
                     )
 
-                await self._db_session.commit()
+                await db_session.commit()
 
             except Exception:
-                await self._db_session.rollback()
+                await db_session.rollback()
                 raise
 
 

@@ -159,8 +159,8 @@ done
 Start Kakfa Background Workers =>
 
 Password Changed OTP:
-python3 -m app.workers.pwdchanged_otp_outbox_worker
-python3 -m app.workers.pwdchanged_otp_dispatch_consumer_worker
+python -m app.workers.outbox.pwdchanged_otp_outbox_worker
+python -m app.infrastructure.outbox.dispatchers.pwdchanged_otp_outbox_dispatcher
 
 
 Email Verification OTP:

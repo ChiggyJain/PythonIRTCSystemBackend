@@ -5664,3 +5664,9 @@
 2026-04-30 14:02:02 | INFO | SpawnProcess-30-10024 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-04-30 14:02:02.388681 | 2026-04-30 14:02:02.395195 | 6 |  | 500
 2026-04-30 14:02:12 | INFO | SpawnProcess-30-10024 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-04-30 14:02:12.595872 | 2026-04-30 14:02:12.610833 | 14 | None | 200
 2026-04-30 14:02:17 | INFO | SpawnProcess-30-10024 | v1.users.email_verification_confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-04-30 14:02:17.820069 | 2026-04-30 14:02:17.822691 | 2 |  | 500
+2026-04-30 14:44:20 | INFO | pwdchanged_otp_outbox_worker started
+2026-04-30 14:44:28 | INFO | pwdchanged_otp_dispatch_consumer_worker started
+2026-04-30 14:44:41 | INFO | SpawnProcess-153-13671 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-04-30 14:44:41.573301 | 2026-04-30 14:44:41.961139 | 387 | None | 200
+2026-04-30 14:44:58 | INFO | SpawnProcess-153-13671 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:44:58.086166 | 2026-04-30 14:44:58.090363 | 4 |  | 500
+2026-04-30 14:45:10 | INFO | SpawnProcess-153-13671 | v1.users.password_change_request_otp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-04-30 14:45:10.055275 | 2026-04-30 14:45:10.095539 | 40 | None | 202
+2026-04-30 14:45:10 | ERROR | pwdchanged_otp_dispatch_consumer_worker error: 'PwdChangedOtpDispatchConsumerService' object has no attribute '_db_session'
