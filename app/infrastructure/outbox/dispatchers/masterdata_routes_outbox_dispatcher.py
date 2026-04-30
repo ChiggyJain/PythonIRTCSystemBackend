@@ -18,11 +18,21 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         await station_repo.create_index_if_not_exists()
         # Prepare ES document (only required fields)
         es_document = {
-            "station_id": payload.get("station_id", 0),
-            "name": payload.get("name", ""),
-            "code": payload.get("code", ""),
-            "city": payload.get("city", ""),
-            "state": payload.get("state", ""),
+            "train_id": payload.get("train_details").get("train_id", 0),
+            "train_name": payload.get("train_details").get("train_name", ""),
+            "train_number": payload.get("train_details").get("train_number", ""),
+            "routes" : [
+                {
+                    "id": rs.id,
+                    "station_id": rs.station_id,
+                    "sequence_number": rs.sequence_number,
+                    "arrival_time": rs.arrival_time.strftime("%H:%M:%S"),
+                    "departure_time": rs.departure_time.strftime("%H:%M:%S"),
+                    "distance_from_origin": float(rs.distance_from_origin),
+                    "status": rs.status,
+                }
+                for rs in payload.get("station_details")
+            ]
         }
         # Index/upsert the document
         await station_repo.index(es_document)
