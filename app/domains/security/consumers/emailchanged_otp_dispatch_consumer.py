@@ -8,7 +8,6 @@ import asyncio
 import base64
 import hashlib
 import json
-from sqlalchemy.ext.asyncio import AsyncSession
 from cryptography.fernet import Fernet
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
@@ -219,6 +218,7 @@ class EmailChangedOtpDispatchConsumerService:
             raise
 
     async def _send_with_retry(self, *, to_email: str, otp: str, purpose: str, challenge_id: str) -> OtpSendResult:
+
         last_result = OtpSendResult(
             accepted=False,
             provider="UNKNOWN",
@@ -268,6 +268,7 @@ class EmailChangedOtpDispatchConsumerService:
             purpose=purpose,
             challenge_id=challenge_id,
         )
+
 
     def _build_fernet(self, *, secret: str) -> Fernet:
         digest = hashlib.sha256(secret.encode("utf-8")).digest()
