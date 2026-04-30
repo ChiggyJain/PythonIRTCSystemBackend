@@ -22,7 +22,7 @@ class EmailVerificationOtpOutboxRetryHandler(OutboxBaseRetryHandler):
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES)
+        max_retries = int(settings.EMAILVERIFICATION_OTP_OUTBOX_MAX_RETRIES)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(
@@ -42,7 +42,7 @@ class EmailVerificationOtpOutboxRetryHandler(OutboxBaseRetryHandler):
         if self.security_repo and user_id > 0:
             await self.security_repo.add_security_event(
                 user_id=user_id,
-                event_name="email_change_outbox_publish_failed",
+                event_name="email_verification_outbox_publish_failed",
                 event_category="OUTBOX",
                 channel="EMAIL",
                 provider="KAFKA",
