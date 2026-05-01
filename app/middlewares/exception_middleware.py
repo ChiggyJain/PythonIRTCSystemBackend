@@ -29,6 +29,7 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
 
         try:
+            
             response = await call_next(request)
             return response
 
