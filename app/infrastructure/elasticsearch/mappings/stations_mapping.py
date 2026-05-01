@@ -1,49 +1,54 @@
 # filepath: app/infrastructure/elasticsearch/mappings/station_mapping.py
 
 STATIONS_INDEX_MAPPING = {
+
     "settings": {
         "number_of_shards": 1,
         "number_of_replicas": 0,
         "analysis": {
             "analyzer": {
-                "station_analyzer": {
+                "autocomplete_analyzer": {
                     "type": "custom",
-                    "tokenizer": "standard",
-                    "filter": ["lowercase", "asciifolding"]
+                    "tokenizer": "autocomplete_tokenizer",
+                    "filter": ["lowercase"]
+                },
+                "search_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standar",
+                    "filter": ["lowercase"]
+                },
+                "tokenizer": {
+                    "autocomplete_tokenizer": {
+                        "type": "edge_ngram",
+                        "min_gram" : 2,
+                        "max_gram" : 20,
+                        "token_chars" : ["letter", "digit"]
+                    },
                 }
             }
         }
     },
+
     "mappings": {
         "properties": {
             "station_id": {
-                "type": "integer",
-                "index": True
+                "type": "keyword",
             },
             "name": {
                 "type": "text",
-                "analyzer": "station_analyzer",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase"
-                    },
-                    "suggest": {
-                        "type": "completion"
-                    }
-                }
+                "analyzer": "autocomplete_analyzer",
+                "search_analyzer": "search_analyzer",
             },
             "code": {
                 "type": "keyword",
-                "normalizer": "lowercase"
             },
             "city": {
-                "type": "keyword",
-                "normalizer": "lowercase"
+                "type": "text",
+                "analyzer": "autocomplete_analyzer",
+                "search_analyzer": "search_analyzer",
             },
-            "state": {
-                "type": "keyword",
-                "normalizer": "lowercase"
+            "sugggest": {
+                "type": "completion"
             }
         }
     }
