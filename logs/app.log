@@ -354,3 +354,15 @@ journey_date
 journey_date
   Value error, journey_date must be current-date or future-date [type=value_error, input_value=datetime.date(2025, 5, 10), input_type=date]
     For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-01 17:37:20 | INFO | ES client created for index: routes_v1
+2026-05-01 17:37:20 | INFO | SpawnProcess-7-34691 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-01 17:37:20.883286 | 2026-05-01 17:37:20.885111 | 1 | 1 validation error for TrainSearchQueryRequest
+journey_date
+  Value error, journey_date must be current-date or future-date [type=value_error, input_value=datetime.date(2025, 5, 10), input_type=date]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-01 17:38:18 | INFO | ES client created for index: routes_v1
+2026-05-01 17:38:18 | INFO | SpawnProcess-8-34857 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-01 17:38:18.818388 | 2026-05-01 17:38:18.820121 | 1 | 1 validation error for TrainSearchQueryRequest
+journey_date
+  Value error, journey_date must be current-date or future-date [type=value_error, input_value=datetime.date(2025, 5, 10), input_type=date]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-01 17:38:22 | INFO | ES client created for index: routes_v1
+2026-05-01 17:38:25 | INFO | ES client created for index: routes_v1
