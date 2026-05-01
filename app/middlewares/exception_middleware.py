@@ -40,6 +40,8 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
                 data=exc.data,
             )
 
+        """
+        
         except RequestValidationError as exc:
             errors = []
             for err in exc.errors():
@@ -67,3 +69,5 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
                 messages=["Internal Server Error"],
                 data=None,
             )
+
+        """
