@@ -37,7 +37,7 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            aggregate_type="ROUTES", limit=1, now_time=now_ist(),
+                            aggregate_type="SCHEDULES", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
@@ -51,7 +51,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.MASTERDATA_ROUTE_EVENT_TOPIC
+                    topic = settings.MASTERDATA_SCHEDULE_EVENT_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
@@ -59,7 +59,7 @@ async def run_worker() -> None:
                     ).encode("utf-8")
 
                     # preparing key to used for publishing to the topic partition
-                    key = str(payload.get("route_id", 0)).encode("utf-8")
+                    key = str(payload.get("schedule_id", 0)).encode("utf-8")
 
                     # publish message to kafka topic
                     md = await producer.send_and_wait(topic=topic, key=key, value=message,)
@@ -82,13 +82,13 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "MASTERDATA_ROUTES", "outbox_repo": outbox_repo
+                                    "retry_handler_type": "MASTERDATA_SCHEDULES", "outbox_repo": outbox_repo
                                 }
-                                masterdata_routes_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                masterdata_schedules_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "error_message": str(exc)
                                 }
-                                await masterdata_routes_outbox_retry_handler_class_obj.handle(**params)
+                                await masterdata_schedules_outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True

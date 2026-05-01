@@ -78,7 +78,7 @@ class TrainSchedulesService:
 
             # 6) create outbox event
             await self.outbox_repo.add_outbox_event(
-                aggregate_type="SCHEDULE",
+                aggregate_type="SCHEDULES",
                 aggregate_id=str(schedule.id),
                 event_type=self.OUTBOX_EVENT_SCHEDULE_CREATED,
                 payload_json={
