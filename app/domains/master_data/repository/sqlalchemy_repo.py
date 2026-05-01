@@ -1,6 +1,7 @@
 
 from datetime import date
 from typing import Any
+from typing import List, Dict
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.master_data.models.stations_models import Stations
@@ -230,22 +231,21 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         return list(result.scalars().all())
     
 
-    async def get_station_by_station_id(
+    async def get_station_by_station_ids(
         self,
         *,
-        station_id: int,
-    ) -> Stations | None:
+        station_ids: List[int],
+    ) -> List[Stations] | None:
         
         stmt = (
             select(Stations)
             .where(
-                Stations.id == station_id,
+                Stations.id.in_(station_ids),
                 Stations.status == "A",
             )
-            .limit(1)
         )
         result = await self._db_session.execute(stmt)
-        return result.scalar_one_or_none()
+        return result.scalars().all()
     
 
 

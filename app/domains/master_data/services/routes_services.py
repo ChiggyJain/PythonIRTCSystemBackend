@@ -78,9 +78,16 @@ class RoutesService:
             )
 
             # fetching stations details
+            station_ids = [rs.station_id for rs in route_stations]
+            station_list_details = await self.masterdata_repo.get_station_by_station_id(station_ids=station_ids)
+            station_map = {station.id: station for station in station_list_details}
             for rs in route_stations:
-                stationId = rs.station_id
-                
+                station = station_map.get(rs.station_id, None)
+                if station:
+                    rs.name = station.name
+                    rs.code = station.code
+                    rs.city = station.city
+                    rs.state = station.state
 
             # outbox event
             await self.outbox_repo.add_outbox_event(
@@ -111,6 +118,10 @@ class RoutesService:
                         {
                             "id": rs.id,
                             "station_id": rs.station_id,
+                            "name" : rs.name,
+                            "code" : rs.code,
+                            "city" : rs.city,
+                            "state" : rs.state,
                             "sequence_number": rs.sequence_number,
                             "arrival_time": rs.arrival_time.strftime("%H:%M:%S"),
                             "departure_time": rs.departure_time.strftime("%H:%M:%S"),
