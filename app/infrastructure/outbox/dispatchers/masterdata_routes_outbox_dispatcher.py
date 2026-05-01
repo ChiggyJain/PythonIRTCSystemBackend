@@ -17,6 +17,8 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         # Create index with mapping if not exists
         await routes_repo.create_index_if_not_exists()
         # Prepare ES document (only required fields)
+        route_id = payload.get('route_id', 0)
+        train_details = payload.get("train_details")
         seatSummary = {
             "total" : 0, "LOWER" : 0, "MIDDLE" : 0, "UPPER" : 0, 
             "SIDE_UPPER" : 0, "SIDE_LOWER" : 0
@@ -27,19 +29,19 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             if eachSeatObj['seat_type'] in seatSummary:
                 seatSummary[eachSeatObj['seat_type']]+= 1
         es_document = {
-            "train_id": payload.get("train_details").get("train_id", 0),
-            "train_name": payload.get("train_details").get("train_name", ""),
-            "train_number": payload.get("train_details").get("train_number", ""),
+            "train_id": train_details.get("train_id", 0),
+            "train_name": train_details.get("train_name", ""),
+            "train_number": train_details.get("train_number", ""),
             "seatSummary" : seatSummary,
             "routes" : [
                 {
-                    "id": rs.id,
-                    "station_id": rs.station_id,
-                    "sequence_number": rs.sequence_number,
-                    "arrival_time": rs.arrival_time.strftime("%H:%M:%S"),
-                    "departure_time": rs.departure_time.strftime("%H:%M:%S"),
-                    "distance_from_origin": float(rs.distance_from_origin),
-                    "status": rs.status,
+                    "id": rs['id'],
+                    "station_id": rs['station_id'],
+                    "sequence_number": rs['sequence_number'],
+                    "arrival_time": rs['arrival_time'].strftime("%H:%M:%S"),
+                    "departure_time": rs['departure_time'].strftime("%H:%M:%S"),
+                    "distance_from_origin": float(rs['distance_from_origin']),
+                    "status": rs['status'],
                 }
                 for rs in payload.get("station_details")
             ],
@@ -47,7 +49,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         }
         # Index/upsert the document
         await routes_repo.index(es_document)
-        app_logger.info(f"Indexed routes to ES using RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
+        app_logger.info(f"Indexed routes to ES using RouteID: {route_id}, TrainID: {train_details.get("train_id", 0)}")
         await es_client.close()
         return True
     except Exception as e:
@@ -69,7 +71,6 @@ async def run_worker() -> None:
                 payload = json.loads(message.value.decode("utf-8"))
                 app_logger.info(f"Received payload: {payload}")
                 # Index to Elasticsearch
-                
                 success = await index_to_elasticsearch(payload)
                 if success:
                     app_logger.info(f"Successfully indexed route_id: {payload.get('route_id')}, train_id: {payload.get("train_details").get("train_id", 0)}")
