@@ -5,10 +5,23 @@ ROUTES_INDEX_MAPPING = {
         "number_of_replicas": 0,
         "analysis": {
             "analyzer": {
-                "station_analyzer": {
+                "autocomplete_analyzer": {
                     "type": "custom",
-                    "tokenizer": "standard",
-                    "filter": ["lowercase", "asciifolding"]
+                    "tokenizer": "autocomplete_tokenizer",
+                    "filter": ["lowercase"]
+                },
+                "search_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "standar",
+                    "filter": ["lowercase"]
+                },
+                "tokenizer": {
+                    "autocomplete_tokenizer": {
+                        "type": "edge_ngram",
+                        "min_gram" : 2,
+                        "max_gram" : 20,
+                        "token_chars" : ["letter", "digit"]
+                    },
                 }
             }
         }
