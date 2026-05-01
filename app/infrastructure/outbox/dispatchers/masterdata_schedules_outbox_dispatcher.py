@@ -14,8 +14,19 @@ async def index_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
         routes_repo = RoutesElasticsearchRepository(es_client)
-        existing_es_documents = await routes_repo.get_by_id(train_id=payload.get("train_id"))
-        print(f"existing_es_documents: {existing_es_documents}")
+        train_id = payload.get("train_id", 0)
+        update_schedule_param = {
+            "schedule_id" : payload.get("schedule_id", 0),
+            "departure_date" : payload.get("departure_date", ""),
+            "status" : payload.get("status", "A"),
+            "available" : 0,
+            "locked" : 0,
+            "booked" : 0
+        }
+        await routes_repo.upsert_schedule(train_id=train_id, schedules=update_schedule_param)
+        app_logger.info(f"Indexed routes updated (schedules) to ES using TrainID: {train_id}")
+        await es_client.close()
+        return True
     except Exception as e:
         app_logger.error(f"ES indexing error: {e}")
         return False
