@@ -26,7 +26,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         }
         # Index/upsert the document
         await station_repo.index(es_document)
-        app_logger.info(f"Indexed station to ES: {payload.get('station_id')}")
+        app_logger.info(f"Indexed station to ES using StationID: {payload.get('station_id')}")
         await es_client.close()
         return True
     except Exception as e:
@@ -50,9 +50,9 @@ async def run_worker() -> None:
                 # Index to Elasticsearch
                 success = await index_to_elasticsearch(payload)
                 if success:
-                    app_logger.info(f"Successfully indexed station_id: {payload.get('station_id')}")
+                    app_logger.info(f"Successfully indexed StationID: {payload.get('station_id')}")
                 else:
-                    app_logger.error(f"Failed to index station_id: {payload.get('station_id')}")
+                    app_logger.error(f"Failed to index StationID: {payload.get('station_id')}")
                 await consumer.commit()                
             except Exception as exc:
                 app_logger.error(f"masterdata_stations_dispatch_consumer_worker error: {exc}")
