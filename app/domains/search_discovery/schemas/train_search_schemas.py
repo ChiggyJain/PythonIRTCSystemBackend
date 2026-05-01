@@ -48,7 +48,7 @@ class TrainSearchQueryRequest(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def validate_source_with_destination_match(self):
+    def validate_source_destination_not_same(self):
         if (self.source).strip().lower() == (self.destination).strip().lower():
-            raise ValueError("source and destination should not be same")
+            raise ValueError("source and destination cannot not be same")
         return self
