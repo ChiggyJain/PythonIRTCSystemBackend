@@ -227,9 +227,13 @@ curl -X DELETE "localhost:9200/routes_v1"
 http://127.0.0.1:9200/stations_v1/_search?pretty=true
 http://127.0.0.1:9200/stations_v1/_count
 
+Kibana Commands =>
+http://127.0.0.1:5601/app/home
+
 
 Docker Commands =>
 docker compose down -v && docker compose build --no-cache && docker compose up -d --force-recreate
+
 
 All Endpoints =>
 http://127.0.0.1:8000/health

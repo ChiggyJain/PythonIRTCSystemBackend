@@ -183,3 +183,35 @@
 2026-05-01 11:26:12 | INFO | ES client created for index: routes_v1
 2026-05-01 11:26:12 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
 2026-05-01 11:26:12 | INFO | Successfully indexed ScheduledID: 1
+2026-05-01 11:43:40 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_SCHEDULE_CREATED_V1', 'status': 'A', 'route_id': 1, 'train_id': 1, 'request_id': None, 'schedule_id': 1, 'event_version': 1, 'correlation_id': None, 'departure_date': '2026-05-01', 'event_created_at': '2026-05-01 11:06:52.682751', 'route_stations_snapshot': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'created_by_admin_user_id': 1}
+2026-05-01 11:43:40 | INFO | ES client created for index: routes_v1
+2026-05-01 11:43:40 | ERROR | ES indexing error: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
+2026-05-01 11:43:40 | ERROR | Failed to index ScheduledID: 1
+2026-05-01 11:44:47 | INFO | masterdata_stations_outbox_worker started
+2026-05-01 11:44:51 | INFO | masterdata_routes_outbox_worker started
+2026-05-01 11:44:53 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-05-01 11:44:53 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-05-01 11:06:16.996219', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-01 11:06:17.006238', 'created_by_admin_user_id': 1}
+2026-05-01 11:44:53 | INFO | ES client created for index: stations_v1
+2026-05-01 11:44:53 | INFO | Created ES index: stations_v1
+2026-05-01 11:44:53 | INFO | Indexed station to ES using StationID: 1
+2026-05-01 11:44:53 | INFO | Successfully indexed StationID: 1
+2026-05-01 11:44:54 | INFO | masterdata_schedules_outbox_worker started
+2026-05-01 11:44:55 | INFO | masterdata_routes_dispatch_consumer_worker started
+2026-05-01 11:44:55 | INFO | Received payload: {'outbox_id': 3, 'event_type': 'MASTERDATA_ROUTE_CREATED_V1', 'route_id': 1, 'request_id': None, 'route_status': 'A', 'seat_details': [{'id': 1, 'price': 500.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 1}, {'id': 2, 'price': 300.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 2}], 'event_version': 1, 'train_details': {'status': 'A', 'train_id': 1, 'coach_name': 'AC', 'train_name': 'Train1', 'total_seats': 2, 'train_number': 'TRAIN1'}, 'correlation_id': None, 'station_details': [{'id': 1, 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'event_created_at': '2026-05-01 11:06:30.339704', 'created_by_admin_user_id': 1}
+2026-05-01 11:44:55 | INFO | ES client created for index: routes_v1
+2026-05-01 11:44:56 | INFO | Created ES index: routes_v1
+2026-05-01 11:44:56 | INFO | Indexed routes to ES using RouteID: 1, TrainID: 1
+2026-05-01 11:44:56 | INFO | Successfully indexed RouteID: 1, TrainID: 1
+2026-05-01 11:44:58 | INFO | masterdata_schedules_dispatch_consumer_worker started
+2026-05-01 11:44:58 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_SCHEDULE_CREATED_V1', 'status': 'A', 'route_id': 1, 'train_id': 1, 'request_id': None, 'schedule_id': 1, 'event_version': 1, 'correlation_id': None, 'departure_date': '2026-05-01', 'event_created_at': '2026-05-01 11:06:52.682751', 'route_stations_snapshot': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'created_by_admin_user_id': 1}
+2026-05-01 11:44:58 | INFO | ES client created for index: routes_v1
+2026-05-01 11:44:58 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
+2026-05-01 11:44:58 | INFO | Successfully indexed ScheduledID: 1
+2026-05-01 11:44:58 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_SCHEDULE_CREATED_V1', 'status': 'A', 'route_id': 1, 'train_id': 1, 'request_id': None, 'schedule_id': 1, 'event_version': 1, 'correlation_id': None, 'departure_date': '2026-05-01', 'event_created_at': '2026-05-01 11:06:52.682751', 'route_stations_snapshot': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'created_by_admin_user_id': 1}
+2026-05-01 11:44:58 | INFO | ES client created for index: routes_v1
+2026-05-01 11:44:58 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
+2026-05-01 11:44:58 | INFO | Successfully indexed ScheduledID: 1
+2026-05-01 11:44:58 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_SCHEDULE_CREATED_V1', 'status': 'A', 'route_id': 1, 'train_id': 1, 'request_id': None, 'schedule_id': 1, 'event_version': 1, 'correlation_id': None, 'departure_date': '2026-05-01', 'event_created_at': '2026-05-01 11:06:52.682751', 'route_stations_snapshot': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'created_by_admin_user_id': 1}
+2026-05-01 11:44:58 | INFO | ES client created for index: routes_v1
+2026-05-01 11:44:58 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
+2026-05-01 11:44:58 | INFO | Successfully indexed ScheduledID: 1
