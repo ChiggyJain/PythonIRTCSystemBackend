@@ -205,6 +205,9 @@ python -m app.workers.outbox.masterdata_routes_outbox_worker
 python -m app.infrastructure.outbox.dispatchers.masterdata_routes_outbox_dispatcher
 
 
+ElasticSearch Commands =>
+
+
 
 Docker Commands =>
 docker compose down -v && docker compose build --no-cache && docker compose up -d --force-recreate
