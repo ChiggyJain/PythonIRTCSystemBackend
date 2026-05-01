@@ -42,6 +42,7 @@ class TrainSearchService:
         hits = hits_block.get("hits", [])
 
         results = []
+        seen_keys = set()
         for hit in hits:
             
             source_doc = hit.get("_source", {}) or {}
@@ -127,6 +128,16 @@ class TrainSearchService:
                 },
             }
 
+            dedupe_key = (
+                str(source_doc.get("train_id")),
+                str(matched_schedule.get("id")),
+                str(source_station.get("station_id")),
+                str(destination_station.get("station_id")),
+            )
+            if dedupe_key in seen_keys:
+                continue
+
+            seen_keys.add(dedupe_key)
             results.append(result_item)
 
         returned = len(results)
