@@ -25,13 +25,15 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             "code": payload.get("code", ""),
             "city": payload.get("city", ""),
             "state": payload.get("state", ""),
-            "suggest" : {
-                "input" : [
-                    payload.get("name", ""), 
-                    payload.get("code", ""), 
-                    payload.get("city", "")
-                ].filter(bool),
-                "weight" : 10
+            "suggest": {
+                "input": [
+                    v for v in [
+                        payload.get("name", ""),
+                        payload.get("code", ""),
+                        payload.get("city", "")
+                    ] if v
+                ],
+                "weight": 10
             }
         }
         # Index/upsert the document
