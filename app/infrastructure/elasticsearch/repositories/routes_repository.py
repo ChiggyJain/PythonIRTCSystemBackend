@@ -38,4 +38,36 @@ class RoutesElasticsearchRepository:
         return await self.es.delete(doc_id=str(train_id))
     
 
+    async def upsert_schedule(
+        self,
+        train_id: int,
+        schedules: dict[str, Any]
+    ) -> dict:
+        return await self.es.client.update(
+            index=self.es.index_name,
+            id=str(train_id),
+            body={
+                "script": {
+                    "source": """
+                        if(ctx._source.schedules == null){
+                            ctx._source.schedules = [];
+                        }
+                        boolean found = false;
+                        for(int i = 0; i < ctx._source.schedules.size(); i++){
+                            if(ctx._source.schedules[i].id == params.schedules.id){
+                                ctx._source.schedules[i] = params.schedules;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found){
+                            ctx._source.schedules.add(params.schedules);
+                        }
+                    """,
+                    "params": {
+                        "schedules": schedules
+                    }
+                }
+            }
+        )
     
