@@ -5,7 +5,6 @@ from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
 
 
-
 class TrainSearchService:
 
     def __init__(self, es_client: ElasticsearchClient):
@@ -30,6 +29,7 @@ class TrainSearchService:
             size=size,
         )
 
+        print(f"es_result: {es_result}")
         hits_block = es_result.get("hits", {})
         total_block = hits_block.get("total", {})
         total_value = total_block.get("value", 0) if isinstance(total_block, dict) else 0
@@ -37,6 +37,7 @@ class TrainSearchService:
 
         results = []
         for hit in hits:
+            
             source_doc = hit.get("_source", {}) or {}
             inner_hits = hit.get("inner_hits", {}) or {}
 
