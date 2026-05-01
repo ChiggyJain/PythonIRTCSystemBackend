@@ -1,4 +1,5 @@
 
+from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 from app.core.response import success_response
 from app.core.routing.feature_route import FeatureAPIRoute
@@ -25,22 +26,9 @@ router = APIRouter()
     }
 )
 async def search_trains(
-    source: str = Query(..., description="Source station query"),
-    destination: str = Query(..., description="Destination station query"),
-    journey_date: str = Query(..., description="Journey date in YYYY-MM-DD"),
-    page: int = Query(1, ge=1),
-    size: int = Query(20, ge=1, le=100),
+    query: Annotated[TrainSearchQueryRequest, Depends()],
     service: TrainSearchService = Depends(get_train_search_service),
 ):
-    
-    # validate using your schema rules
-    query = TrainSearchQueryRequest(
-        source=source,
-        destination=destination,
-        journey_date=journey_date,
-        page=page,
-        size=size,
-    )
     
     data = await service.search_trains(
         source=query.source,
