@@ -248,6 +248,7 @@ http://127.0.0.1:8000/api/v1/users/email/verification/request-otp
 http://127.0.0.1:8000/api/v1/users/email/verification/confirm
 http://127.0.0.1:8000/api/v1/users/email/change/request-otp
 http://127.0.0.1:8000/api/v1/users/email/change/confirm
+http://127.0.0.1:8000/api/v1/search/trains
 
 
 k6 Testing =>
@@ -402,7 +403,7 @@ curl --location 'http://127.0.0.1:8000/api/v1/users/email/change/confirm' \
 --data '{"challenge_id":"<CHALLENGE_ID>","otp":"123456"}'
 
 
-
+http://127.0.0.1:8000/api/v1/search/trains?source=NDLS&destination=BCT&journey_date=2026-05-10
 
 
 
