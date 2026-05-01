@@ -21,13 +21,19 @@ class TrainSearchService:
         size: int,
     ) -> dict:
         
-        es_result = await self.routes_es_repo.search_trains(
-            source_query=source,
-            destination_query=destination,
-            journey_date=journey_date,
-            page=page,
-            size=size,
-        )
+        try:
+            es_result = await self.routes_es_repo.search_trains(
+                source_query=source,
+                destination_query=destination,
+                journey_date=journey_date,
+                page=page,
+                size=size,
+            )
+        except Exception:
+            raise BaseAppException(
+                status_code=503,
+                messages=["Search service temporarily unavailable"],
+            )
 
         print(f"es_result: {es_result}")
         hits_block = es_result.get("hits", {})
