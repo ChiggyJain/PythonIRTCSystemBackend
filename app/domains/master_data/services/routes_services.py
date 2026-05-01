@@ -79,7 +79,7 @@ class RoutesService:
 
             # fetching stations details
             station_ids = [rs.station_id for rs in route_stations]
-            station_list_details = await self.masterdata_repo.get_station_by_station_id(station_ids=station_ids)
+            station_list_details = await self.masterdata_repo.get_station_by_station_ids(station_ids=station_ids)
             station_map = {station.id: station for station in station_list_details}
             for rs in route_stations:
                 station = station_map.get(rs.station_id, None)

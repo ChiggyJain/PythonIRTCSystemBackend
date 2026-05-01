@@ -121,3 +121,6 @@
 2026-05-01 09:55:14 | INFO | Created ES index: stations_v1
 2026-05-01 09:55:14 | INFO | Indexed station to ES using StationID: 1
 2026-05-01 09:55:14 | INFO | Successfully indexed StationID: 1
+2026-05-01 10:14:54 | INFO | SpawnProcess-82-16019 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-01 10:14:54.088945 | 2026-05-01 10:14:54.096651 | 7 |  | 500
+2026-05-01 10:14:58 | INFO | SpawnProcess-82-16019 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 10:14:58.125421 | 2026-05-01 10:14:58.566087 | 440 | None | 200
+2026-05-01 10:15:10 | INFO | SpawnProcess-82-16019 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-01 10:15:10.092519 | 2026-05-01 10:15:10.199010 | 106 | 'MasterDataSQLAlchemyRepository' object has no attribute 'get_station_by_station_id' | 500
