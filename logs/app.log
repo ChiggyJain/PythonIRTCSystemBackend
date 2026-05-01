@@ -115,3 +115,9 @@
 2026-05-01 09:49:40 | ERROR | Failed to create ES index: BadRequestError(400, 'illegal_argument_exception', 'analyzer [tokenizer] must specify either an analyzer type, or a tokenizer')
 2026-05-01 09:49:40 | ERROR | ES indexing error: BadRequestError(400, 'illegal_argument_exception', 'analyzer [tokenizer] must specify either an analyzer type, or a tokenizer')
 2026-05-01 09:49:40 | ERROR | Failed to index StationID: 1
+2026-05-01 09:55:14 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-05-01 09:55:14 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-05-01 09:08:48.789867', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-01 09:08:48.794089', 'created_by_admin_user_id': 1}
+2026-05-01 09:55:14 | INFO | ES client created for index: stations_v1
+2026-05-01 09:55:14 | INFO | Created ES index: stations_v1
+2026-05-01 09:55:14 | INFO | Indexed station to ES using StationID: 1
+2026-05-01 09:55:14 | INFO | Successfully indexed StationID: 1
