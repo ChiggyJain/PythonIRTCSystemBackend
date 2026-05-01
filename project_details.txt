@@ -206,6 +206,7 @@ python -m app.infrastructure.outbox.dispatchers.masterdata_routes_outbox_dispatc
 
 
 ElasticSearch Commands =>
+curl -X DELETE "localhost:9200/routes_v1"
 http://127.0.0.1:9200/stations_v1/_search?pretty=true
 http://127.0.0.1:9200/stations_v1/_count
 

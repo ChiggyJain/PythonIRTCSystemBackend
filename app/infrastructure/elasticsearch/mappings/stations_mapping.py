@@ -1,4 +1,3 @@
-# filepath: app/infrastructure/elasticsearch/mappings/station_mapping.py
 
 STATIONS_INDEX_MAPPING = {
 
@@ -14,17 +13,17 @@ STATIONS_INDEX_MAPPING = {
                 },
                 "search_analyzer": {
                     "type": "custom",
-                    "tokenizer": "standar",
+                    "tokenizer": "standard",
                     "filter": ["lowercase"]
                 },
-                "tokenizer": {
-                    "autocomplete_tokenizer": {
-                        "type": "edge_ngram",
-                        "min_gram" : 2,
-                        "max_gram" : 20,
-                        "token_chars" : ["letter", "digit"]
-                    },
-                }
+            },
+            "tokenizer": {
+                "autocomplete_tokenizer": {
+                    "type": "edge_ngram",
+                    "min_gram" : 2,
+                    "max_gram" : 20,
+                    "token_chars" : ["letter", "digit"]
+                },
             }
         }
     },
@@ -47,7 +46,7 @@ STATIONS_INDEX_MAPPING = {
                 "analyzer": "autocomplete_analyzer",
                 "search_analyzer": "search_analyzer",
             },
-            "sugggest": {
+            "suggest": {
                 "type": "completion"
             }
         }
