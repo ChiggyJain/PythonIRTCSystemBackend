@@ -10,12 +10,29 @@ Responsible for:
 - Register routers
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-
 from app.core.config import APP_NAME
+from app.core.settings import get_settings
 from app.middlewares.exception_middleware import ExceptionMiddleware
 from app.core.exception_handlers import register_exception_handlers
 from app.core.response import success_response
+from app.infrastructure.elasticsearch.client import build_elasticsearch_client
+
+
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    settings = get_settings()
+    # Hybrid/Eager: create client object at startup (cheap), no hard fail on ES ping here
+    app.state.routes_es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
+    try:
+        yield
+    finally:
+        # graceful close
+        await app.state.routes_es_client.close()
+
 
 
 # =========================================================
@@ -24,6 +41,7 @@ from app.core.response import success_response
 
 app = FastAPI(
     title=APP_NAME,
+    lifespan=lifespan,
 )
 
 
@@ -33,7 +51,6 @@ app = FastAPI(
 
 """
 Register exception middleware
-
 Must be before routers
 """
 
@@ -64,7 +81,6 @@ app.include_router(v1_router, prefix="/api/v1")
 async def health_check():
     """
     Health check endpoint
-
     Used for:
     - Load balancer
     - Docker
