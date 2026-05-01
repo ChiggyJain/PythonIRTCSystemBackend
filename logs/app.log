@@ -97,3 +97,8 @@
 2026-05-01 09:14:51 | INFO | ES client created for index: routes_v1
 2026-05-01 09:14:51 | ERROR | ES indexing error: 'str' object has no attribute 'strftime'
 2026-05-01 09:14:51 | ERROR | Failed to index route_id: 1, train_id: 1
+2026-05-01 09:15:42 | INFO | masterdata_routes_dispatch_consumer_worker started
+2026-05-01 09:15:42 | INFO | Received payload: {'outbox_id': 3, 'event_type': 'MASTERDATA_ROUTE_CREATED_V1', 'route_id': 1, 'request_id': None, 'route_status': 'A', 'seat_details': [{'id': 1, 'price': 500.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 1}, {'id': 2, 'price': 300.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 2}], 'event_version': 1, 'train_details': {'status': 'A', 'train_id': 1, 'coach_name': 'AC', 'train_name': 'Train1', 'total_seats': 2, 'train_number': 'TRAIN1'}, 'correlation_id': None, 'station_details': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'event_created_at': '2026-05-01 09:09:40.198490', 'created_by_admin_user_id': 1}
+2026-05-01 09:15:42 | INFO | ES client created for index: routes_v1
+2026-05-01 09:15:42 | ERROR | ES indexing error: 'str' object has no attribute 'strftime'
+2026-05-01 09:15:42 | ERROR | Failed to index route_id: 1, train_id: 1

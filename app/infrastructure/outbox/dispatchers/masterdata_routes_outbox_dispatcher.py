@@ -38,8 +38,8 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                     "id": rs['id'],
                     "station_id": rs['station_id'],
                     "sequence_number": rs['sequence_number'],
-                    "arrival_time": (rs['arrival_time']).strftime("%H:%M:%S"),
-                    "departure_time": (rs['departure_time']).strftime("%H:%M:%S"),
+                    "arrival_time": rs['arrival_time'],
+                    "departure_time": rs['departure_time'],
                     "distance_from_origin": float(rs['distance_from_origin']),
                     "status": rs['status'],
                 }
