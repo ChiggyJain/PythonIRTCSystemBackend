@@ -143,3 +143,9 @@
 2026-05-01 10:18:11 | ERROR | Failed to create ES index: BadRequestError(400, 'mapper_parsing_exception', 'No type specified for field [seatSummary]')
 2026-05-01 10:18:11 | ERROR | ES indexing error: BadRequestError(400, 'mapper_parsing_exception', 'No type specified for field [seatSummary]')
 2026-05-01 10:18:11 | ERROR | Failed to index route_id: 3, train_id: 1
+2026-05-01 10:21:05 | INFO | masterdata_routes_dispatch_consumer_worker started
+2026-05-01 10:21:05 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_ROUTE_CREATED_V1', 'route_id': 3, 'request_id': None, 'route_status': 'A', 'seat_details': [{'id': 1, 'price': 500.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 1}, {'id': 2, 'price': 300.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 2}], 'event_version': 1, 'train_details': {'status': 'A', 'train_id': 1, 'coach_name': 'AC', 'train_name': 'Train1', 'total_seats': 2, 'train_number': 'TRAIN1'}, 'correlation_id': None, 'station_details': [{'id': 3, 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'event_created_at': '2026-05-01 10:15:35.937957', 'created_by_admin_user_id': 1}
+2026-05-01 10:21:05 | INFO | ES client created for index: routes_v1
+2026-05-01 10:21:06 | INFO | Created ES index: routes_v1
+2026-05-01 10:21:06 | INFO | Indexed routes to ES using RouteID: 3, TrainID: 1
+2026-05-01 10:21:06 | INFO | Successfully indexed RouteID: 3, TrainID: 1
