@@ -1,7 +1,6 @@
 
 """
 Main Application Entry
-
 Responsible for:
 ---------------
 - Create FastAPI app
@@ -18,6 +17,7 @@ from app.middlewares.exception_middleware import ExceptionMiddleware
 from app.core.exception_handlers import register_exception_handlers
 from app.core.response import success_response
 from app.infrastructure.elasticsearch.client import build_elasticsearch_client
+from app.core.exceptions import BaseAppException
 
 
 
@@ -92,3 +92,18 @@ async def health_check():
         data={"service": APP_NAME},
         messages=["Service running"],
     )
+
+
+@app.get("/routes_es_client_ready")
+async def readiness_check():
+    try:
+        await app.state.routes_es_client.client.ping()
+        return success_response(
+            data={"ready": True},
+            messages=["Service ready"],
+        )
+    except Exception:
+        raise BaseAppException(
+            status_code=503,
+            messages=["Elasticsearch not reachable for RoutesES"],
+        )
