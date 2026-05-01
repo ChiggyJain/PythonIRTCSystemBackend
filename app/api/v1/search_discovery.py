@@ -41,7 +41,7 @@ async def search_trains(
         page=page,
         size=size,
     )
-
+    
     data = await service.search_trains(
         source=query.source,
         destination=query.destination,

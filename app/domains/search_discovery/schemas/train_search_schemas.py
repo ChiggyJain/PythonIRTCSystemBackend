@@ -1,6 +1,6 @@
 
 from datetime import date
-from pydantic import BaseModel, field_validator, ValidationInfo
+from pydantic import BaseModel, field_validator, ValidationInfo, model_validator
 
 
 class TrainSearchQueryRequest(BaseModel):
@@ -46,3 +46,9 @@ class TrainSearchQueryRequest(BaseModel):
         if v > 100:
             raise ValueError("size must be less than or equal to 100")
         return v
+
+    @model_validator(mode="after")
+    def validate_source_with_destination_match(self):
+        if (self.source).strip().lower() == (self.destination).strip().lower():
+            raise ValueError("source and destination should not be same")
+        return self
