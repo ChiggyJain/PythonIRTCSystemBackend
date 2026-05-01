@@ -29,12 +29,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                 seatSummary[eachSeatObj['seat_type']]+= 1
         es_document = {
             "train_id": train_details.get("train_id", 0),
-            "train_name": train_details.get("train_name", ""),
             "train_number": train_details.get("train_number", ""),
-            "seatSummary" : seatSummary,
+            "train_name": train_details.get("train_name", ""),            
             "routes" : [
                 {
-                    "id": rs['id'],
                     "station_id": rs['station_id'],
                     "name": rs['name'],
                     "code": rs['code'],
@@ -48,6 +46,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                 }
                 for rs in payload.get("station_details")
             ],
+            "seatSummary" : seatSummary,
             "schedules" : []
         }
         # Index/upsert the document
