@@ -87,23 +87,25 @@ ROUTES_INDEX_MAPPING = {
                 }
             },
             "seatSummary" : {
-                "total" : {
-                    "type" : "integer"
-                },
-                "LOWER" : {
-                    "type" : "integer"
-                },
-                "MIDDLE" : {
-                    "type" : "integer"
-                },
-                "UPPER" : {
-                    "type" : "integer"
-                },
-                "SIDE_LOWER" : {
-                    "type" : "integer"
-                },
-                "SIDE_UPPER" : {
-                    "type" : "integer"
+                "properties": {
+                    "total" : {
+                        "type" : "integer"
+                    },
+                    "LOWER" : {
+                        "type" : "integer"
+                    },
+                    "MIDDLE" : {
+                        "type" : "integer"
+                    },
+                    "UPPER" : {
+                        "type" : "integer"
+                    },
+                    "SIDE_LOWER" : {
+                        "type" : "integer"
+                    },
+                    "SIDE_UPPER" : {
+                        "type" : "integer"
+                    }
                 }
             }
         }
