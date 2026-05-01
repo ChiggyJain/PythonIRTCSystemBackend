@@ -215,3 +215,14 @@
 2026-05-01 11:44:58 | INFO | ES client created for index: routes_v1
 2026-05-01 11:44:58 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
 2026-05-01 11:44:58 | INFO | Successfully indexed ScheduledID: 1
+2026-05-01 16:43:05 | INFO | ES client created for index: routes_v1
+2026-05-01 16:43:30 | INFO | SpawnProcess-1-25813 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 16:43:29.790085 | 2026-05-01 16:43:30.208088 | 418 | None | 200
+2026-05-01 16:44:43 | INFO | SpawnProcess-1-25813 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-01 16:44:43.828688 | 2026-05-01 16:44:43.944017 | 115 | None | 201
+2026-05-01 16:47:44 | INFO | SpawnProcess-1-25813 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-01 16:47:44.502738 | 2026-05-01 16:47:44.571225 | 68 | (asyncmy.errors.ProgrammingError) (1146, "Table 'IRTC.STATIONS' doesn't exist")
+[SQL: INSERT INTO `STATIONS` (name, code, city, state, created_at, updated_at, status) VALUES (%s, %s, %s, %s, %s, %s, %s)]
+[parameters: ('New Delhi', 'NDLS', 'Delhi', 'Delhi', datetime.datetime(2026, 5, 1, 16, 47, 44, 504831), datetime.datetime(2026, 5, 1, 16, 47, 44, 504837), 'A')]
+(Background on this error at: https://sqlalche.me/e/20/f405) | 500
+2026-05-01 16:48:20 | INFO | SpawnProcess-1-25813 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-01 16:48:20.193548 | 2026-05-01 16:48:20.202112 | 8 | (asyncmy.errors.ProgrammingError) (1146, "Table 'IRTC.STATIONS' doesn't exist")
+[SQL: INSERT INTO `STATIONS` (name, code, city, state, created_at, updated_at, status) VALUES (%s, %s, %s, %s, %s, %s, %s)]
+[parameters: ('New Delhi', 'NDLS', 'Delhi', 'Delhi', datetime.datetime(2026, 5, 1, 16, 48, 20, 197233), datetime.datetime(2026, 5, 1, 16, 48, 20, 197248), 'A')]
+(Background on this error at: https://sqlalche.me/e/20/f405) | 500
