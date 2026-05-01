@@ -16,25 +16,82 @@ ROUTES_INDEX_MAPPING = {
     "mappings": {
         "properties": {
             "train_id": {
-                "type": "integer",
-                "index": True
-            },
-            "train_name": {
-                "type": "text",
-                "analyzer": "station_analyzer",
-                "fields": {
-                    "keyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase"
-                    },
-                    "suggest": {
-                        "type": "completion"
-                    }
-                }
+                "type": "keyword"
             },
             "train_number": {
                 "type": "keyword",
-                "normalizer": "lowercase"
+            },
+            "train_name": {
+                "type": "text",
+            },
+            "routes" : {
+                "type" : "nested",
+                "properties" : {
+                    "station_id" : {
+                        "type" : "keyword",
+                    },
+                    "name" : {
+                        "type" : "text",
+                    },
+                    "code" : {
+                        "type" : "keyword",
+                    },
+                    "sequence_number" : {
+                        "type" : "integer",
+                    },
+                    "arrival_time" : {
+                        "type" : "keyword",
+                    },
+                    "departure_time" : {
+                        "type" : "keyword",
+                    },
+                    "distance_from_origin" : {
+                        "type" : "float",
+                    }
+                }
+            },
+            "schedules" : {
+                "type" : "nested",
+                "properties" : {
+                    "id" : {
+                        "type" : "keyword"
+                    },
+                    "departure_date" : {
+                        "type" : "date"
+                    },
+                    "available" : {
+                        "type" : "integer"
+                    },
+                    "locked" : {
+                        "type" : "integer"
+                    },
+                    "booked" : {
+                        "type" : "integer"
+                    },
+                    "status" : {
+                        "type" : "keyword"
+                    },
+                }
+            },
+            "seatSummary" : {
+                "total" : {
+                    "type" : "integer"
+                },
+                "LOWER" : {
+                    "type" : "integer"
+                },
+                "MIDDLE" : {
+                    "type" : "integer"
+                },
+                "UPPER" : {
+                    "type" : "integer"
+                },
+                "SIDE_LOWER" : {
+                    "type" : "integer"
+                },
+                "SIDE_UPPER" : {
+                    "type" : "integer"
+                }
             }
         }
     }
