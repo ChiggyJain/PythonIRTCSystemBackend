@@ -14,7 +14,8 @@ Handles:
 Must be registered in main.py
 """
 
-from fastapi import Request
+from fastapi import Request, HTTPException
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.core.response import build_response
 from app.core.exceptions import BaseAppException
@@ -31,10 +32,6 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
 
-        # =========================
-        # Custom App Exception
-        # =========================
-
         except BaseAppException as exc:
 
             return build_response(
@@ -43,10 +40,26 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
                 data=exc.data,
             )
 
-        # =========================
-        # Unknown Exception
-        # =========================
-
+        except RequestValidationError as exc:
+            errors = []
+            for err in exc.errors():
+                msg = err.get("msg", "Invalid request")
+                if isinstance(msg, str) and msg.startswith("Value error,"):
+                    msg = msg.replace("Value error,", "").strip()
+                errors.append(msg)
+            return build_response(
+                status_code=422,
+                messages=errors,
+                data=None,
+            )
+        
+        except HTTPException as exc:
+            return build_response(
+                status_code=exc.status_code,
+                messages=[str(exc.detail)],
+                data=None,
+            )
+    
         except Exception as exc:
 
             return build_response(
