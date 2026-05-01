@@ -23,6 +23,7 @@ class ElasticsearchClient:
             index=self.index_name,
             id=doc_id,
             document=document,
+            refresh=True
         )
     
 

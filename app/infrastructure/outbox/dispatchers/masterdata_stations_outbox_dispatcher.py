@@ -1,6 +1,8 @@
 
 import asyncio
 import json
+
+from sqlalchemy import Boolean
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
@@ -23,6 +25,14 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             "code": payload.get("code", ""),
             "city": payload.get("city", ""),
             "state": payload.get("state", ""),
+            "suggest" : {
+                "input" : [
+                    payload.get("name", ""), 
+                    payload.get("code", ""), 
+                    payload.get("city", "")
+                ].filter(bool),
+                "weight" : 10
+            }
         }
         # Index/upsert the document
         await station_repo.index(es_document)
