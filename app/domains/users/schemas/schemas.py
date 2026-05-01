@@ -223,3 +223,13 @@ class UserLoginRequest(BaseModel):
     @classmethod
     def lower_email(cls, v, info: ValidationInfo):
         return v.lower()
+    
+
+    @field_validator("password")
+    @classmethod
+    def validate_mobile(cls, v, info:ValidationInfo):
+        if v!="" or v==None:
+            raise ValueError(
+                f"Required password field"
+            )
+        return v
