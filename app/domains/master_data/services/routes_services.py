@@ -77,6 +77,11 @@ class RoutesService:
                 train_id=train_id
             )
 
+            # fetching stations details
+            for rs in route_stations:
+                stationId = rs.station_id
+                
+
             # outbox event
             await self.outbox_repo.add_outbox_event(
                 aggregate_type="ROUTES",

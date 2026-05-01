@@ -128,6 +128,7 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         await self._db_session.flush()
         return row
 
+
     async def create_route_stations(
         self,
         *,
@@ -227,6 +228,24 @@ class MasterDataSQLAlchemyRepository(MasterDataRepositoryBase):
         )
         result = await self._db_session.execute(stmt)
         return list(result.scalars().all())
+    
+
+    async def get_station_by_station_id(
+        self,
+        *,
+        station_id: int,
+    ) -> Stations | None:
+        
+        stmt = (
+            select(Stations)
+            .where(
+                Stations.id == station_id,
+                Stations.status == "A",
+            )
+            .limit(1)
+        )
+        result = await self._db_session.execute(stmt)
+        return result.scalar_one_or_none()
     
 
 
