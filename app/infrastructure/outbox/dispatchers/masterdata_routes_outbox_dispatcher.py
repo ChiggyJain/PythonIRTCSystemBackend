@@ -36,6 +36,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                 {
                     "id": rs['id'],
                     "station_id": rs['station_id'],
+                    "name": rs['name'],
+                    "code": rs['code'],
+                    "city": rs['city'],
+                    "state": rs['state'],
                     "sequence_number": rs['sequence_number'],
                     "arrival_time": rs['arrival_time'],
                     "departure_time": rs['departure_time'],
