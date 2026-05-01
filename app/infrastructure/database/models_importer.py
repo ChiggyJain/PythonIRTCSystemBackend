@@ -17,13 +17,16 @@ Only import models.
 
 from app.domains.users.models import users_models  # noqa
 from app.domains.auth.models import usertokens_models  # noqa
-from app.domains.security.models import (
-    OtpChallenges, SecurityEventLog
-) # noqa
+from app.domains.security.models import models # noqa
 from app.infrastructure.outbox.models import outbox_events_models # noqa
-from app.domains.master_data.models import (
-    routes_models, routestations_models, 
-    schedules_models, seats_models, stations_models,
-    trains_models
-) # noqa
+from app.domains.master_data.models import stations_models # noqa
+from app.domains.master_data.models import trains_models # noqa
+from app.domains.master_data.models import seats_models # noqa
+from app.domains.master_data.models import routes_models # noqa
+from app.domains.master_data.models import routestations_models # noqa
+from app.domains.master_data.models import schedules_models # noqa
+
+
+
+
 
