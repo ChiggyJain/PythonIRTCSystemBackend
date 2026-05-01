@@ -43,6 +43,7 @@ class RoutesElasticsearchRepository:
         train_id: int,
         schedules: dict[str, Any]
     ) -> dict:
+        
         return await self.es.client.update(
             index=self.es.index_name,
             id=str(train_id),
@@ -71,3 +72,125 @@ class RoutesElasticsearchRepository:
             }
         )
     
+
+    async def search_trains(
+        self,
+        *,
+        source_query: str,
+        destination_query: str,
+        journey_date: str,
+        page: int = 1,
+        size: int = 20,
+    ) -> dict:
+        
+        from_value = (page - 1) * size
+
+        search_body = {
+            
+            "track_total_hits": True,
+            "from": from_value,
+            "size": size,
+            "_source": [
+                "train_id",
+                "train_number",
+                "train_name",
+                "seatSummary",
+                "routes.station_id",
+                "routes.name",
+                "routes.code",
+                "routes.city",
+                "routes.sequence_number",
+                "routes.arrival_time",
+                "routes.departure_time",
+                "routes.distance_from_origin",
+                "schedules.id",
+                "schedules.departure_date",
+                "schedules.available",
+                "schedules.locked",
+                "schedules.booked",
+                "schedules.status",
+            ],
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "nested": {
+                                "path": "routes",
+                                "query": {
+                                    "multi_match": {
+                                        "query": source_query,
+                                        "fields": [
+                                            "routes.name^3",
+                                            "routes.code^4",
+                                            "routes.city^2"
+                                        ],
+                                        "fuzziness": "AUTO",
+                                        "prefix_length": 1,
+                                        "type": "best_fields"
+                                    }
+                                },
+                                "inner_hits": {
+                                    "name": "source_match",
+                                    "size": 3
+                                }
+                            }
+                        },
+                        {
+                            "nested": {
+                                "path": "routes",
+                                "query": {
+                                    "multi_match": {
+                                        "query": destination_query,
+                                        "fields": [
+                                            "routes.name^3",
+                                            "routes.code^4",
+                                            "routes.city^2"
+                                        ],
+                                        "fuzziness": "AUTO",
+                                        "prefix_length": 1,
+                                        "type": "best_fields"
+                                    }
+                                },
+                                "inner_hits": {
+                                    "name": "destination_match",
+                                    "size": 3
+                                }
+                            }
+                        },
+                        {
+                            "nested": {
+                                "path": "schedules",
+                                "query": {
+                                    "bool": {
+                                        "must": [
+                                            {
+                                                "term": {
+                                                    "schedules.departure_date": journey_date
+                                                }
+                                            },
+                                            {
+                                                "term": {
+                                                    "schedules.status": "A"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                "inner_hits": {
+                                    "name": "matched_schedule",
+                                    "size": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "sort": [
+                {"_score": {"order": "desc"}},
+                {"train_number": {"order": "asc"}}
+            ]
+        }
+
+        return await self.es.search(query=search_body)
+
+        

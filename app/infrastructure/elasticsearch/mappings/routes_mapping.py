@@ -49,6 +49,12 @@ ROUTES_INDEX_MAPPING = {
                     "code" : {
                         "type" : "keyword",
                     },
+                    "city" : {
+                        "type" : "text",
+                    },
+                    "state" : {
+                        "type" : "text",
+                    },
                     "sequence_number" : {
                         "type" : "integer",
                     },
