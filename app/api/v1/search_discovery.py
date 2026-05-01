@@ -32,6 +32,7 @@ async def search_trains(
     size: int = Query(20, ge=1, le=100),
     service: TrainSearchService = Depends(get_train_search_service),
 ):
+    
     # validate using your schema rules
     query = TrainSearchQueryRequest(
         source=source,
