@@ -4,7 +4,7 @@ from app.infrastructure.outbox.retry_handlers.emailverification_otp_outbox_retry
 from app.infrastructure.outbox.retry_handlers.pwdchanged_otp_outbox_retryhandler import PwdChangedOtpOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.masterdata_stations_outbox_retryhandler import MasterDataStationsOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.masterdata_routes_outbox_retryhandler import MasterDataRoutesOutboxRetryHandler
-
+from app.infrastructure.outbox.retry_handlers.masterdata_schedules_outbox_retryhandler import MasterDataSchedulesOutboxRetryHandler
 
 class OutboxRetryHandlerFactory:
 
@@ -14,6 +14,7 @@ class OutboxRetryHandlerFactory:
         "PWDCHANGED_OTP": PwdChangedOtpOutboxRetryHandler,
         "MASTERDATA_STATIONS": MasterDataStationsOutboxRetryHandler,
         "MASTERDATA_ROUTES": MasterDataRoutesOutboxRetryHandler,
+        "MASTERDATA_SCHEDULES": MasterDataSchedulesOutboxRetryHandler,
     }
 
     @staticmethod
