@@ -149,3 +149,27 @@
 2026-05-01 10:21:06 | INFO | Created ES index: routes_v1
 2026-05-01 10:21:06 | INFO | Indexed routes to ES using RouteID: 3, TrainID: 1
 2026-05-01 10:21:06 | INFO | Successfully indexed RouteID: 3, TrainID: 1
+2026-05-01 11:05:48 | INFO | masterdata_stations_outbox_worker started
+2026-05-01 11:05:54 | INFO | masterdata_routes_outbox_worker started
+2026-05-01 11:05:55 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-05-01 11:05:58 | INFO | masterdata_routes_dispatch_consumer_worker started
+2026-05-01 11:06:07 | INFO | SpawnProcess-1-20068 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 11:06:07.270364 | 2026-05-01 11:06:07.712840 | 442 | None | 200
+2026-05-01 11:06:17 | INFO | SpawnProcess-1-20068 | v1.admin.master_data.stations.create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-01 11:06:16.993514 | 2026-05-01 11:06:17.016396 | 22 | None | 201
+2026-05-01 11:06:18 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-05-01 11:06:16.996219', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-01 11:06:17.006238', 'created_by_admin_user_id': 1}
+2026-05-01 11:06:18 | INFO | ES client created for index: stations_v1
+2026-05-01 11:06:18 | INFO | Created ES index: stations_v1
+2026-05-01 11:06:19 | INFO | Indexed station to ES using StationID: 1
+2026-05-01 11:06:19 | INFO | Successfully indexed StationID: 1
+2026-05-01 11:06:24 | INFO | SpawnProcess-1-20068 | v1.admin.master_data.trains.create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-01 11:06:24.765375 | 2026-05-01 11:06:24.788613 | 23 | None | 201
+2026-05-01 11:06:30 | INFO | SpawnProcess-1-20068 | v1.admin.master_data.train_routes.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-01 11:06:30.324279 | 2026-05-01 11:06:30.349358 | 25 | None | 201
+2026-05-01 11:06:32 | INFO | Received payload: {'outbox_id': 3, 'event_type': 'MASTERDATA_ROUTE_CREATED_V1', 'route_id': 1, 'request_id': None, 'route_status': 'A', 'seat_details': [{'id': 1, 'price': 500.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 1}, {'id': 2, 'price': 300.0, 'status': 'A', 'seat_type': 'LOWER', 'seat_number': 2}], 'event_version': 1, 'train_details': {'status': 'A', 'train_id': 1, 'coach_name': 'AC', 'train_name': 'Train1', 'total_seats': 2, 'train_number': 'TRAIN1'}, 'correlation_id': None, 'station_details': [{'id': 1, 'city': 'Bhiwandi', 'code': 'BRD1', 'name': 'Bhiwandi', 'state': 'Maharashtra', 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'event_created_at': '2026-05-01 11:06:30.339704', 'created_by_admin_user_id': 1}
+2026-05-01 11:06:32 | INFO | ES client created for index: routes_v1
+2026-05-01 11:06:32 | INFO | Created ES index: routes_v1
+2026-05-01 11:06:32 | INFO | Indexed routes to ES using RouteID: 1, TrainID: 1
+2026-05-01 11:06:32 | INFO | Successfully indexed RouteID: 1, TrainID: 1
+2026-05-01 11:06:52 | INFO | SpawnProcess-1-20068 | v1.admin.master_data.train_schedules.create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-01 11:06:52.670290 | 2026-05-01 11:06:52.687852 | 17 | None | 201
+2026-05-01 11:10:00 | INFO | masterdata_schedules_outbox_worker started
+2026-05-01 11:10:09 | INFO | masterdata_schedules_dispatch_consumer_worker started
+2026-05-01 11:10:09 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_SCHEDULE_CREATED_V1', 'status': 'A', 'route_id': 1, 'train_id': 1, 'request_id': None, 'schedule_id': 1, 'event_version': 1, 'correlation_id': None, 'departure_date': '2026-05-01', 'event_created_at': '2026-05-01 11:06:52.682751', 'route_stations_snapshot': [{'id': 1, 'status': 'A', 'station_id': 1, 'arrival_time': '15:00:00', 'departure_time': '15:10:00', 'sequence_number': 1, 'distance_from_origin': 0.0}], 'created_by_admin_user_id': 1}
+2026-05-01 11:10:09 | INFO | ES client created for index: routes_v1
+2026-05-01 11:10:09 | ERROR | Failed to index ScheduledID: 1
