@@ -224,12 +224,16 @@ class UserLoginRequest(BaseModel):
     def lower_email(cls, v, info: ValidationInfo):
         return v.lower()
     
-
+    
     @field_validator("password")
     @classmethod
-    def validate_mobile(cls, v, info:ValidationInfo):
-        if v!="" or v==None:
+    def validate_password(cls, v, info:ValidationInfo):
+        if v=="" or v==None:
             raise ValueError(
                 f"Required password field"
+            )
+        if not PASSWORD_REGEX.match(v):
+            raise ValueError(
+                f"{info.field_name} must contain uppercase, lowercase, digit, special character and length 8-64"
             )
         return v

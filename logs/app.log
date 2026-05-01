@@ -338,3 +338,19 @@ journey_date
 2026-05-01 17:29:38 | INFO | ES client created for index: routes_v1
 2026-05-01 17:29:45 | INFO | SpawnProcess-29-34221 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:29:45.490451 | 2026-05-01 17:29:45.853060 | 362 |  | 500
 2026-05-01 17:29:48 | INFO | SpawnProcess-29-34221 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:29:47.797834 | 2026-05-01 17:29:48.105604 | 307 |  | 500
+2026-05-01 17:29:59 | INFO | SpawnProcess-29-34221 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:29:58.706871 | 2026-05-01 17:29:59.009455 | 302 |  | 500
+2026-05-01 17:30:14 | INFO | ES client created for index: routes_v1
+2026-05-01 17:30:16 | INFO | SpawnProcess-31-34294 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:30:16.515818 | 2026-05-01 17:30:16.856271 | 340 |  | 500
+2026-05-01 17:30:22 | INFO | ES client created for index: routes_v1
+2026-05-01 17:32:42 | INFO | ES client created for index: routes_v1
+2026-05-01 17:32:43 | INFO | SpawnProcess-1-34438 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:32:43.548674 | 2026-05-01 17:32:43.901409 | 352 |  | 500
+2026-05-01 17:34:58 | INFO | ES client created for index: routes_v1
+2026-05-01 17:34:59 | INFO | SpawnProcess-3-34510 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:34:59.060225 | 2026-05-01 17:34:59.066396 | 6 | [{'type': 'value_error', 'loc': ('body', 'password'), 'msg': 'Value error, Required password field', 'input': '', 'ctx': {'error': ValueError('Required password field')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}] | 500
+2026-05-01 17:35:30 | INFO | ES client created for index: routes_v1
+2026-05-01 17:35:36 | INFO | SpawnProcess-5-34545 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:35:36.554885 | 2026-05-01 17:35:36.561649 | 6 | [{'type': 'value_error', 'loc': ('body', 'password'), 'msg': 'Value error, Required password field', 'input': '', 'ctx': {'error': ValueError('Required password field')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}] | 500
+2026-05-01 17:35:49 | INFO | SpawnProcess-5-34545 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:35:49.565420 | 2026-05-01 17:35:49.566757 | 1 | [{'type': 'value_error', 'loc': ('body', 'password'), 'msg': 'Value error, password must contain uppercase, lowercase, digit, special character and length 8-64', 'input': 'Test1123456', 'ctx': {'error': ValueError('password must contain uppercase, lowercase, digit, special character and length 8-64')}, 'url': 'https://errors.pydantic.dev/2.5/v/value_error'}] | 500
+2026-05-01 17:35:56 | INFO | SpawnProcess-5-34545 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-01 17:35:56.227777 | 2026-05-01 17:35:56.648382 | 420 | None | 200
+2026-05-01 17:36:03 | INFO | SpawnProcess-5-34545 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-01 17:36:03.566460 | 2026-05-01 17:36:03.567429 | 0 | 1 validation error for TrainSearchQueryRequest
+journey_date
+  Value error, journey_date must be current-date or future-date [type=value_error, input_value=datetime.date(2025, 5, 10), input_type=date]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
