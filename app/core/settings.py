@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     # SENDGRID CONFIG
     # =========================
 
-    SENDGRID_API_KEY: str = "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"
+    SENDGRID_API_KEY: str
 
     # =========================
     # JWT Settings
