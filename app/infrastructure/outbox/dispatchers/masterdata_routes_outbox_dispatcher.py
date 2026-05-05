@@ -27,6 +27,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             seatSummary["total"]+= 1
             if eachSeatObj['seat_type'] in seatSummary:
                 seatSummary[eachSeatObj['seat_type']]+= 1
+        existing_doc = await routes_repo.get_by_id(train_details.get("train_id", 0))
+        existing_schedules = []
+        if existing_doc and existing_doc.get("_source"):
+            existing_schedules = existing_doc["_source"].get("schedules", [])
         es_document = {
             "train_id": train_details.get("train_id", 0),
             "train_name": train_details.get("train_name", ""),
@@ -48,7 +52,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
                 }
                 for rs in payload.get("station_details")
             ],
-            "schedules" : []
+            "schedules" : existing_schedules
         }
         # Index/upsert the document
         await routes_repo.index(es_document)
