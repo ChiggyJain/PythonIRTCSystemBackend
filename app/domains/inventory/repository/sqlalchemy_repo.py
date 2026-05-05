@@ -58,6 +58,8 @@ class InventorySQLAlchemyRepository:
             available_seats=available_seats,
             locked=locked,
             booked=booked,
+            created_at=now_ist(),
+            updated_at=now_ist(),
             status=status,
         )
         self.db.add(row)
@@ -112,6 +114,7 @@ class InventorySQLAlchemyRepository:
                     station_name=str(station.get("name", "")),
                     station_code=str(station.get("code", "")),
                     sequence_number=int(station.get("sequence_number", 0)),
+                    status="ACTIVE",
                     created_at=now_ist(),
                     updated_at=now_ist(),
                 )
