@@ -1,0 +1,30 @@
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.common.utils.datetime import now_ist
+from app.common.models.idempotencyrecord_models import IdempotencyRecords
+
+
+class IdempotencySQLAlchemyRepository:
+
+    def __init__(self, db_session: AsyncSession):
+        self.db = db_session
+
+
+    async def get_idempotency_record_by_event_key(self, event_key: str) -> IdempotencyRecords | None:
+        stmt = select(IdempotencyRecords).where(IdempotencyRecords.event_key == event_key)
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none()
+
+
+    async def add_idempotency_record(self, *, event_key: str, event_type: str | None = None) -> IdempotencyRecords:
+        row = IdempotencyRecords(
+            event_key=event_key,
+            event_type=event_type,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+        )
+        self.db.add(row)
+        await self.db.flush()
+        return row
+

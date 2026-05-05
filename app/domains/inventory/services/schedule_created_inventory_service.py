@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
 
@@ -14,7 +15,8 @@ class ScheduleCreatedInventoryService:
 
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
-        self.repo = InventorySQLAlchemyRepository(db_session)
+        self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
+        self.inventory_repo = InventorySQLAlchemyRepository(db_session)
 
 
     async def process_schedule_created_event(self, *, payload: dict) -> dict:
@@ -27,7 +29,7 @@ class ScheduleCreatedInventoryService:
             )
 
         event_key = f"{self.EVENT_KEY_PREFIX}_{schedule_id}"
-        existing = await self.repo.get_idempotency_record_by_event_key(event_key)
+        existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing:
             return {
                 "status": "duplicate",
@@ -68,7 +70,7 @@ class ScheduleCreatedInventoryService:
 
         try:
 
-            schedule_inventory = await self.repo.add_schedule_inventory(
+            schedule_inventory = await self.inventory_repo.add_schedule_inventory(
                 schedule_id=schedule_id,
                 train_id=train_id,
                 train_number=train_number,
@@ -82,19 +84,19 @@ class ScheduleCreatedInventoryService:
             )
 
             if seat_details:
-                await self.repo.add_seat_inventory_bulk(
+                await self.inventory_repo.add_seat_inventory_bulk(
                     schedule_inventory_id=schedule_inventory.id,
                     schedule_id=schedule_id,
                     seat_details=seat_details,
                 )
 
             if station_details:
-                await self.repo.add_route_stop_bulk(
+                await self.inventory_repo.add_route_stop_bulk(
                     schedule_id=schedule_id,
                     station_details=station_details,
                 )
 
-            await self.repo.add_idempotency_record(
+            await self.idempotency_repo.add_idempotency_record(
                 event_key=event_key,
                 event_type=self.EVENT_TYPE,
             )
