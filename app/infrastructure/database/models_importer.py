@@ -25,6 +25,10 @@ from app.domains.master_data.models import seats_models # noqa
 from app.domains.master_data.models import routes_models # noqa
 from app.domains.master_data.models import routestations_models # noqa
 from app.domains.master_data.models import schedules_models # noqa
+from app.common.models import idempotencyrecord_models # noqa
+from app.domains.inventory.models import schedule_inventory_models # noqa
+from app.domains.inventory.models import seat_inventory_models # noqa
+from app.domains.inventory.models import route_stop_models # noqa
 
 
 
