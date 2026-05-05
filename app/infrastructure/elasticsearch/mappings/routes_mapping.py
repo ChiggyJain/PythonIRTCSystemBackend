@@ -75,7 +75,7 @@ ROUTES_INDEX_MAPPING = {
             "schedules" : {
                 "type" : "nested",
                 "properties" : {
-                    "id" : {
+                    "schedule_id" : {
                         "type" : "keyword"
                     },
                     "departure_date" : {

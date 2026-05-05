@@ -105,7 +105,7 @@ class RoutesElasticsearchRepository:
                 "routes.arrival_time",
                 "routes.departure_time",
                 "routes.distance_from_origin",
-                "schedules.id",
+                "schedules.schedule_id",
                 "schedules.departure_date",
                 "schedules.available",
                 "schedules.locked",
