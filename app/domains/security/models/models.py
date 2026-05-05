@@ -1,10 +1,4 @@
 
-"""
-Security domain models:
-- OTP_CHALLENGES
-- SECURITY_EVENT_LOG
-"""
-
 from datetime import datetime
 from sqlalchemy import (
     String,
@@ -22,15 +16,6 @@ from app.common.utils.datetime import now_ist
 
 class OtpChallenges(Base):
     
-    """
-    OTP_CHALLENGES
-    Stores one OTP challenge per request (password change, email verify, mobile verify).
-    Why this table exists:
-    - Track OTP lifecycle in DB (requested/sent/verified/expired/blocked).
-    - Keep OTP verification secure (hash for compare, ciphertext for async dispatch workers).
-    - Support retries, expiry, and attempt limits in a production-safe way.
-    """
-
     __tablename__ = "OTP_CHALLENGES"
     __table_args__ = (
         UniqueConstraint("challenge_id", name="uq_otp_challenges_challenge_id"),
