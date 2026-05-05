@@ -130,7 +130,7 @@ class TrainSearchService:
                 },
                 "booking_context": {
                     "schedule_id": matched_schedule.get("schedule_id"),
-                    "route_id": source_doc.get("route_id", 0)
+                    "route_id": source_doc.get("routes", [])[0].get("route_id", 0)
                 },
             }
 
