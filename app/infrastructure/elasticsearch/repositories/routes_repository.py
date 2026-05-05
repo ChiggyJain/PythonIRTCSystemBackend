@@ -53,10 +53,10 @@ class RoutesElasticsearchRepository:
                         if(ctx._source.schedules == null){
                             ctx._source.schedules = [];
                         }
-                        String targetId = params.schedules.id.toString();
+                        String targetId = params.schedules.schedule_id.toString();
                         boolean found = false;
                         for (int i = 0; i < ctx._source.schedules.size(); i++) {
-                            if (ctx._source.schedules[i].id != null && ctx._source.schedules[i].id.toString() == targetId) {
+                            if (ctx._source.schedules[i].schedule_id != null && ctx._source.schedules[i].schedule_id.toString() == targetId) {
                                 ctx._source.schedules[i] = params.schedules;
                                 found = true;
                                 break;
