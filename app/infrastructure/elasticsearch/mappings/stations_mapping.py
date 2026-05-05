@@ -37,6 +37,12 @@ STATIONS_INDEX_MAPPING = {
                 "type": "text",
                 "analyzer": "autocomplete_analyzer",
                 "search_analyzer": "search_analyzer",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
             },
             "code": {
                 "type": "keyword",
