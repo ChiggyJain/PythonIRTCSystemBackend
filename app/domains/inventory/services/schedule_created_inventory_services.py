@@ -10,8 +10,8 @@ from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemy
 
 class ScheduleCreatedInventoryService:
 
-    EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
-    EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
+    IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
+    IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
 
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
@@ -28,7 +28,7 @@ class ScheduleCreatedInventoryService:
                 messages=["Invalid schedule_id in payload"],
             )
 
-        event_key = f"{self.EVENT_KEY_PREFIX}_{schedule_id}"
+        event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{schedule_id}"
         existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing:
             return {
@@ -98,7 +98,7 @@ class ScheduleCreatedInventoryService:
 
             await self.idempotency_repo.add_idempotency_record(
                 event_key=event_key,
-                event_type=self.EVENT_TYPE,
+                event_type=self.IDEMPOTENCY_EVENT_TYPE,
             )
 
             await self.db.commit()
