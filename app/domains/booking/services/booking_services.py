@@ -24,15 +24,15 @@ class BookingService:
     async def create_booking_details(self, *, payload: dict) -> dict:
         
         # extracted parameters
-        user_id = 0
-        idempotency_key = int(payload.get("idempotency_key", 0))
+        user_id = int(payload.get("user_id", 0))
+        idempotency_key = payload.get("idempotency_key", "")
         schedule_id = int(payload.get("schedule_id", 0))
         from_station_id = int(payload.get("from_station_id", 0))
         to_station_id = int(payload.get("to_station_id", 0))
         from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
         to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
-        seat_ids = int(payload.get("seat_ids", ""))
-        passengers = int(payload.get("passengers", ""))
+        seat_ids = payload.get("seat_ids", "")
+        passengers = payload.get("passengers", "")
 
         # checking given idempotency key exists or not
         event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
