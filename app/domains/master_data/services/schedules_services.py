@@ -40,7 +40,7 @@ class TrainSchedulesService:
         7) Commit once
         """
 
-        # 1) train must exist
+        # train must exist
         train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
         if not train_details:
             raise BaseAppException(
@@ -48,7 +48,7 @@ class TrainSchedulesService:
                 messages=[f"Train id {train_id} does not exist"],
             )
 
-        # 2) route must exist for this train
+        # route must exist for this train
         route = await self.masterdata_repo.get_route_by_train_id(train_id=train_id)
         if not route:
             raise BaseAppException(
@@ -56,7 +56,7 @@ class TrainSchedulesService:
                 messages=[f"Route does not exist for train id {train_id}"],
             )
 
-        # 3) route stations must exist
+        # route stations must exist
         route_stations = await self.masterdata_repo.get_route_stations_by_route_id(route_id=route.id)
         if not route_stations:
             raise BaseAppException(
@@ -64,33 +64,68 @@ class TrainSchedulesService:
                 messages=[f"Route stations not found for train id {train_id}"],
             )
 
-        # 4) validate route station integrity
+        # fetching train-seats details
+        train_seats = await self.masterdata_repo.get_train_seats_by_train_id(
+            train_id=train_id
+        )
+
+        # fetching stations details
+        station_ids = [rs.station_id for rs in route_stations]
+        station_list_details = await self.masterdata_repo.get_station_by_station_ids(station_ids=station_ids)
+        station_map = {station.id: station for station in station_list_details}
+        for rs in route_stations:
+            station = station_map.get(rs.station_id, None)
+            if station:
+                rs.name = station.name
+                rs.code = station.code
+                rs.city = station.city
+                rs.state = station.state
+                
+        # validate route station integrity
         self._validate_route_stations(route_stations=route_stations)
 
         try:
 
-            # 5) create schedule
+            # create schedule
             schedule = await self.masterdata_repo.create_schedule(
                 train_id=train_id,
                 departure_date=departure_date,
                 status="A",
             )
 
-            # 6) create outbox event
+            # create outbox event
             await self.outbox_repo.add_outbox_event(
                 aggregate_type="SCHEDULES",
                 aggregate_id=str(schedule.id),
                 event_type=self.OUTBOX_EVENT_SCHEDULE_CREATED,
                 payload_json={
                     "schedule_id": schedule.id,
-                    "train_id": schedule.train_id,
-                    "departure_date": str(schedule.departure_date),
-                    "status": schedule.status,
-                    "route_id": route.id,
-                    "route_stations_snapshot": [
+                    "train_details" : {
+                        "train_id": train_details.id,
+                        "train_number": train_details.train_number,
+                        "train_name": train_details.train_name,
+                        "coach_name": train_details.coach_name,
+                        "total_seats": train_details.total_seats,
+                        "status": train_details.status,
+                    },
+                    "seat_details": [
+                        {
+                            "id": seat.id,
+                            "seat_type": seat.seat_type,
+                            "seat_number": seat.seat_number,
+                            "price": float(seat.price) if isinstance(seat.price, Decimal) else seat.price,
+                            "status": seat.status,
+                        }
+                        for seat in train_seats
+                    ],
+                    "station_details": [
                         {
                             "id": rs.id,
                             "station_id": rs.station_id,
+                            "name" : rs.name,
+                            "code" : rs.code,
+                            "city" : rs.city,
+                            "state" : rs.state,
                             "sequence_number": rs.sequence_number,
                             "arrival_time": rs.arrival_time.strftime("%H:%M:%S"),
                             "departure_time": rs.departure_time.strftime("%H:%M:%S"),
@@ -99,6 +134,8 @@ class TrainSchedulesService:
                         }
                         for rs in route_stations
                     ],
+                    "departure_date": str(schedule.departure_date),
+                    "status": schedule.status,
                     "event_type": self.OUTBOX_EVENT_SCHEDULE_CREATED,
                     "event_version": 1,
                     "created_by_admin_user_id": admin_user_id,
