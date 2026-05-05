@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 
 
 class BookingService:
@@ -11,6 +12,7 @@ class BookingService:
 
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
+        self.booking_repo = BookingSQLAlchemyRepository(db_session)
         
 
 
