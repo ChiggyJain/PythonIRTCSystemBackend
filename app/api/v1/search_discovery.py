@@ -4,12 +4,55 @@ from fastapi import APIRouter, Depends, Query
 from app.core.response import success_response
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
-from app.dependencies.search_discovery import get_train_search_service
+from app.dependencies.search_discovery import (
+    get_train_search_service,
+    get_station_search_service
+)
+from app.domains.search_discovery.schemas.station_search_schemas import StationSearchQueryRequest
+from app.domains.search_discovery.services.station_search_service import StationSearchService
 from app.domains.search_discovery.schemas.train_search_schemas import TrainSearchQueryRequest
 from app.domains.search_discovery.services.train_search_service import TrainSearchService
 
 
 router = APIRouter()
+
+
+
+
+@feature_control(
+    {
+        "name": "v1.search.stations",
+        "logging": {
+            "console": True, 
+            "file": True
+        },
+        "rate_limit": {
+            "limit": 180, 
+            "window": 60
+        },
+    }
+)
+async def search_stations(
+    query: Annotated[StationSearchQueryRequest, Depends()],
+    service: StationSearchService = Depends(get_station_search_service),
+):
+    data = await service.search_stations(
+        q=query.q,
+        size=query.size,
+    )
+    return success_response(
+        data=data,
+        messages=["Stations fetched successfully"],
+        status_code=200,
+    )
+
+
+router.add_api_route(
+    "/search/stations",
+    search_stations,
+    methods=["GET"],
+    route_class_override=FeatureAPIRoute,
+)
 
 
 @feature_control(
