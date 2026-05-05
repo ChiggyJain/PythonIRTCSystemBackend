@@ -4,9 +4,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.core.settings import get_settings
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 
+settings = get_settings()
 
 class BookingService:
 
@@ -58,7 +60,27 @@ class BookingService:
             seat = seatMap.get(eachSeatId, None)
             if !seat:
                 throw error
+            isSeatAvailable = (from_station_sequence_number and to_station_sequence_number and seat.segementStatus!=undefined)
+                ? seat.segementStatus === "AVAILABLE"
+                : seat.status === "AVAILABLE"
+            if isSeatAvailable == False:
+                throw error
+            bookingSeats.append(seat)
+            totalAmount+= seat.price
         """
+
+        sortedSeatIds = seat_ids
+        
+        acquired_lockValue = await self.acquireSeatLocks(
+            schedule_id,
+            sortedSeatIds,
+            f"pre-${'PutHereCurDateTimeStamp'}",
+            settings.BOOKING_TTL_SECONDS,
+            from_station_sequence_number,
+            to_station_sequence_number
+        )
+
+
 
         pass
 
