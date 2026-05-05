@@ -30,6 +30,7 @@ class InventorySQLAlchemyRepository:
         locked: int,
         booked: int,
         status: str = "ACTIVE",
+        version: int = 0,
     ) -> ScheduleInventory:
         
         row = ScheduleInventory(
@@ -42,6 +43,7 @@ class InventorySQLAlchemyRepository:
             available_seats=available_seats,
             locked=locked,
             booked=booked,
+            version=version,
             created_at=now_ist(),
             updated_at=now_ist(),
             status=status,
