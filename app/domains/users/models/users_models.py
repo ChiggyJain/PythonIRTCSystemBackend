@@ -1,15 +1,3 @@
-"""
-Users ORM Model
-Rules:
-------
-- Table name = CAPITAL
-- Column names = lowercase
-- SQLAlchemy 2 style
-- MySQL compatible
-- Alembic compatible
-- ENUM supported
-- IST timezone supported
-"""
 
 from datetime import datetime
 from sqlalchemy import (
@@ -21,10 +9,6 @@ from sqlalchemy.orm import (
 from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
-
-# =========================================================
-# ENUMS
-# =========================================================
 
 mobile_verified_enum = Enum(
     "Y",
@@ -59,14 +43,8 @@ status_enum = Enum(
 )
 
 
-# =========================================================
-# MODEL
-# =========================================================
 
 class Users(Base):
-    """
-    USERS table
-    """
 
     __tablename__ = "USERS"
 
@@ -151,14 +129,13 @@ class Users(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
+        default=now_ist,
         nullable=False,
     )
-
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=now_ist(),
-        onupdate=now_ist(),
+        default=now_ist,
+        onupdate=now_ist,
         nullable=False,
     )
 
