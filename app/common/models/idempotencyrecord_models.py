@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from sqlalchemy import String, DateTime, func, UniqueConstraint
+from sqlalchemy import JSON, String, DateTime, func, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from app.common.utils.datetime import now_ist
 from app.infrastructure.database.base import Base
@@ -16,6 +16,7 @@ class IdempotencyRecords(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     event_key: Mapped[str] = mapped_column(String(200), nullable=False)
     event_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    event_response: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
