@@ -28,6 +28,19 @@ class SeatInventory(Base):
         nullable=False,
     )
     price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0, server_default="0.00")
+    locked_by_user_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    locked_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=now_ist,
+        nullable=True,
+    )
+    locked_expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=now_ist,
+        nullable=True,
+    )
+    booking_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
