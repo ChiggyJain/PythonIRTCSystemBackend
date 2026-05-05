@@ -219,6 +219,8 @@ python -m app.infrastructure.outbox.dispatchers.masterdata_routes_outbox_dispatc
 Master Data Schedules Created:
 python -m app.workers.outbox.masterdata_schedules_outbox_worker
 python -m app.infrastructure.outbox.dispatchers.masterdata_schedules_outbox_dispatcher
+python3 -m app.workers.outbox.masterdata_schedules_inventory_worker
+
 
 
 
