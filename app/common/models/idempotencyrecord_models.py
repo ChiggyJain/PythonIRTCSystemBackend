@@ -6,7 +6,7 @@ from app.common.utils.datetime import now_ist
 from app.infrastructure.database.base import Base
 
 
-class IdempotencyRecord(Base):
+class IdempotencyRecords(Base):
 
     __tablename__ = "IDEMPOTENCY_RECORDS"
     __table_args__ = (
