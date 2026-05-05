@@ -10,8 +10,8 @@ class Bookings(Base):
     
     __tablename__ = "BOOKINGS"
     __table_args__ = (
-        # UniqueConstraint("schedule_id", "seat_id", name="uq_scheduleIdSeatId"),
-        # UniqueConstraint("schedule_id", "seat_number", name="uq_scheduleIdSeatNumber"),
+        UniqueConstraint("idempotency_key", name="uq_idempotencyKey"),
+        UniqueConstraint("payment_order_id", name="uq_paymentOrderId"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
