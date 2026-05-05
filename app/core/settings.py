@@ -174,6 +174,7 @@ class Settings(BaseSettings):
     # Schedule KAFKA TOPIC and CONSUMER
     MASTERDATA_SCHEDULE_EVENT_TOPIC: str = "masterdata-schedule-events-v1"
     MASTERDATA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumer-v1"
+    MASTERDATA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "masterdata-schedule-events-inventory-consumer-v1"
     MASTERDATA_SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
     
     
