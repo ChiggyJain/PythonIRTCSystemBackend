@@ -16,10 +16,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-# =========================================================
-# ENUMS
-# =========================================================
-
 seat_type_enum = Enum(
     "LOWER",
     "MIDDLE",
@@ -38,14 +34,10 @@ status_enum = Enum(
 
 class Seats(Base):
 
-    """
-    SEATS table
-    """
-
     __tablename__ = "SEATS"
     
     __table_args__ = (
-        UniqueConstraint("train_id", "seat_number", name="uq_trainId_seatNumber"),
+        UniqueConstraint("train_id", "seat_number", name="uq_trainIdSeatNumber"),
         Index("ix_status", "status"),
     )
 

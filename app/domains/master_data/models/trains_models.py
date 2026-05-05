@@ -13,10 +13,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-# =========================================================
-# ENUMS
-# =========================================================
-
 status_enum = Enum(
     "A",
     "Z",
@@ -24,10 +20,6 @@ status_enum = Enum(
 )
 
 class Trains(Base):
-
-    """
-    TRAINS table
-    """
 
     __tablename__ = "TRAINS"
     
