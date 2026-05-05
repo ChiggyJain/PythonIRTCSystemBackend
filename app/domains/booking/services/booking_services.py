@@ -23,6 +23,7 @@ class BookingService:
 
     async def create_booking_details(self, *, payload: dict) -> dict:
         
+        # extracted parameters
         user_id = 0
         idempotency_key = int(payload.get("idempotency_key", 0))
         schedule_id = int(payload.get("schedule_id", 0))
@@ -33,15 +34,41 @@ class BookingService:
         seat_ids = int(payload.get("seat_ids", ""))
         passengers = int(payload.get("passengers", ""))
 
+        # checking given idempotency key exists or not
         event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
-        existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
-        if existing:
-            return {
-                "status": "duplicate",
-                "event_key": event_key,
-                "schedule_id": schedule_id,
-                "message": "Event already processed",
-            }
+        existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
+        if existing_idempotency_record:
+            return existing_idempotency_record
         
+        # availability = getAvailability(schedule_id) via internal http-call through inventory_service
+        # check availability.status!="A"
+            # throw error
+        # check availability.departure_date<curDate
+            # throw error
+
+        
+        # seatData = getSeats(schedule_id, from_station_sequence_number, to_station_sequence_number) via internal http-call through inventory_service
+        # seatMap = store seatData{seatId, seatObject}
+
+        bookingSeats = []
+        totalAmount = 0
+        
+        """
+        for eachSeatId in seat_ids:
+            seat = seatMap.get(eachSeatId, None)
+            if !seat:
+                throw error
+        """
 
         pass
+
+
+
+
+
+
+
+
+
+
+
