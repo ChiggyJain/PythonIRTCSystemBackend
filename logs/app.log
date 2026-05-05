@@ -1979,3 +1979,38 @@ journey_date
 2026-05-05 10:34:52 | INFO | SpawnProcess-1-25587 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 10:34:52.583306 | 2026-05-05 10:34:52.603966 | 20 | None | 200
 2026-05-05 10:36:07 | INFO | ES client created for index: routes_v1
 2026-05-05 10:36:09 | INFO | SpawnProcess-2-26681 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 10:36:09.220659 | 2026-05-05 10:36:09.244195 | 23 | None | 200
+2026-05-05 10:58:37 | INFO | ES client created for index: routes_v1
+2026-05-05 10:58:37 | INFO | ES client created for index: stations_v1
+2026-05-05 11:00:26 | INFO | masterdata_stations_dispatch_consumer_worker started
+2026-05-05 11:01:05 | INFO | masterdata_stations_outbox_worker started
+2026-05-05 11:01:05 | INFO | Received payload: {'outbox_id': 1, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Delhi', 'code': 'NDLS', 'name': 'New Delhi', 'state': 'Delhi', 'status': 'A', 'created_at': '2026-05-05 08:53:36.153297', 'request_id': None, 'station_id': 1, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-05 08:53:36.163380', 'created_by_admin_user_id': 1}
+2026-05-05 11:01:05 | INFO | ES client created for index: stations_v1
+2026-05-05 11:01:05 | INFO | Created ES index: stations_v1
+2026-05-05 11:01:05 | INFO | Indexed station to ES using StationID: 1
+2026-05-05 11:01:05 | INFO | Successfully indexed StationID: 1
+2026-05-05 11:01:05 | INFO | Received payload: {'outbox_id': 2, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Kota', 'code': 'KOTA', 'name': 'Kota Junction', 'state': 'Rajasthan', 'status': 'A', 'created_at': '2026-05-05 08:53:49.072325', 'request_id': None, 'station_id': 2, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-05 08:53:49.073290', 'created_by_admin_user_id': 1}
+2026-05-05 11:01:05 | INFO | ES client created for index: stations_v1
+2026-05-05 11:01:06 | INFO | Indexed station to ES using StationID: 2
+2026-05-05 11:01:06 | INFO | Successfully indexed StationID: 2
+2026-05-05 11:01:06 | INFO | Received payload: {'outbox_id': 4, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Mumbai', 'code': 'BCT', 'name': 'Mumbai Central', 'state': 'Maharashtra', 'status': 'A', 'created_at': '2026-05-05 08:54:05.870421', 'request_id': None, 'station_id': 4, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-05 08:54:05.871502', 'created_by_admin_user_id': 1}
+2026-05-05 11:01:06 | INFO | ES client created for index: stations_v1
+2026-05-05 11:01:06 | INFO | Indexed station to ES using StationID: 4
+2026-05-05 11:01:06 | INFO | Successfully indexed StationID: 4
+2026-05-05 11:01:06 | INFO | Received payload: {'outbox_id': 3, 'event_type': 'MASTERDATA_STATION_CREATED_V1', 'city': 'Vadodara', 'code': 'BRC', 'name': 'Vadodara Junction', 'state': 'Gujarat', 'status': 'A', 'created_at': '2026-05-05 08:53:57.765076', 'request_id': None, 'station_id': 3, 'event_version': 1, 'correlation_id': None, 'event_created_at': '2026-05-05 08:53:57.766365', 'created_by_admin_user_id': 1}
+2026-05-05 11:01:06 | INFO | ES client created for index: stations_v1
+2026-05-05 11:01:06 | INFO | Indexed station to ES using StationID: 3
+2026-05-05 11:01:06 | INFO | Successfully indexed StationID: 3
+2026-05-05 11:01:25 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:01:25.085336 | 2026-05-05 11:01:25.137091 | 51 | None | 200
+2026-05-05 11:01:35 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:01:35.218473 | 2026-05-05 11:01:35.226502 | 8 | 1 validation error for StationSearchQueryRequest
+q
+  Value error, q must be at least 2 characters [type=value_error, input_value='l', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-05 11:01:43 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:01:43.420957 | 2026-05-05 11:01:43.429454 | 8 | None | 200
+2026-05-05 11:02:04 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:02:04.357029 | 2026-05-05 11:02:04.365687 | 8 | None | 200
+2026-05-05 11:02:20 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:02:20.660524 | 2026-05-05 11:02:20.667930 | 7 | None | 200
+2026-05-05 11:02:34 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:02:34.776911 | 2026-05-05 11:02:34.782264 | 5 | None | 200
+2026-05-05 11:02:59 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:02:59.298920 | 2026-05-05 11:02:59.305200 | 6 | None | 200
+2026-05-05 11:03:00 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:03:00.962198 | 2026-05-05 11:03:00.968738 | 6 | None | 200
+2026-05-05 11:07:29 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:07:29.591490 | 2026-05-05 11:07:29.597205 | 5 | None | 200
+2026-05-05 11:07:36 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:07:36.914696 | 2026-05-05 11:07:36.921105 | 6 | None | 200
+2026-05-05 11:07:50 | INFO | SpawnProcess-1-28905 | v1.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-05 11:07:50.332386 | 2026-05-05 11:07:50.337379 | 4 | None | 200
