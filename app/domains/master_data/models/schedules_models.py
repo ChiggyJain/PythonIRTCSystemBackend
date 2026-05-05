@@ -16,10 +16,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-# =========================================================
-# ENUMS
-# =========================================================
-
 status_enum = Enum(
     "A",
     "Z",
@@ -28,10 +24,6 @@ status_enum = Enum(
 
 
 class Schedules(Base):
-
-    """
-    SCHEDULES table
-    """
 
     __tablename__ = "SCHEDULES"
     
