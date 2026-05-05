@@ -70,7 +70,8 @@ class RoutesElasticsearchRepository:
                         "schedules": schedules
                     }
                 }
-            }
+            },
+            refresh=True
         )
     
 
