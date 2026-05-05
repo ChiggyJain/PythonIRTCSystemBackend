@@ -411,11 +411,31 @@ curl --location 'http://127.0.0.1:8000/api/v1/users/email/change/confirm' \
 
 http://127.0.0.1:8000/api/v1/admin/master-data/stations
 {
+  "name": "New Delhi",
+  "code": "NDLS",
+  "city": "Delhi",
+  "state": "Delhi"
+}
+{
+  "name": "Kota Junction",
+  "code": "KOTA",
+  "city": "Kota",
+  "state": "Rajasthan"
+}
+{
+  "name": "Vadodara Junction",
+  "code": "BRC",
+  "city": "Vadodara",
+  "state": "Gujarat"
+}
+{
   "name": "Mumbai Central",
   "code": "BCT",
   "city": "Mumbai",
   "state": "Maharashtra"
 }
+
+
 
 http://127.0.0.1:8000/api/v1/admin/master-data/trains
 {
@@ -477,6 +497,14 @@ http://127.0.0.1:8000/api/v1/admin/master-data/train-routes
 
 
 http://127.0.0.1:8000/api/v1/admin/master-data/train-schedules
+{
+  "train_id": 1,
+  "departure_date": "2026-05-10"
+}
+{
+  "train_id": 1,
+  "departure_date": "2026-05-11"
+}
 {
   "train_id": 1,
   "departure_date": "2026-05-12"
