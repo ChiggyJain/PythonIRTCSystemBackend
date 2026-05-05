@@ -480,3 +480,5 @@ journey_date
 2026-05-05 09:25:21 | INFO | Indexed routes updated (schedules) to ES using TrainID: 2
 2026-05-05 09:25:21 | INFO | Successfully indexed ScheduledID: 9
 2026-05-05 09:25:29 | INFO | SpawnProcess-19-17390 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 09:25:29.729048 | 2026-05-05 09:25:29.744095 | 15 | None | 200
+2026-05-05 09:27:27 | INFO | ES client created for index: routes_v1
+2026-05-05 09:27:35 | INFO | ES client created for index: routes_v1
