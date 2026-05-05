@@ -15,10 +15,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-# =========================================================
-# ENUMS
-# =========================================================
-
 status_enum = Enum(
     "A",
     "Z",
@@ -27,10 +23,6 @@ status_enum = Enum(
 
 
 class RouteStations(Base):
-
-    """
-    ROUTE_STATIONS table
-    """
 
     __tablename__ = "ROUTE_STATIONS"
     
