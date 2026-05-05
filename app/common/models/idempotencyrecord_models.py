@@ -10,7 +10,7 @@ class IdempotencyRecord(Base):
 
     __tablename__ = "IDEMPOTENCY_RECORDS"
     __table_args__ = (
-        UniqueConstraint("event_key", name="uq_event_key"),
+        UniqueConstraint("event_key", name="uq_eventKey"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

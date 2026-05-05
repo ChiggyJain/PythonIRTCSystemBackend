@@ -10,7 +10,7 @@ class ScheduleInventory(Base):
 
     __tablename__ = "SCHEDULE_INVENTORY"
     __table_args__ = (
-        UniqueConstraint("schedule_id", name="uq_schedule_id"),
+        UniqueConstraint("schedule_id", name="uq_scheduledId"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
