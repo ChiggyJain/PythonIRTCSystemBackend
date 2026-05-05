@@ -10,13 +10,16 @@ from app.domains.inventory.models.route_stop_models import RouteStop
 
 
 class InventorySQLAlchemyRepository:
+
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
+
 
     async def get_idempotency_record_by_event_key(self, event_key: str) -> IdempotencyRecords | None:
         stmt = select(IdempotencyRecords).where(IdempotencyRecords.event_key == event_key)
         result = await self.db.execute(stmt)
         return result.scalar_one_or_none()
+
 
     async def add_idempotency_record(self, *, event_key: str, event_type: str | None = None) -> IdempotencyRecords:
         row = IdempotencyRecords(
@@ -26,6 +29,7 @@ class InventorySQLAlchemyRepository:
         self.db.add(row)
         await self.db.flush()
         return row
+
 
     async def add_schedule_inventory(
         self,
@@ -41,6 +45,7 @@ class InventorySQLAlchemyRepository:
         booked: int,
         status: str = "ACTIVE",
     ) -> ScheduleInventory:
+        
         row = ScheduleInventory(
             schedule_id=schedule_id,
             train_id=train_id,
@@ -57,6 +62,7 @@ class InventorySQLAlchemyRepository:
         await self.db.flush()
         return row
 
+
     async def add_seat_inventory_bulk(
         self,
         *,
@@ -64,13 +70,12 @@ class InventorySQLAlchemyRepository:
         schedule_id: int,
         seat_details: list[dict],
     ) -> None:
+        
         rows: list[SeatInventory] = []
-
         for seat in seat_details:
             price_value = seat.get("price", 0)
             if not isinstance(price_value, Decimal):
                 price_value = Decimal(str(price_value))
-
             rows.append(
                 SeatInventory(
                     schedule_inventory_id=schedule_inventory_id,
@@ -86,14 +91,15 @@ class InventorySQLAlchemyRepository:
         self.db.add_all(rows)
         await self.db.flush()
 
+
     async def add_route_stop_bulk(
         self,
         *,
         schedule_id: int,
         station_details: list[dict],
     ) -> None:
+        
         rows: list[RouteStop] = []
-
         for station in station_details:
             rows.append(
                 RouteStop(
