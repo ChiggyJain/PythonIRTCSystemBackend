@@ -73,7 +73,7 @@ class BookingService:
         sortedSeatIds = seat_ids
         
         # implement in redis via lua-script
-        acquired_lockValue = await self.acquireSeatLocks(
+        acquired, lockValue = await self.acquireSeatLocks(
             schedule_id,
             sortedSeatIds,
             f"pre-${'PutHereCurDateTimeStamp'}",
@@ -81,10 +81,20 @@ class BookingService:
             from_station_sequence_number,
             to_station_sequence_number
         )
+        if acquired == False:
+            return
+        
+        try:
+
+            locked_expires_at = ""
+
+        except Exception as e:
+            pass
+
+        
 
 
 
-        pass
 
     async def acquireSeatLocks(self, schedule_id, seat_ids, booking_id, ttlSeconds, from_station_sequence_number, to_station_sequence_number):
         
@@ -111,7 +121,7 @@ class BookingService:
                 "lockValue" : None
             }
         """
-            
+
         pass
 
 
