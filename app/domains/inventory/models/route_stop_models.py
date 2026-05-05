@@ -11,6 +11,7 @@ class RouteStop(Base):
     __tablename__ = "ROUTE_STOP"
     __table_args__ = (
         UniqueConstraint("schedule_id", "station_id", name="uq_scheduleIdStationId"),
+        UniqueConstraint("schedule_id", "sequence_number", name="uq_scheduleIdSequenceNumber"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
