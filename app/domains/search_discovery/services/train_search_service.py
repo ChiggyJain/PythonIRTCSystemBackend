@@ -101,7 +101,7 @@ class TrainSearchService:
                 "train_name": source_doc.get("train_name"),
                 "journey_date": journey_date,
                 "source_station": {
-                    "route_id": source_station.get("route_id"),
+                    "route_id": source_station.get("route_id", 0),
                     "station_id": source_station.get("station_id"),
                     "code": source_station.get("code"),
                     "name": source_station.get("name"),
@@ -111,7 +111,7 @@ class TrainSearchService:
                     "distance_from_origin": source_station.get("distance_from_origin"),
                 },
                 "destination_station": {
-                    "route_id": destination_station.get("route_id"),
+                    "route_id": destination_station.get("route_id", 0),
                     "station_id": destination_station.get("station_id"),
                     "code": destination_station.get("code"),
                     "name": destination_station.get("name"),
@@ -130,7 +130,7 @@ class TrainSearchService:
                 },
                 "booking_context": {
                     "schedule_id": matched_schedule.get("schedule_id"),
-                    "route_id": source_doc.get("route_id")
+                    "route_id": source_doc.get("route_id", 0)
                 },
             }
 
