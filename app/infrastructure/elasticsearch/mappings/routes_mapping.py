@@ -40,6 +40,9 @@ ROUTES_INDEX_MAPPING = {
             "routes" : {
                 "type" : "nested",
                 "properties" : {
+                    "route_id" : {
+                        "type" : "keyword"
+                    },
                     "station_id" : {
                         "type" : "keyword",
                     },

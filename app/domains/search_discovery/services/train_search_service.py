@@ -102,6 +102,7 @@ class TrainSearchService:
                 "journey_date": journey_date,
                 "source_station": {
                     "station_id": source_station.get("station_id"),
+                    "station_id": source_station.get("station_id"),
                     "code": source_station.get("code"),
                     "name": source_station.get("name"),
                     "city": source_station.get("city"),

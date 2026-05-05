@@ -94,6 +94,7 @@ class RoutesElasticsearchRepository:
                 "train_number",
                 "train_name",
                 "seatSummary",
+                "routes.route_id",
                 "routes.station_id",
                 "routes.name",
                 "routes.code",
