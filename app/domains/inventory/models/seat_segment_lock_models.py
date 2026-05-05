@@ -9,15 +9,8 @@ from app.infrastructure.database.base import Base
 class SeatSegmentLockInventory(Base):
     
     __tablename__ = "SEAT_SEGMENT_LOCK"
-    __table_args__ = (
-        UniqueConstraint(
-            "schedule_inventory_id",
-            "schedule_id",
-            "seat_id",
-            name="uq_scheduleInventoryIdScheduledIdSeatId",
-        ),
-    )
-
+    
+    
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     schedule_id: Mapped[int] = mapped_column(Integer, nullable=False)
     seat_id: Mapped[int] = mapped_column(Integer, nullable=False)
