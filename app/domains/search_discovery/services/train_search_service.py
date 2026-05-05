@@ -1,5 +1,6 @@
 
 from datetime import datetime
+import json
 from app.core.exceptions import BaseAppException
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
@@ -35,7 +36,8 @@ class TrainSearchService:
                 messages=["Search service temporarily unavailable"],
             )
 
-        print(f"es_result: {es_result}")
+        print(f"es_result: {(json.dumps(es_result.body))}")
+
         hits_block = es_result.get("hits", {})
         total_block = hits_block.get("total", {})
         total_value = total_block.get("value", 0) if isinstance(total_block, dict) else 0
@@ -123,14 +125,14 @@ class TrainSearchService:
                     "total_available": total_available,
                 },
                 "booking_context": {
-                    "schedule_id": matched_schedule.get("id"),
+                    "schedule_id": matched_schedule.get("schedule_id"),
                     "route_id": None,  # optional, keep None if not indexed in ES doc
                 },
             }
 
             dedupe_key = (
                 str(source_doc.get("train_id")),
-                str(matched_schedule.get("id")),
+                str(matched_schedule.get("schedule_id")),
                 str(source_station.get("station_id")),
                 str(destination_station.get("station_id")),
             )
