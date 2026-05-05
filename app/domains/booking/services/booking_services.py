@@ -1,5 +1,6 @@
 
 from datetime import date
+from re import L
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -83,6 +84,34 @@ class BookingService:
 
 
 
+        pass
+
+    async def acquireSeatLocks(self, schedule_id, seat_ids, booking_id, ttlSeconds, from_station_sequence_number, to_station_sequence_number):
+        
+        keys = []
+        for eachSeatId in seat_ids:
+            key = f"booking:lock:seat:{schedule_id}:{eachSeatId}"
+            keys.append(key)
+        lockValue = f"{booking_id}:{'PutHereCurDateTimeStamp'}"
+        
+        """
+        result = await redis.eval(
+            LUA_ACQUIRE_SCRIPT, keys.length,
+            ...keys,
+            lockValue, ttlSeconds
+        )
+        if result == 1:
+            return {
+                "acquired" : True,
+                "lockValue" : lockValue
+            }
+        else:
+            return {
+                "acquired" : False,
+                "lockValue" : None
+            }
+        """
+            
         pass
 
 
