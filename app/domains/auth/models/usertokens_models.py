@@ -1,7 +1,3 @@
-"""
-Auth models
-USER_TOKENS table
-"""
 
 from datetime import datetime
 from sqlalchemy import (
@@ -14,10 +10,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-# =========================================================
-# ENUMS
-# =========================================================
-
 status_enum = Enum(
     "A",
     "Z",
@@ -25,9 +17,6 @@ status_enum = Enum(
 )
 
 
-# =========================
-# USER_TOKENS
-# =========================
 
 class UserTokens(Base):
 
@@ -82,7 +71,6 @@ class UserTokens(Base):
         default=now_ist,
         nullable=False,
     )
-
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
