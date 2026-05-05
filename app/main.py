@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
     finally:
         # graceful close
         await app.state.routes_es_client.close()
+        await app.state.stations_es_client.close()
 
 
 
