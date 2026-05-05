@@ -71,6 +71,7 @@ class BookingService:
 
         sortedSeatIds = seat_ids
         
+        # implement in redis via lua-script
         acquired_lockValue = await self.acquireSeatLocks(
             schedule_id,
             sortedSeatIds,
