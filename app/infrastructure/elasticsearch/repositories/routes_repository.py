@@ -86,7 +86,6 @@ class RoutesElasticsearchRepository:
         from_value = (page - 1) * size
 
         search_body = {
-
             "track_total_hits": True,
             "from": from_value,
             "size": size,
@@ -117,62 +116,28 @@ class RoutesElasticsearchRepository:
                             "nested": {
                                 "path": "routes",
                                 "query": {
-                                    "bool": {
-                                        "should": [
-                                            {
-                                                "term": {
-                                                    "routes.code": {
-                                                        "value": source_query.upper(),
-                                                        "boost": 10
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "multi_match": {
-                                                    "query": source_query,
-                                                    "fields": ["routes.name^3", "routes.code^4", "routes.city^2"],
-                                                    "fuzziness": "AUTO",
-                                                    "prefix_length": 1,
-                                                    "minimum_should_match": "75%",
-                                                    "type": "best_fields"
-                                                }
-                                            }
-                                        ],
-                                        "minimum_should_match": 1
+                                    "term": {
+                                        "routes.code": source_query
                                     }
                                 },
-                                "inner_hits": {"name": "source_match", "size": 3}
+                                "inner_hits": {
+                                    "name": "source_match",
+                                    "size": 1
+                                }
                             }
                         },
                         {
                             "nested": {
                                 "path": "routes",
                                 "query": {
-                                    "bool": {
-                                        "should": [
-                                            {
-                                                "term": {
-                                                    "routes.code": {
-                                                        "value": destination_query.upper(),
-                                                        "boost": 10
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "multi_match": {
-                                                    "query": destination_query,
-                                                    "fields": ["routes.name^3", "routes.code^4", "routes.city^2"],
-                                                    "fuzziness": "AUTO",
-                                                    "prefix_length": 1,
-                                                    "minimum_should_match": "75%",
-                                                    "type": "best_fields"
-                                                }
-                                            }
-                                        ],
-                                        "minimum_should_match": 1
+                                    "term": {
+                                        "routes.code": destination_query
                                     }
                                 },
-                                "inner_hits": {"name": "destination_match", "size": 3}
+                                "inner_hits": {
+                                    "name": "destination_match",
+                                    "size": 1
+                                }
                             }
                         },
                         {
@@ -181,18 +146,65 @@ class RoutesElasticsearchRepository:
                                 "query": {
                                     "bool": {
                                         "must": [
-                                            {"term": {"schedules.departure_date": journey_date}},
-                                            {"term": {"schedules.status": "A"}}
+                                            {
+                                                "range": {
+                                                    "schedules.departure_date": {
+                                                        "gte": journey_date
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "term": {
+                                                    "schedules.status": "A"
+                                                }
+                                            }
                                         ]
                                     }
                                 },
-                                "inner_hits": {"name": "matched_schedule", "size": 1}
+                                "inner_hits": {
+                                    "name": "matched_schedule",
+                                    "size": 1,
+                                    "sort": [
+                                        {
+                                            "schedules.departure_date": {
+                                                "order": "asc"
+                                            }
+                                        }
+                                    ]
+                                }
                             }
                         }
                     ]
                 }
             },
             "sort": [
+                {
+                    "schedules.departure_date": {
+                        "order": "asc",
+                        "mode": "min",
+                        "nested": {
+                            "path": "schedules",
+                            "filter": {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "range": {
+                                                "schedules.departure_date": {
+                                                    "gte": journey_date
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "term": {
+                                                "schedules.status": "A"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
                 {
                     "schedules.available": {
                         "order": "desc",
@@ -202,18 +214,26 @@ class RoutesElasticsearchRepository:
                             "filter": {
                                 "bool": {
                                     "must": [
-                                        {"term": {"schedules.departure_date": journey_date}},
-                                        {"term": {"schedules.status": "A"}}
+                                        {
+                                            "range": {
+                                                "schedules.departure_date": {
+                                                    "gte": journey_date
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "term": {
+                                                "schedules.status": "A"
+                                            }
+                                        }
                                     ]
                                 }
                             }
                         }
                     }
                 },
-                {"_score": {"order": "desc"}},
                 {"train_number": {"order": "asc"}}
             ]
-
         }
 
         return await self.es.search(query=search_body)
