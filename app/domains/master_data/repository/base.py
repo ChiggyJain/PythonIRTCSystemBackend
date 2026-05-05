@@ -6,7 +6,7 @@ from app.domains.master_data.models.stations_models import Stations
 from app.domains.master_data.models.trains_models import Trains
 from app.domains.master_data.models.seats_models import Seats
 from app.domains.master_data.models.routes_models import Routes
-from app.domains.master_data.models.routestations_models import RouteStations
+from app.domains.master_data.models.route_stations_models import RouteStations
 from app.domains.master_data.models.schedules_models import Schedules
 
 
