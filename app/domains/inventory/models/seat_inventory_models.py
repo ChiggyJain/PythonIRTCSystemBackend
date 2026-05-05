@@ -10,12 +10,8 @@ class SeatInventory(Base):
     
     __tablename__ = "SEAT_INVENTORY"
     __table_args__ = (
-        UniqueConstraint(
-            "schedule_inventory_id",
-            "schedule_id",
-            "seat_id",
-            name="uq_scheduleInventoryIdScheduledIdSeatId",
-        ),
+        UniqueConstraint("schedule_id", "seat_id", name="uq_scheduleIdSeatId"),
+        UniqueConstraint("schedule_id", "seat_number", name="uq_scheduleIdSeatNumber"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
