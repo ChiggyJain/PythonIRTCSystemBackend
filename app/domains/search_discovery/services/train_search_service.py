@@ -107,6 +107,7 @@ class TrainSearchService:
                     "city": source_station.get("city"),
                     "sequence_number": source_seq,
                     "departure_time": source_station.get("departure_time"),
+                    "distance_from_origin": source_station.get("distance_from_origin"),
                 },
                 "destination_station": {
                     "station_id": destination_station.get("station_id"),
@@ -115,6 +116,7 @@ class TrainSearchService:
                     "city": destination_station.get("city"),
                     "sequence_number": destination_seq,
                     "arrival_time": destination_station.get("arrival_time"),
+                    "distance_from_origin": destination_station.get("distance_from_origin"),
                 },
                 "travel": {
                     "duration_minutes": duration_minutes,

@@ -448,3 +448,11 @@ journey_date
 2026-05-05 09:16:09 | INFO | ES client created for index: routes_v1
 2026-05-05 09:19:00 | INFO | ES client created for index: routes_v1
 2026-05-05 09:19:05 | INFO | SpawnProcess-13-17048 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 09:19:05.451797 | 2026-05-05 09:19:05.460494 | 8 | None | 200
+2026-05-05 09:22:10 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:18 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:23 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:28 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:31 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:33 | INFO | SpawnProcess-18-17358 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 09:22:33.591809 | 2026-05-05 09:22:33.599946 | 8 | None | 200
+2026-05-05 09:22:52 | INFO | ES client created for index: routes_v1
+2026-05-05 09:22:53 | INFO | SpawnProcess-19-17390 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-05 09:22:53.104539 | 2026-05-05 09:22:53.113197 | 8 | None | 200
