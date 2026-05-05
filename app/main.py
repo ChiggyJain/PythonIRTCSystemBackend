@@ -27,6 +27,7 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     # Hybrid/Eager: create client object at startup (cheap), no hard fail on ES ping here
     app.state.routes_es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
+    app.state.stations_es_client = build_elasticsearch_client(settings.ELASTICSEARCH_STATIONS_INDEX)
     try:
         yield
     finally:
