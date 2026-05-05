@@ -27,6 +27,8 @@ class InventorySQLAlchemyRepository:
         row = IdempotencyRecords(
             event_key=event_key,
             event_type=event_type,
+            created_at=now_ist(),
+            updated_at=now_ist(),
         )
         self.db.add(row)
         await self.db.flush()
