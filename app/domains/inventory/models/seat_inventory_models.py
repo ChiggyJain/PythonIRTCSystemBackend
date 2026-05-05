@@ -20,7 +20,10 @@ class SeatInventory(Base):
     seat_id: Mapped[int] = mapped_column(Integer, nullable=False)
     seat_number: Mapped[int] = mapped_column(Integer, nullable=False)
     seat_type: Mapped[str] = mapped_column(
-        Enum("LOWER", "MIDDLE", "UPPER", "SIDE_LOWER", "SIDE_UPPER", name="seat_type_enum"),
+        Enum(
+            "LOWER", "MIDDLE", "UPPER", "SIDE_LOWER", "SIDE_UPPER", 
+            name="seat_type_enum"
+        ),
         nullable=False,
     )
     price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0, server_default="0.00")
