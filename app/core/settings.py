@@ -189,6 +189,14 @@ class Settings(BaseSettings):
     ELASTICSEARCH_STATIONS_INDEX: str = "stations_v1"
     ELASTICSEARCH_ROUTES_INDEX: str = "routes_v1"
 
+    BOOKING_TTL_SECONDS: int = 600
+    BOOKING_EXPIRY_CHECK_INTERVAL_MS: int = 30000
+    LOCK_TTL_SECONDS: int = 600
+
+    INTERNAL_SERVICE_KEY: str ="irtc-internal-service-key-2026"
+    INVENTORY_SERVICE_URL: str ="http://127.0.0.1:8000"
+    PAYMENT_SERVICE_URL: str ="http://127.0.0.1:8000"
+
 
     # =========================
     # Pydantic Settings Config
