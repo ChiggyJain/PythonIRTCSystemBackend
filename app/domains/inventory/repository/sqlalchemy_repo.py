@@ -3,10 +3,12 @@ from datetime import date
 from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.common.utils.datetime import now_ist
 from app.common.models.idempotencyrecord_models import IdempotencyRecords
 from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
 from app.domains.inventory.models.route_stop_models import RouteStop
+
 
 
 class InventorySQLAlchemyRepository:
@@ -84,6 +86,8 @@ class InventorySQLAlchemyRepository:
                     seat_number=int(seat.get("seat_number", 0)),
                     seat_type=str(seat.get("seat_type", "LOWER")),
                     price=price_value,
+                    created_at=now_ist(),
+                    updated_at=now_ist(),
                     status="AVAILABLE",
                 )
             )
@@ -108,6 +112,8 @@ class InventorySQLAlchemyRepository:
                     station_name=str(station.get("name", "")),
                     station_code=str(station.get("code", "")),
                     sequence_number=int(station.get("sequence_number", 0)),
+                    created_at=now_ist(),
+                    updated_at=now_ist(),
                 )
             )
 
