@@ -53,15 +53,16 @@ class RoutesElasticsearchRepository:
                         if(ctx._source.schedules == null){
                             ctx._source.schedules = [];
                         }
+                        String targetId = params.schedules.id.toString();
                         boolean found = false;
-                        for(int i = 0; i < ctx._source.schedules.size(); i++){
-                            if(ctx._source.schedules[i].id == params.schedules.id){
+                        for (int i = 0; i < ctx._source.schedules.size(); i++) {
+                            if (ctx._source.schedules[i].id != null && ctx._source.schedules[i].id.toString() == targetId) {
                                 ctx._source.schedules[i] = params.schedules;
                                 found = true;
                                 break;
                             }
                         }
-                        if(!found){
+                        if (!found) {
                             ctx._source.schedules.add(params.schedules);
                         }
                     """,
