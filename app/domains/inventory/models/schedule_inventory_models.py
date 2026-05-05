@@ -23,6 +23,7 @@ class ScheduleInventory(Base):
     available_seats: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     locked: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     booked: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    version: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
