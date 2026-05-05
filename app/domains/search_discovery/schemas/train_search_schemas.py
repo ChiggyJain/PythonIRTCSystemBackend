@@ -1,6 +1,13 @@
 
 from datetime import date
-from pydantic import BaseModel, field_validator, ValidationInfo, model_validator
+import re
+from pydantic import (
+    BaseModel, field_validator, 
+    ValidationInfo, model_validator
+)
+
+
+STATION_CODE_RE = re.compile(r"^[A-Z0-9]{2,10}$")
 
 
 class TrainSearchQueryRequest(BaseModel):
@@ -13,14 +20,10 @@ class TrainSearchQueryRequest(BaseModel):
 
     @field_validator("source", "destination")
     @classmethod
-    def validate_station_query(cls, v: str, info: ValidationInfo) -> str:
-        value = (v or "").strip()
-        if not value:
-            raise ValueError(f"{info.field_name} is required")
-        if len(value) < 2:
-            raise ValueError(f"{info.field_name} must be at least 2 characters")
-        if len(value) > 80:
-            raise ValueError(f"{info.field_name} must be at most 80 characters")
+    def validate_station_code(cls, v: str) -> str:
+        value = (v or "").strip().upper()
+        if not STATION_CODE_RE.match(value):
+            raise ValueError("must be a valid station code (2-10 uppercase alphanumeric)")
         return value
 
     @field_validator("journey_date")
