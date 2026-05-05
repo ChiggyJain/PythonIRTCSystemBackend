@@ -24,6 +24,7 @@ class StationElasticsearchRepository:
             app_logger.error(f"Failed to create ES index: {e}")
             raise
     
+
     async def index(self, document: dict[str, Any]) -> dict:
         doc_id = str(document.get("station_id"))
         return await self.es.index(document=document, doc_id=doc_id)
@@ -32,82 +33,76 @@ class StationElasticsearchRepository:
     async def get_by_id(self, station_id: int) -> Optional[dict]:
         return await self.es.get(doc_id=str(station_id))
     
-    async def delete(self, station_id: int) -> bool:
-        return await self.es.delete(doc_id=str(station_id))
     
-
-    async def search(
+    async def search_dropdown(
         self,
+        *,
         query: str,
-        page: int = 1,
-        size: int = 20,
+        size: int = 10,
     ) -> dict:
         
+        q = query.strip()
+        q_upper = q.upper()
+
         search_body = {
+            
+            "size": size,
+            "track_total_hits": False,
+            "_source": ["station_id", "name", "code", "city"],
             "query": {
-                "multi_match": {
-                    "query": query,
-                    "fields": [
-                        "name^3",
-                        "code^2",
-                        "city^2",
-                        "state"
+                "bool": {
+                    "should": [
+                        {
+                            "term": {
+                                "code": {
+                                    "value": q_upper,
+                                    "boost": 12
+                                }
+                            }
+                        },
+                        {
+                            "prefix": {
+                                "code": {
+                                    "value": q_upper,
+                                    "boost": 8
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase_prefix": {
+                                "name": {
+                                    "query": q,
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase_prefix": {
+                                "city": {
+                                    "query": q,
+                                    "boost": 4
+                                }
+                            }
+                        },
+                        {
+                            "multi_match": {
+                                "query": q,
+                                "fields": ["name^3", "city^2", "code^4"],
+                                "fuzziness": "AUTO",
+                                "prefix_length": 1,
+                                "minimum_should_match": "75%",
+                                "type": "best_fields",
+                                "boost": 2
+                            }
+                        }
                     ],
-                    "fuzziness": "AUTO",
-                    "prefix_length": 2,
-                    "type": "best_fields"
+                    "minimum_should_match": 1
                 }
             },
-            "from": (page - 1) * size,
-            "size": size
+            "sort": [
+                {"_score": {"order": "desc"}},
+                {"name.keyword": {"order": "asc"}}
+            ]
         }
-        return await self.es.search(query=search_body)
-    
-    
-    async def autocomplete(self, prefix: str, size: int = 10) -> dict:
-        search_body = {
-            "suggest": {
-                "station-suggest": {
-                    "text": prefix,
-                    "completion": {
-                        "field": "name.suggest",
-                        "size": size,
-                        "skip_duplicates": True
-                    }
-                }
-            }
-        }
-        return await self.es.search(query=search_body)
-    
 
-    async def search_by_code(self, code: str) -> dict:
-        search_body = {
-            "query": {
-                "term": {
-                    "code": code.lower()
-                }
-            }
-        }
-        return await self.es.search(query=search_body)
-    
-
-    async def filter_by_city(self, city: str) -> dict:
-        search_body = {
-            "query": {
-                "term": {
-                    "city": city.lower()
-                }
-            }
-        }
-        return await self.es.search(query=search_body)
-    
-
-    async def filter_by_state(self, state: str) -> dict:
-        search_body = {
-            "query": {
-                "term": {
-                    "state": state.lower()
-                }
-            }
-        }
         return await self.es.search(query=search_body)
