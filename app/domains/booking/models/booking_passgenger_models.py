@@ -9,23 +9,19 @@ from app.infrastructure.database.base import Base
 class BookingPassengers(Base):
     
     __tablename__ = "BOOKING_PASSENGERS"
-    __table_args__ = (
-        UniqueConstraint("booking_id", "seat_id", name="uq_bookingIdSeatId"),
-    )
-
+    
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     booking_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    seat_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    seat_number: Mapped[int] = mapped_column(Integer, nullable=False)
-    seat_type: Mapped[str] = mapped_column(
+    seat_id: Mapped[int] = mapped_column(Integer, nullable=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    age: Mapped[int] = mapped_column(Integer, nullable=False)
+    gender: Mapped[str] = mapped_column(
         Enum(
-            "LOWER", "MIDDLE", "UPPER", 
-            "SIDE_LOWER", "SIDE_UPPER", 
-            name="seat_type_enum"
+            "Male", "Female", "Transgender", "Other", 
+            name="gender_enum"
         ),
         nullable=False,
     )
-    price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0, server_default="0.00")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=now_ist,
