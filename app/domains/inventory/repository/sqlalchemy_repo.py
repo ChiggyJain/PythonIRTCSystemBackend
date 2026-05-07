@@ -14,7 +14,7 @@ from app.domains.inventory.models.route_stop_models import RouteStop
 class InventorySQLAlchemyRepository:
 
     def __init__(self, db_session: AsyncSession):
-        self.db = db_session
+        self._db_session = db_session
 
 
     async def get_inventory_schedules_by_schedule_id(
@@ -60,8 +60,8 @@ class InventorySQLAlchemyRepository:
             updated_at=now_ist(),
             status=status,
         )
-        self.db.add(row)
-        await self.db.flush()
+        self._db_session.add(row)
+        await self._db_session.flush()
         return row
 
 
@@ -92,8 +92,8 @@ class InventorySQLAlchemyRepository:
                 )
             )
 
-        self.db.add_all(rows)
-        await self.db.flush()
+        self._db_session.add_all(rows)
+        await self._db_session.flush()
 
 
     async def add_route_stop_bulk(
@@ -118,5 +118,5 @@ class InventorySQLAlchemyRepository:
                 )
             )
 
-        self.db.add_all(rows)
-        await self.db.flush()
+        self._db_session.add_all(rows)
+        await self._db_session.flush()
