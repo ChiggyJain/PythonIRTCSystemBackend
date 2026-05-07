@@ -35,3 +35,9 @@ router.include_router(
     search_discovery_router,
     tags=["Search Discovery"],
 )
+
+
+router.include_router(
+    auth_router,
+    prefix="/inventory",
+)
