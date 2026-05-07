@@ -6,7 +6,7 @@ from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.domains.inventory.services.schedule_created_inventory_services import (
-    ScheduleCreatedInventoryService,
+    InventoryService,
 )
 
 settings = get_settings()
@@ -14,7 +14,7 @@ settings = get_settings()
 
 async def process_message(payload: dict) -> bool:
     async with AsyncSessionLocal() as db:
-        service = ScheduleCreatedInventoryService(db_session=db)
+        service = InventoryService(db_session=db)
         result = await service.process_schedule_created_event(payload=payload)
         app_logger.info(
             f"inventory_schedule_consumer | schedule_id={payload.get('schedule_id')} | status={result.get('status')}"

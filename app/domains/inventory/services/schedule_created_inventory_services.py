@@ -8,7 +8,7 @@ from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlch
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
 
-class ScheduleCreatedInventoryService:
+class InventoryService:
 
     IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
     IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
