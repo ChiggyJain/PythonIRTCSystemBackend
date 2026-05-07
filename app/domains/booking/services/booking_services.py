@@ -128,11 +128,13 @@ class BookingService:
                 messages=[f"One or more seats are being booked by another user. Please try again"],
             )
         
+        created_booking = None
+
         try:
             
             curDateTime = now_ist()
             dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
-            locked_expires_at = dt + timedelta(minutes=settings.LOCK_TTL_SECONDS)
+            locked_expires_at = dt + timedelta(seconds=settings.LOCK_TTL_SECONDS)
 
             created_booking = await self.booking_repo.create_booking(
                 user_id=user_id,
