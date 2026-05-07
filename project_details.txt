@@ -296,7 +296,11 @@ Add Authorization header access-token
 
 http://127.0.0.1:8000/api/v1/search/stations?q=del&size=10
 
+
 http://127.0.0.1:8000/api/v1/search/trains?source=NDLS&destination=BCT&journey_date=2026-05-10
+
+
+http://127.0.0.1:8000/api/v1/inventory/schedules/{schedule_id}/availability
 
 
 

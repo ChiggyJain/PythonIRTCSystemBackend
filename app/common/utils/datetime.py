@@ -20,20 +20,7 @@ IST = ZoneInfo("Asia/Kolkata")
 # =========================================================
 
 def now_ist() -> datetime:
-    """
-    Returns IST datetime WITHOUT timezone (naive)
-    """
-
     return datetime.now(IST).replace(tzinfo=None)
 
-
-# =========================================================
-# current IST date
-# =========================================================
-
 def today_ist():
-    """
-    Returns current date in IST
-    """
-
     return now_ist().date()

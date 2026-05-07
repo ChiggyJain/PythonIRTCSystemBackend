@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
-from app.common.utils.datetime import now_ist
+from app.common.utils.datetime import now_ist, today_ist
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
@@ -48,15 +48,28 @@ class BookingService:
         if existing_idempotency_record:
             return existing_idempotency_record.event_response
         
-        availability = None
+        # fetching scheudle-inventory details
+        inventoryScheduleDataObj = None
         async with httpx.AsyncClient() as client:
-            availability = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability").json()
-
-        # check availability.status!="A"
-            # throw error
-        # check availability.departure_date<curDate
-            # throw error
-
+            response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability")
+            response.raise_for_status()
+            data = response.json()
+            inventoryScheduleDataObj = data.get("data")
+        if inventoryScheduleDataObj == None:
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"No inventory schedules found for Train-Schedule-ID: {schedule_id}"],
+            )
+        if inventoryScheduleDataObj["status"]!="A":
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Inventory schedules is not active for Train-Schedule-ID: {schedule_id}"],
+            )
+        if inventoryScheduleDataObj["departure_date"]<today_ist():
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Train is already departed for Train-Schedule-ID: {schedule_id}"],
+            )
         
         # seatData = getSeats(schedule_id, from_station_sequence_number, to_station_sequence_number) via internal http-call through inventory_service
         # seatMap = store seatData{seatId, seatObject}
@@ -89,8 +102,6 @@ class BookingService:
         curTimeStamp = int(datetime.now().timestamp())    
         redisKeyValue = f"pre-{curTimeStamp}:{curTimeStamp}"
         acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue, settings.BOOKING_TTL_SECONDS)
-        print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
-
         if acquiredSeatLocksResponse.isSuccess == False:
             raise BaseAppException(
                 status_code=400,
