@@ -18,10 +18,6 @@ settings = get_settings()
 
 class BookingService:
 
-
-    IDEMPOTENCY_EVENT_TYPE = "BOOKING_CREATED"
-    IDEMPOTENCY_EVENT_KEY_PREFIX = "BOOKING_CREATED"
-
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
@@ -41,9 +37,12 @@ class BookingService:
         to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
         seat_ids = payload.get("seat_ids", "")
         passengers = payload.get("passengers", "")
+        IDEMPOTENCY_EVENT_TYPE = "BOOKING_CREATED"
+        IDEMPOTENCY_EVENT_KEY_PREFIX = "BOOKING_CREATED"
+
 
         # checking given idempotency key exists or not
-        event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
+        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
         existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing_idempotency_record:
             return existing_idempotency_record.event_response
@@ -60,7 +59,7 @@ class BookingService:
                 status_code=400,
                 messages=[f"No inventory schedules found for Train-Schedule-ID: {schedule_id}"],
             )
-        if inventoryScheduleDataObj["status"]!="A":
+        if inventoryScheduleDataObj["status"]!="ACTIVE":
             raise BaseAppException(
                 status_code=400,
                 messages=[f"Inventory schedules is not active for Train-Schedule-ID: {schedule_id}"],
