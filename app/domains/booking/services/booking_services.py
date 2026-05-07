@@ -89,6 +89,12 @@ class BookingService:
                 status_code=400,
                 messages=[f"One or more seats are being booked by another user. Please try again"],
             )
+        
+        try:
+            pass
+        except Exception:
+            await self._db_session.rollback()
+            raise
 
 
 

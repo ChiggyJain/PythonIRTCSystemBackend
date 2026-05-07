@@ -17,7 +17,6 @@ class Bookings(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, nullable=False)
     schedule_id: Mapped[int] = mapped_column(Integer, nullable=False)
-    schedule_id: Mapped[int] = mapped_column(Integer, nullable=False)
     train_id: Mapped[int] = mapped_column(Integer, nullable=False)
     train_number: Mapped[str] = mapped_column(String(30), nullable=False)
     train_name: Mapped[str] = mapped_column(String(100), nullable=False)
