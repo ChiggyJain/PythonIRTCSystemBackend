@@ -23,7 +23,7 @@ class InventorySQLAlchemyRepository:
     ) -> ScheduleInventory | None:
 
         stmt = select(ScheduleInventory).where(
-            ScheduleInventory.schedule_id == schedule_id,
+            ScheduleInventory.schedule_id == schedule_id
         )
         res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()

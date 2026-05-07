@@ -36,6 +36,7 @@ async def get_inventory_schedules_availabiliity(
     schedule_id: int,    
     service: InventoryService = Depends(get_inventory_service),
 ):
+    print(f"dd:schedule_id: {schedule_id}")
     return await service.get_inventory_schedules_availabiliity(schedule_id=schedule_id)
 
 router.add_api_route(

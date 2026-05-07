@@ -2081,3 +2081,77 @@ q
 2026-05-07 18:17:05 | INFO | SpawnProcess-3-21202 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:17:05.646039 | 2026-05-07 18:17:05.713610 | 67 | 'InventorySQLAlchemyRepository' object has no attribute '_db_session' | 500
 2026-05-07 18:18:08 | INFO | ES client created for index: routes_v1
 2026-05-07 18:18:08 | INFO | ES client created for index: stations_v1
+2026-05-07 18:18:13 | INFO | SpawnProcess-5-21246 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:18:13.719748 | 2026-05-07 18:18:13.817281 | 97 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:18:40 | INFO | ES client created for index: routes_v1
+2026-05-07 18:18:40 | INFO | ES client created for index: stations_v1
+2026-05-07 18:18:51 | INFO | SpawnProcess-6-21276 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:18:51.318252 | 2026-05-07 18:18:51.344715 | 26 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:19:14 | INFO | ES client created for index: routes_v1
+2026-05-07 18:19:14 | INFO | ES client created for index: stations_v1
+2026-05-07 18:19:17 | INFO | SpawnProcess-7-21309 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:19:17.769889 | 2026-05-07 18:19:17.787630 | 17 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:19:42 | INFO | SpawnProcess-7-21309 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:19:42.521676 | 2026-05-07 18:19:42.606693 | 85 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:19:49 | INFO | SpawnProcess-7-21309 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:19:49.591592 | 2026-05-07 18:19:49.594007 | 2 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:20:16 | INFO | ES client created for index: routes_v1
+2026-05-07 18:20:16 | INFO | ES client created for index: stations_v1
+2026-05-07 18:20:20 | INFO | ES client created for index: routes_v1
+2026-05-07 18:20:20 | INFO | ES client created for index: stations_v1
+2026-05-07 18:20:28 | INFO | SpawnProcess-9-21362 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-07 18:20:28.585572 | 2026-05-07 18:20:28.602980 | 17 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:21:24 | INFO | SpawnProcess-9-21362 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/11/availability | 2026-05-07 18:21:24.281368 | 2026-05-07 18:21:24.289465 | 8 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (11,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:22:07 | INFO | ES client created for index: routes_v1
+2026-05-07 18:22:07 | INFO | ES client created for index: stations_v1
+2026-05-07 18:22:09 | INFO | SpawnProcess-10-21463 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/11/availability | 2026-05-07 18:22:09.052852 | 2026-05-07 18:22:09.071062 | 18 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (11,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:22:32 | INFO | SpawnProcess-10-21463 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/11/availability | 2026-05-07 18:22:32.899965 | 2026-05-07 18:22:32.909579 | 9 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (11,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:23:39 | INFO | ES client created for index: routes_v1
+2026-05-07 18:23:39 | INFO | ES client created for index: stations_v1
+2026-05-07 18:23:43 | INFO | SpawnProcess-12-21502 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/11/availability | 2026-05-07 18:23:43.693006 | 2026-05-07 18:23:43.723231 | 30 | (asyncmy.errors.OperationalError) (1054, "Unknown column 'SCHEDULE_INVENTORY.version' in 'field list'")
+[SQL: SELECT `SCHEDULE_INVENTORY`.id, `SCHEDULE_INVENTORY`.schedule_id, `SCHEDULE_INVENTORY`.train_id, `SCHEDULE_INVENTORY`.train_number, `SCHEDULE_INVENTORY`.train_name, `SCHEDULE_INVENTORY`.departure_date, `SCHEDULE_INVENTORY`.total_seats, `SCHEDULE_INVENTORY`.available_seats, `SCHEDULE_INVENTORY`.locked, `SCHEDULE_INVENTORY`.booked, `SCHEDULE_INVENTORY`.version, `SCHEDULE_INVENTORY`.created_at, `SCHEDULE_INVENTORY`.updated_at, `SCHEDULE_INVENTORY`.status 
+FROM `SCHEDULE_INVENTORY` 
+WHERE `SCHEDULE_INVENTORY`.schedule_id = %s]
+[parameters: (11,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8) | 500
+2026-05-07 18:24:40 | INFO | ES client created for index: routes_v1
+2026-05-07 18:24:40 | INFO | ES client created for index: stations_v1
