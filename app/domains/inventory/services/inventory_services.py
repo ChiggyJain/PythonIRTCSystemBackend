@@ -141,7 +141,6 @@ class InventoryService:
 
 
     async def get_inventory_schedules_availabiliity(self, schedule_id: int):
-        print(f"schedule_id: {schedule_id}")
         inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
         if inventory_schedules == None:
             return error_response(
