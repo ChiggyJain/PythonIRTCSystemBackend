@@ -10,8 +10,7 @@ from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemy
 
 class InventoryService:
 
-    IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
-    IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
+    
 
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
@@ -21,6 +20,9 @@ class InventoryService:
 
     async def process_schedule_created_event(self, *, payload: dict) -> dict:
 
+        IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
+        IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
+
         schedule_id = int(payload.get("schedule_id", 0))
         if schedule_id <= 0:
             raise BaseAppException(
@@ -28,7 +30,7 @@ class InventoryService:
                 messages=["Invalid schedule_id in payload"],
             )
 
-        event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{schedule_id}"
+        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}_{schedule_id}"
         existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing:
             return {
@@ -98,7 +100,7 @@ class InventoryService:
 
             await self.idempotency_repo.add_idempotency_record(
                 event_key=event_key,
-                event_type=self.IDEMPOTENCY_EVENT_TYPE,
+                event_type=IDEMPOTENCY_EVENT_TYPE,
             )
 
             await self.db.commit()
@@ -134,3 +136,9 @@ class InventoryService:
         except Exception:
             await self.db.rollback()
             raise
+
+
+
+    async def get_inventory_schedules_availabiliity(self, schedule_id: int):
+        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
+        if inventory_schedules == None:

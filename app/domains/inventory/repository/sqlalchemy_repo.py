@@ -17,6 +17,18 @@ class InventorySQLAlchemyRepository:
         self.db = db_session
 
 
+    async def get_inventory_schedules_by_schedule_id(
+        self,
+        schedule_id: int,
+    ) -> ScheduleInventory | None:
+
+        stmt = select(ScheduleInventory).where(
+            ScheduleInventory.schedule_id == schedule_id,
+        )
+        res = await self._db_session.execute(stmt)
+        return res.scalar_one_or_none()
+    
+
     async def add_schedule_inventory(
         self,
         *,
