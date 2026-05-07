@@ -87,7 +87,7 @@ class BookingService:
         if acquiredSeatLocksResponse.isSuccess == False:
             raise BaseAppException(
                 status_code=400,
-                messages=[f"One or more seats are being booked by another user"],
+                messages=[f"One or more seats are being booked by another user. Please try again"],
             )
 
 
