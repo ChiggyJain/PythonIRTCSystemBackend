@@ -104,9 +104,9 @@ class BookingSQLAlchemyRepository:
             row = BookingPassengers(
                 booking_id=booking_id,
                 seat_id=item["seat_id"],
-                seat_number=item["seat_number"],
-                seat_type=item["seat_type"],
-                price=item["price"],
+                name=item["name"],
+                age=item["age"],
+                gender=item["gender"],
                 status="ACTIVE",
                 created_at=now_ist(),
                 updated_at=now_ist(),
