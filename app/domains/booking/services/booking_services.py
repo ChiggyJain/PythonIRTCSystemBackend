@@ -14,6 +14,7 @@ from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
 
 settings = get_settings()
 
+
 class BookingService:
 
 
@@ -119,7 +120,7 @@ class BookingService:
                 status="PENDING",
             )
 
-            
+
 
         except Exception:
             await self._db_session.rollback()
