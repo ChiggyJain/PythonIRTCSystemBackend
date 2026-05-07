@@ -45,7 +45,7 @@ class BookingService:
         event_key = f"{self.IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
         existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing_idempotency_record:
-            return existing_idempotency_record
+            return existing_idempotency_record.event_response
         
         # availability = getAvailability(schedule_id) via internal http-call through inventory_service
         # check availability.status!="A"
