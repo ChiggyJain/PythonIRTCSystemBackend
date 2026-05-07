@@ -125,11 +125,14 @@ class BookingService:
             created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
             
             created_booking_passengers = await self.booking_repo.create_booking_passengers(booking_id=bookingId, passenger_details=passengers)
-            
+
 
         except Exception:
             await self._db_session.rollback()
-            raise
+            raise BaseAppException(
+                status_code=400,
+                messages=["Unable to create booking"],
+            )
 
 
 
