@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.core.response import success_response, error_response
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
@@ -140,4 +141,16 @@ class InventoryService:
 
 
     async def get_inventory_schedules_availabiliity(self, schedule_id: int):
-        return await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
+        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
+        if inventory_schedules == None:
+            return error_response(
+                messages = ["No inventory schedules found"],
+                status_code = 400,
+                data = None
+            )
+        else:
+            return success_response(
+                messages = ["Inventory schedules found"],
+                status_code = 200,
+                data = inventory_schedules
+            )
