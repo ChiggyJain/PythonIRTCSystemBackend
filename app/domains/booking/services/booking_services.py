@@ -120,6 +120,8 @@ class BookingService:
                 status="PENDING",
             )
 
+            bookingId = created_booking.id
+            created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
 
 
         except Exception:
