@@ -301,7 +301,10 @@ http://127.0.0.1:8000/api/v1/search/trains?source=NDLS&destination=BCT&journey_d
 
 
 http://127.0.0.1:8000/api/v1/inventory/schedules/{schedule_id}/availability
-
+http://127.0.0.1:8000/api/v1/inventory/schedules/{schedule_id}/seats
+{
+  status, seatType, fromSeq, toSeq
+}
 
 
 APIs POST Request =>

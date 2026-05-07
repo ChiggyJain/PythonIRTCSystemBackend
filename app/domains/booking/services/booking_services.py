@@ -47,7 +47,7 @@ class BookingService:
         if existing_idempotency_record:
             return existing_idempotency_record.event_response
         
-        # fetching scheudle-inventory details
+        # fetching schedule-inventory details
         inventoryScheduleDataObj = None
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability")
@@ -70,26 +70,43 @@ class BookingService:
                 messages=[f"Train is already departed for Train-Schedule-ID: {schedule_id}"],
             )
         
-        # seatData = getSeats(schedule_id, from_station_sequence_number, to_station_sequence_number) via internal http-call through inventory_service
-        # seatMap = store seatData{seatId, seatObject}
+        # fetching seats data details
+        seatDataList = None
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats")
+            response.raise_for_status()
+            data = response.json()
+            seatDataList = data.get("data")
+        seatMap = {eachSeatDataObj.seat_id : eachSeatDataObj for eachSeatDataObj in seatDataList}
 
         bookingSeats = []
         totalAmount = 0
-        
-        """
-        for eachSeatId in seat_ids:
-            seat = seatMap.get(eachSeatId, None)
-            if !seat:
-                throw error
-            isSeatAvailable = (from_station_sequence_number and to_station_sequence_number and seat.segementStatus!=undefined)
-                ? seat.segementStatus === "AVAILABLE"
-                : seat.status === "AVAILABLE"
-            if isSeatAvailable == False:
-                throw error
-            bookingSeats.append(seat)
-            totalAmount+= seat.price
-        """
+        for eachGivenSeatId in seat_ids:
+            seat = seatMap.get(eachGivenSeatId, None)
+            if seat == None:
+                raise BaseAppException(
+                    status_code=400,
+                    messages=[f"Seat-ID: {eachGivenSeatId} is not in schedule"],
+                )
+            is_seat_available = (
+                seat["segmentStatus"] == "AVAILABLE"
+                if (
+                    from_station_sequence_number
+                    and to_station_sequence_number
+                    and seat.get("segmentStatus") is not None
+                )
+                else seat["status"] == "AVAILABLE"
+            )
+            if is_seat_available == False:
+                raise BaseAppException(
+                    status_code=400,
+                    messages=[f"Seat: {seat["seat_number"]} is not available"],
+                )
+            if is_seat_available == True:
+                bookingSeats.append(seat)
+                totalAmount+= seat["price"]
 
+   
         sortedSeatIds = seat_ids
 
         
