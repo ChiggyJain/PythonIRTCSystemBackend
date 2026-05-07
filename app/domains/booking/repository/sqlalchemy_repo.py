@@ -9,6 +9,7 @@ from app.common.utils.datetime import now_ist
 from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_seats_models import BookingSeats
 from app.domains.booking.models.booking_passgenger_models import BookingPassengers
+from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
 
 
 class BookingSQLAlchemyRepository:
@@ -115,4 +116,30 @@ class BookingSQLAlchemyRepository:
         self._db_session.add_all(rows)
         await self._db_session.flush()
         return rows
+    
+
+    async def create_booking_saga_logs(
+        self,
+        *,
+        booking_id: int,
+        saga_step: str = "HOLD_SEATS",
+        request: dict[str, Any] | None,
+        response: dict[str, Any] | None,
+        error: str | None = None,
+        status: str = "PENDING"
+    ) -> BookingSagaLogs:
+        
+        row = BookingSagaLogs(
+            booking_id=booking_id,
+            saga_step=saga_step,
+            request=request,
+            response=response,
+            error=error,
+            status=status,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+        )
+        self._db_session.add(row)
+        await self._db_session.flush()
+        return row
     
