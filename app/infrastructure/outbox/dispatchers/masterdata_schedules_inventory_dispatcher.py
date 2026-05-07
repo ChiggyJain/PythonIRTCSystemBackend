@@ -5,7 +5,7 @@ from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
 from app.infrastructure.database.session import AsyncSessionLocal
-from app.domains.inventory.services.schedule_created_inventory_services import (
+from app.domains.inventory.services.inventory_services import (
     InventoryService,
 )
 
