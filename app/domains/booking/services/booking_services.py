@@ -1,14 +1,16 @@
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import json
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
+from app.common.utils.datetime import now_ist
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
+
 
 settings = get_settings()
 
@@ -91,7 +93,34 @@ class BookingService:
             )
         
         try:
-            pass
+            
+            curDateTime = now_ist()
+            dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
+            locked_expires_at = dt + timedelta(minutes=10)
+
+            created_booking = await self.booking_repo.create_booking(
+                user_id=user_id,
+                schedule_id=schedule_id,
+                train_id="",
+                train_number=""
+                train_name=""
+                departure_date=departure_date,
+                total_amount=total_amount,
+                seat_count=len(seat_ids),
+                from_station_id=from_station_id,
+                to_station_id=to_station_id,
+                from_station_sequence_number=from_station_sequence_number,
+                to_station_sequence_number=to_station_sequence_number,
+                idempotency_key=idempotency_key,
+                payment_order_id=None,
+                locked_expires_at=locked_expires_at,
+                failure_reason=None,
+                version=0,
+                status="PENDING",
+            )
+
+            
+
         except Exception:
             await self._db_session.rollback()
             raise

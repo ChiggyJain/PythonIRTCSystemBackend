@@ -1,6 +1,6 @@
 
 
-from datetime import date
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
