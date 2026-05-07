@@ -97,7 +97,7 @@ class BookingService:
             
             curDateTime = now_ist()
             dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
-            locked_expires_at = dt + timedelta(minutes=10)
+            locked_expires_at = dt + timedelta(minutes=settings.LOCK_TTL_SECONDS)
 
             created_booking = await self.booking_repo.create_booking(
                 user_id=user_id,
