@@ -83,7 +83,13 @@ class BookingService:
         redisKeyValue = f"pre-{curTimeStamp}:{curTimeStamp}"
         acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue, settings.BOOKING_TTL_SECONDS)
         print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
-        
+
+        if acquiredSeatLocksResponse.isSuccess == False:
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"One or more seats are being booked by another user"],
+            )
+
 
 
 

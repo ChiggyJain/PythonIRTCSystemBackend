@@ -248,44 +248,44 @@ async def cache_set_delete(
 
 
 async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
-        lua_script = """
-            local value = ARGV[1]
-            local ttl = tonumber(ARGV[2])
-            local insertedKeys = {}
-            local failedKeys = {}
-            for i = 1, #KEYS do
-                local key = KEYS[i]
-                local result = redis.call(
-                    "SET",
-                    key,
-                    value,
-                    "EX",
-                    ttl,
-                    "NX"
-                )
-                if not result then
-                    table.insert(failedKeys, key)
-                    for j = 1, #insertedKeys do
-                        redis.call("DEL", insertedKeys[j])
-                    end
-                    return cjson.encode({
-                        totalCntOfKeys = #KEYS,
-                        insertedKeys = "",
-                        failedKeys = table.concat(failedKeys, ","),
-                        isSuccess = false
-                    })
+    lua_script = """
+        local value = ARGV[1]
+        local ttl = tonumber(ARGV[2])
+        local insertedKeys = {}
+        local failedKeys = {}
+        for i = 1, #KEYS do
+            local key = KEYS[i]
+            local result = redis.call(
+                "SET",
+                key,
+                value,
+                "EX",
+                ttl,
+                "NX"
+            )
+            if not result then
+                table.insert(failedKeys, key)
+                for j = 1, #insertedKeys do
+                    redis.call("DEL", insertedKeys[j])
                 end
-                table.insert(insertedKeys, key)
+                return cjson.encode({
+                    totalCntOfKeys = #KEYS,
+                    insertedKeys = "",
+                    failedKeys = table.concat(failedKeys, ","),
+                    isSuccess = False
+                })
             end
-            return cjson.encode({
-                totalCntOfKeys = #KEYS,
-                insertedKeys = table.concat(insertedKeys, ","),
-                failedKeys = "",
-                isSuccess = true
-            })
-        """
+            table.insert(insertedKeys, key)
+        end
+        return cjson.encode({
+            totalCntOfKeys = #KEYS,
+            insertedKeys = table.concat(insertedKeys, ","),
+            failedKeys = "",
+            isSuccess = True
+        })
+    """
 
-        redis = get_redis()
-        response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue, ttlSeconds)
-        response_dict = json.loads(response)
-        return response_dict
+    redis = get_redis()
+    response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue, ttlSeconds)
+    response_dict = json.loads(response)
+    return response_dict
