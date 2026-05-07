@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_seats_models import BookingSeats
+from app.domains.booking.models.booking_passgenger_models import BookingPassengers
 
 
 class BookingSQLAlchemyRepository:
@@ -76,6 +77,31 @@ class BookingSQLAlchemyRepository:
         rows: list[BookingSeats] = []
         for item in seat_details:
             row = BookingSeats(
+                booking_id=booking_id,
+                seat_id=item["seat_id"],
+                seat_number=item["seat_number"],
+                seat_type=item["seat_type"],
+                price=item["price"],
+                status="ACTIVE",
+                created_at=now_ist(),
+                updated_at=now_ist(),
+            )
+            rows.append(row)
+        self._db_session.add_all(rows)
+        await self._db_session.flush()
+        return rows
+    
+
+    async def create_booking_passengers(
+        self,
+        *,
+        booking_id: int,
+        passenger_details: list[dict[str, Any]],
+    ) -> list[BookingPassengers]:
+        
+        rows: list[BookingPassengers] = []
+        for item in passenger_details:
+            row = BookingPassengers(
                 booking_id=booking_id,
                 seat_id=item["seat_id"],
                 seat_number=item["seat_number"],
