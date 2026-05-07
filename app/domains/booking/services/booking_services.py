@@ -36,6 +36,7 @@ class BookingService:
         from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
         to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
         seat_ids = payload.get("seat_ids", "")
+        seat_ids.sort()
         passengers = payload.get("passengers", "")
         IDEMPOTENCY_EVENT_TYPE = "BOOKING_CREATED"
         IDEMPOTENCY_EVENT_KEY_PREFIX = "BOOKING_CREATED"
@@ -53,7 +54,7 @@ class BookingService:
             response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability")
             response.raise_for_status()
             data = response.json()
-            inventoryScheduleDataObj = data.get("data")
+            inventoryScheduleDataObj = data.get("data", None)
         if inventoryScheduleDataObj == None:
             raise BaseAppException(
                 status_code=400,
@@ -76,9 +77,15 @@ class BookingService:
             response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats")
             response.raise_for_status()
             data = response.json()
-            seatDataList = data.get("data")
-        seatMap = {eachSeatDataObj.seat_id : eachSeatDataObj for eachSeatDataObj in seatDataList}
+            seatDataList = data.get("data", None)
+        if seatDataList == None:
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Seats details is not found for Train-Schedule-ID: {schedule_id}"],
+            )
 
+        # calculating seat price and availability details
+        seatMap = {eachSeatDataObj["seat_id"] : eachSeatDataObj for eachSeatDataObj in seatDataList}
         bookingSeats = []
         totalAmount = 0
         for eachGivenSeatId in seat_ids:
@@ -86,7 +93,7 @@ class BookingService:
             if seat == None:
                 raise BaseAppException(
                     status_code=400,
-                    messages=[f"Seat-ID: {eachGivenSeatId} is not in schedule"],
+                    messages=[f"Given Seat-ID: {eachGivenSeatId} is not in inventory schedule"],
                 )
             is_seat_available = (
                 seat["segmentStatus"] == "AVAILABLE"
@@ -107,9 +114,6 @@ class BookingService:
                 totalAmount+= seat["price"]
 
    
-        sortedSeatIds = seat_ids
-
-        
         # preparing keys to acquire seat locks in redis via lua_script
         allRedisKeys = []
         for eachSeatId in seat_ids:
