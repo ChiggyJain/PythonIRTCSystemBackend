@@ -103,10 +103,10 @@ class BookingService:
                 user_id=user_id,
                 schedule_id=schedule_id,
                 train_id="",
-                train_number=""
-                train_name=""
-                departure_date=departure_date,
-                total_amount=total_amount,
+                train_number="",
+                train_name="",
+                departure_date="",
+                total_amount=totalAmount,
                 seat_count=len(seat_ids),
                 from_station_id=from_station_id,
                 to_station_id=to_station_id,
