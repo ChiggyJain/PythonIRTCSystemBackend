@@ -1,6 +1,6 @@
 
-from datetime import date
-from re import L
+from datetime import date, datetime
+import json
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -8,6 +8,7 @@ from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
+from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
 
 settings = get_settings()
 
@@ -71,66 +72,21 @@ class BookingService:
         """
 
         sortedSeatIds = seat_ids
-        
-        # implement in redis via lua-script
-        acquired, lockValue = await self.acquireSeatLocks(
-            schedule_id,
-            sortedSeatIds,
-            f"pre-${'PutHereCurDateTimeStamp'}",
-            settings.BOOKING_TTL_SECONDS,
-            from_station_sequence_number,
-            to_station_sequence_number
-        )
-        if acquired == False:
-            return
-        
-        try:
-
-            locked_expires_at = ""
-
-        except Exception as e:
-            pass
 
         
-
-
-
-
-    async def acquireSeatLocks(self, schedule_id, seat_ids, booking_id, ttlSeconds, from_station_sequence_number, to_station_sequence_number):
-        
-        keys = []
+        # preparing keys to acquire seat locks in redis via lua_script
+        allRedisKeys = []
         for eachSeatId in seat_ids:
-            key = f"booking:lock:seat:{schedule_id}:{eachSeatId}"
-            keys.append(key)
-        lockValue = f"{booking_id}:{'PutHereCurDateTimeStamp'}"
+            key = f"booking:lock:seat:{schedule_id}:{eachSeatId}:{from_station_sequence_number}:{to_station_sequence_number}"
+            allRedisKeys.append(key)
+        curTimeStamp = int(datetime.now().timestamp())    
+        redisKeyValue = f"pre-{curTimeStamp}:{curTimeStamp}"
+        acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue, settings.BOOKING_TTL_SECONDS)
+        print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
         
-        """
-        result = await redis.eval(
-            LUA_ACQUIRE_SCRIPT, keys.length,
-            ...keys,
-            lockValue, ttlSeconds
-        )
-        if result == 1:
-            return {
-                "acquired" : True,
-                "lockValue" : lockValue
-            }
-        else:
-            return {
-                "acquired" : False,
-                "lockValue" : None
-            }
-        """
-
-        pass
 
 
 
 
 
-
-
-
-
-
-
+       

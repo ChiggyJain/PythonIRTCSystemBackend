@@ -3,11 +3,13 @@ Redis Cache Utility
 Reusable cache helper
 """
 
+from datetime import date, datetime
 import json
 from typing import (
     Any, Optional
 )
 from app.infrastructure.redis.client import get_redis
+
 
 
 # =========================
@@ -243,3 +245,47 @@ async def cache_set_delete(
     redis = get_redis()
     return int(await redis.delete(key))
 
+
+
+async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
+        lua_script = """
+            local value = ARGV[1]
+            local ttl = tonumber(ARGV[2])
+            local insertedKeys = {}
+            local failedKeys = {}
+            for i = 1, #KEYS do
+                local key = KEYS[i]
+                local result = redis.call(
+                    "SET",
+                    key,
+                    value,
+                    "EX",
+                    ttl,
+                    "NX"
+                )
+                if not result then
+                    table.insert(failedKeys, key)
+                    for j = 1, #insertedKeys do
+                        redis.call("DEL", insertedKeys[j])
+                    end
+                    return cjson.encode({
+                        totalCntOfKeys = #KEYS,
+                        insertedKeys = "",
+                        failedKeys = table.concat(failedKeys, ","),
+                        isSuccess = false
+                    })
+                end
+                table.insert(insertedKeys, key)
+            end
+            return cjson.encode({
+                totalCntOfKeys = #KEYS,
+                insertedKeys = table.concat(insertedKeys, ","),
+                failedKeys = "",
+                isSuccess = true
+            })
+        """
+
+        redis = get_redis()
+        response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue, ttlSeconds)
+        response_dict = json.loads(response)
+        return response_dict
