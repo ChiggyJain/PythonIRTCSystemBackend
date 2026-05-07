@@ -1,6 +1,7 @@
 
 from datetime import date, datetime, timedelta
 import json
+import httpx
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -47,7 +48,10 @@ class BookingService:
         if existing_idempotency_record:
             return existing_idempotency_record.event_response
         
-        # availability = getAvailability(schedule_id) via internal http-call through inventory_service
+        availability = None
+        async with httpx.AsyncClient() as client:
+            availability = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability").json()
+
         # check availability.status!="A"
             # throw error
         # check availability.departure_date<curDate
