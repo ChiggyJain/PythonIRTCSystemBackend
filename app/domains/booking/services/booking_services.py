@@ -11,7 +11,7 @@ from app.common.utils.datetime import now_ist, today_ist
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
-
+from app.services.saga_services import executeHoldSeats
 
 settings = get_settings()
 
@@ -171,6 +171,12 @@ class BookingService:
                 status="PENDING"
             )
             """
+
+            # execute saga step1: Hold seats in inventory
+            await executeHoldSeats(
+                created_booking, seat_ids, settings.LOCK_TTL_SECONDS,
+                from_station_sequence_number, to_station_sequence_number
+            )
 
         except Exception:
             # await self._db_session.rollback()
