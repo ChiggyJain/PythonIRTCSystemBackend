@@ -215,6 +215,8 @@ class BookingService:
                 event_response = booking_details
             )
 
+            return booking_details
+        
         except Exception:
             # await self._db_session.rollback()
             raise BaseAppException(
