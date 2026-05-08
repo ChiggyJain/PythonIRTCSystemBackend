@@ -159,7 +159,7 @@ class Settings(BaseSettings):
     MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
     # Train KAFKA TOPIC and CONSUMER
-    MASTERDATA_TRAIN_EVENT_TOPIC: str = "masterdata-train-events-v1"
+    MASTERDATA_TRAIN_CREATED: str = "masterdata-train-created"
     MASTERDATA_TRAIN_CONSUMER_GROUP: str = "masterdata-train-events-dispatch-consumer-v1"
     MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int = 6
     MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
