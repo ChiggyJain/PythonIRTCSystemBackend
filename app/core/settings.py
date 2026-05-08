@@ -166,7 +166,7 @@ class Settings(BaseSettings):
     MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
     # Route KAFKA TOPIC and CONSUMER
-    MASTERDATA_ROUTE_EVENT_TOPIC: str = "masterdata-route-events-v1"
+    MASTERDATA_ROUTE_CREATED: str = "masterdata-route-created"
     MASTERDATA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumer-v1"
     MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
