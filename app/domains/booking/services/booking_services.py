@@ -195,7 +195,12 @@ class BookingService:
             )
 
             # execute saga step2: Create payment order
-            paymentOrder = await executeCreatePayment(booking_details)
+            createdPaymentOrderData = await executeCreatePayment(booking_details)
+
+            # refreshing the booking-details
+            booking_details["payment_order_id"] = createdPaymentOrderData["payment_order_id"]
+            booking_details["status"] = "PAYMENT_PENDING"
+
 
 
         except Exception:
