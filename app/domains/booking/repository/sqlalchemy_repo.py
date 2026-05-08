@@ -172,12 +172,18 @@ class BookingSQLAlchemyRepository:
     ) -> bool:
 
         update_data["updated_at"] = now_ist()
-        stmt = update(BookingSagaLogs)
+        conditions = []
         for key, value in where_data.items():
-            stmt = stmt.where(
-                getattr(BookingSagaLogs, key) == value
-            )
-        stmt = stmt.values(**update_data)
+            column = getattr(BookingSagaLogs, key)
+            if isinstance(value, list):
+                conditions.append(column.in_(value))
+            else:
+                conditions.append(column == value)
+        stmt = (
+            update(BookingSagaLogs)
+            .where(*conditions)
+            .values(**update_data)
+        )        
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
     
@@ -190,13 +196,17 @@ class BookingSQLAlchemyRepository:
     ) -> bool:
 
         update_data["updated_at"] = now_ist()
-        stmt = update(Bookings)
+        conditions = []
         for key, value in where_data.items():
-            stmt = stmt.where(
-                getattr(BookingSagaLogs, key) == value
-            )
-        stmt = stmt.values(**update_data)
+            column = getattr(Bookings, key)
+            if isinstance(value, list):
+                conditions.append(column.in_(value))
+            else:
+                conditions.append(column == value)
+        stmt = (
+            update(Bookings)
+            .where(*conditions)
+            .values(**update_data)
+        )        
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
-
-    
