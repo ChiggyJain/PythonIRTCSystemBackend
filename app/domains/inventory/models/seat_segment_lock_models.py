@@ -41,7 +41,7 @@ class SeatSegmentLockInventory(Base):
         nullable=False,
     )    
     status: Mapped[str] = mapped_column(
-        Enum("AVAILABLE", "LOCKED", "BOOKED", "CANCELLED", name="seat_inventory_status_enum"),
+        Enum("AVAILABLE", "LOCKED", "BOOKED", "CANCELLED", name="seat_segement_status_enum"),
         nullable=False,
         default="AVAILABLE",
         server_default="AVAILABLE",
