@@ -33,7 +33,7 @@ class InventoryService:
                 messages=["Invalid schedule_id in payload"],
             )
 
-        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}_{schedule_id}"
+        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
         existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing:
             return {
