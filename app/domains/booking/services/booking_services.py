@@ -105,11 +105,11 @@ class BookingService:
                     messages=[f"Given Seat-ID: {eachGivenSeatId} is not in inventory schedule"],
                 )
             is_seat_available = (
-                seat["segmentStatus"] == "AVAILABLE"
+                seat["segment_status"] == "AVAILABLE"
                 if (
                     from_station_sequence_number
                     and to_station_sequence_number
-                    and seat.get("segmentStatus") is not None
+                    and seat.get("segment_status") is not None
                 )
                 else seat["status"] == "AVAILABLE"
             )
