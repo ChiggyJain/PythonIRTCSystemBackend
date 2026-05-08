@@ -35,9 +35,9 @@ class BookingService:
         to_station_id = int(payload.get("to_station_id", 0))
         from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
         to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
-        seat_ids = payload.get("seat_ids", "")
+        seat_ids = payload.get("seat_ids", [])
         seat_ids.sort()
-        passengers = payload.get("passengers", "")
+        passengers = payload.get("passengers", [])
         IDEMPOTENCY_EVENT_TYPE = "BOOKING_CREATED"
         IDEMPOTENCY_EVENT_KEY_PREFIX = "BOOKING_CREATED"
 
@@ -58,12 +58,12 @@ class BookingService:
         if inventoryScheduleDataObj == None:
             raise BaseAppException(
                 status_code=400,
-                messages=[f"No inventory schedules found for Train-Schedule-ID: {schedule_id}"],
+                messages=[f"No inventory schedule found for Train-Schedule-ID: {schedule_id}"],
             )
         if inventoryScheduleDataObj["status"]!="ACTIVE":
             raise BaseAppException(
                 status_code=400,
-                messages=[f"Inventory schedules is not active for Train-Schedule-ID: {schedule_id}"],
+                messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
             )
         if inventoryScheduleDataObj["departure_date"]<today_ist():
             raise BaseAppException(
@@ -71,7 +71,7 @@ class BookingService:
                 messages=[f"Train is already departed for Train-Schedule-ID: {schedule_id}"],
             )
         
-        # fetching seats data details
+        # fetching seats details
         seatDataList = None
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats")
@@ -154,9 +154,11 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
-            bookingId = created_booking.id            
+            bookingId = created_booking.id
             created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
             created_booking_passengers = await self.booking_repo.create_booking_passengers(booking_id=bookingId, passenger_details=passengers)
+
+            """
             created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
                 booking_id=bookingId, 
                 saga_step="HOLD_SEATS", 
@@ -168,10 +170,10 @@ class BookingService:
                 error=None, 
                 status="PENDING"
             )
-
+            """
 
         except Exception:
-            await self._db_session.rollback()
+            # await self._db_session.rollback()
             raise BaseAppException(
                 status_code=400,
                 messages=["Unable to create booking"],
