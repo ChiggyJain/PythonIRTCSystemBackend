@@ -35,9 +35,9 @@ class Trains(Base):
     )
     train_number: Mapped[str] = mapped_column(String(30), nullable=False)
     train_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    # right now each train can have only one coach only as AC [doing simplification work purpose only]
+    # Single coach per train (simplified)
     coach_name: Mapped[str] = mapped_column(String(10), nullable=False, default="AC")
-    # total seats in the train
+    # Total seats in the single coach
     total_seats: Mapped[int] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
