@@ -131,17 +131,28 @@ async def compensateAll(booking, seat_ids):
     
     for each_booking_sag_log in booking_saga_logs:
         match (each_booking_sag_log.saga_step):
-            case "CONFIRM_SEATS":
-                await compensateConfirmSeats(booking)
+            case "HOLD_SEATS":
+                await compensateHoldSeats(booking, seat_ids)
             case "CREATE_PAYMENT":
                 await compensateCreatePayment(booking)
-            case "HOLD_SEATS":
-                await compensateHoldSeats(booking)
+            case "CONFIRM_SEATS":
+                await compensateConfirmSeats(booking)
+            
 
 
-
-async def compensateHoldSeats(booking):
-    pass
+async def compensateHoldSeats(booking, seat_ids):
+    # releaseSeats task is pending 
+    # updating booking-saga-log and bookings record table
+    isBookingSagaLogsRecordUpdated = False
+    async with AsyncSessionLocal() as db:
+        async with db.begin():
+            booking_repo = BookingSQLAlchemyRepository(db)
+            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
+                id = booking["id"],
+                update_data = {
+                    "status" : "COMPENSATED"
+                }
+            )
 
 async def compensateConfirmSeats(booking):
     pass
