@@ -11,7 +11,10 @@ from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
-from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
+from app.common.cache.redis_cache import (
+    acquireBookingSeatLocksThroughRedis,
+    releaseBookingSeatLocksThroughRedis
+)
 from app.services.saga_services import (
     executeHoldSeats,
     executeCreatePayment,
@@ -215,6 +218,8 @@ class BookingService:
                         "status" : "FAILED"
                     }
                 )
+                await releaseBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue)
+                
 
             raise BaseAppException(
                 status_code=400,

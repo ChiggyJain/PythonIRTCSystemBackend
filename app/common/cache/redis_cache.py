@@ -248,7 +248,7 @@ async def cache_set_delete(
 
 
 async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
-    
+
     lua_script = """
         local value = ARGV[1]
         local ttl = tonumber(ARGV[2])
@@ -288,5 +288,35 @@ async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
 
     redis = get_redis()
     response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue, ttlSeconds)
+    response_dict = json.loads(response)
+    return response_dict
+
+
+async def releaseBookingSeatLocksThroughRedis(allKeys, keyValue):
+
+    lua_script = """
+        local value = ARGV[1]
+        local releasedKeys = {}
+        local failedKeys = {}
+        for i = 1, #KEYS do
+            local key = KEYS[i]
+            local currentValue = redis.call("GET", key)
+            if currentValue == value then
+                redis.call("DEL", key)
+                table.insert(releasedKeys, key)
+            else
+                table.insert(failedKeys, key)
+            end
+        end
+        return cjson.encode({
+            totalCntOfKeys = #KEYS,
+            releasedKeys = table.concat(releasedKeys, ","),
+            failedKeys = table.concat(failedKeys, ","),
+            isSuccess = (#failedKeys == 0)
+        })
+    """
+
+    redis = get_redis()
+    response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue)
     response_dict = json.loads(response)
     return response_dict
