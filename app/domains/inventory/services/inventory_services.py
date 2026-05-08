@@ -161,6 +161,7 @@ class InventoryService:
         
 
     async def get_inventory_schedules_seats_availabiliity(self, schedule_id: int, from_station_sequence_number: int, to_station_sequence_number: int):
+
         inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
         if inventory_schedules == None:
             return error_response(
@@ -228,8 +229,18 @@ class InventoryService:
                     seat_data["segment_status"] = "AVAILABLE"
                 updated_seats.append(seat_data)
 
+            return success_response(
+                status_code=200,
+                messages=["Seats details found"],
+                data={
+                    "schedule_id" : schedule_id,
+                    "total_seats" : inventory_schedules.total_seats,
+                    "seats" : updated_seats
+                }
+            )
 
-            pass    
+
+              
 
 
 
