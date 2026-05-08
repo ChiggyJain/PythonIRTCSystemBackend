@@ -149,13 +149,13 @@ class InventoryService:
         if inventory_schedules == None:
             return error_response(
                 status_code=404,
-                messages=["No inventory schedules found"],
+                messages=["No schedules inventory found"],
                 data=None
             )
         else:
             return success_response(
                 status_code=200,
-                messages=["Inventory schedules found"],
+                messages=["Schedules inventory found"],
                 data=inventory_schedules
             )
         
@@ -166,7 +166,7 @@ class InventoryService:
         if inventory_schedules == None:
             return error_response(
                 status_code=404,
-                messages=["No inventory schedules found"],
+                messages=["No schedules inventory found"],
                 data=None
             )
         else:
