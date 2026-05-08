@@ -148,15 +148,15 @@ class InventoryService:
         inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
         if inventory_schedules == None:
             return error_response(
-                messages = ["No inventory schedules found"],
-                status_code = 404,
-                data = None
+                status_code=404,
+                messages=["No inventory schedules found"],
+                data=None
             )
         else:
             return success_response(
-                messages = ["Inventory schedules found"],
-                status_code = 200,
-                data = inventory_schedules
+                status_code=200,
+                messages=["Inventory schedules found"],
+                data=inventory_schedules
             )
         
 
@@ -165,9 +165,9 @@ class InventoryService:
         inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
         if inventory_schedules == None:
             return error_response(
-                messages = ["No inventory schedules found"],
-                status_code = 404,
-                data = None
+                status_code=404,
+                messages=["No inventory schedules found"],
+                data=None
             )
         else:
 
@@ -229,15 +229,22 @@ class InventoryService:
                     seat_data["segment_status"] = "AVAILABLE"
                 updated_seats.append(seat_data)
 
-            return success_response(
-                status_code=200,
-                messages=["Seats details found"],
-                data={
-                    "schedule_id" : schedule_id,
-                    "total_seats" : inventory_schedules.total_seats,
-                    "seats" : updated_seats
-                }
-            )
+            if len(updated_seats)<0:
+                return error_response(
+                    status_code=404,
+                    messages=["Seats details not found"],
+                    data=None
+                )
+            else:
+                return success_response(
+                    status_code=200,
+                    messages=["Seats details found"],
+                    data={
+                        "schedule_id" : schedule_id,
+                        "total_seats" : inventory_schedules.total_seats,
+                        "seats" : updated_seats
+                    }
+                )
 
 
               
