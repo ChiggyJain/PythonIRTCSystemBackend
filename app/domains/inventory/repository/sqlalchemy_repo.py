@@ -167,7 +167,7 @@ class InventorySQLAlchemyRepository:
         await self._db_session.flush()
 
     
-    async def add_seat_segement_lock_bulk_for_booking(
+    async def add_seat_segement_lock_details(
         self,
         *,
         schedule_id: int,

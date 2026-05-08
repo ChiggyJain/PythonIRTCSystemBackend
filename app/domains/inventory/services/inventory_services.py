@@ -216,7 +216,7 @@ class InventoryService:
                     "locked_expires_at": locked_expires_at,
                     "status" : "LOCKED"
                 })
-            await self.inventory_repo.add_seat_segement_lock_bulk_for_booking(
+            await self.inventory_repo.add_seat_segement_lock_details(
                 schedule_id=schedule_id,
                 seat_details=seat_segment_lock_payloads
             )
