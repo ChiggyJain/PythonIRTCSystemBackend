@@ -3,7 +3,7 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from typing import Any
-from sqlalchemy import select
+from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.booking.models.bookings_models import Bookings
@@ -142,4 +142,28 @@ class BookingSQLAlchemyRepository:
         self._db_session.add(row)
         await self._db_session.flush()
         return row
+    
+
+    async def update_booking_saga_logs_by_id(
+        self,
+        *,
+        id: int,
+        response: dict[str, Any] | None,
+        error: str | None = None,
+        status: str,
+    ) -> bool:
+
+        stmt = (
+            update(BookingSagaLogs)
+            .where(
+                BookingSagaLogs.id == id,
+            )
+            .values(
+                status=status,
+                response=response,
+                updated_at=now_ist(),
+            )
+        )
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
     

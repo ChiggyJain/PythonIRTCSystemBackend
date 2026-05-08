@@ -53,7 +53,7 @@ class BookingService:
         # fetching schedule-inventory details
         inventoryScheduleDataObj = None
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/availability")
+            response = await client.get(f"http://127.0.0.1:8000/inventory/schedules/{schedule_id}/availability")
             response.raise_for_status()
             data = response.json()
             inventoryScheduleDataObj = data.get("data", None)
