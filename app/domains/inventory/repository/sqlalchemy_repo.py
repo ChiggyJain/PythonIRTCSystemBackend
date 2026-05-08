@@ -183,7 +183,7 @@ class InventorySQLAlchemyRepository:
                     from_station_sequence_number=int(seat.get("from_station_sequence_number", 0)),
                     to_station_sequence_number=int(seat.get("to_station_sequence_number", 0)),
                     locked_by_user_id=int(seat.get("locked_by_user_id", 0)),
-                    locked_at=seat.get("locked_at", ""),
+                    locked_at=now_ist(),
                     locked_expires_at=seat.get("locked_expires_at", ""),
                     created_at=now_ist(),
                     updated_at=now_ist(),
