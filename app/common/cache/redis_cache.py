@@ -248,6 +248,7 @@ async def cache_set_delete(
 
 
 async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
+    
     lua_script = """
         local value = ARGV[1]
         local ttl = tonumber(ARGV[2])
