@@ -8,10 +8,12 @@ from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist, today_ist
+from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
 from app.services.saga_services import executeHoldSeats
+
 
 settings = get_settings()
 
@@ -127,7 +129,9 @@ class BookingService:
                 status_code=400,
                 messages=[f"One or more seats are being booked by another user. Please try again"],
             )
-    
+
+        booking_details = {}
+
         try:
             
             curDateTime = now_ist()
@@ -154,9 +158,18 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
+            booking_details = orm_to_dict(created_booking)
             bookingId = created_booking.id
             created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
+            booking_details["seats"] = [
+                orm_to_dict(seat)
+                for seat in created_booking_seats
+            ]
             created_booking_passengers = await self.booking_repo.create_booking_passengers(booking_id=bookingId, passenger_details=passengers)
+            booking_details["passengers"] = [
+                orm_to_dict(passenger)
+                for passenger in created_booking_passengers
+            ]
 
             """
             created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
@@ -174,9 +187,11 @@ class BookingService:
 
             # execute saga step1: Hold seats in inventory
             await executeHoldSeats(
-                created_booking, seat_ids, settings.LOCK_TTL_SECONDS,
+                booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
                 from_station_sequence_number, to_station_sequence_number
             )
+
+
 
         except Exception:
             # await self._db_session.rollback()
