@@ -3,6 +3,7 @@ from datetime import date
 from decimal import Decimal
 from typing import List
 from sqlalchemy import select
+from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
@@ -183,7 +184,7 @@ class InventorySQLAlchemyRepository:
                     from_station_sequence_number=int(seat.get("from_station_sequence_number", 0)),
                     to_station_sequence_number=int(seat.get("to_station_sequence_number", 0)),
                     locked_by_user_id=int(seat.get("locked_by_user_id", 0)),
-                    locked_at=now_ist(),
+                    locked_at=seat.get("locked_at", ""),
                     locked_expires_at=seat.get("locked_expires_at", ""),
                     created_at=now_ist(),
                     updated_at=now_ist(),
@@ -192,3 +193,21 @@ class InventorySQLAlchemyRepository:
             )
         self._db_session.add_all(rows)
         await self._db_session.flush()
+
+    
+    async def update_seat_inventory_details(
+        self,
+        *,
+        where_data: dict,
+        update_data: dict,
+    ) -> bool:
+
+        update_data["updated_at"] = now_ist()
+        stmt = update(SeatInventory)
+        for key, value in where_data.items():
+            stmt = stmt.where(
+                getattr(SeatInventory, key) == value
+            )
+        stmt = stmt.values(**update_data)
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)

@@ -204,6 +204,7 @@ class InventoryService:
                 messages=[f"Seats already locked/booked for Train-Schedule-ID: {schedule_id}"],
             )
         else:
+
             # adding seat segment locks details
             seat_segment_lock_payloads = []
             for each_lock_seat_inventory in lock_seat_inventory_list:
@@ -212,6 +213,7 @@ class InventoryService:
                     "seat_id": each_lock_seat_inventory.seat_id,
                     "from_station_sequence_number": from_station_sequence_number,
                     "to_station_sequence_number": to_station_sequence_number,
+                    "locked_at" : now_ist(),
                     "locked_by_user_id": user_id,
                     "locked_expires_at": locked_expires_at,
                     "status" : "LOCKED"
@@ -220,6 +222,19 @@ class InventoryService:
                 schedule_id=schedule_id,
                 seat_details=seat_segment_lock_payloads
             )
+
+            # updating seat-inventory lock expiring time details
+            to_update_seat_pk_ids = [each_lock_seat_inventory.id for each_lock_seat_inventory in lock_seat_inventory_list]
+            await self.inventory_repo.update_seat_inventory_details(
+                where_data = {
+                    "id" : to_update_seat_pk_ids
+                },
+                update_data = {
+                    "locked_by_user_id" : user_id,
+                    "locked_at" : now_ist(),
+                    "locked_expires_at" : locked_expires_at
+                }
+            )  
 
         
         
