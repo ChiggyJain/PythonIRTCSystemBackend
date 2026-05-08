@@ -81,7 +81,7 @@ class BookingService:
             )
         
         # fetching seats details
-        seatDataList = None
+        seatData = None
         async with httpx.AsyncClient() as client:
             response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats", params={
                 "from_station_sequence_number" : from_station_sequence_number,
@@ -89,15 +89,15 @@ class BookingService:
             })
             response.raise_for_status()
             data = response.json()
-            seatDataList = data.get("data", None)
-        if seatDataList == None:
+            seatData = data.get("data", None)
+        if seatData == None:
             raise BaseAppException(
                 status_code=400,
                 messages=[f"Seats details is not found for Train-Schedule-ID: {schedule_id}"],
             )
 
         # calculating seat price and availability details
-        seatMap = {eachSeatDataObj["seat_id"] : eachSeatDataObj for eachSeatDataObj in seatDataList}
+        seatMap = {eachSeatDataObj["seat_id"] : eachSeatDataObj for eachSeatDataObj in seatData.seats}
         bookingSeats = []
         totalAmount = 0
         for eachGivenSeatId in seat_ids:
