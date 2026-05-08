@@ -370,6 +370,29 @@ class InventoryService:
                     schedule_id=schedule_id
                 )
 
+                # TRANSACTION END
+
+                return success_response(
+                    status_code=200,
+                    messages=["Seats locked successfully"],
+                    data={
+                        "schedule_id": schedule_id,
+                        "locked_seats": [
+                            {
+                                "seat_id": seat.seat_id,
+                                "seat_number": seat.seat_number,
+                                "lock_expires_at": locked_expires_at.strftime(
+                                    "%Y-%m-%d %H:%M:%S"
+                                )
+                            }
+                            for seat in locked_seat_inventory_list
+                        ],
+                        "lock_expires_at": locked_expires_at.strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
+                        "counts": counts
+                    }
+                )
 
         except BaseAppException:
             await self.db.rollback()
