@@ -49,8 +49,10 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
             booking_repo = BookingSQLAlchemyRepository(db)
             isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
                 id = booking["id"],
-                response = executedHoldSeatsData,
-                status = "COMPLETED"
+                update_data = {
+                    "response" : executedHoldSeatsData,
+                    "status" : "COMPLETED"
+                }
             )
             isBookingRecordUpdated = await booking_repo.update_booking_by_id(
                 id = booking["id"],
@@ -105,8 +107,10 @@ async def executeCreatePayment(booking):
             booking_repo = BookingSQLAlchemyRepository(db)
             isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
                 id = booking["id"],
-                response = createdPaymentOrderData,
-                status = "COMPLETED"
+                update_data = {
+                    "response" : createdPaymentOrderData,
+                    "status" : "COMPLETED"
+                }
             )
             isBookingRecordUpdated = await booking_repo.update_booking_by_id(
                 id = booking["id"],
