@@ -181,7 +181,7 @@ class InventoryService:
             
             seat_overlapping_locks_list = await self.inventory_repo.get_seat_segement_lock_details(
                 where_conditions = [
-                    SeatSegmentLockInventory.schedule_id == schedule_id
+                    SeatSegmentLockInventory.schedule_id == schedule_id,
                     SeatSegmentLockInventory.status
                 ],
                 order_by = [
