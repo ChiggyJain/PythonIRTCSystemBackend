@@ -204,14 +204,19 @@ class InventoryService:
                 messages=[f"Seats already locked/booked for Train-Schedule-ID: {schedule_id}"],
             )
         else:
+            seat_segment_lock_payloads = []
             for each_lock_seat_inventory in lock_seat_inventory_list:
-                each_lock_seat_inventory.from_station_sequence_number = from_station_sequence_number
-                each_lock_seat_inventory.to_station_sequence_number = to_station_sequence_number
-                each_lock_seat_inventory.locked_by_user_id = user_id
-                each_lock_seat_inventory.locked_expires_at = locked_expires_at
+                seat_segment_lock_payloads.append({
+                    "schedule_id": schedule_id,
+                    "seat_id": each_lock_seat_inventory.seat_id,
+                    "from_station_sequence_number": from_station_sequence_number,
+                    "to_station_sequence_number": to_station_sequence_number,
+                    "locked_by_user_id": user_id,
+                    "locked_expires_at": locked_expires_at
+                })
             await self.inventory_repo.add_seat_segement_lock_bulk_for_booking(
                 schedule_id=schedule_id,
-                seat_details=lock_seat_inventory_list
+                seat_details=seat_segment_lock_payloads
             )
 
         
