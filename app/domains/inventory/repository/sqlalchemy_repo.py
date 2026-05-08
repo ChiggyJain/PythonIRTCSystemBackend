@@ -165,3 +165,30 @@ class InventorySQLAlchemyRepository:
 
         self._db_session.add_all(rows)
         await self._db_session.flush()
+
+    
+    async def add_seat_segement_lock_bulk_for_booking(
+        self,
+        *,
+        schedule_id: int,
+        seat_details: list[dict],
+    ) -> None:
+        
+        rows: list[SeatSegmentLockInventory] = []
+        for seat in seat_details:
+            rows.append(
+                SeatSegmentLockInventory(
+                    schedule_id=schedule_id,
+                    seat_id=int(seat.get("id", 0)),
+                    from_station_sequence_number=int(seat.get("from_station_sequence_number", 0)),
+                    to_station_sequence_number=int(seat.get("to_station_sequence_number", 0)),
+                    locked_by_user_id=int(seat.get("locked_by_user_id", 0)),
+                    locked_at=seat.get("locked_at", ""),
+                    locked_expires_at=seat.get("locked_expires_at", ""),
+                    created_at=now_ist(),
+                    updated_at=now_ist(),
+                    status="LOCKED",
+                )
+            )
+        self._db_session.add_all(rows)
+        await self._db_session.flush()
