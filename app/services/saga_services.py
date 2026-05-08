@@ -1,6 +1,4 @@
 
-from re import M
-
 import httpx
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
