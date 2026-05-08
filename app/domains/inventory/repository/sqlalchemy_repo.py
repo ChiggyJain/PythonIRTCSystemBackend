@@ -135,14 +135,14 @@ class InventorySQLAlchemyRepository:
         return list(res.scalars().all())
     
 
-    async def lock_seats_segment_for_booking(
+    async def lock_seat_segment_for_booking(
         self,
         *,
         schedule_id: int,
         seat_ids : List[int],
         from_station_sequence_number: int,
         to_station_sequence_number: int,
-    ) -> list[SeatSegmentLockInventory]:
+    ) -> list[SeatSegmentLockInventory] | None:
 
         conditions = [
             SeatSegmentLockInventory.schedule_id == schedule_id,
@@ -152,7 +152,7 @@ class InventorySQLAlchemyRepository:
             SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
         ]            
         stmt = (
-            select(SeatInventory)
+            select(SeatSegmentLockInventory)
             .where(*conditions)
             .with_for_update(skip_locked=True)
         )            

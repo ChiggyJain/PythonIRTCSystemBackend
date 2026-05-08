@@ -284,11 +284,11 @@ class InventoryService:
         if len(lock_seat_inventory_list)!=len(seat_ids):
             raise BaseAppException(
                 status_code=400,
-                messages=[f"Seat-Inventory is not found for Train-Schedule-ID: {schedule_id}"],
+                messages=[f"Seat-Inventory is not found"],
             )
         
         # fetching overlapping row-level seat-segement inventory locking details
-        overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seats_segment_for_booking(
+        overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(
             schedule_id=schedule_id, seat_ids=seat_ids, 
             from_station_sequence_number=from_station_sequence_number, to_station_sequence_number=to_station_sequence_number
         )
