@@ -1,9 +1,10 @@
 
-from datetime import date
+from datetime import date, datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.common.utils.datetime import now_ist, today_ist
 from app.core.response import success_response, error_response
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
@@ -154,3 +155,18 @@ class InventoryService:
                 status_code = 200,
                 data = inventory_schedules
             )
+
+    async def lockSeats(self, *, payload: dict):
+        
+        # extracted parameters
+        user_id = int(payload.get("user_id", 0))
+        schedule_id = int(payload.get("schedule_id", 0))
+        seat_ids = payload.get("seat_ids", [])
+        ttlSeconds = int(payload.get("ttlSeconds", 600))
+        from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
+        to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
+
+        curDateTime = now_ist()
+        dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
+        locked_expires_at = dt + timedelta(seconds=ttlSeconds)
+        
