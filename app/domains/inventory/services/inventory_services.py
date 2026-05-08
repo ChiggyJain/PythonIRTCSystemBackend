@@ -169,4 +169,19 @@ class InventoryService:
         curDateTime = now_ist()
         dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
         locked_expires_at = dt + timedelta(seconds=ttlSeconds)
+
+        # fetching schedule-inventory details
+        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)        
+        if inventory_schedules ==  None:
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"No inventory schedule found for Train-Schedule-ID: {schedule_id}"],
+            )
+        if inventory_schedules.status!="ACTIVE":
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
+            )
+        
+        # making exclusively row-level seat locking details
         
