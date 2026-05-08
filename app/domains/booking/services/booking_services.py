@@ -200,8 +200,20 @@ class BookingService:
             # refreshing the booking-details
             booking_details["payment_order_id"] = createdPaymentOrderData["payment_order_id"]
             booking_details["status"] = "PAYMENT_PENDING"
+            booking_details["payment_order"] = {
+                "payment_order_id" : createdPaymentOrderData["payment_order_id"],
+                "gateway_order_id" : createdPaymentOrderData["gateway_order_id"],
+                "total_amount" : createdPaymentOrderData["total_amount"],
+                "currency" : createdPaymentOrderData["currency"],
+                "key_id" : createdPaymentOrderData["key_id"],
+            }
 
-
+            # storing idempotency-key details
+            await self.idempotency_repo.add_idempotency_record(
+                event_key = event_key,
+                event_type = IDEMPOTENCY_EVENT_TYPE,
+                event_response = booking_details
+            )
 
         except Exception:
             # await self._db_session.rollback()
