@@ -261,75 +261,131 @@ class InventoryService:
         ttlSeconds = int(payload.get("ttlSeconds", 600))
         from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
         to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
-
         curDateTime = now_ist()
         dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
         locked_expires_at = dt + timedelta(seconds=ttlSeconds)
 
-        # fetching schedule-inventory details
-        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)        
-        if inventory_schedules ==  None:
-            raise BaseAppException(
-                status_code=404,
-                messages=[f"No schedule inventory found"],
-            )
-        if inventory_schedules.status!="ACTIVE":
-            raise BaseAppException(
-                status_code=404,
-                messages=[f"Schedule inventory is not active"],
-            )
-        
-        # making exclusively row-level seat-inventory locking details on requested seatIds
-        lock_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
-        if len(lock_seat_inventory_list)!=len(seat_ids):
+        if not seat_ids:
             raise BaseAppException(
                 status_code=400,
-                messages=[f"Seat-Inventory is not found"],
+                messages=["seat_ids is required"],
             )
-        
-        # fetching overlapping row-level seat-segement inventory locking details
-        overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(
-            schedule_id=schedule_id, seat_ids=seat_ids, 
-            from_station_sequence_number=from_station_sequence_number, to_station_sequence_number=to_station_sequence_number
-        )
-        if len(overlapping_lock_seat_segment_list)>0:
-            raise BaseAppException(
-                status_code=409,
-                messages=[f"Seats already locked/booked"],
-            )
-        
-        # adding seat segment locks details
-        seat_segment_lock_payloads = []
-        for each_lock_seat_inventory in lock_seat_inventory_list:
-            seat_segment_lock_payloads.append({
-                "schedule_id": schedule_id,
-                "seat_id": each_lock_seat_inventory.seat_id,
-                "from_station_sequence_number": from_station_sequence_number,
-                "to_station_sequence_number": to_station_sequence_number,
-                "locked_at" : now_ist(),
-                "locked_by_user_id": user_id,
-                "locked_expires_at": locked_expires_at,
-                "status" : "LOCKED"
-            })
-        await self.inventory_repo.add_seat_segement_lock_details(
-            schedule_id=schedule_id,
-            seat_details=seat_segment_lock_payloads
-        )
 
-        # updating seat-inventory lock expiring time details
-        to_update_seat_pk_ids = [each_lock_seat_inventory.id for each_lock_seat_inventory in lock_seat_inventory_list]
-        isSeatInventoryRecordUpdated = await self.inventory_repo.update_seat_inventory_details(
-            where_data = {
-                "id" : to_update_seat_pk_ids
-            },
-            update_data = {
-                "locked_by_user_id" : user_id,
-                "locked_at" : now_ist(),
-                "locked_expires_at" : locked_expires_at
-            }
-        )
-        
-          
+        try:
+
+            # TRANSACTION START
+            async with self.db.begin():
+
+                # fetching schedule-inventory details
+                inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)        
+                if inventory_schedules is None:
+                    raise BaseAppException(
+                        status_code=404,
+                        messages=[f"No schedule inventory found"],
+                    )
+                if inventory_schedules.status!="ACTIVE":
+                    raise BaseAppException(
+                        status_code=400,
+                        messages=[f"Schedule inventory is not active"],
+                    )
+                
+                # Row-level seat locking
+                # FOR UPDATE SKIP LOCKED
+                locked_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
+
+                # Some seats already locked
+                if len(locked_seat_inventory_list)!=len(seat_ids):
+                    found_ids = {
+                        row.seat_id
+                        for row in locked_seat_inventory_list
+                    }
+                    missing_ids = [
+                        seat_id
+                        for seat_id in seat_ids
+                        if seat_id not in found_ids
+                    ]
+                    raise BaseAppException(
+                        status_code=409,
+                        messages=[f"Seats already locked: {missing_ids}"],
+                    )
+                
+                # Check overlapping segment locks
+                overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(
+                    schedule_id=schedule_id, 
+                    seat_ids=seat_ids, 
+                    from_station_sequence_number=from_station_sequence_number, 
+                    to_station_sequence_number=to_station_sequence_number
+                )
+                if overlapping_lock_seat_segment_list:
+                    blocked_seat_ids = list({
+                        row.seat_id
+                        for row in overlapping_lock_seat_segment_list
+                    })
+                    raise BaseAppException(
+                        status_code=409,
+                        messages=[
+                            f"Seats already booked/locked: {blocked_seat_ids}"    
+                        ],
+                    )
+
+                # Create seat segment locks
+                seat_segment_lock_payloads = []
+                for seat in locked_seat_inventory_list:
+                    seat_segment_lock_payloads.append({
+                        "schedule_id": schedule_id,
+                        "seat_id": seat.seat_id,
+                        "from_station_sequence_number": from_station_sequence_number,
+                        "to_station_sequence_number": to_station_sequence_number,
+                        "locked_at" : now_ist(),
+                        "locked_by_user_id": user_id,
+                        "locked_expires_at": locked_expires_at,
+                        "status" : "LOCKED"
+                    })
+                await self.inventory_repo.add_seat_segement_lock_details(
+                    schedule_id=schedule_id,
+                    seat_details=seat_segment_lock_payloads
+                )
+
+                # Update seat inventory lock info
+                seat_pk_ids = [row.id for row in locked_seat_inventory_list]
+                await self.inventory_repo.update_seat_inventory_details(
+                    where_data={
+                        "id": seat_pk_ids
+                    },
+                    update_data={
+                        "locked_by_user_id": user_id,
+                        "locked_at": now_ist(),
+                        "locked_expires_at": locked_expires_at
+                    }
+                )
+
+                # Recompute seat statuses
+                await self.recompute_segment_seat_statuses(
+                    schedule_id=schedule_id,
+                    seat_ids=seat_ids
+                )
+
+                # Recompute aggregate counters
+                counts = await self.recount_schedule_aggregates(
+                    schedule_id=schedule_id
+                )
+
+
+        except BaseAppException:
+            await self.db.rollback()
+            raise
+
+        except Exception as ex:
+            await self.db.rollback()
+            raise BaseAppException(
+                status_code=500,
+                messages=[str(ex)],
+            )
+
+         
+
+
+
 
         
         
