@@ -177,9 +177,9 @@ class InventoryService:
                 order_by = [
                     SeatInventory.seat_number.asc()
                 ]
-            )
-            
-            seat_segement_lock_list = await self.inventory_repo.get_seat_segement_lock_details(
+            ) 
+
+            seat_segement_overlapping_lock_list = await self.inventory_repo.get_seat_segement_lock_details(
                 select_columns = [
                     SeatSegmentLockInventory.seat_id, 
                     SeatSegmentLockInventory.status
@@ -194,6 +194,39 @@ class InventoryService:
                     SeatSegmentLockInventory.seat_number.asc()
                 ]
             )
+
+            blocked_seat_ids = set(lock.seat_id for lock in seat_segement_overlapping_lock_list)
+
+            seat_segement_withany_lock_list = await self.inventory_repo.get_seat_segement_lock_details(
+                select_columns = [
+                    SeatSegmentLockInventory.seat_id,
+                ],
+                where_conditions = [
+                    SeatSegmentLockInventory.schedule_id == schedule_id,
+                    SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
+                    SeatSegmentLockInventory.from_station_sequence_number < to_station_sequence_number,
+                    SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
+                ],
+                order_by = [
+                    SeatSegmentLockInventory.seat_number.asc()
+                ]
+            )
+
+            seats_with_locks = set(lock.seat_id for lock in seat_segement_withany_lock_list)
+            updated_seats = []
+
+            for seat in seat_inventory_list:
+                seat_data = dict(seat)
+                if seat["seat_id"] in blocked_seat_ids:
+                    seat_data["segment_status"] = "UNAVAILABLE"
+                elif (
+                    seat["status"] in ["BOOKED", "LOCKED"]
+                    and seat["seat_id"] not in seats_with_locks
+                ):
+                    seat_data["segment_status"] = "UNAVAILABLE"
+                else:
+                    seat_data["segment_status"] = "AVAILABLE"
+                updated_seats.append(seat_data)
 
 
             pass    
