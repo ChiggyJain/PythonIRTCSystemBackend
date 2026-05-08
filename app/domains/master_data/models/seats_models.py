@@ -15,23 +15,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
-
-seat_type_enum = Enum(
-    "LOWER",
-    "MIDDLE",
-    "UPPER",
-    "SIDE_LOWER",
-    "SIDE_UPPER",
-    name="seat_type_enum",
-)
-
-status_enum = Enum(
-    "A",
-    "Z",
-    name="status_enum",
-)
-
-
 class Seats(Base):
 
     __tablename__ = "SEATS"
@@ -50,9 +33,14 @@ class Seats(Base):
     train_id: Mapped[int] = mapped_column(nullable=False)
     seat_number: Mapped[int] = mapped_column(nullable=False)
     seat_type: Mapped[str] = mapped_column(
-        seat_type_enum,
+        Enum(
+            "LOWER", "MIDDLE", "UPPER",
+            "SIDE_LOWER", "SIDE_UPPER",
+            name="seat_type_enum"
+        ),
         nullable=False,
         default="LOWER",
+        server_default="LOWER",
     )
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -67,7 +55,11 @@ class Seats(Base):
         nullable=False,
     )
     status: Mapped[str] = mapped_column(
-        status_enum,
+        Enum(
+            "A", "Z",
+            name="status_enum"
+        ),
         nullable=False,
         default="A",
+        server_default="A",
     )
