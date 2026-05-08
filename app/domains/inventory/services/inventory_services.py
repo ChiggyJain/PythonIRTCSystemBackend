@@ -7,6 +7,7 @@ from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.common.utils.datetime import now_ist, today_ist
 from app.core.response import success_response, error_response
+from app.domains.inventory.models.seat_inventory_models import SeatInventory
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
@@ -147,7 +148,7 @@ class InventoryService:
         if inventory_schedules == None:
             return error_response(
                 messages = ["No inventory schedules found"],
-                status_code = 400,
+                status_code = 404,
                 data = None
             )
         else:
@@ -156,6 +157,31 @@ class InventoryService:
                 status_code = 200,
                 data = inventory_schedules
             )
+        
+
+    async def get_inventory_schedules_seats_availabiliity(self, schedule_id: int, from_station_sequence_number: int, to_station_sequence_number: int):
+        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
+        if inventory_schedules == None:
+            return error_response(
+                messages = ["No inventory schedules found"],
+                status_code = 404,
+                data = None
+            )
+        else:
+
+            seat_inventory_list = await self.inventory_repo.get_seat_inventory_details(
+                where_conditions = [
+                    SeatInventory.schedule_id == schedule_id
+                ],
+                order_by = [
+                    SeatInventory.seat_number.asc()
+                ]
+            )
+
+
+            pass    
+
+
 
 
     async def lockSeats(self, *, payload: dict):
