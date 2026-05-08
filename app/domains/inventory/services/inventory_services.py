@@ -204,6 +204,7 @@ class InventoryService:
                 messages=[f"Seats already locked/booked for Train-Schedule-ID: {schedule_id}"],
             )
         else:
+            # adding seat segment locks details
             seat_segment_lock_payloads = []
             for each_lock_seat_inventory in lock_seat_inventory_list:
                 seat_segment_lock_payloads.append({
