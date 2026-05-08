@@ -1,5 +1,6 @@
 
 from datetime import date, datetime, timedelta
+import sched
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -184,7 +185,7 @@ class InventoryService:
                 messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
             )
         
-        # making exclusively row-level seat locking details
+        # making exclusively row-level seat-inventory locking details
         seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
         if len(seat_inventory_list)!=len(seat_ids):
             raise BaseAppException(
@@ -192,6 +193,9 @@ class InventoryService:
                 messages=[f"Seat-Inventory is not found for Train-Schedule-ID: {schedule_id}"],
             )
         
-
-        
+        # making exclusively row-level seat-segement inventory locking details
+        seat_segment_list = await self.inventory_repo.lock_seats_segment_for_booking(
+            schedule_id=schedule_id, seat_ids=seat_ids, 
+            from_station_sequence_number=from_station_sequence_number, to_station_sequence_number=to_station_sequence_number
+        )
         
