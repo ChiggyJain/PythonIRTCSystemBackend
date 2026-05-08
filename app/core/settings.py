@@ -152,7 +152,7 @@ class Settings(BaseSettings):
 
     
     # Station KAFKA TOPIC and CONSUMER
-    MASTERDATA_STATION_EVENT_TOPIC: str = "masterdata-station-events-v1"
+    MASTERDATA_STATION_EVENT_TOPIC: str = "masterdata-station-created"
     MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumer-v1"
     MASTERDATA_STATION_OUTBOX_MAX_RETRIES: int = 6
     MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT: int = 10
