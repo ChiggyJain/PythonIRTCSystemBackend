@@ -164,7 +164,7 @@ class BookingSQLAlchemyRepository:
         return row
     
 
-    async def update_booking_saga_logs_by_id(
+    async def update_booking_saga_logs_details(
         self,
         *,
         where_data: dict,
@@ -182,7 +182,7 @@ class BookingSQLAlchemyRepository:
         return bool(res.rowcount and res.rowcount > 0)
     
 
-    async def update_booking_by_id(
+    async def update_booking_details(
         self,
         *,
         where_data: dict,
