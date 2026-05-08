@@ -14,10 +14,6 @@ from app.common.utils.datetime import now_ist
 
 class Stations(Base):
 
-    """
-    STATIONS table
-    """
-
     __tablename__ = "STATIONS"
     
     __table_args__ = (

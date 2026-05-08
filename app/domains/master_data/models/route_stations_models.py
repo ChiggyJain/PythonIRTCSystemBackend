@@ -20,8 +20,8 @@ class RouteStations(Base):
     __tablename__ = "ROUTE_STATIONS"
     
     __table_args__ = (
-        UniqueConstraint("route_id", "sequence_number", name="uq_routeId_seqNumber"),
-        UniqueConstraint("route_id", "station_id", name="uq_routeId_stationId"),
+        UniqueConstraint("route_id", "sequence_number", name="uq_routeIdSeqNumber"),
+        UniqueConstraint("route_id", "station_id", name="uq_routeIdStationId"),
         Index("ix_status", "status"),
     )
 

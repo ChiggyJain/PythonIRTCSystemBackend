@@ -29,7 +29,6 @@ class Seats(Base):
         autoincrement=True,
         nullable=False,
     )
-    # this train_id column is the primary key of TRAIN table model only but I don't want to treat as foreign-key concept
     train_id: Mapped[int] = mapped_column(nullable=False)
     seat_number: Mapped[int] = mapped_column(nullable=False)
     seat_type: Mapped[str] = mapped_column(

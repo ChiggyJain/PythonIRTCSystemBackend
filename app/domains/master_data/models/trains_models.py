@@ -18,7 +18,7 @@ class Trains(Base):
     __tablename__ = "TRAINS"
     
     __table_args__ = (
-        UniqueConstraint("train_number", name="uq_train_number"),
+        UniqueConstraint("train_number", name="uq_trainNumber"),
         Index("ix_status", "status"),
     )
 
