@@ -5,11 +5,10 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
-from app.common.models.idempotencyrecord_models import IdempotencyRecords
 from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
 from app.domains.inventory.models.route_stop_models import RouteStop
-
+from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
 
 
 class InventorySQLAlchemyRepository:
