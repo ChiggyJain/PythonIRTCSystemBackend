@@ -213,7 +213,8 @@ class InventoryService:
                     "from_station_sequence_number": from_station_sequence_number,
                     "to_station_sequence_number": to_station_sequence_number,
                     "locked_by_user_id": user_id,
-                    "locked_expires_at": locked_expires_at
+                    "locked_expires_at": locked_expires_at,
+                    "status" : "LOCKED"
                 })
             await self.inventory_repo.add_seat_segement_lock_bulk_for_booking(
                 schedule_id=schedule_id,

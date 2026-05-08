@@ -187,7 +187,7 @@ class InventorySQLAlchemyRepository:
                     locked_expires_at=seat.get("locked_expires_at", ""),
                     created_at=now_ist(),
                     updated_at=now_ist(),
-                    status="LOCKED",
+                    status=seat.get("status", "LOCKED"),
                 )
             )
         self._db_session.add_all(rows)
