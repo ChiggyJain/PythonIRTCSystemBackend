@@ -12,17 +12,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
-
-# =========================================================
-# ENUMS
-# =========================================================
-
-status_enum = Enum(
-    "A",
-    "Z",
-    name="status_enum",
-)
-
 class Stations(Base):
 
     """
@@ -59,7 +48,11 @@ class Stations(Base):
         nullable=False,
     )
     status: Mapped[str] = mapped_column(
-        status_enum,
+        Enum(
+            "A", "Z",
+            name="status_enum"
+        ),
         nullable=False,
         default="A",
+        server_default="A",
     )

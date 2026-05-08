@@ -13,12 +13,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-status_enum = Enum(
-    "A",
-    "Z",
-    name="status_enum",
-)
-
 class Trains(Base):
 
     __tablename__ = "TRAINS"
@@ -51,7 +45,11 @@ class Trains(Base):
         nullable=False,
     )
     status: Mapped[str] = mapped_column(
-        status_enum,
+        Enum(
+            "A", "Z",
+            name="status_enum"
+        ),
         nullable=False,
         default="A",
+        server_default="A",
     )
