@@ -30,7 +30,7 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
     # managing hold seats and task is pending
     executedHoldSeatsData = None
     async with httpx.AsyncClient() as client:
-        response = await client.post(f"http://127.0.0.1:8000/inventory/seats/lock", params={
+        response = await client.post(f"http://127.0.0.1:8000/inventory/schedules/seats/lock", params={
             "schedule_id" : booking["schedule_id"],
             "seat_ids" : seat_ids,
             "user_id" : booking["user_id"],
