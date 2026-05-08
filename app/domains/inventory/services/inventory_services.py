@@ -179,10 +179,16 @@ class InventoryService:
                 ]
             )
             
-            seat_overlapping_locks_list = await self.inventory_repo.get_seat_segement_lock_details(
+            seat_segement_lock_list = await self.inventory_repo.get_seat_segement_lock_details(
+                select_columns = [
+                    SeatSegmentLockInventory.seat_id, 
+                    SeatSegmentLockInventory.status
+                ],
                 where_conditions = [
                     SeatSegmentLockInventory.schedule_id == schedule_id,
-                    SeatSegmentLockInventory.status
+                    SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
+                    SeatSegmentLockInventory.from_station_sequence_number < to_station_sequence_number,
+                    SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
                 ],
                 order_by = [
                     SeatSegmentLockInventory.seat_number.asc()
