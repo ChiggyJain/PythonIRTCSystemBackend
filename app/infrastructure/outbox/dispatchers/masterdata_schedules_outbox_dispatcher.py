@@ -34,7 +34,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.MASTERDATA_SCHEDULE_EVENT_TOPIC,
+        topic=settings.MASTERDATA_SCHEDULE_CREATED,
         group_id=settings.MASTERDATA_SCHEDULE_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-schedules-consumer",
     )

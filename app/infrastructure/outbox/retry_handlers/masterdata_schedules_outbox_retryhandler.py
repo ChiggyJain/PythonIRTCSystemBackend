@@ -20,7 +20,7 @@ class MasterDataSchedulesOutboxRetryHandler(OutboxBaseRetryHandler):
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.MASTERDATA_SCHEDULE_EVENT_TOPIC)
+        max_retries = int(settings.MASTERDATA_SCHEDULE_CREATED)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(
