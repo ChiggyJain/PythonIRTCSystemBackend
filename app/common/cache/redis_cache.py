@@ -272,7 +272,7 @@ async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
                     totalCntOfKeys = #KEYS,
                     insertedKeys = "",
                     failedKeys = table.concat(failedKeys, ","),
-                    isSuccess = False
+                    isSuccess = false
                 })
             end
             table.insert(insertedKeys, key)
@@ -281,7 +281,7 @@ async def acquireBookingSeatLocksThroughRedis(allKeys, keyValue, ttlSeconds):
             totalCntOfKeys = #KEYS,
             insertedKeys = table.concat(insertedKeys, ","),
             failedKeys = "",
-            isSuccess = True
+            isSuccess = true
         })
     """
 
