@@ -29,7 +29,7 @@ class InventorySQLAlchemyRepository:
         return res.scalar_one_or_none()
     
 
-    async def lock_seats_for_booking(
+    async def lock_seats_inventory_for_booking(
         self,
         *,
         schedule_id: int,
@@ -39,6 +39,31 @@ class InventorySQLAlchemyRepository:
         conditions = [
             SeatInventory.schedule_id == schedule_id,
             SeatInventory.seat_id.in_(seat_ids),
+        ]            
+        stmt = (
+            select(SeatInventory)
+            .where(*conditions)
+            .with_for_update(skip_locked=True)
+        )            
+        res = await self._db_session.execute(stmt)
+        return list(res.scalars().all())
+    
+
+    async def lock_seats_segment_for_booking(
+        self,
+        *,
+        schedule_id: int,
+        seat_ids : List[int],
+        from_station_sequence_number: int,
+        to_station_sequence_number: int,
+    ) -> list[SeatSegmentLockInventory]:
+
+        conditions = [
+            SeatSegmentLockInventory.schedule_id == schedule_id,
+            SeatSegmentLockInventory.seat_id.in_(seat_ids),
+            SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
+            SeatSegmentLockInventory.from_station_sequence_number < to_station_sequence_number,
+            SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
         ]            
         stmt = (
             select(SeatInventory)
