@@ -1,6 +1,6 @@
 
 from datetime import date, datetime, timedelta
-from sqlalchemy import select, update, or_
+from sqlalchemy import select, update, or_, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -8,6 +8,7 @@ from app.core.exceptions import BaseAppException
 from app.common.utils.datetime import now_ist, today_ist
 from app.core.response import success_response, error_response
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
+from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
 from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
@@ -343,6 +344,57 @@ class InventoryService:
             seat_inventory.version+= 1
 
         return status_changes
+
+
+    async def recount_schedule_aggregates(
+        self,
+        schedule_id: int
+    ):
+
+        stmt = (
+            select(
+                func.count().filter(
+                    SeatInventory.status == "AVAILABLE"
+                ).label("available"),
+                func.count().filter(
+                    SeatInventory.status == "LOCKED"
+                ).label("locked"),
+                func.count().filter(
+                    SeatInventory.status == "BOOKED"
+                ).label("booked"),
+            )
+            .where(
+                SeatInventory.schedule_id == schedule_id
+            )
+        )
+        result = await self.db.execute(stmt)
+        counts = result.mappings().one()
+
+        schedule_stmt = (
+            select(ScheduleInventory)
+            .where(
+                ScheduleInventory.schedule_id == schedule_id
+            )
+            .with_for_update(skip_locked=True)
+        )
+        schedule_result = await self.db.execute(
+            schedule_stmt
+        )
+        schedule_inventory = (
+            schedule_result.scalar_one_or_none()
+        )
+
+        if schedule_inventory:
+            schedule_inventory.available = counts["available"]
+            schedule_inventory.locked = counts["locked"]
+            schedule_inventory.booked = counts["booked"]
+            schedule_inventory.version += 1
+
+        return {
+            "available": counts["available"],
+            "locked": counts["locked"],
+            "booked": counts["booked"],
+        }
 
 
 
