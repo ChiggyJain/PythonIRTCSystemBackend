@@ -18,6 +18,26 @@ class BookingSQLAlchemyRepository:
         self.db = db_session
 
 
+
+    async def get_booking_saga_logs_by_booking_id(
+        self,
+        *,
+        booking_id: int,
+        status: str
+    ) -> list[BookingSagaLogs]:
+        
+        stmt = (
+            select(BookingSagaLogs)
+            .where(
+                BookingSagaLogs.booking_id == booking_id,
+                BookingSagaLogs.status == status
+            )
+            .order_by(BookingSagaLogs.created_at.desc())
+        )
+        result = await self._db_session.execute(stmt)
+        return list(result.scalars().all())
+    
+
     async def create_booking(
         self,
         *,

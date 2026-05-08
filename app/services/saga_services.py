@@ -122,8 +122,33 @@ async def executeCreatePayment(booking):
     
     return createdPaymentOrderData
 
-async def compensateAll():
-    pass    
+
+async def compensateAll(booking, seat_ids):
+
+    async with AsyncSessionLocal() as db:
+        booking_repo = BookingSQLAlchemyRepository(db)
+        booking_saga_logs = await booking_repo.get_booking_saga_logs_by_booking_id(booking_id=booking["id"], status="COMPLETED")
+    
+    for each_booking_sag_log in booking_saga_logs:
+        match (each_booking_sag_log.saga_step):
+            case "CONFIRM_SEATS":
+                await compensateConfirmSeats(booking)
+            case "CREATE_PAYMENT":
+                await compensateCreatePayment(booking)
+            case "HOLD_SEATS":
+                await compensateHoldSeats(booking)
+
+
+
+async def compensateHoldSeats(booking):
+    pass
+
+async def compensateConfirmSeats(booking):
+    pass
+
+async def compensateCreatePayment(booking):
+    pass
+
         
 
 
