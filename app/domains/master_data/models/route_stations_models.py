@@ -15,13 +15,6 @@ from app.infrastructure.database.base import Base
 from app.common.utils.datetime import now_ist
 
 
-status_enum = Enum(
-    "A",
-    "Z",
-    name="status_enum",
-)
-
-
 class RouteStations(Base):
 
     __tablename__ = "ROUTE_STATIONS"
@@ -37,11 +30,8 @@ class RouteStations(Base):
         autoincrement=True,
         nullable=False,
     )
-    # this route_id column is the primary key of ROUTE table model only but I don't want to treat as foreign-key concept
     route_id: Mapped[int] = mapped_column(nullable=False)
-    # this station_id column is the primary key of STATION table model only but I don't want to treat as foreign-key concept
     station_id: Mapped[int] = mapped_column(nullable=False)
-    # order of station in route like 1,2,3,4,5,6 etc
     sequence_number: Mapped[int] = mapped_column(nullable=False)
     arrival_time: Mapped[time] = mapped_column(Time, nullable=False)
     departure_time: Mapped[time] = mapped_column(Time, nullable=False)
@@ -58,7 +48,11 @@ class RouteStations(Base):
         nullable=False,
     )
     status: Mapped[str] = mapped_column(
-        status_enum,
+        Enum(
+            "A", "Z",
+            name="status_enum"
+        ),
         nullable=False,
         default="A",
+        server_default="A",
     )
