@@ -41,8 +41,24 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
         data = response.json()
         executedHoldSeatsData = data.get("data", None)
 
-    # updating booking-saga-log table
+    # updating booking-saga-log and bookings table
+    isBookingSagaLogsRecordUpdated = False
+    isBookingRecordUpdated = False
+    async with AsyncSessionLocal() as db:
+        async with db.begin():
+            booking_repo = BookingSQLAlchemyRepository(db)
+            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
+                id = booking["id"],
+                response = executedHoldSeatsData,
+                status = "COMPLETED"
+            )
+            isBookingRecordUpdated = await booking_repo.update_booking_by_id(
+                id = booking["id"],
+                status = "SEATS_HELD"
+            )
     
+    return executedHoldSeatsData
+
     
 
 

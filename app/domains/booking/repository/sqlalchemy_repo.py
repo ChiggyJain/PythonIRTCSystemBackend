@@ -149,7 +149,6 @@ class BookingSQLAlchemyRepository:
         *,
         id: int,
         response: dict[str, Any] | None,
-        error: str | None = None,
         status: str,
     ) -> bool:
 
@@ -166,4 +165,26 @@ class BookingSQLAlchemyRepository:
         )
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
+    
+
+    async def update_booking_by_id(
+        self,
+        *,
+        id: int,
+        status: str,
+    ) -> bool:
+
+        stmt = (
+            update(Bookings)
+            .where(
+                Bookings.id == id,
+            )
+            .values(
+                status=status,
+                updated_at=now_ist(),
+            )
+        )
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+
     
