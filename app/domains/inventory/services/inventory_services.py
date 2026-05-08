@@ -225,7 +225,7 @@ class InventoryService:
 
             # updating seat-inventory lock expiring time details
             to_update_seat_pk_ids = [each_lock_seat_inventory.id for each_lock_seat_inventory in lock_seat_inventory_list]
-            await self.inventory_repo.update_seat_inventory_details(
+            isSeatInventoryRecordUpdated = await self.inventory_repo.update_seat_inventory_details(
                 where_data = {
                     "id" : to_update_seat_pk_ids
                 },
