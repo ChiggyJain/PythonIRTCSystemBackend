@@ -171,18 +171,14 @@ class BookingSQLAlchemyRepository:
         self,
         *,
         id: int,
-        status: str,
+        update_data: dict,
     ) -> bool:
 
+        update_data["updated_at"] = now_ist()
         stmt = (
             update(Bookings)
-            .where(
-                Bookings.id == id,
-            )
-            .values(
-                status=status,
-                updated_at=now_ist(),
-            )
+            .where(Bookings.id == id)
+            .values(**update_data)
         )
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
