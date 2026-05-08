@@ -186,16 +186,27 @@ class InventoryService:
             )
         
         # making exclusively row-level seat-inventory locking details
-        seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
-        if len(seat_inventory_list)!=len(seat_ids):
+        lock_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
+        if len(lock_seat_inventory_list)!=len(seat_ids):
             raise BaseAppException(
                 status_code=400,
                 messages=[f"Seat-Inventory is not found for Train-Schedule-ID: {schedule_id}"],
             )
         
-        # making exclusively row-level seat-segement inventory locking details
-        seat_segment_list = await self.inventory_repo.lock_seats_segment_for_booking(
+        # fetching overlapping row-level seat-segement inventory locking details
+        overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seats_segment_for_booking(
             schedule_id=schedule_id, seat_ids=seat_ids, 
             from_station_sequence_number=from_station_sequence_number, to_station_sequence_number=to_station_sequence_number
         )
+        if len(overlapping_lock_seat_segment_list)>0:
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Seats already locked/booked for Train-Schedule-ID: {schedule_id}"],
+            )
+        else:
+            for each_lock_seat_inventory in lock_seat_inventory_list:
+                pass
+        
+        
+
         
