@@ -1,4 +1,6 @@
 
+from re import M
+
 import httpx
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
@@ -110,15 +112,19 @@ async def executeCreatePayment(booking):
     async with AsyncSessionLocal() as db:
         async with db.begin():
             booking_repo = BookingSQLAlchemyRepository(db)
-            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
-                id = booking["id"],
+            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "id": created_booking_saga_logs.id
+                },
                 update_data = {
                     "response" : createdPaymentOrderData,
                     "status" : "COMPLETED"
                 }
             )
-            isBookingRecordUpdated = await booking_repo.update_booking_by_id(
-                id = booking["id"],
+            isBookingRecordUpdated = await booking_repo.update_booking_details(
+                where_data={
+                    "id": booking["id"]
+                },
                 update_data = {
                     "payment_order_id" : createdPaymentOrderData["payment_order_id"],
                     "status" : "PAYMENT_PENDING"
@@ -152,8 +158,12 @@ async def compensateHoldSeats(booking, seat_ids):
     async with AsyncSessionLocal() as db:
         async with db.begin():
             booking_repo = BookingSQLAlchemyRepository(db)
-            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_by_id(
-                id = booking["id"],
+            isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "booking_id": booking["id"],
+                    "saga_step" : "HOLD_SEATS",
+                    "status" : "COMPLETED",
+                },
                 update_data = {
                     "status" : "COMPENSATED"
                 }
