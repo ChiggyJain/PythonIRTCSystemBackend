@@ -327,7 +327,9 @@ class InventoryService:
                 "locked_at" : now_ist(),
                 "locked_expires_at" : locked_expires_at
             }
-        )  
+        )
+        
+          
 
         
         
