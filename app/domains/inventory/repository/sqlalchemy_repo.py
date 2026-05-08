@@ -203,11 +203,17 @@ class InventorySQLAlchemyRepository:
     ) -> bool:
 
         update_data["updated_at"] = now_ist()
-        stmt = update(SeatInventory)
+        conditions = []
         for key, value in where_data.items():
-            stmt = stmt.where(
-                getattr(SeatInventory, key) == value
-            )
-        stmt = stmt.values(**update_data)
+            column = getattr(SeatInventory, key)
+            if isinstance(value, list):
+                conditions.append(column.in_(value))
+            else:
+                conditions.append(column == value)
+        stmt = (
+            update(SeatInventory)
+            .where(*conditions)
+            .values(**update_data)
+        )        
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
