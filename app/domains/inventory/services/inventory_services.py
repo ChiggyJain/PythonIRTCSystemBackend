@@ -184,4 +184,11 @@ class InventoryService:
             )
         
         # making exclusively row-level seat locking details
+        seat_inventory_list = await self.inventory_repo.lock_seats_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
+        if len(seat_inventory_list)!=len(seat_ids):
+            raise BaseAppException(
+                status_code=400,
+                messages=[f"Seat-Inventory is not found for Train-Schedule-ID: {schedule_id}"],
+            )
+        
         

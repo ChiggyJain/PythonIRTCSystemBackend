@@ -1,6 +1,7 @@
 
 from datetime import date
 from decimal import Decimal
+from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
@@ -27,6 +28,26 @@ class InventorySQLAlchemyRepository:
         )
         res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
+    
+
+    async def lock_seats_for_booking(
+        self,
+        *,
+        schedule_id: int,
+        seat_ids : List[int],
+    ) -> list[SeatInventory]:
+
+        conditions = [
+            SeatInventory.schedule_id == schedule_id,
+            SeatInventory.seat_id.in_(seat_ids),
+        ]            
+        stmt = (
+            select(SeatInventory)
+            .where(*conditions)
+            .with_for_update(skip_locked=True)
+        )            
+        res = await self._db_session.execute(stmt)
+        return list(res.scalars().all())
     
 
     async def add_schedule_inventory(
