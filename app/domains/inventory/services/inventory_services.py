@@ -248,7 +248,120 @@ class InventoryService:
 
 
               
+    async def recompute_segment_seat_statuses(
+        self,
+        schedule_id: int,
+        seat_ids: list[str]
+    ):
 
+        status_changes = {
+            "now_available": 0,
+            "now_occupied": 0,
+            "locked_to_booked": 0,
+            "booked_to_locked": 0,
+        }
+
+        for seat_id in seat_ids:
+
+            # Fetch active segment locks
+            lock_stmt = (
+                select(
+                    SeatSegmentLockInventory.status
+                )
+                .where(
+                    SeatSegmentLockInventory.schedule_id == schedule_id,
+                    SeatSegmentLockInventory.seat_id == seat_id,
+                    SeatSegmentLockInventory.status.in_([
+                        "LOCKED",
+                        "BOOKED"
+                    ])
+                )
+            )
+            lock_result = await self.db.execute(lock_stmt)
+            locks = lock_result.scalars().all()
+
+            # ------------------------------------
+            # Determine final seat status
+            # ------------------------------------
+            if len(locks) == 0:
+                new_status = "AVAILABLE"
+
+            elif "LOCKED" in locks:
+                new_status = "LOCKED"
+
+            else:
+                new_status = "BOOKED"
+
+            # ------------------------------------
+            # Lock seat inventory row
+            # ------------------------------------
+            seat_stmt = (
+                select(SeatInventory)
+                .where(
+                    SeatInventory.schedule_id == schedule_id,
+                    SeatInventory.seat_id == seat_id
+                )
+                .with_for_update(skip_locked=True)
+            )
+
+            seat_result = await self.db.execute(seat_stmt)
+
+            seat_inventory = seat_result.scalar_one_or_none()
+
+            if seat_inventory is None:
+                continue
+
+            old_status = seat_inventory.status
+
+            # ------------------------------------
+            # Skip if no changes
+            # ------------------------------------
+            if old_status == new_status:
+                continue
+
+            # ------------------------------------
+            # Transition tracking
+            # ------------------------------------
+            if (
+                old_status == "AVAILABLE"
+                and new_status != "AVAILABLE"
+            ):
+                status_changes["now_occupied"] += 1
+
+            if (
+                old_status != "AVAILABLE"
+                and new_status == "AVAILABLE"
+            ):
+                status_changes["now_available"] += 1
+
+            if (
+                old_status == "LOCKED"
+                and new_status == "BOOKED"
+            ):
+                status_changes["locked_to_booked"] += 1
+
+            if (
+                old_status == "BOOKED"
+                and new_status == "LOCKED"
+            ):
+                status_changes["booked_to_locked"] += 1
+
+            # ------------------------------------
+            # Update inventory seat status
+            # ------------------------------------
+            seat_inventory.status = new_status
+
+            # Reset lock/booking metadata
+            if new_status == "AVAILABLE":
+
+                seat_inventory.locked_by_user_id = None
+                seat_inventory.locked_at = None
+                seat_inventory.locked_expires_at = None
+                seat_inventory.booking_id = None
+
+            seat_inventory.version += 1
+
+        return status_changes
 
 
 
