@@ -270,12 +270,12 @@ class InventoryService:
         inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)        
         if inventory_schedules ==  None:
             raise BaseAppException(
-                status_code=400,
+                status_code=404,
                 messages=[f"No schedule inventory found"],
             )
         if inventory_schedules.status!="ACTIVE":
             raise BaseAppException(
-                status_code=400,
+                status_code=404,
                 messages=[f"Schedule inventory is not active"],
             )
         
@@ -294,41 +294,40 @@ class InventoryService:
         )
         if len(overlapping_lock_seat_segment_list)>0:
             raise BaseAppException(
-                status_code=400,
-                messages=[f"Seats already locked/booked for Train-Schedule-ID: {schedule_id}"],
+                status_code=409,
+                messages=[f"Seats already locked/booked"],
             )
-        else:
+        
+        # adding seat segment locks details
+        seat_segment_lock_payloads = []
+        for each_lock_seat_inventory in lock_seat_inventory_list:
+            seat_segment_lock_payloads.append({
+                "schedule_id": schedule_id,
+                "seat_id": each_lock_seat_inventory.seat_id,
+                "from_station_sequence_number": from_station_sequence_number,
+                "to_station_sequence_number": to_station_sequence_number,
+                "locked_at" : now_ist(),
+                "locked_by_user_id": user_id,
+                "locked_expires_at": locked_expires_at,
+                "status" : "LOCKED"
+            })
+        await self.inventory_repo.add_seat_segement_lock_details(
+            schedule_id=schedule_id,
+            seat_details=seat_segment_lock_payloads
+        )
 
-            # adding seat segment locks details
-            seat_segment_lock_payloads = []
-            for each_lock_seat_inventory in lock_seat_inventory_list:
-                seat_segment_lock_payloads.append({
-                    "schedule_id": schedule_id,
-                    "seat_id": each_lock_seat_inventory.seat_id,
-                    "from_station_sequence_number": from_station_sequence_number,
-                    "to_station_sequence_number": to_station_sequence_number,
-                    "locked_at" : now_ist(),
-                    "locked_by_user_id": user_id,
-                    "locked_expires_at": locked_expires_at,
-                    "status" : "LOCKED"
-                })
-            await self.inventory_repo.add_seat_segement_lock_details(
-                schedule_id=schedule_id,
-                seat_details=seat_segment_lock_payloads
-            )
-
-            # updating seat-inventory lock expiring time details
-            to_update_seat_pk_ids = [each_lock_seat_inventory.id for each_lock_seat_inventory in lock_seat_inventory_list]
-            isSeatInventoryRecordUpdated = await self.inventory_repo.update_seat_inventory_details(
-                where_data = {
-                    "id" : to_update_seat_pk_ids
-                },
-                update_data = {
-                    "locked_by_user_id" : user_id,
-                    "locked_at" : now_ist(),
-                    "locked_expires_at" : locked_expires_at
-                }
-            )  
+        # updating seat-inventory lock expiring time details
+        to_update_seat_pk_ids = [each_lock_seat_inventory.id for each_lock_seat_inventory in lock_seat_inventory_list]
+        isSeatInventoryRecordUpdated = await self.inventory_repo.update_seat_inventory_details(
+            where_data = {
+                "id" : to_update_seat_pk_ids
+            },
+            update_data = {
+                "locked_by_user_id" : user_id,
+                "locked_at" : now_ist(),
+                "locked_expires_at" : locked_expires_at
+            }
+        )  
 
         
         

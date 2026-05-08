@@ -265,7 +265,7 @@ class InventorySQLAlchemyRepository:
             rows.append(
                 SeatSegmentLockInventory(
                     schedule_id=schedule_id,
-                    seat_id=int(seat.get("id", 0)),
+                    seat_id=int(seat.get("seat_id", 0)),
                     from_station_sequence_number=int(seat.get("from_station_sequence_number", 0)),
                     to_station_sequence_number=int(seat.get("to_station_sequence_number", 0)),
                     locked_by_user_id=int(seat.get("locked_by_user_id", 0)),
