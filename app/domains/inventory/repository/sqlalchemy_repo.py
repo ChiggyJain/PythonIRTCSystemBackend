@@ -71,6 +71,47 @@ class InventorySQLAlchemyRepository:
 
         return list(result.scalars().all())
     
+
+    async def get_seat_segement_lock_details(
+        self, 
+        select_columns: Optional[List[Any]] = None,
+        where_conditions: Optional[List[Any]] = None,
+        order_by: Optional[List[Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[SeatSegmentLockInventory] | None:
+
+        # SELECT
+        if select_columns:
+            stmt: Select = select(*select_columns)
+        else:
+            stmt: Select = select(SeatSegmentLockInventory)
+
+        # WHERE
+        if where_conditions:
+            stmt = stmt.where(*where_conditions)
+
+        # ORDER BY
+        if order_by:
+            stmt = stmt.order_by(*order_by)
+
+        # LIMIT
+        if limit:
+            stmt = stmt.limit(limit)
+
+        # OFFSET
+        if offset:
+            stmt = stmt.offset(offset)
+
+        # EXECUTE
+        result = await self._db_session.execute(stmt)
+
+        # RETURN
+        if select_columns:
+            return result.mappings().all()
+
+        return list(result.scalars().all())
+    
     
 
 

@@ -113,8 +113,8 @@ async def executeCreatePayment(booking):
         async with db.begin():
             booking_repo = BookingSQLAlchemyRepository(db)
             isBookingSagaLogsRecordUpdated = await booking_repo.update_booking_saga_logs_details(
-                where_data={
-                    "id": created_booking_saga_logs.id
+                where_data = {
+                    "id" : created_booking_saga_logs.id
                 },
                 update_data = {
                     "response" : createdPaymentOrderData,
@@ -122,8 +122,8 @@ async def executeCreatePayment(booking):
                 }
             )
             isBookingRecordUpdated = await booking_repo.update_booking_details(
-                where_data={
-                    "id": booking["id"]
+                where_data = {
+                    "id" : booking["id"]
                 },
                 update_data = {
                     "payment_order_id" : createdPaymentOrderData["payment_order_id"],

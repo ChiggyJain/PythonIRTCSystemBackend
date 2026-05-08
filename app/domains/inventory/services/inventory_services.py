@@ -8,6 +8,7 @@ from app.core.exceptions import BaseAppException
 from app.common.utils.datetime import now_ist, today_ist
 from app.core.response import success_response, error_response
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
+from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
@@ -175,6 +176,16 @@ class InventoryService:
                 ],
                 order_by = [
                     SeatInventory.seat_number.asc()
+                ]
+            )
+            
+            seat_overlapping_locks_list = await self.inventory_repo.get_seat_segement_lock_details(
+                where_conditions = [
+                    SeatSegmentLockInventory.schedule_id == schedule_id
+                    SeatSegmentLockInventory.status
+                ],
+                order_by = [
+                    SeatSegmentLockInventory.seat_number.asc()
                 ]
             )
 
