@@ -1,6 +1,6 @@
 
 from datetime import date, datetime, timedelta
-import sched
+from sqlalchemy import select, update, or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -271,30 +271,21 @@ class InventoryService:
                 .where(
                     SeatSegmentLockInventory.schedule_id == schedule_id,
                     SeatSegmentLockInventory.seat_id == seat_id,
-                    SeatSegmentLockInventory.status.in_([
-                        "LOCKED",
-                        "BOOKED"
-                    ])
+                    SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"])
                 )
             )
             lock_result = await self.db.execute(lock_stmt)
             locks = lock_result.scalars().all()
 
-            # ------------------------------------
             # Determine final seat status
-            # ------------------------------------
             if len(locks) == 0:
                 new_status = "AVAILABLE"
-
             elif "LOCKED" in locks:
                 new_status = "LOCKED"
-
             else:
                 new_status = "BOOKED"
 
-            # ------------------------------------
             # Lock seat inventory row
-            # ------------------------------------
             seat_stmt = (
                 select(SeatInventory)
                 .where(
@@ -303,25 +294,18 @@ class InventoryService:
                 )
                 .with_for_update(skip_locked=True)
             )
-
             seat_result = await self.db.execute(seat_stmt)
-
             seat_inventory = seat_result.scalar_one_or_none()
-
             if seat_inventory is None:
                 continue
 
             old_status = seat_inventory.status
 
-            # ------------------------------------
             # Skip if no changes
-            # ------------------------------------
             if old_status == new_status:
                 continue
 
-            # ------------------------------------
             # Transition tracking
-            # ------------------------------------
             if (
                 old_status == "AVAILABLE"
                 and new_status != "AVAILABLE"
@@ -346,20 +330,17 @@ class InventoryService:
             ):
                 status_changes["booked_to_locked"] += 1
 
-            # ------------------------------------
             # Update inventory seat status
-            # ------------------------------------
             seat_inventory.status = new_status
 
             # Reset lock/booking metadata
             if new_status == "AVAILABLE":
-
                 seat_inventory.locked_by_user_id = None
                 seat_inventory.locked_at = None
                 seat_inventory.locked_expires_at = None
                 seat_inventory.booking_id = None
 
-            seat_inventory.version += 1
+            seat_inventory.version+= 1
 
         return status_changes
 
