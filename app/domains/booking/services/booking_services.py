@@ -83,7 +83,10 @@ class BookingService:
         # fetching seats details
         seatDataList = None
         async with httpx.AsyncClient() as client:
-            response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats")
+            response = await client.get(f"http://127.0.0.1:8000/schedules/{schedule_id}/seats", params={
+                "from_station_sequence_number" : from_station_sequence_number,
+                "to_station_sequence_number" : to_station_sequence_number
+            })
             response.raise_for_status()
             data = response.json()
             seatDataList = data.get("data", None)
