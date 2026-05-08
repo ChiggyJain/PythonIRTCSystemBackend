@@ -211,8 +211,10 @@ class BookingService:
 
             if booking_details:
                 await compensateAll(booking_details, seat_ids)
-                isBookingRecordUpdated = await self.booking_repo.update_booking_by_id(
-                    id = booking_details["id"],
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "booking_id": booking_details["id"],
+                    },
                     update_data = {
                         "failure_reason" : "Fail to create booking details",
                         "status" : "FAILED"
