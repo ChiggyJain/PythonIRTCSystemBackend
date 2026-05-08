@@ -211,14 +211,14 @@ class BookingService:
 
             if booking_details:
                 await compensateAll(booking_details, seat_ids)
-                await self.booking_repo.update_booking_by_id(
+                isBookingRecordUpdated = await self.booking_repo.update_booking_by_id(
                     id = booking_details["id"],
                     update_data = {
                         "failure_reason" : "Fail to create booking details",
                         "status" : "FAILED"
                     }
                 )
-                await releaseBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue)
+                releasedSeatLocksResponse = await releaseBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue)
                 
 
             raise BaseAppException(
