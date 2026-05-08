@@ -149,7 +149,7 @@ class InventoryService:
         if inventory_schedules == None:
             return error_response(
                 status_code=404,
-                messages=["No schedules inventory found"],
+                messages=[f"No schedules inventory found"],
                 data=None
             )
         else:
@@ -271,15 +271,15 @@ class InventoryService:
         if inventory_schedules ==  None:
             raise BaseAppException(
                 status_code=400,
-                messages=[f"No inventory schedule found for Train-Schedule-ID: {schedule_id}"],
+                messages=[f"No schedule inventory found"],
             )
         if inventory_schedules.status!="ACTIVE":
             raise BaseAppException(
                 status_code=400,
-                messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
+                messages=[f"Schedule inventory is not active"],
             )
         
-        # making exclusively row-level seat-inventory locking details
+        # making exclusively row-level seat-inventory locking details on requested seatIds
         lock_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
         if len(lock_seat_inventory_list)!=len(seat_ids):
             raise BaseAppException(

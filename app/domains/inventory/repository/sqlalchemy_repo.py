@@ -120,7 +120,7 @@ class InventorySQLAlchemyRepository:
         *,
         schedule_id: int,
         seat_ids : List[int],
-    ) -> list[SeatInventory]:
+    ) -> list[SeatInventory] | None:
 
         conditions = [
             SeatInventory.schedule_id == schedule_id,
