@@ -152,7 +152,9 @@ async def compensateAll(booking, seat_ids):
 
 
 async def compensateHoldSeats(booking, seat_ids):
+    
     # releaseSeats task is pending 
+
     # updating booking-saga-log and bookings record table
     isBookingSagaLogsRecordUpdated = False
     async with AsyncSessionLocal() as db:
