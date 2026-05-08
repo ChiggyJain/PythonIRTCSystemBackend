@@ -43,12 +43,12 @@ class BookingService:
         seat_ids = payload.get("seat_ids", [])
         seat_ids.sort()
         passengers = payload.get("passengers", [])
-        IDEMPOTENCY_EVENT_TYPE = "BOOKING_CREATED"
-        IDEMPOTENCY_EVENT_KEY_PREFIX = "BOOKING_CREATED"
+        IDEMPOTENCY_EVENT_TYPE = "booking"
+        IDEMPOTENCY_EVENT_KEY_PREFIX = "booking"
 
 
         # checking given idempotency key exists or not
-        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}_{idempotency_key}"
+        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{idempotency_key}"
         existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
         if existing_idempotency_record:
             return existing_idempotency_record.event_response
