@@ -15,6 +15,7 @@ from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
 from app.services.saga_services import (
     executeHoldSeats,
     executeCreatePayment,
+    compensateAll
 )
 
 
@@ -174,20 +175,6 @@ class BookingService:
                 for passenger in created_booking_passengers
             ]
 
-            """
-            created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
-                booking_id=bookingId, 
-                saga_step="HOLD_SEATS", 
-                request={
-                    "user_id":user_id, "schedule_id":schedule_id, "seat_ids":seat_ids, "ttlSeconds" : settings.LOCK_TTL_SECONDS,
-                    "from_station_sequence_number":from_station_sequence_number, "to_station_sequence_number":to_station_sequence_number                     
-                },
-                response=None, 
-                error=None, 
-                status="PENDING"
-            )
-            """
-
             # execute saga step1: Hold seats in inventory
             await executeHoldSeats(
                 booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
@@ -218,7 +205,17 @@ class BookingService:
             return booking_details
         
         except Exception:
-            # await self._db_session.rollback()
+
+            if booking_details:
+                await compensateAll(booking_details, seat_ids)
+                await self.booking_repo.update_booking_by_id(
+                    id = booking_details["id"],
+                    update_data = {
+                        "failure_reason" : "Fail to create booking details",
+                        "status" : "FAILED"
+                    }
+                )
+
             raise BaseAppException(
                 status_code=400,
                 messages=["Unable to create booking"],

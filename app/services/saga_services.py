@@ -121,7 +121,9 @@ async def executeCreatePayment(booking):
             )
     
     return createdPaymentOrderData
-    
+
+async def compensateAll():
+    pass    
         
 
 
