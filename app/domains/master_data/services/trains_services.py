@@ -11,7 +11,7 @@ from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQL
 class TrainsService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_TRAIN_CREATED = "MASTERDATA_TRAIN_CREATED_V1"
+    OUTBOX_EVENT_TRAIN_CREATED = "MASTERDATA_TRAIN_CREATED"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session

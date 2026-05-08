@@ -23,7 +23,7 @@ class InventoryService:
 
     async def process_schedule_created_event(self, *, payload: dict) -> dict:
 
-        IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED_V1"
+        IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED"
         IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
 
         schedule_id = int(payload.get("schedule_id", 0))
