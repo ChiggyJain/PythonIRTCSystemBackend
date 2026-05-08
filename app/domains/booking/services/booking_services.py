@@ -12,7 +12,10 @@ from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import acquireBookingSeatLocksThroughRedis
-from app.services.saga_services import executeHoldSeats
+from app.services.saga_services import (
+    executeHoldSeats,
+    executeCreatePayment,
+)
 
 
 settings = get_settings()
@@ -191,6 +194,8 @@ class BookingService:
                 from_station_sequence_number, to_station_sequence_number
             )
 
+            # execute saga step2: Create payment order
+            paymentOrder = await executeCreatePayment(booking_details)
 
 
         except Exception:

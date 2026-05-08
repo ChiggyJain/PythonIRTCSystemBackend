@@ -6,7 +6,7 @@ from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepo
 async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_number, to_station_sequence_number):
     
     # storing booking saga logs
-    # step1: HOLD_SEATS and status=PENDING
+    # HOLD_SEATS and status=PENDING
     async with AsyncSessionLocal() as db:
         async with db.begin():
             booking_repo = BookingSQLAlchemyRepository(db)
@@ -26,7 +26,7 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
                 status = "PENDING"
             )
 
-    # storing hold seats
+    # managing hold seats and task is pending
     executedHoldSeatsData = None
     async with httpx.AsyncClient() as client:
         response = await client.post(f"http://127.0.0.1:8000/inventory/seats/lock", params={
@@ -41,7 +41,7 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
         data = response.json()
         executedHoldSeatsData = data.get("data", None)
 
-    # updating booking-saga-log and bookings table
+    # updating booking-saga-log and bookings record table
     isBookingSagaLogsRecordUpdated = False
     isBookingRecordUpdated = False
     async with AsyncSessionLocal() as db:
@@ -59,7 +59,43 @@ async def executeHoldSeats(booking, seat_ids, ttlSeconds, from_station_sequence_
     
     return executedHoldSeatsData
 
+
+async def executeCreatePayment(booking):
     
+    idempotencyKey = f"{booking["id"]}-payment"
+
+    # storing booking saga logs
+    # CREATE_PAYMENT and status=PENDING
+    async with AsyncSessionLocal() as db:
+        async with db.begin():
+            booking_repo = BookingSQLAlchemyRepository(db)
+            created_booking_saga_logs = await booking_repo.create_booking_saga_logs(
+                booking_id = booking["id"], 
+                saga_step = "CREATE_PAYMENT", 
+                request = {
+                    "booking_id" : booking["id"],
+                    "total_amount" : booking["total_amount"],
+                    "user_id" : booking["user_id"]
+                },
+                response = None, 
+                error = None, 
+                status = "PENDING"
+            )
+    
+    # creating payment order and task is pending
+    createdPaymentOrderData = None
+    async with httpx.AsyncClient() as client:
+        response = await client.post(f"http://127.0.0.1:8000/payments/orders", params={
+            "booking_id" : booking["id"],
+            "total_amount" : booking["total_amount"],
+            "user_id" : booking["user_id"],
+            "idempotency_key" : idempotencyKey
+        })
+        response.raise_for_status()
+        data = response.json()
+        createdPaymentOrderData = data.get("data", None)
+    
+        
 
 
         
