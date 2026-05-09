@@ -69,98 +69,98 @@ class PasswordChangeOtpService:
         request_id: str | None = None,
     ) -> dict:
 
-
-        # extra user-level rate limit (in addition to IP)
-        cacheKey = f"user:passwordchangerequestotp:user_id:{user_id}"
-        user_allowed_request = await rate_limiter.check_window_limit(
-            key=cacheKey,
-            limit=settings.PWDCHANGED_OTP_USER_RATE_LIMIT,
-            window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
-        )
-        if not user_allowed_request:
-            return error_response(
-                status_code=429,
-                messages=["Too many OTP requests for this user. Please try again later."],
-            )
-    
-    
-        # normalize the channel (EMAIL/MOBILE)
-        channel = self._normalize_channel(channel)
-
-        # fetching active user details
-        user = await self.security_repo.get_active_user(user_id)
-        if not user:
-            raise BaseAppException(
-                status_code=404,
-                messages=["User not found"],
-            )
-        
-        if user.is_mobile_verified == "N":
-            print(f"In future we have to check mobile is verified or not. Pending-Task")
-
-        if user.is_email_verified == "N":
-            raise BaseAppException(
-                status_code=401,
-                messages=["Password change process is not allow without verifying email"],
-            )
-
-        # making masked string of channel (EMAIL/MOBILE)
-        destination_raw, destination_masked = self._get_destination(
-            channel=channel,
-            email=user.email,
-            mobile=user.mobile,
-        )
-
-        # generating the random six-digits OTP and I think we can move this functions in app/common/utils folder
-        otp = self._generate_otp()
-
-        # generating the hashed-number of OTP and I think we can move this functions in app/common/utils folder
-        otp_hash = self._hash_otp(otp)
-
-        # generating the cipher-text of OTP and I think we can move this functions in app/common/utils folder
-        otp_ciphertext = self._encrypt_otp(otp)
-
-        # challengeId is generating
-        challenge_id = self._build_challenge_id(user_id)
-
-        now = now_ist()
-        expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
-
-        # ==============================
-        # Cooldown + one-active policy
-        # ==============================
-        # Rule:
-        # 1) If active challenge exists and requested very recently -> block (429)
-        # 2) If active challenge exists and cooldown passed -> reuse existing challenge
-        active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
-            user_id=user_id,
-            purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
-            channel=channel,
-            now_time=now,
-        )
-        if active_otp_challenge:
-            elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
-            if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
-                retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
-                raise BaseAppException(
-                    status_code=429,
-                    messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
-                    data={
-                        "retry_after_seconds": retry_after_seconds,
-                        "challenge_id": active_otp_challenge.challenge_id,
-                    },
-                )
-            # Reuse current active challenge instead of creating another row.
-            expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
-            return {
-                "challenge_id": active_otp_challenge.challenge_id,
-                "expires_in_sec": expires_in_sec,
-                "destination_masked": active_otp_challenge.destination_masked,
-                "dispatch_status": "already_active",
-            }
-
         try:
 
+            # extra user-level rate limit (in addition to IP)
+            cacheKey = f"user:passwordchange:requestotp:{user_id}"
+            user_allowed_request = await rate_limiter.check_window_limit(
+                key=cacheKey,
+                limit=settings.PWDCHANGED_OTP_USER_RATE_LIMIT,
+                window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed_request:
+                return error_response(
+                    status_code=429,
+                    messages=["Too many OTP requests for this user. Please try again later."],
+                )
+        
+        
+            # normalize the channel (EMAIL/MOBILE)
+            channel = self._normalize_channel(channel)
+
+            # fetching active user details
+            user = await self.security_repo.get_active_user(user_id)
+            if not user:
+                return error_response(
+                    status_code=404,
+                    messages=["User not found"],
+                )  
+            if user.is_mobile_verified == "N":
+                print(f"In future we have to check mobile is verified or not. Pending-Task")
+            if user.is_email_verified == "N":
+                return error_response(
+                    status_code=401,
+                    messages=["Password change process is not allow without verifying email"],
+                )
+
+            # making masked string of channel (EMAIL/MOBILE)
+            destination_raw, destination_masked = self._get_destination(
+                channel=channel,
+                email=user.email,
+                mobile=user.mobile,
+            )
+
+            # generating the random six-digits OTP and I think we can move this functions in app/common/utils folder
+            otp = self._generate_otp()
+
+            # generating the hashed-number of OTP and I think we can move this functions in app/common/utils folder
+            otp_hash = self._hash_otp(otp)
+
+            # generating the cipher-text of OTP and I think we can move this functions in app/common/utils folder
+            otp_ciphertext = self._encrypt_otp(otp)
+
+            # challengeId is generating
+            challenge_id = self._build_challenge_id(user_id)
+
+            now = now_ist()
+            expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
+
+            
+            # Cooldown + one-active policy
+            # Rule:
+            # 1) If active challenge exists and requested very recently -> block (429)
+            # 2) If active challenge exists and cooldown passed -> reuse existing challenge
+            active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
+                user_id=user_id,
+                purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
+                channel=channel,
+                now_time=now,
+            )
+            if active_otp_challenge:
+                elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
+                if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
+                    retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
+                    return error_response(
+                        status_code=429,
+                        messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
+                        data={
+                            "retry_after_seconds": retry_after_seconds,
+                            "challenge_id": active_otp_challenge.challenge_id,
+                        },
+                    )
+                # Reuse current active challenge instead of creating another row.
+                expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
+                return success_response(
+                    status_code=200,
+                    messages=[f"OTP request is already accepted"],
+                    data={
+                        "challenge_id": active_otp_challenge.challenge_id,
+                        "expires_in_sec": expires_in_sec,
+                        "destination_masked": active_otp_challenge.destination_masked,
+                        "dispatch_status": "already_active",
+                    }
+                )
+            
             # adding otp details
             await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
@@ -213,16 +213,27 @@ class PasswordChangeOtpService:
 
             await self._db_session.commit()
 
+            return success_response(
+                status_code=200,
+                messages=[f"OTP request accepted"],
+                data={
+                    "challenge_id": challenge_id,
+                    "expires_in_sec": self.OTP_TTL_SECONDS,
+                    "destination_masked": destination_masked,
+                    "dispatch_status": "accepted",
+                }
+            )
+
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            raise e
+
         except Exception:
             await self._db_session.rollback()
-            raise
-
-        return {
-            "challenge_id": challenge_id,
-            "expires_in_sec": self.OTP_TTL_SECONDS,
-            "destination_masked": destination_masked,
-            "dispatch_status": "accepted",
-        }
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
+            )
 
 
     

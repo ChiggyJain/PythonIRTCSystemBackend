@@ -158,7 +158,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:passwordchangerequestotp",
+        "name": "user:passwordchange:requestotp",
         "logging": {
             "console": True,
             "file": True,
@@ -176,7 +176,7 @@ async def password_change_request_otp(
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     
-    result = await service.request_password_change_otp(
+    return await service.request_password_change_otp(
         user_id=user_id_from_access_token,
         channel=body.channel,
         ip_address=request.client.host if request.client else None,
