@@ -16,9 +16,8 @@ from app.domains.auth.schemas.schemas import (
     RefreshTokenRequest,
     LogoutRequest,
 )
-from app.common.security.jwt import decode_token
 from app.core.exceptions import BaseAppException
-from app.dependencies.auth import (
+from app.common.security.token_decoder import(
     get_current_user_details_from_access_token,
     get_current_user_details_from_refresh_token
 )
