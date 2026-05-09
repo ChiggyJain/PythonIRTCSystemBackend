@@ -26,58 +26,58 @@ class InventoryService:
 
     async def process_schedule_created_event(self, *, payload: dict) -> dict:
 
-        IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED"
-        IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
-
-        schedule_id = int(payload.get("schedule_id", 0))
-        if schedule_id <= 0:
-            raise BaseAppException(
-                status_code=400,
-                messages=["Invalid schedule_id in payload"],
-            )
-
-        event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
-        existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
-        if existing:
-            return {
-                "status": "duplicate",
-                "event_key": event_key,
-                "schedule_id": schedule_id,
-                "message": "Event already processed",
-            }
-
-        train_details = payload.get("train_details") or {}
-        seat_details = payload.get("seat_details") or []
-        station_details = payload.get("station_details") or []
-        train_id = int(train_details.get("train_id", 0))
-        train_number = str(train_details.get("train_number", ""))
-        train_name = str(train_details.get("train_name", ""))
-        departure_date_raw = str(payload.get("departure_date", ""))
-
-        if train_id <= 0:
-            raise BaseAppException(status_code=400, messages=["Invalid train_id in payload"])
-        if not train_number:
-            raise BaseAppException(status_code=400, messages=["Invalid train_number in payload"])
-        if not train_name:
-            raise BaseAppException(status_code=400, messages=["Invalid train_name in payload"])
-        if not departure_date_raw:
-            raise BaseAppException(status_code=400, messages=["Invalid departure_date in payload"])
-
         try:
-            departure_date = date.fromisoformat(departure_date_raw)
-        except ValueError:
-            raise BaseAppException(
-                status_code=400,
-                messages=["departure_date must be in YYYY-MM-DD format"],
-            )
+            
+            IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED"
+            IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
 
-        total_seats = len(seat_details)
-        available_seats = total_seats
-        locked = 0
-        booked = 0
+            schedule_id = int(payload.get("schedule_id", 0))
+            if schedule_id <= 0:
+                raise BaseAppException(
+                    status_code=400,
+                    messages=["Invalid schedule_id in payload"],
+                )
 
-        try:
+            event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
+            existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
+            if existing:
+                return {
+                    "status": "duplicate",
+                    "event_key": event_key,
+                    "schedule_id": schedule_id,
+                    "message": "Event already processed",
+                }
 
+            train_details = payload.get("train_details") or {}
+            seat_details = payload.get("seat_details") or []
+            station_details = payload.get("station_details") or []
+            train_id = int(train_details.get("train_id", 0))
+            train_number = str(train_details.get("train_number", ""))
+            train_name = str(train_details.get("train_name", ""))
+            departure_date_raw = str(payload.get("departure_date", ""))
+
+            if train_id <= 0:
+                raise BaseAppException(status_code=400, messages=["Invalid train_id in payload"])
+            if not train_number:
+                raise BaseAppException(status_code=400, messages=["Invalid train_number in payload"])
+            if not train_name:
+                raise BaseAppException(status_code=400, messages=["Invalid train_name in payload"])
+            if not departure_date_raw:
+                raise BaseAppException(status_code=400, messages=["Invalid departure_date in payload"])
+
+            try:
+                departure_date = date.fromisoformat(departure_date_raw)
+            except ValueError:
+                raise BaseAppException(
+                    status_code=400,
+                    messages=["departure_date must be in YYYY-MM-DD format"],
+                )
+
+            total_seats = len(seat_details)
+            available_seats = total_seats
+            locked = 0
+            booked = 0
+            
             schedule_inventory = await self.inventory_repo.add_schedule_inventory(
                 schedule_id=schedule_id,
                 train_id=train_id,

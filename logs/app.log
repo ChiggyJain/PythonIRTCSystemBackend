@@ -321,3 +321,5 @@
 2026-05-09 21:01:12 | INFO | ES client created for index: routes
 2026-05-09 21:01:12 | INFO | Indexed routes updated (schedules) to ES using TrainID: 1
 2026-05-09 21:01:12 | INFO | Successfully indexed ScheduledID: 3
+2026-05-09 21:04:09 | INFO | ES client created for index: routes
+2026-05-09 21:04:09 | INFO | ES client created for index: stations
