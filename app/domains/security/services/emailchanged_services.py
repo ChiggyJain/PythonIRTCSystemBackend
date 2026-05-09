@@ -238,19 +238,32 @@ class EmailChangedOtpService:
     ) -> dict:
         
         try:
-
+            
+            # Extra user-level rate limit (in addition to route IP-based limit)
+            user_rate_key = f"user:emailchange:requestotp:confirm:{user_id}"
+            user_allowed_request = await rate_limiter.check_window_limit(
+                key=user_rate_key,
+                limit=settings.EMAILCHANGE_CONFIRM_USER_RATE_LIMIT,
+                window=settings.EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed_request:
+                return error_response(
+                    status_code=429,
+                    messages=["Too many email change confirm attempts for this user. Please try again later."],
+                )
+    
             challenge = await self.security_repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
                 user_id=user_id,
                 purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
             )
             if not challenge:
-                raise BaseAppException(status_code=400, messages=["Invalid OTP challenge"])
+                return error_response(status_code=400, messages=["Invalid OTP challenge"])
 
             now = now_ist()
 
             if challenge.status == self.OTP_STATUS_VERIFIED:
-                raise BaseAppException(status_code=400, messages=["OTP already used"])
+                return error_response(status_code=400, messages=["OTP already used"])
 
             if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
@@ -271,14 +284,14 @@ class EmailChangedOtpService:
                     metadata_json={"challenge_id": challenge_id},
                 )
                 await self._db_session.commit()
-                raise BaseAppException(status_code=400, messages=["OTP expired"])
+                return error_response(status_code=400, messages=["OTP expired"])
 
             if challenge.attempts_used >= challenge.max_attempts:
                 challenge.status = self.OTP_STATUS_BLOCKED
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
                 await self._db_session.commit()
-                raise BaseAppException(status_code=400, messages=["OTP attempts exceeded"])
+                return error_response(status_code=400, messages=["OTP attempts exceeded"])
 
             if not self._verify_otp(otp=otp, otp_hash=challenge.otp_hash):
                 challenge.attempts_used += 1
@@ -306,25 +319,25 @@ class EmailChangedOtpService:
                     },
                 )
                 await self._db_session.commit()
-                raise BaseAppException(status_code=400, messages=["Invalid OTP"])
+                return error_response(status_code=400, messages=["Invalid OTP"])
 
             meta = self._decrypt_metadata_json(challenge.metadata_json)
             old_email = (meta.get("old_email") or "").strip().lower()
             new_email = (meta.get("new_email") or "").strip().lower()
 
             if not new_email:
-                raise BaseAppException(status_code=400, messages=["Invalid email change metadata"])
+                return error_response(status_code=400, messages=["Invalid email change metadata"])
 
             user = await self.security_repo.get_active_user(user_id)
             if not user:
-                raise BaseAppException(status_code=404, messages=["User not found"])
+                return error_response(status_code=404, messages=["User not found"])
 
             if old_email and (user.email or "").strip().lower() != old_email:
-                raise BaseAppException(status_code=409, messages=["Email change request no longer valid"])
+                return error_response(status_code=409, messages=["Email change request no longer valid"])
 
             existing = await self.security_repo.get_active_user_by_email(new_email)
             if existing and int(existing.id) != int(user_id):
-                raise BaseAppException(status_code=400, messages=["Email already in use"])
+                return error_response(status_code=400, messages=["Email already in use"])
 
             changed_at = now_ist()
             updated = await self.security_repo.mark_user_email_changed_verified(
@@ -334,7 +347,7 @@ class EmailChangedOtpService:
             )
             if not updated:
                 await self._db_session.rollback()
-                raise BaseAppException(status_code=404, messages=["User not found"])
+                return error_response(status_code=404, messages=["User not found"])
 
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED
@@ -377,27 +390,32 @@ class EmailChangedOtpService:
 
             await self._db_session.commit()
 
-        except BaseAppException:
-            await self._db_session.rollback()
-            raise
-        except Exception:
-            await self._db_session.rollback()
-            raise
-
-        # Best-effort cache invalidation (post-commit)
-        try:
+            # remvoing from cache
             cacheKey = f"user:profile:{user_id}"
             await cache_delete(cacheKey)
-        except Exception as exc:
-            app_logger.warning(
-                f"email_change cache_delete failed | user_id={user_id} | error={str(exc)}"
+
+            return success_response(
+                status_code=200,
+                messages=[f"Email changed successfully"],
+                data={
+                    "email_changed": True,
+                    "email_verified": True,
+                    "new_email": new_email,
+                }
+            )
+        
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
             )
 
-        return {
-            "email_changed": True,
-            "email_verified": True,
-            "new_email": new_email,
-        }
+        
 
 
 
