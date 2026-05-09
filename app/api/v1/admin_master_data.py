@@ -55,13 +55,6 @@ async def create_station(
     payload["request_id"] = request.headers.get("x-request-id")
     return await service.create_station(payload=payload)
 
-    return success_response(
-        status_code=201,
-        messages=["Station created successfully"],
-        data=result,
-    )
-
-
 router.add_api_route(
     "/stations",
     create_station,
