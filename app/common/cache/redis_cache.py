@@ -49,17 +49,6 @@ async def cache_delete(
 
 
 
-def build_cache_set_key(
-    namespace: str,
-    *parts: Any,
-) -> str:
-    
-    key = f"cache:{namespace}"
-    if parts:
-        key = f"{namespace}:{':'.join(str(p) for p in parts)}"
-    return key
-
-
 async def cache_set_add(
     key: str,
     *members: str,
