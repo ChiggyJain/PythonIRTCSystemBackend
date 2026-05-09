@@ -1,10 +1,15 @@
 
 from anyio import to_thread
+from passlib import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
-from app.core.response import success_response, error_response
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
 from app.common.utils.password import (
     hash_password, 
     verify_password
@@ -57,10 +62,17 @@ class UsersService:
                     gender=gender,
                     profile=profile
                 )
-        except IntegrityError:
-            raise BaseAppException(
-                messages=["Email already exists1"],
+        except IntegrityError as e:
+            return error_response(
                 status_code=400,
+                messages=["Email already exists"],
+                data=None
+            )
+        except Exception as e:
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
+                data=None
             )
         return user
     
