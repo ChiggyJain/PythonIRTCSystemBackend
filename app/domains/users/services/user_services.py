@@ -28,7 +28,7 @@ from app.common.cache.redis_cache import (
     cache_set_delete,
     cache_set_members,
 )
-from app.domains.auth.services.token_services import TokenService
+from app.domains.auth.services.token_servicess import TokenService
 from app.core.settings import get_settings
 
 settings = get_settings()
@@ -134,11 +134,11 @@ class UsersService:
                 )
             
             # token service
-            token_service = TokenService(self._db_session)
+            token_services = TokenService(self._db_session)
 
             # creating tokens
             async with self._db_session.begin():
-                token_rsp = await token_service.create_tokens(
+                token_rsp = await token_services.create_tokens(
                     user_id=user.id,
                     user_profile=user.profile,
                     ip_address=ip_address,

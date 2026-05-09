@@ -88,6 +88,22 @@ class AuthService:
                     messages=["Invalid refresh token"],
                 )
             
+
+            # revoking all token pairs 
+            # creating new token pairs
+            async with self._db_session.begin():
+                await token_services.user_tokens_repo.revoke_token(access_token_id)
+                await token_services.user_tokens_repo.revoke_token(refresh_token_id)
+                token_rsp = await token_service.create_tokens(
+                    user_id=user.id,
+                    user_profile=user.profile,
+                    ip_address=ip_address,
+                    user_agent=user_agent
+                )
+
+
+
+
             tokens = await token_services.rotate_tokens_by_refresh(
                 user_id=user_id,
                 user_profile=user_profile,
