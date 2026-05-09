@@ -44,6 +44,9 @@ def error_response(
     data: Any = None,
 ) -> JSONResponse:
     
+    if messages is None:
+        messages = ["Error"]
+
     return build_response(
         status_code=status_code,
         messages=messages,
@@ -57,8 +60,11 @@ def exception_response(
     data: Any = None,
 ) -> JSONResponse:
     
+    if messages is None:
+        messages = ["Exception"]
+
     return build_response(
-        status_code=500,
+        status_code=status_code,
         messages=messages,
-        data=None,
+        data=data,
     )
