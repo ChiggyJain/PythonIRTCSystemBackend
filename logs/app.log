@@ -745,3 +745,6 @@ size
 2026-05-09 22:08:36 | INFO | ES client created for index: stations
 2026-05-09 22:08:47 | INFO | ES client created for index: routes
 2026-05-09 22:08:47 | INFO | ES client created for index: stations
+2026-05-09 22:08:53 | INFO | SpawnProcess-405-20731 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:08:53.889730 | 2026-05-09 22:08:53.905319 | 15 | None | 500
+2026-05-09 22:10:50 | INFO | ES client created for index: routes
+2026-05-09 22:10:50 | INFO | ES client created for index: stations
