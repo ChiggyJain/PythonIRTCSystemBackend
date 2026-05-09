@@ -10,6 +10,16 @@ class Settings(BaseSettings):
     APP_ENV: str = "local"
     APP_DEBUG: bool = True
 
+    
+    # JWT Settings
+    JWT_SECRET_KEY: str
+    TOKEN_HASH_SECRET: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_EXPIRE_MINUTES: int = 30
+    JWT_REFRESH_EXPIRE_DAYS: int = 7
+    JWT_ISSUER: str = "irtc-backend"
+    JWT_AUDIENCE: str = "irtc-users"
+    
     # cache profile ttl seconds
     USER_PROFILE_CACHE_TTL_SECONDS: int = 300
 
@@ -50,17 +60,7 @@ class Settings(BaseSettings):
 
     SENDGRID_API_KEY: str
 
-    # =========================
-    # JWT Settings
-    # =========================
-
-    JWT_SECRET_KEY: str
-    TOKEN_HASH_SECRET: str
-    JWT_ALGORITHM: str = "HS256"
-    JWT_ACCESS_EXPIRE_MINUTES: int = 30
-    JWT_REFRESH_EXPIRE_DAYS: int = 7
-    JWT_ISSUER: str = "irtc-backend"
-    JWT_AUDIENCE: str = "irtc-users"
+    
     
 
     # =======================================================
