@@ -208,7 +208,7 @@ Validation errors return `422` with normalized message array.
 ## Security and Auth Model
 - JWTs include `sub`, `jti`, token `type`, issuer/audience, and linked token id
 - Raw JWTs are never stored in DB; HMAC hash is stored
-- Access token validity is checked against Redis (`cache:auth:user:access:jti:{jti}`)
+- Access token validity is checked against Redis (`cache:user:access:jti:{jti}`)
 - Login creates access+refresh rows and writes access-token cache/index
 - Refresh rotates token pair atomically and updates cache/index
 - Logout revokes access-token + refresh-token pair and performs cache cleanup [Current active session devices]
@@ -236,7 +236,7 @@ Fail-open behavior is used when limiter infrastructure fails.
 
 ## Caching
 - Profile cache key: `cache:v1.users.profile:{user_id}` (TTL 300s)
-- Access token cache key: `cache:auth:user:access:jti:{token_id}`
+- Access token cache key: `cache:user:access:jti:{token_id}`
 - User access-token index set: `cache:auth:user:access:index:{user_id}`
 
 Cache is invalidated on:

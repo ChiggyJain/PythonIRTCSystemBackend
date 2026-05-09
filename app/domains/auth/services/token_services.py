@@ -249,14 +249,14 @@ class TokenService:
             raise
 
         # Cache cleanup for old access token
-        old_access_key = build_cache_key(f"auth:user:access:jti:{old_access_id}")
+        old_access_key = build_cache_key(f"user:access:jti:{old_access_id}")
         await cache_delete(key=old_access_key)
 
         user_access_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
         await cache_set_remove(user_access_index_key, str(old_access_id))
 
         # Cache insert for new access token
-        new_access_key = build_cache_key(f"auth:user:access:jti:{new_access_row.id}")
+        new_access_key = build_cache_key(f"user:access:jti:{new_access_row.id}")
         await cache_set(key=new_access_key, value=user_id, ttl=access_expire_seconds)
         await cache_set_add(user_access_index_key, str(new_access_row.id))
 

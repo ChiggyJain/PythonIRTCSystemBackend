@@ -117,7 +117,7 @@ class AuthService:
                 await token_services.user_tokens_repo.revoke_token(refresh_token_id)
             
             # removing from cache
-            access_cache_key = build_cache_key(f"auth:user:access:jti:{access_token_id}")
+            access_cache_key = build_cache_key(f"user:access:jti:{access_token_id}")
             user_access_index_key = build_cache_set_key(f"auth:user:access:index:{access_user_id}")
             await cache_delete(key=access_cache_key)
             await cache_set_remove(user_access_index_key, str(access_token_id))
@@ -227,7 +227,7 @@ class AuthService:
             user_index_key = build_cache_set_key(f"auth:user:access:index:{access_user_id}")
             access_jti_set = await cache_set_members(key=user_index_key)
             for access_jti in access_jti_set:
-                access_key = build_cache_key(f"auth:user:access:jti:{access_jti}")
+                access_key = build_cache_key(f"user:access:jti:{access_jti}")
                 await cache_delete(key=access_key)
             await cache_set_delete(key=user_index_key)
             

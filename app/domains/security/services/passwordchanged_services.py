@@ -390,7 +390,7 @@ class PasswordChangeOtpService:
             try:
                 access_jti_set = await cache_set_members(key=user_index_key)
                 for access_jti in access_jti_set:
-                    access_key = build_cache_key(f"auth:user:access:jti:{access_jti}")
+                    access_key = build_cache_key(f"user:access:jti:{access_jti}")
                     try:
                         await cache_delete(key=access_key)
                     except Exception as exc:

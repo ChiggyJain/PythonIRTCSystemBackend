@@ -272,3 +272,10 @@
 2026-05-09 12:32:29 | INFO | ES client created for index: stations_v1
 2026-05-09 12:32:36 | INFO | ES client created for index: routes_v1
 2026-05-09 12:32:36 | INFO | ES client created for index: stations_v1
+2026-05-09 13:40:09 | INFO | ES client created for index: routes_v1
+2026-05-09 13:40:09 | INFO | ES client created for index: stations_v1
+2026-05-09 13:41:01 | INFO | SpawnProcess-1-6682 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 13:41:01.626110 | 2026-05-09 13:41:01.935755 | 309 | None | 200
+2026-05-09 13:41:28 | INFO | SpawnProcess-1-6682 | v1.users.profile_details | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-05-09 13:41:28.596213 | 2026-05-09 13:41:28.603235 | 7 | None | 200
+2026-05-09 13:41:59 | INFO | SpawnProcess-1-6682 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 13:41:59.339743 | 2026-05-09 13:41:59.426114 | 86 | None | 200
+2026-05-09 13:51:46 | INFO | ES client created for index: routes_v1
+2026-05-09 13:51:46 | INFO | ES client created for index: stations_v1

@@ -154,7 +154,7 @@ class UsersService:
 
                 # storing access-token-row-id into redis for respective user
                 # key-value with expire seconds
-                cacheKey = build_cache_key(f"auth:user:access:jti:{token_rsp["access_token_id"]}")
+                cacheKey = build_cache_key(f"user:access:jti:{token_rsp["access_token_id"]}")
                 await cache_set(key=cacheKey, value=user.id, ttl=token_rsp["access_expire_seconds"])
 
                 # storing all access-token-row-id into redis for respective user
