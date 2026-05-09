@@ -251,15 +251,29 @@ class PasswordChangeOtpService:
         request_id: str | None = None,
     ) -> dict:
 
-        # checking new password is match with confirm_password
-        if new_password != confirm_password:
-            raise BaseAppException(
-                status_code=400,
-                messages=["password and confirm password must match"],
-            )
-
         try:
 
+            # checking new password is match with confirm_password
+            if new_password != confirm_password:
+                raise error_response(
+                    status_code=400,
+                    messages=["password and confirm password must match"],
+                )
+            
+            # Extra user-level rate limit (in addition to route IP-based limit)
+            user_rate_key = f"user:passwordchange:requestotp:confirm:{user_id}"
+            user_allowed = await rate_limiter.check_window_limit(
+                key=user_rate_key,
+                limit=settings.PWDCHANGED_CONFIRM_USER_RATE_LIMIT,
+                window=settings.PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed:
+                raise BaseAppException(
+                    status_code=429,
+                    messages=["Too many password change confirm attempts for this user. Please try again later."],
+                )
+            
+    
             # fetching otp_challenge details
             challenge = await self.security_repo.get_otp_challenge_for_update(
                 challenge_id=challenge_id,
