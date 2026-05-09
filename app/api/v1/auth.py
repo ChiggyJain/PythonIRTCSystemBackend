@@ -129,12 +129,6 @@ router.add_api_route(
 )
 
 
-
-# -------------------------
-# logout process
-# -------------------------
-
-
 @feature_control(
     {
         "name": "v1.auth.logout",
