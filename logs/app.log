@@ -818,3 +818,8 @@
 2026-05-09 17:31:25 | INFO | ES client created for index: stations_v1
 2026-05-09 17:32:33 | INFO | ES client created for index: routes_v1
 2026-05-09 17:32:33 | INFO | ES client created for index: stations_v1
+2026-05-09 17:33:54 | INFO | emailchanged_otp_outbox_worker started
+2026-05-09 17:34:11 | INFO | emailchanged_otp_dispatch_consumer_worker started
+2026-05-09 17:34:18 | INFO | SpawnProcess-368-24003 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 17:34:17.851280 | 2026-05-09 17:34:18.291136 | 439 | None | 200
+2026-05-09 17:34:41 | INFO | SpawnProcess-368-24003 | user:emailchange:requestotp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-05-09 17:34:41.862147 | 2026-05-09 17:34:41.911447 | 49 | None | 200
+2026-05-09 17:35:42 | INFO | SpawnProcess-368-24003 | user:emailchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-05-09 17:35:42.333905 | 2026-05-09 17:35:42.423062 | 89 | None | 200
