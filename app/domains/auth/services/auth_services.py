@@ -82,7 +82,6 @@ class AuthService:
                 )  
 
             # Refresh row validations
-            refresh_token_row = await token_services.get_refresh(refresh_token_id)
             if not refresh_token_row:
                 return error_response(
                     status_code=401,
@@ -114,8 +113,8 @@ class AuthService:
             
             # revoking access and refresh tokens from db level
             async with self._db_session.begin():
-                token_services.user_tokens_repo.revoke_token(access_token_id)
-                token_services.user_tokens_repo.revoke_token(refresh_token_id)
+                await token_services.user_tokens_repo.revoke_token(access_token_id)
+                await token_services.user_tokens_repo.revoke_token(refresh_token_id)
             
             # removing from cache
             access_cache_key = build_cache_key(f"auth:user:access:jti:{access_token_id}")
