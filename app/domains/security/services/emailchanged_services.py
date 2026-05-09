@@ -1,18 +1,3 @@
-"""
-Email Changed OTP Service
-Flow:
-1) request-otp:
-   - validate new_email
-   - cooldown + active challenge policy
-   - create OTP_CHALLENGES with purpose=EMAIL_CHANGE
-   - store encrypted metadata_json {"old_email","new_email"}
-   - create OUTBOX_EVENTS row
-2) confirm:
-   - verify OTP
-   - decrypt metadata_json
-   - update USERS.email + verification fields
-   - invalidate profile cache (best-effort post-commit)
-"""
 
 from datetime import timedelta
 import base64
@@ -24,7 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from cryptography.fernet import Fernet
 from app.common.utils.datetime import now_ist
 from app.common.utils.logger import app_logger
-from app.common.cache.config import CACHE_KEY_USER_PROFILE
 from app.common.cache.redis_cache import build_cache_key, cache_delete
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
@@ -369,8 +353,8 @@ class EmailChangedOtpService:
 
         # Best-effort cache invalidation (post-commit)
         try:
-            profile_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-            await cache_delete(profile_key)
+            cacheKey = f"user:profile:{user_id}"
+            await cache_delete(cacheKey)
         except Exception as exc:
             app_logger.warning(
                 f"email_change cache_delete failed | user_id={user_id} | error={str(exc)}"

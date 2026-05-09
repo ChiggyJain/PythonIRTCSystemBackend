@@ -1,11 +1,4 @@
 
-"""
-Email Verification OTP Service
-Flow:
-1) request -> create OTP_CHALLENGES + OUTBOX_EVENTS + SECURITY_EVENT_LOG
-2) confirm -> verify OTP and mark USERS email verified
-"""
-
 from datetime import timedelta
 import base64
 import hashlib
@@ -17,7 +10,6 @@ from app.common.utils.datetime import now_ist
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
-from app.common.cache.config import CACHE_KEY_USER_PROFILE
 from app.common.cache.redis_cache import build_cache_key, cache_delete
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
@@ -315,8 +307,8 @@ class EmailVerificationOtpService:
 
         # cache cleanup best-effort (post-commit)
         try:
-            user_profile_cache_key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-            await cache_delete(user_profile_cache_key)
+            cacheKey = f"user:profile:{user_id}"
+            await cache_delete(cacheKey)
         except Exception as exc:
             app_logger.warning(
                 f"email_verification cache_delete failed | user_id={user_id} | error={str(exc)}"
