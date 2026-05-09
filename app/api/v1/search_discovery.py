@@ -17,17 +17,15 @@ from app.domains.search_discovery.services.train_search_service import TrainSear
 router = APIRouter()
 
 
-
-
 @feature_control(
     {
-        "name": "v1.search.stations",
+        "name": "user.search.stations",
         "logging": {
             "console": True, 
             "file": True
         },
         "rate_limit": {
-            "limit": 180, 
+            "limit": 100, 
             "window": 60
         },
     }
@@ -36,17 +34,11 @@ async def search_stations(
     query: Annotated[StationSearchQueryRequest, Depends()],
     service: StationSearchService = Depends(get_station_search_service),
 ):
-    data = await service.search_stations(
+    return await service.search_stations(
         q=query.q,
         size=query.size,
     )
-    return success_response(
-        data=data,
-        messages=["Stations fetched successfully"],
-        status_code=200,
-    )
-
-
+    
 router.add_api_route(
     "/search/stations",
     search_stations,

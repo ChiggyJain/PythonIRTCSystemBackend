@@ -480,3 +480,27 @@
 2026-05-09 21:28:35 | INFO | SpawnProcess-255-17798 | v1.search.trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:28:35.198350 | 2026-05-09 21:28:35.289363 | 91 | None | 200
 2026-05-09 21:28:44 | INFO | SpawnProcess-255-17798 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/11/availability | 2026-05-09 21:28:44.667036 | 2026-05-09 21:28:44.679091 | 12 | None | 404
 2026-05-09 21:28:58 | INFO | SpawnProcess-255-17798 | v1.inventory.schedules.schedule_id.availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/availability | 2026-05-09 21:28:58.251262 | 2026-05-09 21:28:58.259597 | 8 | Object of type ScheduleInventory is not JSON serializable | 500
+2026-05-09 21:29:34 | INFO | ES client created for index: routes
+2026-05-09 21:29:34 | INFO | ES client created for index: stations
+2026-05-09 21:29:37 | INFO | ES client created for index: routes
+2026-05-09 21:29:37 | INFO | ES client created for index: stations
+2026-05-09 21:29:47 | INFO | ES client created for index: routes
+2026-05-09 21:29:47 | INFO | ES client created for index: stations
+2026-05-09 21:30:15 | INFO | ES client created for index: routes
+2026-05-09 21:30:15 | INFO | ES client created for index: stations
+2026-05-09 21:30:35 | INFO | ES client created for index: routes
+2026-05-09 21:30:35 | INFO | ES client created for index: stations
+2026-05-09 21:30:42 | INFO | ES client created for index: routes
+2026-05-09 21:30:42 | INFO | ES client created for index: stations
+2026-05-09 21:30:57 | INFO | ES client created for index: routes
+2026-05-09 21:30:57 | INFO | ES client created for index: stations
+2026-05-09 21:31:19 | INFO | ES client created for index: routes
+2026-05-09 21:31:19 | INFO | ES client created for index: stations
+2026-05-09 21:31:23 | INFO | ES client created for index: routes
+2026-05-09 21:31:23 | INFO | ES client created for index: stations
+2026-05-09 21:31:30 | INFO | ES client created for index: routes
+2026-05-09 21:31:30 | INFO | ES client created for index: stations
+2026-05-09 21:31:38 | INFO | ES client created for index: routes
+2026-05-09 21:31:38 | INFO | ES client created for index: stations
+2026-05-09 21:31:51 | INFO | ES client created for index: routes
+2026-05-09 21:31:51 | INFO | ES client created for index: stations

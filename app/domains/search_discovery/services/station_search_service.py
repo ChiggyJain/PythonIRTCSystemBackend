@@ -1,5 +1,10 @@
 
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.station_repository import StationElasticsearchRepository
 
@@ -22,8 +27,8 @@ class StationSearchService:
                 query=q,
                 size=size,
             )
-        except Exception:
-            raise BaseAppException(
+        except Exception as e:
+            return exception_response(
                 status_code=503,
                 messages=["Search service temporarily unavailable"],
             )
@@ -51,8 +56,13 @@ class StationSearchService:
                 }
             )
 
-        return {
-            "query": q,
-            "count": len(results),
-            "results": results,
-        }
+        return success_response(
+            status_code=200,
+            messages=["Stations fetched successfully"],
+            data={
+                "query": q,
+                "count": len(results),
+                "results": results,
+            },
+        )
+        
