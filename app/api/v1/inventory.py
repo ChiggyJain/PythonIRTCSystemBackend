@@ -43,7 +43,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.inventory.schedules.schedule_id.seats.availability",
+        "name": "inventory:schedule:seats:availability",
         "logging": {
             "console": True,
             "file": True,
@@ -61,7 +61,9 @@ async def get_inventory_schedules_seats_availabiliity(
     service: InventoryService = Depends(get_inventory_service),
 ):
     return await service.get_inventory_schedules_seats_availabiliity(
-        schedule_id=schedule_id, from_station_sequence_number=from_station_sequence_number, to_station_sequence_number=to_station_sequence_number
+        schedule_id=schedule_id, 
+        from_station_sequence_number=from_station_sequence_number, 
+        to_station_sequence_number=to_station_sequence_number
     )
 
 router.add_api_route(
