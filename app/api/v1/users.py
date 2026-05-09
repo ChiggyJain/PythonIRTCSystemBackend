@@ -102,31 +102,15 @@ async def login_user(
     body: UserLoginRequest,
     request: Request,
     service: UsersService = Depends(get_users_service),
-    token_service: TokenService = Depends(get_token_service),
 ):
-
-    # validate user
-    user = await service.login_user(
+    
+    rsp = await service.login_user(
         email=body.email, 
         password=body.password,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )
-    
-    # create tokens
-    tokens = await token_service.create_tokens(
-        user_id=user.id,
-        user_profile=user.profile,
-        ip_address=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
-    )
-
-    return success_response(
-        messages=["Login successful"],
-        data={
-            "tokens" : tokens
-        },
-    )
+    return rsp
 
 router.add_api_route(
     "/login",
