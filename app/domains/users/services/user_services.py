@@ -152,14 +152,12 @@ class UsersService:
 
             if token_rsp["access_token"]!="" and token_rsp["refresh_token"]!="":
 
-                # storing access-token-row-id into redis for respective user
-                # key-value with expire seconds
+                # storing user-id against access-token-row-id into redis
                 cacheKey = f"user:access:jti:{token_rsp["access_token_id"]}"
                 await cache_set(key=cacheKey, value=user.id, ttl=token_rsp["access_expire_seconds"])
 
-                # storing all access-token-row-id into redis for respective user
-                # set format
-                cacheKey = build_cache_set_key(f"user:access:index:{user.id}")
+                # storing access-token-row-id against user-id into redis
+                cacheKey = f"user:access:index:{user.id}"
                 await cache_set_add(cacheKey, str(token_rsp["access_token_id"]))
                 
                 return success_response(
