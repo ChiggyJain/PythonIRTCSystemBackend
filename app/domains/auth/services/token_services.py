@@ -14,7 +14,6 @@ from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.domains.auth.repository.sqlalchemy_repo import TokenRepositorySQLAlchemy
 from app.common.cache.redis_cache import (
-    build_cache_key,
     cache_set,
     build_cache_set_key,
     cache_set_add,
