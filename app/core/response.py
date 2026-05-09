@@ -23,9 +23,9 @@ def build_response(
 
 
 def success_response(
-    data: Any = None,
-    messages: Optional[List[str]] = None,
     status_code: int = 200,
+    messages: Optional[List[str]] = None,
+    data: Any = None,
 ) -> JSONResponse:
     
     if messages is None:
@@ -39,8 +39,8 @@ def success_response(
 
 
 def error_response(
-    messages: List[str],
     status_code: int = 400,
+    messages: Optional[List[str]] = None,
     data: Any = None,
 ) -> JSONResponse:
     
@@ -51,13 +51,14 @@ def error_response(
     )
 
 
-
 def exception_response(
-    message: str = "Internal Server Error",
+    status_code: int = 400,
+    messages: Optional[List[str]] = None,
+    data: Any = None,
 ) -> JSONResponse:
     
     return build_response(
         status_code=500,
-        messages=[message],
+        messages=messages,
         data=None,
     )
