@@ -751,3 +751,124 @@ size
 2026-05-09 22:10:58 | INFO | SpawnProcess-407-20968 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:10:58.626340 | 2026-05-09 22:10:58.642789 | 16 | None | 500
 2026-05-09 22:11:09 | INFO | ES client created for index: routes
 2026-05-09 22:11:09 | INFO | ES client created for index: stations
+2026-05-09 22:13:55 | INFO | SpawnProcess-408-20997 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:13:54.998904 | 2026-05-09 22:13:55.022201 | 23 | None | 500
+2026-05-09 22:13:57 | INFO | SpawnProcess-408-20997 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:13:57.048337 | 2026-05-09 22:13:57.062361 | 14 | None | 500
+2026-05-09 22:14:46 | INFO | ES client created for index: routes
+2026-05-09 22:14:46 | INFO | ES client created for index: stations
+2026-05-09 22:14:51 | INFO | ES client created for index: routes
+2026-05-09 22:14:51 | INFO | ES client created for index: stations
+2026-05-09 22:14:55 | INFO | ES client created for index: routes
+2026-05-09 22:14:55 | INFO | ES client created for index: stations
+2026-05-09 22:14:59 | INFO | SpawnProcess-411-21231 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:14:59.037314 | 2026-05-09 22:14:59.071964 | 34 | None | 500
+2026-05-09 22:15:15 | INFO | ES client created for index: routes
+2026-05-09 22:15:15 | INFO | ES client created for index: stations
+2026-05-09 22:15:17 | INFO | SpawnProcess-412-21252 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:15:17.132217 | 2026-05-09 22:15:17.181128 | 48 | None | 500
+2026-05-09 22:15:57 | INFO | ES client created for index: routes
+2026-05-09 22:15:57 | INFO | ES client created for index: stations
+2026-05-09 22:15:59 | INFO | SpawnProcess-414-21292 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:15:59.119368 | 2026-05-09 22:15:59.156774 | 37 | None | 500
+2026-05-09 22:16:11 | INFO | ES client created for index: routes
+2026-05-09 22:16:11 | INFO | ES client created for index: stations
+2026-05-09 22:16:13 | INFO | ES client created for index: routes
+2026-05-09 22:16:13 | INFO | ES client created for index: stations
+2026-05-09 22:16:44 | INFO | ES client created for index: routes
+2026-05-09 22:16:44 | INFO | ES client created for index: stations
+2026-05-09 22:16:47 | INFO | ES client created for index: routes
+2026-05-09 22:16:47 | INFO | ES client created for index: stations
+2026-05-09 22:16:48 | INFO | SpawnProcess-418-21343 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:16:48.485607 | 2026-05-09 22:16:48.531637 | 46 | None | 500
+2026-05-09 22:17:02 | INFO | ES client created for index: routes
+2026-05-09 22:17:02 | INFO | ES client created for index: stations
+2026-05-09 22:17:17 | INFO | ES client created for index: routes
+2026-05-09 22:17:17 | INFO | ES client created for index: stations
+2026-05-09 22:17:19 | INFO | ES client created for index: routes
+2026-05-09 22:17:19 | INFO | ES client created for index: stations
+2026-05-09 22:17:19 | INFO | SpawnProcess-421-21389 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:17:19.700409 | 2026-05-09 22:17:19.736226 | 35 | None | 500
+2026-05-09 22:17:30 | INFO | ES client created for index: routes
+2026-05-09 22:17:30 | INFO | ES client created for index: stations
+2026-05-09 22:17:32 | INFO | SpawnProcess-423-21401 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:17:32.251610 | 2026-05-09 22:17:32.290752 | 39 | None | 500
+2026-05-09 22:17:53 | INFO | SpawnProcess-423-21401 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:17:53.093398 | 2026-05-09 22:17:53.112320 | 18 | None | 500
+2026-05-09 22:18:06 | INFO | ES client created for index: routes
+2026-05-09 22:18:06 | INFO | ES client created for index: stations
+2026-05-09 22:18:15 | INFO | ES client created for index: routes
+2026-05-09 22:18:15 | INFO | ES client created for index: stations
+2026-05-09 22:22:16 | INFO | ES client created for index: routes
+2026-05-09 22:22:16 | INFO | ES client created for index: stations
+2026-05-09 22:22:37 | INFO | SpawnProcess-426-21526 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:22:37.582861 | 2026-05-09 22:22:37.608130 | 25 | None | 500
+2026-05-09 22:23:07 | INFO | ES client created for index: routes
+2026-05-09 22:23:07 | INFO | ES client created for index: stations
+2026-05-09 22:23:07 | INFO | SpawnProcess-428-21577 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:23:07.858581 | 2026-05-09 22:23:07.900694 | 42 | None | 500
+2026-05-09 22:23:40 | INFO | ES client created for index: routes
+2026-05-09 22:23:40 | INFO | ES client created for index: stations
+2026-05-09 22:23:43 | INFO | ES client created for index: routes
+2026-05-09 22:23:43 | INFO | ES client created for index: stations
+2026-05-09 22:23:46 | INFO | ES client created for index: routes
+2026-05-09 22:23:46 | INFO | ES client created for index: stations
+2026-05-09 22:23:58 | INFO | ES client created for index: routes
+2026-05-09 22:23:58 | INFO | ES client created for index: stations
+2026-05-09 22:24:07 | INFO | ES client created for index: routes
+2026-05-09 22:24:07 | INFO | ES client created for index: stations
+2026-05-09 22:24:11 | INFO | SpawnProcess-434-21635 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:24:11.119310 | 2026-05-09 22:24:11.166490 | 47 | None | 500
+2026-05-09 22:25:18 | INFO | ES client created for index: routes
+2026-05-09 22:25:18 | INFO | ES client created for index: stations
+2026-05-09 22:25:19 | INFO | SpawnProcess-435-21663 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:25:19.609874 | 2026-05-09 22:25:19.648574 | 38 | None | 500
+2026-05-09 22:26:29 | INFO | ES client created for index: routes
+2026-05-09 22:26:29 | INFO | ES client created for index: stations
+2026-05-09 22:26:36 | INFO | ES client created for index: routes
+2026-05-09 22:26:36 | INFO | ES client created for index: stations
+2026-05-09 22:26:37 | INFO | SpawnProcess-438-21717 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:26:37.840803 | 2026-05-09 22:26:37.875676 | 34 | None | 500
+2026-05-09 22:27:06 | INFO | SpawnProcess-438-21717 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:27:06.727350 | 2026-05-09 22:27:06.743187 | 15 | None | 500
+2026-05-09 22:27:45 | INFO | ES client created for index: routes
+2026-05-09 22:27:45 | INFO | ES client created for index: stations
+2026-05-09 22:27:51 | INFO | ES client created for index: routes
+2026-05-09 22:27:51 | INFO | ES client created for index: stations
+2026-05-09 22:28:22 | INFO | ES client created for index: routes
+2026-05-09 22:28:22 | INFO | ES client created for index: stations
+2026-05-09 22:28:50 | INFO | ES client created for index: routes
+2026-05-09 22:28:50 | INFO | ES client created for index: stations
+2026-05-09 22:28:52 | INFO | SpawnProcess-444-21824 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:28:52.021569 | 2026-05-09 22:28:52.047774 | 26 | None | 200
+2026-05-09 22:29:32 | INFO | ES client created for index: routes
+2026-05-09 22:29:32 | INFO | ES client created for index: stations
+2026-05-09 22:29:33 | INFO | SpawnProcess-445-21860 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:29:33.680236 | 2026-05-09 22:29:33.723896 | 43 | None | 200
+2026-05-09 22:29:40 | INFO | SpawnProcess-445-21860 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:29:40.608076 | 2026-05-09 22:29:40.623722 | 15 | None | 200
+2026-05-09 22:29:52 | INFO | ES client created for index: routes
+2026-05-09 22:29:52 | INFO | ES client created for index: stations
+2026-05-09 22:29:52 | INFO | SpawnProcess-447-21881 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:29:52.562198 | 2026-05-09 22:29:52.601883 | 39 | None | 500
+2026-05-09 22:31:55 | INFO | ES client created for index: routes
+2026-05-09 22:31:55 | INFO | ES client created for index: stations
+2026-05-09 22:32:03 | INFO | ES client created for index: routes
+2026-05-09 22:32:03 | INFO | ES client created for index: stations
+2026-05-09 22:32:30 | INFO | ES client created for index: routes
+2026-05-09 22:32:30 | INFO | ES client created for index: stations
+2026-05-09 22:32:35 | INFO | ES client created for index: routes
+2026-05-09 22:32:35 | INFO | ES client created for index: stations
+2026-05-09 22:32:39 | INFO | ES client created for index: routes
+2026-05-09 22:32:39 | INFO | ES client created for index: stations
+2026-05-09 22:32:43 | INFO | ES client created for index: routes
+2026-05-09 22:32:43 | INFO | ES client created for index: stations
+2026-05-09 22:32:45 | INFO | SpawnProcess-454-22022 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:32:45.030055 | 2026-05-09 22:32:45.070535 | 40 | None | 500
+2026-05-09 22:33:46 | INFO | ES client created for index: routes
+2026-05-09 22:33:46 | INFO | ES client created for index: stations
+2026-05-09 22:33:55 | INFO | ES client created for index: routes
+2026-05-09 22:33:55 | INFO | ES client created for index: stations
+2026-05-09 22:34:04 | INFO | ES client created for index: routes
+2026-05-09 22:34:04 | INFO | ES client created for index: stations
+2026-05-09 22:34:12 | INFO | ES client created for index: routes
+2026-05-09 22:34:12 | INFO | ES client created for index: stations
+2026-05-09 22:34:24 | INFO | ES client created for index: routes
+2026-05-09 22:34:24 | INFO | ES client created for index: stations
+2026-05-09 22:34:29 | INFO | ES client created for index: routes
+2026-05-09 22:34:29 | INFO | ES client created for index: stations
+2026-05-09 22:34:34 | INFO | ES client created for index: routes
+2026-05-09 22:34:34 | INFO | ES client created for index: stations
+2026-05-09 22:34:49 | INFO | ES client created for index: routes
+2026-05-09 22:34:49 | INFO | ES client created for index: stations
+2026-05-09 22:34:55 | INFO | ES client created for index: routes
+2026-05-09 22:34:55 | INFO | ES client created for index: stations
+2026-05-09 22:35:05 | INFO | ES client created for index: routes
+2026-05-09 22:35:05 | INFO | ES client created for index: stations
+2026-05-09 22:35:08 | INFO | ES client created for index: routes
+2026-05-09 22:35:08 | INFO | ES client created for index: stations
+2026-05-09 22:35:13 | INFO | ES client created for index: routes
+2026-05-09 22:35:13 | INFO | ES client created for index: stations
+2026-05-09 22:35:17 | INFO | ES client created for index: routes
+2026-05-09 22:35:17 | INFO | ES client created for index: stations
+2026-05-09 22:35:18 | INFO | SpawnProcess-470-22251 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:35:18.712562 | 2026-05-09 22:35:18.745262 | 32 | None | 200

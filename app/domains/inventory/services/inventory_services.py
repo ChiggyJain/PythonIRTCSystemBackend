@@ -1,4 +1,5 @@
 
+from decimal import Decimal
 from datetime import date, datetime, timedelta
 from sqlalchemy import select, update, or_, func
 from sqlalchemy.exc import IntegrityError
@@ -9,6 +10,7 @@ from app.common.utils.datetime import (
     now_ist, 
     today_ist
 )
+from app.common.utils.orm_to_dict import orm_to_dict
 from app.core.response import (
     success_response, 
     error_response,
@@ -201,7 +203,7 @@ class InventoryService:
                     order_by = [
                         SeatInventory.seat_number.asc()
                     ]
-                ) 
+                )
 
                 seat_segement_overlapping_lock_list = await self.inventory_repo.get_seat_segement_lock_details(
                     select_columns = [
@@ -215,7 +217,8 @@ class InventoryService:
                         SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
                     ],
                     order_by = [
-                        SeatSegmentLockInventory.seat_number.asc()
+                        # SeatSegmentLockInventory.seat_number.asc()
+                        SeatSegmentLockInventory.seat_id.asc()
                     ]
                 )
 
@@ -232,7 +235,8 @@ class InventoryService:
                         SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
                     ],
                     order_by = [
-                        SeatSegmentLockInventory.seat_number.asc()
+                        # SeatSegmentLockInventory.seat_number.asc()
+                        SeatSegmentLockInventory.seat_id.asc()
                     ]
                 )
 
@@ -240,17 +244,25 @@ class InventoryService:
                 updated_seats = []
 
                 for seat in seat_inventory_list:
-                    seat_data = dict(seat)
-                    if seat["seat_id"] in blocked_seat_ids:
+                    seat_data = orm_to_dict(seat)
+                    if seat_data["seat_id"] in blocked_seat_ids:
                         seat_data["segment_status"] = "UNAVAILABLE"
                     elif (
-                        seat["status"] in ["BOOKED", "LOCKED"]
-                        and seat["seat_id"] not in seats_with_locks
+                        seat_data["status"] in ["BOOKED", "LOCKED"]
+                        and seat_data["seat_id"] not in seats_with_locks
                     ):
                         seat_data["segment_status"] = "UNAVAILABLE"
                     else:
                         seat_data["segment_status"] = "AVAILABLE"
-                    updated_seats.append(seat_data)
+                    updated_seats.append({
+                        "schedule_id" : seat_data["schedule_id"],
+                        "seat_id" : seat_data["seat_id"],
+                        "seat_number" : seat_data["seat_number"],
+                        "seat_type" : seat_data["seat_type"],
+                        "price" : float(seat_data["price"]) if isinstance(seat_data["price"], Decimal) else seat_data["price"],
+                        "segment_status" : seat_data["segment_status"],
+                        "status" : seat_data["status"],
+                    })
 
                 if len(updated_seats)<0:
                     return error_response(
@@ -269,9 +281,19 @@ class InventoryService:
                     )
                 
         except Exception as e:
+            import traceback
+            tb = traceback.extract_tb(e.__traceback__)
+            line_number = tb[-1].lineno
+            file_name = tb[-1].filename
+            function_name = tb[-1].name
             return exception_response(
                 status_code=500,
-                messages=[f"{str(e)}"]
+                messages=[
+                    f"Error: {str(e)}",
+                    f"File: {file_name}",
+                    f"Function: {function_name}",
+                    f"Line: {line_number}"
+                ]
             )
 
 

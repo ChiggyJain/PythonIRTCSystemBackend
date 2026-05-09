@@ -1,6 +1,5 @@
 
 from decimal import Decimal
-from aiohttp import payload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
