@@ -2,7 +2,6 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.dependencies.auth import (
-    get_current_user_details_from_access_token,
     get_current_user_details_from_refresh_token
 )
 from app.domains.auth.services import token_services
