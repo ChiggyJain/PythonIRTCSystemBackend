@@ -12,6 +12,16 @@ from app.core.response import (
     error_response,
     exception_response
 )
+from app.common.cache.redis_cache import (
+    build_cache_key,
+    cache_set,
+    build_cache_set_key,
+    cache_set_add,
+    cache_delete,
+    cache_set_remove,
+    cache_set_delete,
+    cache_set_members,
+)
 
 class AuthService:
 
@@ -21,6 +31,7 @@ class AuthService:
 
     
     async def logout_by_token_pair(self, payload: dict, user_details_from_access_token: dict):
+
         try:
             
             token_services = TokenService(self._db_session)
@@ -102,15 +113,27 @@ class AuthService:
                     messages=["Invalid refresh token"],
                 )
             
-            # Single transaction revoke + best-effort cache cleanup
-            await token_services.logout_by_token_pair(
-                user_id=access_user_id,
-                access_token_id=access_token_id,
-                refresh_token_id=refresh_token_id,
+            # revoking access and refresh tokens from db level
+            async with self._db_session.begin():
+                token_services.user_tokens_repo.revoke_token(access_token_id)
+                token_services.user_tokens_repo.revoke_token(refresh_token_id)
+            
+            # removing from cache
+            access_cache_key = build_cache_key(f"auth:user:access:jti:{access_token_id}")
+            user_access_index_key = build_cache_set_key(f"auth:user:access:index:{access_user_id}")
+            await cache_delete(key=access_cache_key)
+            await cache_set_remove(user_access_index_key, str(access_token_id))
+            
+            return success_response(
+                status_code=200,
+                messages=["Logout successful from current active device session"],
             )
-
+                
         except Exception as e:
-            pass
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
+            )
 
 
     

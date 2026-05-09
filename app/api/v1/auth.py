@@ -10,6 +10,7 @@ from app.dependencies.auth import (
     get_auth_service, 
     get_token_service,
 )
+from app.domains.auth.services.auth_services import AuthService
 from app.domains.auth.services.token_services import TokenService
 from app.domains.auth.schemas.schemas import (
     RefreshTokenRequest,
@@ -149,7 +150,7 @@ router.add_api_route(
 async def logout(
     body: LogoutRequest,
     user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
-    auth_service: TokenService = Depends(
+    auth_service: AuthService = Depends(
         get_auth_service
     ),
 ):
@@ -172,9 +173,7 @@ async def logout(
 
     
 
-    return success_response(
-        messages=["Logout successful from current active device session"],
-    )
+    
 
 
 router.add_api_route(
