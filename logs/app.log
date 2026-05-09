@@ -262,3 +262,13 @@
 2026-05-09 12:28:49 | INFO | ES client created for index: stations_v1
 2026-05-09 12:29:52 | INFO | ES client created for index: routes_v1
 2026-05-09 12:29:52 | INFO | ES client created for index: stations_v1
+2026-05-09 12:30:19 | INFO | SpawnProcess-83-22538 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 12:30:19.182899 | 2026-05-09 12:30:19.676079 | 493 | None | 200
+2026-05-09 12:30:30 | INFO | SpawnProcess-83-22538 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 12:30:30.600093 | 2026-05-09 12:30:30.984166 | 384 | None | 200
+2026-05-09 12:31:03 | INFO | SpawnProcess-83-22538 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 12:31:03.749922 | 2026-05-09 12:31:03.843970 | 94 | None | 200
+2026-05-09 12:31:34 | INFO | SpawnProcess-83-22538 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 12:31:34.407700 | 2026-05-09 12:31:34.776389 | 368 | None | 200
+2026-05-09 12:31:55 | INFO | SpawnProcess-83-22538 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout-all-devices | 2026-05-09 12:31:55.865649 | 2026-05-09 12:31:55.961580 | 95 | None | 200
+2026-05-09 12:32:12 | INFO | SpawnProcess-83-22538 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout-all-devices | 2026-05-09 12:32:12.773650 | 2026-05-09 12:32:12.775123 | 1 |  | 500
+2026-05-09 12:32:29 | INFO | ES client created for index: routes_v1
+2026-05-09 12:32:29 | INFO | ES client created for index: stations_v1
+2026-05-09 12:32:36 | INFO | ES client created for index: routes_v1
+2026-05-09 12:32:36 | INFO | ES client created for index: stations_v1

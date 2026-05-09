@@ -219,7 +219,7 @@ class AuthService:
                     messages=["Invalid refresh token"],
                 )
             
-            # revoking access and refresh tokens from db level
+            # revoking all access and refresh tokens from db level
             async with self._db_session.begin():
                 await token_services.user_tokens_repo.revoke_token_by_user(access_user_id)
             
