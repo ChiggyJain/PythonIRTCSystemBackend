@@ -4,3 +4,7 @@
 2026-05-09 10:38:34 | INFO | ES client created for index: stations_v1
 2026-05-09 10:38:39 | INFO | ES client created for index: routes_v1
 2026-05-09 10:38:39 | INFO | ES client created for index: stations_v1
+2026-05-09 10:38:47 | INFO | SpawnProcess-305-14986 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 10:38:47.868601 | 2026-05-09 10:38:47.877924 | 9 |  | 500
+2026-05-09 10:38:53 | INFO | SpawnProcess-305-14986 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 10:38:53.039395 | 2026-05-09 10:38:53.507610 | 468 | None | 200
+2026-05-09 10:42:49 | INFO | ES client created for index: routes_v1
+2026-05-09 10:42:49 | INFO | ES client created for index: stations_v1

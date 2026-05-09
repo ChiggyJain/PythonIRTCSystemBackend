@@ -36,7 +36,7 @@ from app.common.cache.config import (
     CACHE_TTL_PROFILE,
     CACHE_KEY_USER_PROFILE,
 )
-from app.domains.auth.services.services import TokenService
+from app.domains.auth.services.token_services import TokenService
 
 
 class UsersService:
