@@ -93,7 +93,15 @@ class AuthService:
                     status_code=401,
                     messages=["Refresh token already revoked"],
                 ) 
-                
+            
+            if not token_services.is_raw_token_matches_stored_hash(
+                raw_token = refresh_token,
+                stored_hash = refresh_token_row.token_hash,
+            ):
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid refresh token"],
+                )
                 
 
         except Exception as e:

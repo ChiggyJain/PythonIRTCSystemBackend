@@ -168,14 +168,7 @@ async def logout(
 
     
 
-    if not token_service.is_raw_token_matches_stored_hash(
-        raw_token=body.refresh_token,
-        stored_hash=refresh_token_row.token_hash,
-    ):
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid refresh token"],
-        )
+    
 
     # Single transaction revoke + best-effort cache cleanup
     await token_service.logout_by_token_pair(

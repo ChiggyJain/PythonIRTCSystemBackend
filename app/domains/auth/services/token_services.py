@@ -160,6 +160,7 @@ class TokenService:
         raw_token: str,
         stored_hash: str | None,
     ) -> bool:
+        
         return is_token_hash_match(
             raw_token=raw_token,
             stored_hash=stored_hash,

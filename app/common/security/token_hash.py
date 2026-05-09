@@ -31,9 +31,7 @@ def is_token_hash_match(
     raw_token: str,
     stored_hash: str | None,
 ) -> bool:
-    """
-    Constant-time compare between raw token hash and stored hash.
-    """
+    
     if not stored_hash:
         return False
     candidate = build_token_hash(raw_token)
