@@ -1,8 +1,4 @@
 
-"""
-SQLAlchemy Token Repository
-"""
-
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -20,10 +16,6 @@ class TokenRepositorySQLAlchemy(
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
 
-
-    # -------------------------
-    # create token
-    # -------------------------
 
     async def create_token(
         self,
@@ -49,7 +41,6 @@ class TokenRepositorySQLAlchemy(
             updated_at=now_ist(),
         )
         self._db_session.add(obj)
-        # Important: flush gets auto-increment ID without committing transaction.
         await self._db_session.flush()
         return obj
 
