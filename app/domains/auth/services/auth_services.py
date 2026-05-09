@@ -129,7 +129,7 @@ class AuthService:
         except Exception as e:
             return exception_response(
                 status_code=500,
-                messages=[f"{str(e)}"],
+                messages=[f"{str(e)}111"],
             )
 
 
