@@ -123,11 +123,14 @@ class AuthService:
                 },
             )
 
+        except BaseAppException as e:
+            raise e
+        
         except Exception as e:
-            pass
-
-
-        pass
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
+            )
 
 
     async def logout_by_token_pair(self, payload: dict, user_details_from_access_token: dict):
