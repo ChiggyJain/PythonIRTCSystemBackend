@@ -98,20 +98,15 @@ router.add_api_route(
 )
 
 
-
-# -----------------------------------------
-# train route with stations create process
-# -----------------------------------------
-
 @feature_control(
     {
-        "name": "v1.admin.master_data.train_routes.create",
+        "name": "user:train:route:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 30,
+            "limit": 100,
             "window": 60,
         },
     }
@@ -122,35 +117,12 @@ async def create_train_route(
     admin_user_details: dict = Depends(get_current_admin_user_details_from_access_token),
     service: RoutesService = Depends(get_routes_service),
 ):
-    
-    admin_user_id = int(admin_user_details.get("sub"))
 
-    user_rate_key = f"ratelimit:v1.admin.master_data.train_routes.create:user:{admin_user_id}"
-    allowed = await rate_limiter.check_window_limit(
-        key=user_rate_key,
-        limit=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT,
-        window=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS,
-    )
-    if not allowed:
-        raise BaseAppException(
-            status_code=429,
-            messages=["Too many train-route create requests for this admin. Please try again later."],
-        )
-
-    result = await service.create_train_route(
-        train_id=body.train_id,
-        station_details=[row.model_dump() for row in body.station_details],
-        admin_user_id=admin_user_id,
-        correlation_id=request.headers.get("x-correlation-id"),
-        request_id=request.headers.get("x-request-id"),
-    )
-
-    return success_response(
-        status_code=201,
-        messages=["Train route created successfully"],
-        data=result,
-    )
-
+    payload = body.model_dump()
+    payload["user_id"] = int(admin_user_details.get("sub"))
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.create_train_route(payload=payload)
 
 router.add_api_route(
     "/train-routes",
