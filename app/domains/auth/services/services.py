@@ -98,8 +98,8 @@ class TokenService:
             refresh_token_row.token_hash = build_token_hash(refresh_token)
             refresh_token_row.updated_at = now_time
 
-            self._db_session.commit()
-        
+            await self._db_session.commit()
+            
             # storing access-token-row-id into redis for respective user
             # key-value with expire seconds
             cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_row.id}")
@@ -117,7 +117,7 @@ class TokenService:
             }
 
         except Exception as e:
-            self._db_session.rollback()
+            await self._db_session.rollback()
             return {
                 "messages" : [f"{str(e)}"],
                 "access_token" : "",
