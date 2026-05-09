@@ -1,10 +1,4 @@
 
-"""
-Users SQLAlchemy Repository
-Implementation of UsersRepositoryBase
-using SQLAlchemy async db_session.
-"""
-
 from typing import Any
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -15,10 +9,6 @@ from app.common.utils.datetime import now_ist
 
 
 class UsersSQLAlchemyRepository(UsersRepositoryBase):
-
-    """
-    SQLAlchemy implementation of UsersRepositoryBase
-    """
 
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
@@ -33,7 +23,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             Users.email == email
         )
         result = await self.db_session.execute(stmt)
-
         return result.scalar_one_or_none()
 
     
@@ -62,13 +51,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             updated_at=now_ist(),
         )
         self.db_session.add(user)
-        try:
-            await self.db_session.commit()
-        except IntegrityError:
-            print(f"ddd1")
-            await self.db_session.rollback()
-            raise
-        await self.db_session.refresh(user)
         return user
     
 

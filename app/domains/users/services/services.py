@@ -1,9 +1,4 @@
 
-"""
-Users Service
-Business logic for users domain.
-"""
-
 from anyio import to_thread
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
@@ -29,18 +24,11 @@ from app.common.cache.config import (
 
 class UsersService:
 
-    """
-    Users business logic
-    """
-
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
         self.users_repo = UsersSQLAlchemyRepository(db_session)
 
 
-    # ---------------------------------
-    # signup user
-    # ---------------------------------
 
     async def signup_user(
         self,

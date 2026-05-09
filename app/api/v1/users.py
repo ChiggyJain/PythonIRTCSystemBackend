@@ -46,10 +46,6 @@ settings = get_settings()
 router = APIRouter()
 
 
-# -------------------------
-# user signup process
-# -------------------------
-
 @feature_control(
     {
         "name": "v1.users.signup",
