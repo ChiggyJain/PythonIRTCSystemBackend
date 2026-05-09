@@ -28,7 +28,7 @@ from app.common.cache.redis_cache import (
     cache_set_delete,
     cache_set_members,
 )
-from app.domains.auth.services.token_servicess import TokenService
+from app.domains.auth.services.token_services import TokenService
 from app.core.settings import get_settings
 
 settings = get_settings()
