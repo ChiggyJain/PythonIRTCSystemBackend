@@ -923,3 +923,5 @@
 2026-05-09 17:52:43 | INFO | ES client created for index: stations_v1
 2026-05-09 17:53:25 | INFO | ES client created for index: routes_v1
 2026-05-09 17:53:25 | INFO | ES client created for index: stations_v1
+2026-05-09 17:53:42 | INFO | ES client created for index: routes_v1
+2026-05-09 17:53:42 | INFO | ES client created for index: stations_v1
