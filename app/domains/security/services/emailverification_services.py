@@ -76,21 +76,19 @@ class EmailVerificationOtpService:
                     messages=["Too many OTP requests for this user. Please try again later."],
                 )
             
-            
             channel = (channel or "").strip().upper()
             if channel != "EMAIL":
-                raise BaseAppException(status_code=400, messages=["channel must be EMAIL"])
+                return error_response(status_code=400, messages=["channel must be EMAIL"])
 
             user = await self.security_repo.get_active_user(user_id)
             if not user:
-                raise BaseAppException(status_code=404, messages=["User not found"])
+                return error_response(status_code=404, messages=["User not found for email verification"])
 
             if user.is_email_verified == "Y":
-                raise BaseAppException(status_code=400, messages=["Email already verified"])
+                return error_response(status_code=400, messages=["Email already verified"])
 
             destination_raw = user.email
             destination_masked = self._mask_email(user.email)
-
             now = now_ist()
 
             # Cooldown + one-active policy
@@ -104,27 +102,29 @@ class EmailVerificationOtpService:
                 elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
                 if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
                     retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
-                    raise BaseAppException(
+                    return error_response(
                         status_code=429,
                         messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
                         data={
                             "retry_after_seconds": retry_after_seconds,
                             "challenge_id": active_otp_challenge.challenge_id,
                         },
-                    )
-
+                    )    
                 expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
-                return {
-                    "challenge_id": active_otp_challenge.challenge_id,
-                    "expires_in_sec": expires_in_sec,
-                    "destination_masked": active_otp_challenge.destination_masked,
-                    "dispatch_status": "already_active",
-                }
-
+                return success_response(
+                    status_code=200,
+                    messages=[f"OTP request is already accepted"],
+                    data={
+                        "challenge_id": active_otp_challenge.challenge_id,
+                        "expires_in_sec": expires_in_sec,
+                        "destination_masked": active_otp_challenge.destination_masked,
+                        "dispatch_status": "already_active",
+                    }
+                )
+            
             otp = self._generate_otp()
             otp_hash = self._hash_otp(otp)
             otp_ciphertext = self._encrypt_otp(otp)
-
             challenge_id = self._build_challenge_id(user_id)
             expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
                     
@@ -177,16 +177,27 @@ class EmailVerificationOtpService:
 
             await self._db_session.commit()
 
-        except Exception:
-            await self._db_session.rollback()
-            raise
+            return success_response(
+                status_code=200,
+                messages=[f"OTP request accepted"],
+                data={
+                    "challenge_id": challenge_id,
+                    "expires_in_sec": self.OTP_TTL_SECONDS,
+                    "destination_masked": destination_masked,
+                    "dispatch_status": "accepted",
+                }
+            )
 
-        return {
-            "challenge_id": challenge_id,
-            "expires_in_sec": self.OTP_TTL_SECONDS,
-            "destination_masked": destination_masked,
-            "dispatch_status": "accepted",
-        }
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
 
 
     async def confirm_email_verification_otp(
