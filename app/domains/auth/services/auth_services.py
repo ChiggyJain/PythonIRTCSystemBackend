@@ -19,6 +19,9 @@ from app.common.cache.redis_cache import (
     cache_set_members,
     cache_set_add,
 )
+from app.common.security.token_hash import (
+    is_token_hash_match,
+)
 
 class AuthService:
 
@@ -82,7 +85,7 @@ class AuthService:
                     messages=["Refresh token already revoked"]
                 )
 
-            if not token_services.is_raw_token_matches_stored_hash(
+            if not is_token_hash_match(
                 raw_token=refresh_token, stored_hash=refresh_token_row.token_hash,
             ):
                 return error_response(
@@ -207,7 +210,7 @@ class AuthService:
                     messages=["Refresh token already revoked"],
                 ) 
             
-            if not token_services.is_raw_token_matches_stored_hash(
+            if not is_token_hash_match(
                 raw_token = refresh_token, stored_hash = refresh_token_row.token_hash,
             ):
                 return error_response(
@@ -315,7 +318,7 @@ class AuthService:
                     messages=["Refresh token already revoked"],
                 ) 
             
-            if not token_services.is_raw_token_matches_stored_hash(
+            if not is_token_hash_match(
                 raw_token = refresh_token, stored_hash = refresh_token_row.token_hash,
             ):
                 return error_response(
