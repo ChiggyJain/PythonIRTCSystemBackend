@@ -10,7 +10,7 @@ from app.common.utils.datetime import now_ist
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
-from app.common.cache.redis_cache import build_cache_key, cache_delete
+from app.common.cache.redis_cache import cache_delete
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
