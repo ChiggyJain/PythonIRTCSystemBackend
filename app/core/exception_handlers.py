@@ -8,11 +8,6 @@ from pydantic import ValidationError
 from app.core.response import build_response
 
 
-# =========================================================
-# Register handlers
-# =========================================================
-
-
 def register_exception_handlers(app: FastAPI):
     
     # HTTPException
@@ -70,7 +65,7 @@ def register_exception_handlers(app: FastAPI):
             data=None,
         )
     
-    
+
     # Unknown Exception
     @app.exception_handler(Exception)
     async def global_exception_handler(
