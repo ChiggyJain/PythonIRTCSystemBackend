@@ -668,3 +668,11 @@
 2026-05-09 17:14:26 | INFO | ES client created for index: stations_v1
 2026-05-09 17:14:32 | INFO | ES client created for index: routes_v1
 2026-05-09 17:14:32 | INFO | ES client created for index: stations_v1
+2026-05-09 17:15:31 | INFO | emailverification_otp_outbox_worker started
+2026-05-09 17:15:48 | INFO | emailverification_otp_dispatch_consumer_worker started
+2026-05-09 17:15:57 | INFO | SpawnProcess-283-21982 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 17:15:57.419560 | 2026-05-09 17:15:57.799343 | 379 | None | 400
+2026-05-09 17:16:24 | INFO | SpawnProcess-283-21982 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 17:16:24.443898 | 2026-05-09 17:16:24.807827 | 363 | None | 200
+2026-05-09 17:16:53 | INFO | SpawnProcess-283-21982 | user:emailverification:requestotp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-05-09 17:16:53.368008 | 2026-05-09 17:16:53.374089 | 6 | None | 400
+2026-05-09 17:17:10 | INFO | SpawnProcess-283-21982 | user:emailverification:requestotp | 127.0.0.1 | POST | /api/v1/users/email/verification/request-otp | 2026-05-09 17:17:10.755805 | 2026-05-09 17:17:10.813526 | 57 | None | 200
+2026-05-09 17:18:14 | INFO | SpawnProcess-283-21982 | user:emailverification:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-05-09 17:18:14.519943 | 2026-05-09 17:18:14.521153 | 1 |  | 500
+2026-05-09 17:18:21 | INFO | SpawnProcess-283-21982 | user:emailverification:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/email/verification/confirm | 2026-05-09 17:18:21.568210 | 2026-05-09 17:18:21.588056 | 19 | None | 200
