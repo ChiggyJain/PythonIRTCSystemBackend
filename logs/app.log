@@ -592,3 +592,11 @@
 2026-05-09 21:42:20 | INFO | SpawnProcess-321-19108 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:42:20.879194 | 2026-05-09 21:42:20.879901 | 0 | 1 validation error for TrainSearchQueryRequest
   Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
     For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-09 21:43:45 | INFO | ES client created for index: routes
+2026-05-09 21:43:45 | INFO | ES client created for index: stations
+2026-05-09 21:43:46 | INFO | SpawnProcess-322-19193 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:43:46.549598 | 2026-05-09 21:43:46.551658 | 2 | 1 validation error for TrainSearchQueryRequest
+size
+  Value error, size must be greater than 0 [type=value_error, input_value=0, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-09 21:43:53 | INFO | ES client created for index: routes
+2026-05-09 21:43:53 | INFO | ES client created for index: stations
