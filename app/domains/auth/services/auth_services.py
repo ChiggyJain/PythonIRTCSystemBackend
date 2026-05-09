@@ -13,9 +13,11 @@ from app.core.response import (
 )
 from app.common.cache.redis_cache import (
     cache_delete,
+    cache_set,
     cache_set_remove,
     cache_set_delete,
     cache_set_members,
+    cache_set_add,
 )
 
 class AuthService:
@@ -94,26 +96,32 @@ class AuthService:
             async with self._db_session.begin():
                 await token_services.user_tokens_repo.revoke_token(access_token_id)
                 await token_services.user_tokens_repo.revoke_token(refresh_token_id)
-                token_rsp = await token_service.create_tokens(
-                    user_id=user.id,
-                    user_profile=user.profile,
+                new_token_rsp = await token_services.create_tokens(
+                    user_id=user_id,
+                    user_profile=user_profile,
                     ip_address=ip_address,
                     user_agent=user_agent
                 )
 
+            # removing old tokens from cache
+            old_access_key = f"user:access:jti:{access_token_id}"
+            await cache_delete(key=old_access_key)
+            user_access_index_key = f"user:access:index:{user_id}"
+            await cache_set_remove(user_access_index_key, str(access_token_id))
 
+            # cache insert for new access token
+            new_access_key = f"user:access:jti:{new_token_rsp["access_token_id"]}"
+            await cache_set(key=new_access_key, value=user_id, ttl=new_token_rsp["access_expire_seconds"])
+            await cache_set_add(user_access_index_key, str(new_token_rsp["access_token_id"]))
 
-
-            tokens = await token_services.rotate_tokens_by_refresh(
-                user_id=user_id,
-                user_profile=user_profile,
-                current_access_token_id=access_token_id,
-                current_refresh_token_id=refresh_token_id,
-                ip_address=ip_address,
-                user_agent=user_agent,
+            return success_response(
+                status_code=200,
+                messages=["Token refreshed successfully"],
+                data={
+                    "access_token" : new_token_rsp["access_token"],
+                    "refresh_token" : new_token_rsp["refresh_token"]
+                },
             )
-
-            pass
 
         except Exception as e:
             pass
