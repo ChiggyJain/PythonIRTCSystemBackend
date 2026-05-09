@@ -213,10 +213,7 @@ async def password_change_confirm(
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
     
-    
-    
-    
-    result = await service.confirm_password_change(
+    return await service.confirm_password_change(
         user_id=user_id_from_access_token,
         challenge_id=body.challenge_id,
         otp=body.otp,
@@ -227,12 +224,6 @@ async def password_change_confirm(
         correlation_id=request.headers.get("x-correlation-id"),
         request_id=request.headers.get("x-request-id"),
     )
-
-    return success_response(
-        messages=["Password changed successfully"],
-        data=result,
-    )
-
 
 router.add_api_route(
     "/password/change/confirm",

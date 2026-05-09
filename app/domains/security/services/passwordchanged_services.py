@@ -255,7 +255,7 @@ class PasswordChangeOtpService:
 
             # checking new password is match with confirm_password
             if new_password != confirm_password:
-                raise error_response(
+                return error_response(
                     status_code=400,
                     messages=["password and confirm password must match"],
                 )
