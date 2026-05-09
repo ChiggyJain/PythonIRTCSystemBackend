@@ -95,14 +95,19 @@ class AuthService:
                 ) 
             
             if not token_services.is_raw_token_matches_stored_hash(
-                raw_token = refresh_token,
-                stored_hash = refresh_token_row.token_hash,
+                raw_token = refresh_token, stored_hash = refresh_token_row.token_hash,
             ):
                 return error_response(
                     status_code=401,
                     messages=["Invalid refresh token"],
                 )
-                
+            
+            # Single transaction revoke + best-effort cache cleanup
+            await token_services.logout_by_token_pair(
+                user_id=access_user_id,
+                access_token_id=access_token_id,
+                refresh_token_id=refresh_token_id,
+            )
 
         except Exception as e:
             pass

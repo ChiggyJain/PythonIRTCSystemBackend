@@ -170,12 +170,7 @@ async def logout(
 
     
 
-    # Single transaction revoke + best-effort cache cleanup
-    await token_service.logout_by_token_pair(
-        user_id=access_user_id,
-        access_token_id=access_token_id,
-        refresh_token_id=refresh_token_id,
-    )
+    
 
     return success_response(
         messages=["Logout successful from current active device session"],
