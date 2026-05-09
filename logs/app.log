@@ -56,3 +56,9 @@
 2026-05-09 15:03:24 | INFO | SpawnProcess-35-11179 | user:logout:alldevices | 127.0.0.1 | POST | /api/v1/auth/logout-all-devices | 2026-05-09 15:03:24.629519 | 2026-05-09 15:03:24.643710 | 14 | None | 200
 2026-05-09 15:03:45 | INFO | SpawnProcess-35-11179 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 15:03:45.587365 | 2026-05-09 15:03:45.902102 | 314 | None | 200
 2026-05-09 15:04:16 | INFO | SpawnProcess-35-11179 | user:logout:currentdevices | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 15:04:16.331470 | 2026-05-09 15:04:16.344629 | 13 | None | 200
+2026-05-09 15:04:59 | INFO | ES client created for index: routes_v1
+2026-05-09 15:04:59 | INFO | ES client created for index: stations_v1
+2026-05-09 15:05:22 | INFO | ES client created for index: routes_v1
+2026-05-09 15:05:22 | INFO | ES client created for index: stations_v1
+2026-05-09 15:05:25 | INFO | ES client created for index: routes_v1
+2026-05-09 15:05:25 | INFO | ES client created for index: stations_v1

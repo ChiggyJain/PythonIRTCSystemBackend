@@ -32,13 +32,10 @@ from app.common.cache.redis_cache import (
 router = APIRouter()
 
 
-# -------------------------
-# refresh token process
-# -------------------------
 
 @feature_control(
     {
-        "name": "v1.auth.refresh",
+        "name": "user:refreshtoken",
         "logging": {
             "console" : True,
             "file" : True,
