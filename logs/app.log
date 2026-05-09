@@ -128,3 +128,6 @@
 2026-05-09 20:37:29 | INFO | ES client created for index: stations
 2026-05-09 20:37:39 | INFO | ES client created for index: routes
 2026-05-09 20:37:39 | INFO | ES client created for index: stations
+2026-05-09 20:37:46 | INFO | SpawnProcess-85-13049 | user:trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-09 20:37:46.046190 | 2026-05-09 20:37:46.148203 | 102 | None | 400
+2026-05-09 20:37:57 | INFO | SpawnProcess-85-13049 | user:trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-09 20:37:57.134957 | 2026-05-09 20:37:57.219163 | 84 | None | 201
+2026-05-09 20:38:02 | INFO | SpawnProcess-85-13049 | user:trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-09 20:38:02.167752 | 2026-05-09 20:38:02.243097 | 75 | None | 400
