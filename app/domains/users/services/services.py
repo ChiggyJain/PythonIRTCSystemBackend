@@ -127,9 +127,10 @@ class UsersService:
                     ],
                 )
             
-            # create tokens
+            # token service
             token_service = TokenService(self._db_session)
 
+            # creating tokens
             async with self._db_session.begin():
                 token_rsp = await token_service.create_tokens(
                     user_id=user.id,
@@ -137,12 +138,16 @@ class UsersService:
                     ip_address=ip_address,
                     user_agent=user_agent
                 )
+
             if token_rsp["access_token"]!="" and token_rsp["refresh_token"]!="":
                 return success_response(
                     status_code=200,
                     messages=["Login successful"],
                     data={
-                        "tokens" : token_rsp
+                        "tokens" : {
+                            "access_token" : token_rsp["access_token"],
+                            "refresh_token" : token_rsp["refresh_token"]
+                        }
                     },
                 )
             else:
