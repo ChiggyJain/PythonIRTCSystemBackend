@@ -279,3 +279,5 @@
 2026-05-09 13:41:59 | INFO | SpawnProcess-1-6682 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 13:41:59.339743 | 2026-05-09 13:41:59.426114 | 86 | None | 200
 2026-05-09 13:51:46 | INFO | ES client created for index: routes_v1
 2026-05-09 13:51:46 | INFO | ES client created for index: stations_v1
+2026-05-09 13:52:06 | INFO | ES client created for index: routes_v1
+2026-05-09 13:52:06 | INFO | ES client created for index: stations_v1
