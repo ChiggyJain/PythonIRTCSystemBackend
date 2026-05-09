@@ -116,53 +116,45 @@ class Settings(BaseSettings):
     MASTERDATA_STATION_CREATED: str = "masterdata-station-created"
     MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumer-v1"
     MASTERDATA_STATION_OUTBOX_MAX_RETRIES: int = 6
-    MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT: int = 10
-    MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
     # Train KAFKA TOPIC and CONSUMER
     MASTERDATA_TRAIN_CREATED: str = "masterdata-train-created"
     MASTERDATA_TRAIN_CONSUMER_GROUP: str = "masterdata-train-events-dispatch-consumer-v1"
     MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int = 6
-    MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
-    MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
-
+    
     # Route KAFKA TOPIC and CONSUMER
     MASTERDATA_ROUTE_CREATED: str = "masterdata-route-created"
     MASTERDATA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumer-v1"
     MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
-
     # Schedule KAFKA TOPIC and CONSUMER
     MASTERDATA_SCHEDULE_CREATED: str = "masterdata-schedule-created"
     MASTERDATA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumer-v1"
     MASTERDATA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "masterdata-schedule-events-inventory-consumer-v1"
     MASTERDATA_SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
-    
-    
+        
     # ELASTICSEARCH CONFIG
     ELASTICSEARCH_URL: str = "http://127.0.0.1:9200"
     ELASTICSEARCH_USERNAME: str | None = None
     ELASTICSEARCH_PASSWORD: str | None = None
     ELASTICSEARCH_VERIFY_CERTS: bool = False
     ELASTICSEARCH_REQUEST_TIMEOUT_SECONDS: int = 10
-
-    # Station index in Elasticsearch
     ELASTICSEARCH_STATIONS_INDEX: str = "stations_v1"
     ELASTICSEARCH_ROUTES_INDEX: str = "routes_v1"
 
+    # booking config
     BOOKING_TTL_SECONDS: int = 600
     BOOKING_EXPIRY_CHECK_INTERVAL_MS: int = 30000
     LOCK_TTL_SECONDS: int = 600
 
+    # internal service communication url
     INTERNAL_SERVICE_KEY: str ="irtc-internal-service-key-2026"
     INVENTORY_SERVICE_URL: str ="http://127.0.0.1:8000"
     PAYMENT_SERVICE_URL: str ="http://127.0.0.1:8000"
 
 
-    # =========================
+    
     # Pydantic Settings Config
-    # =========================
-
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -173,17 +165,4 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    """
-    Singleton Settings Provider
-
-    Why lru_cache?
-    --------------
-    - Creates one instance per process
-    - Safe for multi-worker
-    - Safe for async
-    - Safe for FastAPI dependency injection
-    - Recommended by FastAPI docs
-
-    Each worker will have its own cached instance.
-    """
     return Settings()
