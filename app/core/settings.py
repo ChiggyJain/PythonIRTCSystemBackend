@@ -5,13 +5,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     
-    # APP CONFIG
+    # app config
     APP_NAME: str = "IRTC Backend"
     APP_ENV: str = "local"
     APP_DEBUG: bool = True
-
     
-    # JWT Settings
+    # jwt config
     JWT_SECRET_KEY: str
     TOKEN_HASH_SECRET: str
     JWT_ALGORITHM: str = "HS256"
@@ -23,110 +22,77 @@ class Settings(BaseSettings):
     # cache profile ttl seconds
     USER_PROFILE_CACHE_TTL_SECONDS: int = 300
 
-    # MYSQL CONFIG
+    # email service provider key config
+    SENDGRID_API_KEY: str
+
+    # mysql db config
     MYSQL_DB_HOST: str
     MYSQL_DB_PORT: int
     MYSQL_DB_NAME: str
     MYSQL_DB_USER: str
     MYSQL_DB_PASSWORD: str
 
-    # =========================
-    # REDIS CONFIG
-    # =========================
-
+    # redis config
     REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
 
-    # =========================
-    # KAFKA APP CONFIG
-    # =========================
-
+    # kafka config
     KAFKA_BOOTSTRAP_SERVERS : str
     KAFKA_CLIENT_ID: str = "irtc-backend"
     
-    
-    # ============================================
-    # PASSWORD CHANGED OTP KAFKA TOPIC and CONSUMER
-    # =============================================
-
+    # password changed related kafka topic and consumer
     PWDCHANGED_OTP_DISPATCH_TOPIC: str = "pwdchanged-otp-dispatch-v1"
     PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "pwdchanged-otp-dispatch-consumer-v1"
     PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
 
-    # =========================
-    # SENDGRID CONFIG
-    # =========================
-
-    SENDGRID_API_KEY: str
-
-    
-    
-
-    # =======================================================
-    # PASSWORD CHANGED OTP SENDER PROVIDER CONFIG (EMAIL, SMS)
-    # ========================================================
-
+    # password changed related email and sms provider name
     PWDCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
     PWDCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
     PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
 
-
-    # =====================================================
-    # EMAIL VERIFICATION OTP KAFKA TOPIC and CONSUMER
-    # =====================================================
-
+    # email verification related kafka topic and consumer
     EMAILVERIFICATION_OTP_DISPATCH_TOPIC: str = "emailverification-otp-dispatch-v1"
     EMAILVERIFICATION_OTP_DISPATCH_CONSUMER_GROUP: str = "emailverification-otp-dispatch-consumer-v1"
     EMAILVERIFICATION_OTP_OUTBOX_MAX_RETRIES: int = 6
 
-
-    # =====================================================
-    # EMAIL VERIFICATION OTP SENDER PROVIDER CONFIG
-    # =====================================================
-
+    # email verification related email and sms provider name
     EMAILVERIFICATION_OTP_EMAIL_PROVIDER: str = "SENDGRID"
     EMAILVERIFICATION_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     EMAILVERIFICATION_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
     
-
-    # =====================================================
-    # EMAIL CHANGED OTP KAFKA TOPIC and CONSUMER
-    # =====================================================
+    # email changed related kafka topic and consumer
     EMAILCHANGED_OTP_DISPATCH_TOPIC: str = "emailchanged-otp-dispatch-v1"
     EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumer-v1"
     EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
-
-    # =====================================================
-    # EMAIL CHANGED OTP SENDER PROVIDER CONFIG (EMAIL only)
-    # =====================================================
+    
+    # email changed related email and sms provider name
     EMAILCHANGED_OTP_EMAIL_PROVIDER: str = "SENDGRID"
     EMAILCHANGED_OTP_FROM_EMAIL: str = "cjain9975@gmail.com"
     EMAILCHANGED_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
 
-    # User-based rate limit for password change OTP request API
+    # password change OTP request rate limitter
     PWDCHANGED_OTP_USER_RATE_LIMIT: int = 5
     PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS: int = 60
 
-    # User-based rate limit for password change confirm API
+    # password chnage confirm OTP request rate limitter
     PWDCHANGED_CONFIRM_USER_RATE_LIMIT: int = 5
     PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
 
-
-    # User-based rate limit for email verfication OTP request API
+    # email verification OTP request rate limitter
     EMAILVERIFICATION_OTP_USER_RATE_LIMIT: int = 5
     EMAILVERIFICATION_OTP_USER_RATE_WINDOW_SECONDS: int = 60
 
-    # User-based rate limit for email verfication confirm API
+    # email verification confirm OTP request rate limitter
     EMAILVERIFICATION_CONFIRM_USER_RATE_LIMIT: int = 5
     EMAILVERIFICATION_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
 
-    # User-based rate limit for email verfication OTP request API
+    # email change OTP request rate limitter
     EMAILCHANGE_OTP_USER_RATE_LIMIT: int = 5
     EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS: int = 60
 
-    # User-based rate limit for email verfication confirm API
+    # email change confirm OTP request rate limitter
     EMAILCHANGE_CONFIRM_USER_RATE_LIMIT: int = 5
     EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
 
