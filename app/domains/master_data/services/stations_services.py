@@ -95,7 +95,7 @@ class StationsService:
 
             return success_response(
                 status_code=201,
-                messages=[f""],
+                messages=[f"Station created successfully"],
                 data={
                     "id": station.id,
                     "name": station.name,
