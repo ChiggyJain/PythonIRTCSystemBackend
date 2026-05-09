@@ -424,40 +424,34 @@ class PasswordChangeOtpService:
 
             await self._db_session.commit()
 
-            # 2) Cache cleanup as post-commit side-effect (best effort)
-            user_index_key = build_cache_set_key(f"user:access:index:{user_id}")
-            try:
-                access_jti_set = await cache_set_members(key=user_index_key)
-                for access_jti in access_jti_set:
-                    access_key = build_cache_key(f"user:access:jti:{access_jti}")
-                    try:
-                        await cache_delete(key=access_key)
-                    except Exception as exc:
-                        app_logger.warning(
-                            f"password_change cache_delete failed | user_id={user_id} | key={access_key} | error={str(exc)}"
-                        )
-                try:
-                    await cache_set_delete(key=user_index_key)
-                except Exception as exc:
-                    app_logger.warning(
-                        f"password_change cache_set_delete failed | user_id={user_id} | key={user_index_key} | error={str(exc)}"
-                    )
-            except Exception as exc:
-                app_logger.error(
-                    f"password_change cache_cleanup failed | user_id={user_id} | error={str(exc)}"
-                )
+            # removing from cache
+            user_index_key = f"user:access:index:{user_id}"
+            access_jti_set = await cache_set_members(key=user_index_key)
+            for access_jti in access_jti_set:
+                access_key = f"user:access:jti:{access_jti}"
+                await cache_delete(key=access_key)
+            await cache_set_delete(key=user_index_key)
 
-        except BaseAppException:
+            return success_response(
+                status_code=200,
+                messages=[f"Password changed successfully"],
+                data={
+                    "account_session_revoked_count": revoked_count,
+                }
+            )
+            
+        except BaseAppException as e:
             await self._db_session.rollback()
-            raise
-        except Exception:
+            raise e
+        
+        except Exception as e:
             await self._db_session.rollback()
-            raise
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
 
-        return {
-            "message": "Password changed successfully",
-            "account_session_revoked_count": revoked_count,
-        }
+        
 
 
     # =========================
