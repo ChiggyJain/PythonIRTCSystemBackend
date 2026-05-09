@@ -266,44 +266,7 @@ class TokenService:
         }
 
 
-    async def logout_by_token_pair(
-        self,
-        *,
-        user_id: int,
-        access_token_id: int | str,
-        refresh_token_id: int | str,
-    ) -> None:
-
-        access_id = int(access_token_id)
-        refresh_id = int(refresh_token_id)
-
-        # Single DB transaction for both revokes
-        try:
-            await self.user_tokens_repo.revoke_token(access_id)
-            await self.user_tokens_repo.revoke_token(refresh_id)
-            await self._db_session.commit()
-        except Exception:
-            await self._db_session.rollback()
-            raise
-
-        # Cache cleanup: best-effort (DB already source of truth)
-        access_cache_key = build_cache_key(f"auth:user:access:jti:{access_id}")
-        user_access_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
-
-        try:
-            await cache_delete(key=access_cache_key)
-        except Exception as exc:
-            app_logger.warning(
-                f"logout cache_delete failed | key={access_cache_key} | error={str(exc)}"
-            )
-
-        try:
-            await cache_set_remove(user_access_index_key, str(access_id))
-        except Exception as exc:
-            app_logger.warning(
-                f"logout cache_set_remove failed | key={user_access_index_key} | access_id={access_id} | error={str(exc)}"
-            )
-
+ 
     
     async def logout_from_all_devices_by_user_id(
         self,
@@ -321,19 +284,18 @@ class TokenService:
 
 
         # Cache cleanup as post-commit side-effect (best effort)
-        user_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
+        
         try:
-            access_jti_set = await cache_set_members(key=user_index_key)
-            for access_jti in access_jti_set:
-                access_key = build_cache_key(f"auth:user:access:jti:{access_jti}")
+            
+            
                 try:
-                    await cache_delete(key=access_key)
+                    
                 except Exception as exc:
                     app_logger.warning(
                         f"logout_all_devices cache_delete failed | user_id={user_id} | key={access_key} | error={str(exc)}"
                     )
             try:
-                await cache_set_delete(key=user_index_key)
+                
             except Exception as exc:
                 app_logger.warning(
                     f"logout_all_devices cache_set_delete failed | user_id={user_id} | key={user_index_key} | error={str(exc)}"
