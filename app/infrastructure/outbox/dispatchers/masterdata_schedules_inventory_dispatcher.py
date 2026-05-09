@@ -17,7 +17,7 @@ async def process_message(payload: dict) -> bool:
         service = InventoryService(db_session=db)
         result = await service.process_train_schedule_created_event_for_inventory(payload=payload)
         app_logger.info(
-            f"inventory_schedule_consumer | schedule_id={payload.get('schedule_id')} | status={result.get('status')}"
+            f"inventory_schedule_consumer | schedule_id={payload.get('schedule_id')} | status_code={result.get('status_code')}"
         )
         return True
 
