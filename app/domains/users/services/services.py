@@ -74,6 +74,7 @@ class UsersService:
                     gender=gender,
                     profile=profile
                 )
+                
             return success_response(
                 status_code=200,
                 messages=["User created successfully"],
@@ -186,11 +187,6 @@ class UsersService:
                 data=None
             )
     
-
-
-    # ---------------------------------
-    # profile details
-    # ---------------------------------
 
     async def get_profile_details(
         self,

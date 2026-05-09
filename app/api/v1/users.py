@@ -120,9 +120,6 @@ router.add_api_route(
 )
 
 
-# -----------------------------
-# user profile details process
-# -----------------------------
 
 @feature_control(
     {
@@ -148,7 +145,6 @@ async def profile_details(
     
     user_id = user_details_from_access_token.get("sub")
     user_profile_details = await service.get_profile_details(user_id=user_id)
-    
     return success_response(
         messages=["User profile details found successfully"],
         data=user_profile_details,
