@@ -165,8 +165,8 @@ class AuthService:
             
             # fetching access-token and refresh-token row details
             async with self._db_session.begin():
-                access_token_row = await token_services.get_access(access_token_id)
-                refresh_token_row = await token_services.get_refresh(refresh_token_id)
+                access_token_row = await token_services.user_tokens_repo.get_by_id(access_token_id)
+                refresh_token_row = await token_services.user_tokens_repo.get_by_id(refresh_token_id)
 
             # Access token row validations    
             if not access_token_row:
@@ -273,8 +273,8 @@ class AuthService:
             
             # fetching access-token and refresh-token row details
             async with self._db_session.begin():
-                access_token_row = await token_services.get_access(access_token_id)
-                refresh_token_row = await token_services.get_refresh(refresh_token_id)
+                access_token_row = await token_services.user_tokens_repo.get_by_id(access_token_id)
+                refresh_token_row = await token_services.user_tokens_repo.get_by_id(refresh_token_id)
 
             # Access token row validations    
             if not access_token_row:

@@ -122,38 +122,6 @@ class TokenService:
                 "refresh_expire_seconds" : "",
             }
 
-        
-
-
-    async def revoke(
-        self,
-        token_id: int|str,
-    ):
-
-        try:
-            await self.user_tokens_repo.revoke_token(int(token_id))
-            await self.user_tokens_repo.commit()
-        except Exception:
-            await self.user_tokens_repo.rollback()
-            raise
-
-    
-    async def get_access(
-        self,
-        token_id: int|str,
-    ):
-
-        return await self.user_tokens_repo.get_by_id(token_id)
-    
-    
-    async def get_refresh(
-        self,
-        token_id: int|str,
-    ):
-        
-        return await self.user_tokens_repo.get_by_id(token_id)
-    
-
     def is_raw_token_matches_stored_hash(
         self,
         *,

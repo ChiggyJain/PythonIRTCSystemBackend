@@ -825,3 +825,15 @@
 2026-05-09 17:35:42 | INFO | SpawnProcess-368-24003 | user:emailchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/email/change/confirm | 2026-05-09 17:35:42.333905 | 2026-05-09 17:35:42.423062 | 89 | None | 200
 2026-05-09 17:39:25 | INFO | ES client created for index: routes_v1
 2026-05-09 17:39:25 | INFO | ES client created for index: stations_v1
+2026-05-09 17:40:36 | INFO | ES client created for index: routes_v1
+2026-05-09 17:40:36 | INFO | ES client created for index: stations_v1
+2026-05-09 17:41:19 | INFO | ES client created for index: routes_v1
+2026-05-09 17:41:19 | INFO | ES client created for index: stations_v1
+2026-05-09 17:41:35 | INFO | ES client created for index: routes_v1
+2026-05-09 17:41:35 | INFO | ES client created for index: stations_v1
+2026-05-09 17:41:44 | INFO | ES client created for index: routes_v1
+2026-05-09 17:41:44 | INFO | ES client created for index: stations_v1
+2026-05-09 17:41:57 | INFO | ES client created for index: routes_v1
+2026-05-09 17:41:57 | INFO | ES client created for index: stations_v1
+2026-05-09 17:42:07 | INFO | ES client created for index: routes_v1
+2026-05-09 17:42:07 | INFO | ES client created for index: stations_v1
