@@ -15,7 +15,7 @@ settings = get_settings()
 async def process_message(payload: dict) -> bool:
     async with AsyncSessionLocal() as db:
         service = InventoryService(db_session=db)
-        result = await service.process_schedule_created_event(payload=payload)
+        result = await service.process_train_schedule_created_event_for_inventory(payload=payload)
         app_logger.info(
             f"inventory_schedule_consumer | schedule_id={payload.get('schedule_id')} | status={result.get('status')}"
         )

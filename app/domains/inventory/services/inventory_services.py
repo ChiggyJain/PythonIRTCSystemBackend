@@ -5,8 +5,16 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
-from app.common.utils.datetime import now_ist, today_ist
-from app.core.response import success_response, error_response
+from app.common.utils.datetime import (
+    now_ist, 
+    today_ist
+)
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
+from app.core.settings import get_settings
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
 from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
 from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
@@ -14,17 +22,19 @@ from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlch
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
 
 
-class InventoryService:
+settings = get_settings()
 
+
+class InventoryService:
     
 
     def __init__(self, db_session: AsyncSession):
-        self.db = db_session
+        self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.inventory_repo = InventorySQLAlchemyRepository(db_session)
 
 
-    async def process_schedule_created_event(self, *, payload: dict) -> dict:
+    async def process_train_schedule_created_event_for_inventory(self, *, payload: dict) -> dict:
 
         try:
             
@@ -32,22 +42,6 @@ class InventoryService:
             IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
 
             schedule_id = int(payload.get("schedule_id", 0))
-            if schedule_id <= 0:
-                raise BaseAppException(
-                    status_code=400,
-                    messages=["Invalid schedule_id in payload"],
-                )
-
-            event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
-            existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
-            if existing:
-                return {
-                    "status": "duplicate",
-                    "event_key": event_key,
-                    "schedule_id": schedule_id,
-                    "message": "Event already processed",
-                }
-
             train_details = payload.get("train_details") or {}
             seat_details = payload.get("seat_details") or []
             station_details = payload.get("station_details") or []
@@ -56,19 +50,36 @@ class InventoryService:
             train_name = str(train_details.get("train_name", ""))
             departure_date_raw = str(payload.get("departure_date", ""))
 
+            if schedule_id <= 0:
+                return error_response(
+                    status_code=400,
+                    messages=["Invalid schedule_id in payload"],
+                )
             if train_id <= 0:
-                raise BaseAppException(status_code=400, messages=["Invalid train_id in payload"])
+                return error_response(status_code=400, messages=["Invalid train_id in payload"])
             if not train_number:
-                raise BaseAppException(status_code=400, messages=["Invalid train_number in payload"])
+                return error_response(status_code=400, messages=["Invalid train_number in payload"])
             if not train_name:
-                raise BaseAppException(status_code=400, messages=["Invalid train_name in payload"])
+                return error_response(status_code=400, messages=["Invalid train_name in payload"])
             if not departure_date_raw:
-                raise BaseAppException(status_code=400, messages=["Invalid departure_date in payload"])
+                return error_response(status_code=400, messages=["Invalid departure_date in payload"])
+            
+            # checking idempotency key
+            event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
+            existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
+            if existing:
+                return error_response(
+                    status_code=201,
+                    messages=["Scheudle already processed"],
+                    data={
+                        "schedule_id": schedule_id,
+                    }
+                )
 
             try:
                 departure_date = date.fromisoformat(departure_date_raw)
             except ValueError:
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["departure_date must be in YYYY-MM-DD format"],
                 )
@@ -109,7 +120,7 @@ class InventoryService:
                 event_type=IDEMPOTENCY_EVENT_TYPE,
             )
 
-            await self.db.commit()
+            await self._db_session.commit()
 
             return {
                 "status": "processed",
@@ -117,31 +128,26 @@ class InventoryService:
                 "schedule_id": schedule_id,
             }
 
-        except IntegrityError as exc:
-            
-            await self.db.rollback()
-            msg = str(getattr(exc, "orig", exc)).lower()
-            # duplicate event guard (race-safe)
-            if "uq_eventKey" in msg or "eventKey" in msg:
-                app_logger.info(f"Idempotent duplicate ignored | event_key={event_key}")
-                return {
-                    "status": "duplicate",
-                    "event_key": event_key,
-                    "schedule_id": schedule_id,
-                    "message": "Event already processed",
-                }
-            raise BaseAppException(
+        except IntegrityError as ex:
+            await self._db_session.rollback()
+            msg = str(getattr(ex, "orig", ex)).lower()
+            return error_response(
                 status_code=400,
-                messages=["Unable to persist inventory due to data constraint violation"],
+                messages=[f"Unable to create train route due to data constraint violation. {msg}"],
+            )
+        
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
             )
 
-        except BaseAppException:
-            await self.db.rollback()
-            raise
 
-        except Exception:
-            await self.db.rollback()
-            raise
 
 
 
@@ -275,7 +281,7 @@ class InventoryService:
                     SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"])
                 )
             )
-            lock_result = await self.db.execute(lock_stmt)
+            lock_result = await self._db_session.execute(lock_stmt)
             locks = lock_result.scalars().all()
 
             # Determine final seat status
@@ -295,7 +301,7 @@ class InventoryService:
                 )
                 .with_for_update(skip_locked=True)
             )
-            seat_result = await self.db.execute(seat_stmt)
+            seat_result = await self._db_session.execute(seat_stmt)
             seat_inventory = seat_result.scalar_one_or_none()
             if seat_inventory is None:
                 continue
@@ -367,7 +373,7 @@ class InventoryService:
                 SeatInventory.schedule_id == schedule_id
             )
         )
-        result = await self.db.execute(stmt)
+        result = await self._db_session.execute(stmt)
         counts = result.mappings().one()
 
         schedule_stmt = (
@@ -377,7 +383,7 @@ class InventoryService:
             )
             .with_for_update(skip_locked=True)
         )
-        schedule_result = await self.db.execute(
+        schedule_result = await self._db_session.execute(
             schedule_stmt
         )
         schedule_inventory = (
@@ -420,7 +426,7 @@ class InventoryService:
         try:
 
             # TRANSACTION START
-            async with self.db.begin():
+            async with self._db_session.begin():
 
                 # fetching schedule-inventory details
                 inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)        
@@ -541,11 +547,11 @@ class InventoryService:
                 )
 
         except BaseAppException:
-            await self.db.rollback()
+            await self._db_session.rollback()
             raise
 
         except Exception as ex:
-            await self.db.rollback()
+            await self._db_session.rollback()
             raise BaseAppException(
                 status_code=500,
                 messages=[str(ex)],
