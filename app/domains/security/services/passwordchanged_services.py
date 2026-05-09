@@ -228,7 +228,7 @@ class PasswordChangeOtpService:
             await self._db_session.rollback()
             raise e
 
-        except Exception:
+        except Exception as e:
             await self._db_session.rollback()
             return exception_response(
                 status_code=500,

@@ -386,3 +386,17 @@
 2026-05-09 16:23:22 | INFO | ES client created for index: routes_v1
 2026-05-09 16:23:22 | INFO | ES client created for index: stations_v1
 2026-05-09 16:23:24 | INFO | SpawnProcess-93-16694 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:23:24.106652 | 2026-05-09 16:23:24.233530 | 126 | None | 200
+2026-05-09 16:24:12 | INFO | ES client created for index: routes_v1
+2026-05-09 16:24:12 | INFO | ES client created for index: stations_v1
+2026-05-09 16:24:15 | INFO | SpawnProcess-98-16758 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:24:14.955331 | 2026-05-09 16:24:15.085197 | 129 | cannot access local variable 'e' where it is not associated with a value | 500
+2026-05-09 16:24:28 | INFO | ES client created for index: routes_v1
+2026-05-09 16:24:28 | INFO | ES client created for index: stations_v1
+2026-05-09 16:24:30 | INFO | SpawnProcess-100-16783 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:24:29.871757 | 2026-05-09 16:24:30.001432 | 129 | None | 500
+2026-05-09 16:24:47 | INFO | ES client created for index: routes_v1
+2026-05-09 16:24:47 | INFO | ES client created for index: stations_v1
+2026-05-09 16:24:49 | INFO | SpawnProcess-102-16810 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:24:49.783248 | 2026-05-09 16:24:49.823802 | 40 | None | 500
+2026-05-09 16:25:14 | INFO | ES client created for index: routes_v1
+2026-05-09 16:25:14 | INFO | ES client created for index: stations_v1
+2026-05-09 16:25:17 | INFO | ES client created for index: routes_v1
+2026-05-09 16:25:17 | INFO | ES client created for index: stations_v1
+2026-05-09 16:25:20 | INFO | SpawnProcess-106-16854 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:25:20.759625 | 2026-05-09 16:25:20.824659 | 65 | None | 200
