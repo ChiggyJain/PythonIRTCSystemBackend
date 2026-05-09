@@ -134,7 +134,14 @@ class UsersService:
                 user_agent=user_agent
             )
             
-
+            return success_response(
+                status_code=200,
+                messages=["Login successful"],
+                data={
+                    "tokens" : tokens
+                },
+            )
+        
         except Exception as e:
             return exception_response(
                 status_code=500,
