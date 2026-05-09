@@ -333,3 +333,7 @@
 2026-05-09 10:20:22 | INFO | ES client created for index: stations_v1
 2026-05-09 10:20:29 | INFO | ES client created for index: routes_v1
 2026-05-09 10:20:29 | INFO | ES client created for index: stations_v1
+2026-05-09 10:20:44 | INFO | SpawnProcess-236-13678 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 10:20:44.230070 | 2026-05-09 10:20:44.697481 | 467 | None | 200
+2026-05-09 10:20:47 | INFO | SpawnProcess-236-13678 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 10:20:46.779179 | 2026-05-09 10:20:47.147180 | 368 | None | 200
+2026-05-09 10:22:07 | INFO | ES client created for index: routes_v1
+2026-05-09 10:22:07 | INFO | ES client created for index: stations_v1
