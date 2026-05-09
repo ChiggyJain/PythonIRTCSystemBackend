@@ -193,24 +193,32 @@ class UsersService:
         user_id: int,
     ):
         
+        # extracting user profile data from redis-cache
         key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
         cached = None
         try:
             cached = await cache_get(key)
         except Exception as exc:
             app_logger.warning(
-                f"profile_details cache_get failed | user_id={user_id} | error={str(exc)}"
+                f"User profile details cache get failed | user_id={user_id} | error={str(exc)}"
             )
         if cached:
-            return cached
-
-        profile = await self.users_repo.get_profile_snapshot_by_id(user_id=user_id)
-        if not profile:
-            return error_response(
-                status_code=404,
-                messages=["User not found"],
+            return success_response(
+                status_code=200,
+                messages=["User profile details found successfully"],
+                data=cached,
             )
+
+        # fetching user profile data from db
+        async with self._db_session.begin():
+            profile = await self.users_repo.get_profile_snapshot_by_id(user_id=user_id)
+            if not profile:
+                return error_response(
+                    status_code=404,
+                    messages=["User profile details not found"],
+                )
         
+        # preparing user profile data for returning the response
         data = {
             "id": profile.get("id", 0),
             "first_name": profile.get("first_name", ""),
@@ -231,6 +239,7 @@ class UsersService:
             ),            
         }
 
+        # storing user profile data into redis-cache
         try:
             await cache_set(key, data, ttl=CACHE_TTL_PROFILE)
         except Exception as exc:
@@ -238,4 +247,8 @@ class UsersService:
                 f"profile_details cache_set failed | user_id={user_id} | error={str(exc)}"
             )
 
-        return data
+        return success_response(
+            status_code=200,
+            messages=["User profile details found successfully"],
+            data=data,
+        )
