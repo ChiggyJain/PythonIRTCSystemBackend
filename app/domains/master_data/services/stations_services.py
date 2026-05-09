@@ -3,8 +3,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
+from app.core.settings import get_settings
+from app.common.utils.ratelimiter import rate_limiter
 from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
+
+settings = get_settings()
 
 
 class StationsService:
@@ -21,20 +30,36 @@ class StationsService:
     async def create_station(
         self,
         *,
-        name: str,
-        code: str,
-        city: str,
-        state: str,
-        admin_user_id: int,
-        correlation_id: str | None = None,
-        request_id: str | None = None,
+        payload: dict
     ) -> dict:
 
-        code = (code or "").strip().upper()
 
         try:
+            
+            # extracted parameters
+            user_id = payload.get("user_id", 0)
+            name = payload.get("name", "")
+            code = payload.get("code", "")
+            city = payload.get("city", "")
+            state = payload.get("state", "")
+            correlation_id = payload.get("correlation_id", "")
+            request_id = payload.get("request_id", "")
+            code = (code or "").strip().upper()
 
-            # creating entries into station
+            # user-level limiter
+            user_rate_key = f"user:stations:create:{user_id}"
+            user_allowed_request = await rate_limiter.check_window_limit(
+                key=user_rate_key,
+                limit=settings.MASTERDATA_STATION_CREATE_USER_RATE_LIMIT,
+                window=settings.MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed_request:
+                return error_response(
+                    status_code=429,
+                    messages=["Too many station create requests. Please try again later."],
+                )
+
+            # creating entries into stations
             station = await self.masterdata_repo.create_station(
                 name=name,
                 code=code,
@@ -43,7 +68,7 @@ class StationsService:
                 status="A",
             )
 
-            # creating entries into outbox
+            # creating entries into outbox events
             await self.outbox_repo.add_outbox_event(
                 aggregate_type="STATIONS",
                 aggregate_id=str(station.id),
@@ -58,7 +83,7 @@ class StationsService:
                     "created_at": str(station.created_at),
                     "event_type": self.OUTBOX_EVENT_STATION_CREATED,
                     "event_version": 1,
-                    "created_by_admin_user_id": admin_user_id,
+                    "created_by_user_id": user_id,
                     "correlation_id": correlation_id,
                     "request_id": request_id,
                     "event_created_at": str(now_ist()),
@@ -66,26 +91,38 @@ class StationsService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
-            # committing the records at db level
             await self._db_session.commit()
 
+            return success_response(
+                status_code=201,
+                messages=[f""],
+                data={
+                    "id": station.id,
+                    "name": station.name,
+                    "code": station.code,
+                    "city": station.city,
+                    "state": station.state,
+                    "status": station.status,
+                    "dispatch_status": "accepted",
+                }
+            )
+        
         except IntegrityError:
-            # rollback is happening here if station-code is duplicate
             await self._db_session.rollback()
-            raise BaseAppException(
+            return error_response(
                 status_code=400,
                 messages=["Station code already exists"],
             )
-        except Exception:
+        
+        except BaseAppException as e:
             await self._db_session.rollback()
-            raise
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
 
-        return {
-            "id": station.id,
-            "name": station.name,
-            "code": station.code,
-            "city": station.city,
-            "state": station.state,
-            "status": station.status,
-            "dispatch_status": "accepted",
-        }
+        
