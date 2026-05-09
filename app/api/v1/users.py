@@ -253,21 +253,14 @@ async def email_verification_request_otp(
     user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: EmailVerificationOtpService = Depends(get_email_verification_otp_service),
 ):
-    
-    
-    result = await service.request_email_verification_otp(
+      
+    return await service.request_email_verification_otp(
         user_id=user_id_from_access_token,
         channel=body.channel,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
         correlation_id=request.headers.get("x-correlation-id"),
         request_id=request.headers.get("x-request-id"),
-    )
-
-    return success_response(
-        status_code=202,
-        messages=["Email verification OTP request accepted"],
-        data=result,
     )
 
 
