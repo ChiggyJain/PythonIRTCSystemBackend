@@ -524,3 +524,19 @@
 2026-05-09 21:34:07 | INFO | ES client created for index: stations
 2026-05-09 21:34:12 | INFO | SpawnProcess-284-18319 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:34:12.339461 | 2026-05-09 21:34:12.346592 | 7 | None | 200
 2026-05-09 21:34:16 | INFO | SpawnProcess-284-18319 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:34:16.569381 | 2026-05-09 21:34:16.573296 | 3 | None | 404
+2026-05-09 21:35:11 | INFO | ES client created for index: routes
+2026-05-09 21:35:11 | INFO | ES client created for index: stations
+2026-05-09 21:35:22 | INFO | ES client created for index: routes
+2026-05-09 21:35:22 | INFO | ES client created for index: stations
+2026-05-09 21:35:27 | INFO | ES client created for index: routes
+2026-05-09 21:35:27 | INFO | ES client created for index: stations
+2026-05-09 21:35:29 | INFO | ES client created for index: routes
+2026-05-09 21:35:29 | INFO | ES client created for index: stations
+2026-05-09 21:35:32 | INFO | ES client created for index: routes
+2026-05-09 21:35:32 | INFO | ES client created for index: stations
+2026-05-09 21:35:42 | INFO | ES client created for index: routes
+2026-05-09 21:35:42 | INFO | ES client created for index: stations
+2026-05-09 21:35:45 | INFO | ES client created for index: routes
+2026-05-09 21:35:45 | INFO | ES client created for index: stations
+2026-05-09 21:35:46 | INFO | SpawnProcess-293-18481 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:35:46.249467 | 2026-05-09 21:35:46.256297 | 6 | None | 404
+2026-05-09 21:35:50 | INFO | SpawnProcess-293-18481 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:35:50.414696 | 2026-05-09 21:35:50.419468 | 4 | None | 200
