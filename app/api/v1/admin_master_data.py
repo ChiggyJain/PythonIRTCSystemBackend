@@ -63,20 +63,16 @@ router.add_api_route(
 )
 
 
-# --------------------------------
-# trains with seats create process
-# --------------------------------
 
 @feature_control(
     {
-        "name": "v1.admin.master_data.trains.create",
+        "name": "user:trains:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            # IP-based route-level limiter
-            "limit": 30,
+            "limit": 100,
             "window": 60,
         },
     }
@@ -88,37 +84,11 @@ async def create_train(
     service: TrainsService = Depends(get_trains_service),
 ):
     
-    admin_user_id = int(admin_user_details.get("sub"))
-
-    # User-level limiter for train creation
-    user_rate_key = f"ratelimit:v1.admin.master_data.trains.create:user:{admin_user_id}"
-    allowed = await rate_limiter.check_window_limit(
-        key=user_rate_key,
-        limit=settings.MASTERDATA_TRAIN_CREATE_USER_RATE_LIMIT,
-        window=settings.MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS,
-    )
-    if not allowed:
-        raise BaseAppException(
-            status_code=429,
-            messages=["Too many train create requests for this admin. Please try again later."],
-        )
-
-    result = await service.create_train(
-        train_number=body.train_number,
-        train_name=body.train_name,
-        coach_name=body.coach_name,
-        total_seats=body.total_seats,
-        seat_details=[seat.model_dump() for seat in body.seat_details],
-        admin_user_id=admin_user_id,
-        correlation_id=request.headers.get("x-correlation-id"),
-        request_id=request.headers.get("x-request-id"),
-    )
-
-    return success_response(
-        status_code=201,
-        messages=["Train created successfully"],
-        data=result,
-    )
+    payload = body.model_dump()
+    payload["user_id"] = int(admin_user_details.get("sub"))
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.create_train(payload=payload)
 
 router.add_api_route(
     "/trains",
