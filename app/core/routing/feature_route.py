@@ -1,17 +1,3 @@
-"""
-Feature APIRoute (Enterprise)
-
-This route supports feature_control decorator.
-
-Features supported:
--------------------
-- logging
-- rate limiting
-- timing
-- future auth / audit / metrics
-
-Used only when route_class=FeatureAPIRoute
-"""
 
 from typing import Callable
 from fastapi.routing import APIRoute
@@ -24,9 +10,6 @@ from app.common.utils.execution_context import get_worker_name
 
 
 class FeatureAPIRoute(APIRoute):
-    """
-    Route class that supports feature_control config
-    """
 
     def get_route_handler(self) -> Callable:
 
@@ -50,10 +33,9 @@ class FeatureAPIRoute(APIRoute):
             status_code = 200
             error = None
 
-            # -------------------------
+            
             # Rate limit
-            # -------------------------
-
+            
             if rate_limit_config:
 
                 limit = rate_limit_config.get("limit")
