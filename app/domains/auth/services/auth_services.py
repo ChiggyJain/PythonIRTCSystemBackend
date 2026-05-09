@@ -1,0 +1,80 @@
+
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.dependencies.auth import (
+    get_current_user_details_from_access_token,
+    get_current_user_details_from_refresh_token
+)
+from app.domains.auth.services import token_services
+from app.domains.auth.services.token_services import TokenService
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
+
+class AuthService:
+
+
+    def __init__(self, db_session: AsyncSession):
+        self._db_session = db_session
+
+    
+    async def logout_by_token_pair(self, payload: dict, user_details_from_access_token: dict):
+        try:
+            
+            token_services = TokenService(self._db_session)
+
+            # Decode refresh token payload
+            refresh_token = payload["refresh_token"]
+            user_details_from_refresh_token = await get_current_user_details_from_refresh_token(refresh_token)
+
+            # Extract and normalize ids
+            access_user_id = int(user_details_from_access_token.get("sub"))
+            access_token_id = int(user_details_from_access_token.get("jti"))
+
+            refresh_user_id = int(user_details_from_refresh_token.get("sub"))
+            refresh_token_id = int(user_details_from_refresh_token.get("jti"))
+            refresh_against_access_id = int(user_details_from_refresh_token.get("against_token_id"))
+
+            # Token pair binding checks
+            if access_user_id != refresh_user_id:
+                return error_response(
+                    status_code=401,
+                    messages=["User-ID of access and refresh token mismatch"],
+                )
+            if access_token_id != refresh_against_access_id:
+                return  error_response(
+                    status_code=401,
+                    messages=["Access-Token-ID is not match against refresh token"],
+                )
+            
+            # fetching access-token and refresh-token row details
+            async with self._db_session.begin():
+                access_token_row = await token_services.get_access(access_token_id)
+                refresh_token_row = await token_services.get_refresh(refresh_token_id)
+
+            # Access token row validations    
+            if not access_token_row:
+                return  error_response(
+                    status_code=401,
+                    messages=["Access token not found"],
+                )
+            if access_token_row.token_type != "access":
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid access token type"],
+                ) 
+            if int(access_token_row.user_id) != access_user_id:
+                raise error_response(
+                    messages=["User-ID is not match with stored access-token user-id"],
+                    status_code=401,
+                )   
+                
+                
+
+        except Exception as e:
+            pass
+
+
+    

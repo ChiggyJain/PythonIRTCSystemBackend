@@ -1,11 +1,15 @@
 
+from aiohttp import payload
 from fastapi import (
     APIRouter, Depends, Request
 )
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
 from app.core.response import success_response
-from app.dependencies.auth import get_token_service
+from app.dependencies.auth import (
+    get_auth_service, 
+    get_token_service,
+)
 from app.domains.auth.services.token_services import TokenService
 from app.domains.auth.schemas.schemas import (
     RefreshTokenRequest,
@@ -145,54 +149,22 @@ router.add_api_route(
 async def logout(
     body: LogoutRequest,
     user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
-    token_service: TokenService = Depends(
-        get_token_service
+    auth_service: TokenService = Depends(
+        get_auth_service
     ),
 ):
+ 
+    return await auth_service.logout_by_token_pair(
+        payload=body.model_dump(), 
+        user_details_from_access_token=user_details_from_access_token
+    )
 
-    # Decode refresh token payload
-    user_details_from_refresh_token = await get_current_user_details_from_refresh_token(body.refresh_token)
 
-    # Extract and normalize ids
-    access_user_id = int(user_details_from_access_token.get("sub"))
-    access_token_id = int(user_details_from_access_token.get("jti"))
+    
 
-    refresh_user_id = int(user_details_from_refresh_token.get("sub"))
-    refresh_token_id = int(user_details_from_refresh_token.get("jti"))
-    refresh_against_access_id = int(user_details_from_refresh_token.get("against_token_id"))
+    
 
-    # Token pair binding checks
-    if access_user_id != refresh_user_id:
-        raise BaseAppException(
-            messages=["Access and refresh token user mismatch"],
-            status_code=401,
-        )
-
-    if access_token_id != refresh_against_access_id:
-        raise BaseAppException(
-            messages=["Access and refresh token pair mismatch"],
-            status_code=401,
-        )
-
-    # Access row validations
-    access_token_row = await token_service.get_access(access_token_id)
-    if not access_token_row:
-        raise BaseAppException(
-            messages=["Access token not found"],
-            status_code=401,
-        )
-
-    if access_token_row.token_type != "access":
-        raise BaseAppException(
-            messages=["Invalid access token type"],
-            status_code=401,
-        )
-
-    if int(access_token_row.user_id) != access_user_id:
-        raise BaseAppException(
-            messages=["Access token user mismatch"],
-            status_code=401,
-        )
+    
 
     # Refresh row validations
     refresh_token_row = await token_service.get_refresh(refresh_token_id)

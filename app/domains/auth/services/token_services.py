@@ -150,7 +150,7 @@ class TokenService:
         self,
         token_id: int|str,
     ):
-
+        
         return await self.user_tokens_repo.get_by_id(token_id)
     
 
