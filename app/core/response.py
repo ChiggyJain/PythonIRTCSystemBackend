@@ -55,7 +55,7 @@ def error_response(
 
 
 def exception_response(
-    status_code: int = 400,
+    status_code: int = 500,
     messages: Optional[List[str]] = None,
     data: Any = None,
 ) -> JSONResponse:
