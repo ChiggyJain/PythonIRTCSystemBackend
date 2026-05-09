@@ -177,7 +177,12 @@ class InventoryService:
             )
         
 
-    async def get_inventory_schedule_seats_availabiliity(self, schedule_id: int, from_station_sequence_number: int, to_station_sequence_number: int):
+    async def get_inventory_schedule_seats_availabiliity(
+        self, 
+        schedule_id: int, 
+        from_station_sequence_number: int, 
+        to_station_sequence_number: int
+    ):
 
         try:
             

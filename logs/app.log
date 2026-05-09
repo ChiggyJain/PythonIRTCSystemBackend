@@ -729,3 +729,11 @@ size
 2026-05-09 22:04:37 | INFO | ES client created for index: stations
 2026-05-09 22:05:19 | INFO | ES client created for index: routes
 2026-05-09 22:05:19 | INFO | ES client created for index: stations
+2026-05-09 22:06:54 | INFO | SpawnProcess-396-20520 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:06:54.485455 | 2026-05-09 22:06:54.486772 | 1 | 'InventoryService' object has no attribute 'get_inventory_schedules_seats_availabiliity' | 500
+2026-05-09 22:07:15 | INFO | ES client created for index: routes
+2026-05-09 22:07:15 | INFO | ES client created for index: stations
+2026-05-09 22:07:28 | INFO | ES client created for index: routes
+2026-05-09 22:07:28 | INFO | ES client created for index: stations
+2026-05-09 22:07:36 | INFO | ES client created for index: routes
+2026-05-09 22:07:36 | INFO | ES client created for index: stations
+2026-05-09 22:07:37 | INFO | SpawnProcess-400-20637 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/4/seats | 2026-05-09 22:07:37.795296 | 2026-05-09 22:07:37.797329 | 2 | None | 500

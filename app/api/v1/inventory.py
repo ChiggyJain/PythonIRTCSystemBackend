@@ -60,7 +60,7 @@ async def get_inventory_schedules_seats_availabiliity(
     to_station_sequence_number: int = Query(...),
     service: InventoryService = Depends(get_inventory_service),
 ):
-    return await service.get_inventory_schedules_seats_availabiliity(
+    return await service.get_inventory_schedule_seats_availabiliity(
         schedule_id=schedule_id, 
         from_station_sequence_number=from_station_sequence_number, 
         to_station_sequence_number=to_station_sequence_number
