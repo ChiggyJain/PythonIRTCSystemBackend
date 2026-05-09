@@ -135,7 +135,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.auth.logout",
+        "name": "user:logout:currentdevices",
         "logging": {
             "console" : True,
             "file" : True,
@@ -168,7 +168,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.auth.logout",
+        "name": "user:logout:alldevices",
         "logging": {
             "console" : True,
             "file" : True,

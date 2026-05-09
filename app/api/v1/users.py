@@ -48,7 +48,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "v1.users.signup",
+        "name": "user:signup",
         "logging": {
             "console" : True,
             "file" : False
@@ -87,7 +87,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.users.login",
+        "name": "user:login",
         "logging": {
             "console": True,
             "file": True,
@@ -123,7 +123,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.users.profile_details",
+        "name": "user:profile",
         "logging": {
             "console": True,
             "file": True,
