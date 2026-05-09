@@ -20,12 +20,7 @@ from app.domains.users.repository.sqlalchemy_repo import (
 from app.common.cache.redis_cache import (
     cache_get,
     cache_set,
-    build_cache_key,
-)
-from app.common.cache.redis_cache import (
-    build_cache_key,
     cache_set,
-    build_cache_set_key,
     cache_set_add,
     cache_delete,
     cache_set_remove,
@@ -34,9 +29,9 @@ from app.common.cache.redis_cache import (
 )
 from app.common.cache.config import (
     CACHE_TTL_PROFILE,
-    CACHE_KEY_USER_PROFILE,
 )
 from app.domains.auth.services.token_services import TokenService
+
 
 
 class UsersService:
@@ -192,19 +187,19 @@ class UsersService:
     ):
         
         # extracting user profile data from redis-cache
-        key = build_cache_key(CACHE_KEY_USER_PROFILE, user_id)
-        cached = None
+        cacheKey = f"user:profile:{user_id}"
+        cachedData = None
         try:
-            cached = await cache_get(key)
+            cachedData = await cache_get(cacheKey)
         except Exception as exc:
             app_logger.warning(
                 f"User profile details cache get failed | user_id={user_id} | error={str(exc)}"
             )
-        if cached:
+        if cachedData:
             return success_response(
                 status_code=200,
                 messages=["User profile details found successfully"],
-                data=cached,
+                data=cachedData,
             )
 
         # fetching user profile data from db
@@ -239,7 +234,7 @@ class UsersService:
 
         # storing user profile data into redis-cache
         try:
-            await cache_set(key, data, ttl=CACHE_TTL_PROFILE)
+            await cache_set(cacheKey, data, ttl=CACHE_TTL_PROFILE)
         except Exception as exc:
             app_logger.warning(
                 f"profile_details cache_set failed | user_id={user_id} | error={str(exc)}"
