@@ -160,22 +160,6 @@ async def logout(
         user_details_from_access_token=user_details_from_access_token
     )
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
 router.add_api_route(
     "/logout",
     logout,
