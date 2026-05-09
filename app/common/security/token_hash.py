@@ -1,21 +1,12 @@
 
-"""
-Token hash utility.
-Store only hash in DB, never raw JWT.
-"""
-
 import hashlib
 import hmac
 from app.core.settings import get_settings
-
 
 settings = get_settings()
 
 
 def build_token_hash(token: str) -> str:
-    """
-    Build deterministic HMAC-SHA256 hash for token.
-    """
     value = (token or "").strip()
     if not value:
         return ""
