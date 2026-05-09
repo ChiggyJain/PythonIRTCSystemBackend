@@ -1,6 +1,6 @@
 
 from datetime import datetime
-from sqlalchemy import JSON, String, DateTime, func, UniqueConstraint
+from sqlalchemy import JSON, String, DateTime, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from app.common.utils.datetime import now_ist
 from app.infrastructure.database.base import Base
