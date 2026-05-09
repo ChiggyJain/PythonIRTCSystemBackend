@@ -12,7 +12,7 @@ from app.domains.users.schemas.schemas import (
     UserSignupRequest, 
     UserLoginRequest
 )
-from app.domains.users.services.services import UsersService
+from app.domains.users.services.user_services import UsersService
 from app.dependencies.users import get_users_service
 from app.dependencies.auth import get_token_service
 from app.domains.auth.services.services import TokenService
