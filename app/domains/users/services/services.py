@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.logger import app_logger
 from app.core.exceptions import BaseAppException
+from app.core.response import success_response, error_response
 from app.common.utils.password import (
     hash_password, 
     verify_password
@@ -29,7 +30,6 @@ class UsersService:
         self.users_repo = UsersSQLAlchemyRepository(db_session)
 
 
-
     async def signup_user(
         self,
         *,
@@ -46,16 +46,17 @@ class UsersService:
         # to avoid blocking async event loop under concurrency.
         hashed_password = await to_thread.run_sync(hash_password, password)
 
-        try:
-            user = await self.users_repo.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                mobile=mobile,
-                email=email,
-                password=hashed_password,
-                gender=gender,
-                profile=profile
-            )
+        try:            
+            async with self._db_session.begin():
+                user = await self.users_repo.create_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    mobile=mobile,
+                    email=email,
+                    password=hashed_password,
+                    gender=gender,
+                    profile=profile
+                )
         except IntegrityError:
             raise BaseAppException(
                 messages=["Email already exists1"],
