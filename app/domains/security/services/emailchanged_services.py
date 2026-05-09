@@ -36,7 +36,7 @@ class EmailChangedOtpService:
     OTP_REQUEST_COOLDOWN_SECONDS = 60
     OTP_CIPHER_KEY_VERSION = "v1"
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED_V1"
+    OUTBOX_EVENT_TYPE = "EMAILCHANGED_OTP_DISPATCH_REQUESTED"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
