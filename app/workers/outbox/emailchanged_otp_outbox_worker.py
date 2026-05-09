@@ -38,7 +38,7 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            event_type="", limit=1, now_time=now_ist(),
+                            event_type="EMAILCHANGED_OTP_DISPATCH_REQUESTED", limit=1, now_time=now_ist(),
                         )
                         if not events:
                             break
