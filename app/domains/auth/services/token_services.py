@@ -268,39 +268,3 @@ class TokenService:
 
  
     
-    async def logout_from_all_devices_by_user_id(
-        self,
-        *,
-        user_id: int,
-    ) -> None:
-
-        # Single DB transaction for both revokes
-        try:
-            await self.user_tokens_repo.revoke_token_by_user(user_id)
-            await self._db_session.commit()
-        except Exception:
-            await self._db_session.rollback()
-            raise
-
-
-        # Cache cleanup as post-commit side-effect (best effort)
-        
-        try:
-            
-            
-                try:
-                    
-                except Exception as exc:
-                    app_logger.warning(
-                        f"logout_all_devices cache_delete failed | user_id={user_id} | key={access_key} | error={str(exc)}"
-                    )
-            try:
-                
-            except Exception as exc:
-                app_logger.warning(
-                    f"logout_all_devices cache_set_delete failed | user_id={user_id} | key={user_index_key} | error={str(exc)}"
-                )
-        except Exception as exc:
-            app_logger.error(
-                f"logout_all_devices cache_cleanup failed | user_id={user_id} | error={str(exc)}"
-            )
