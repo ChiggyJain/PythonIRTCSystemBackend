@@ -132,19 +132,15 @@ router.add_api_route(
 )
 
 
-# -----------------------------------------
-# train schedule create process
-# -----------------------------------------
-
 @feature_control(
     {
-        "name": "v1.admin.master_data.train_schedules.create",
+        "name": "user:train:schedule:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 30,
+            "limit": 100,
             "window": 60,
         },
     }
@@ -156,33 +152,11 @@ async def create_train_schedule(
     service: TrainSchedulesService = Depends(get_train_schedules_service),
 ):
     
-    admin_user_id = int(admin_user_details.get("sub"))
-
-    user_rate_key = f"ratelimit:v1.admin.master_data.schedules.create:user:{admin_user_id}"
-    allowed = await rate_limiter.check_window_limit(
-        key=user_rate_key,
-        limit=settings.MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT,
-        window=settings.MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS,
-    )
-    if not allowed:
-        raise BaseAppException(
-            status_code=429,
-            messages=["Too many schedule create requests for this admin. Please try again later."],
-        )
-
-    result = await service.create_train_schedule(
-        train_id=body.train_id,
-        departure_date=body.departure_date,
-        admin_user_id=admin_user_id,
-        correlation_id=request.headers.get("x-correlation-id"),
-        request_id=request.headers.get("x-request-id"),
-    )
-
-    return success_response(
-        status_code=201,
-        messages=["Schedule created successfully"],
-        data=result,
-    )
+    payload = body.model_dump()
+    payload["user_id"] = int(admin_user_details.get("sub"))
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.create_train_schedule(payload=payload)
 
 router.add_api_route(
     "/train-schedules",

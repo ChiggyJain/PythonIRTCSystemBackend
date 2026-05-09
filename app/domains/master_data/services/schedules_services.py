@@ -5,8 +5,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
+from app.core.settings import get_settings
+from app.common.utils.ratelimiter import rate_limiter
+
 from app.domains.master_data.repository.sqlalchemy_repo import MasterDataSQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
+
+
+settings = get_settings()
 
 
 class TrainSchedulesService:
@@ -23,70 +34,74 @@ class TrainSchedulesService:
     async def create_train_schedule(
         self,
         *,
-        train_id: int,
-        departure_date: date,
-        admin_user_id: int,
-        correlation_id: str | None = None,
-        request_id: str | None = None,
+        payload:dict,
     ) -> dict:
         
-        """
-        Flow:
-        1) Validate train exists
-        2) Validate route exists for train
-        3) Load route_stations for route
-        4) Validate route_stations integrity (sequence/time/distance)
-        5) Insert schedule
-        6) Insert outbox event
-        7) Commit once
-        """
-
-        # train must exist
-        train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
-        if not train_details:
-            raise BaseAppException(
-                status_code=400,
-                messages=[f"Train id {train_id} does not exist"],
-            )
-
-        # route must exist for this train
-        route = await self.masterdata_repo.get_route_by_train_id(train_id=train_id)
-        if not route:
-            raise BaseAppException(
-                status_code=400,
-                messages=[f"Route does not exist for train id {train_id}"],
-            )
-
-        # route stations must exist
-        route_stations = await self.masterdata_repo.get_route_stations_by_route_id(route_id=route.id)
-        if not route_stations:
-            raise BaseAppException(
-                status_code=400,
-                messages=[f"Route stations not found for train id {train_id}"],
-            )
-
-        # fetching train-seats details
-        train_seats = await self.masterdata_repo.get_train_seats_by_train_id(
-            train_id=train_id
-        )
-
-        # fetching stations details
-        station_ids = [rs.station_id for rs in route_stations]
-        station_list_details = await self.masterdata_repo.get_station_by_station_ids(station_ids=station_ids)
-        station_map = {station.id: station for station in station_list_details}
-        for rs in route_stations:
-            station = station_map.get(rs.station_id, None)
-            if station:
-                rs.name = station.name
-                rs.code = station.code
-                rs.city = station.city
-                rs.state = station.state
-                
-        # validate route station integrity
-        self._validate_route_stations(route_stations=route_stations)
-
         try:
 
+            # extracted parameters
+            train_id = int(payload.get("train_id", 0))
+            departure_date = payload.get("departure_date", "")
+            user_id = payload.get("user_id", 0)
+            correlation_id = payload.get("correlation_id", "")
+            request_id = payload.get("request_id", "")
+
+            user_rate_key = f"user:train:schedule:create:{user_id}"
+            user_allowed_request = await rate_limiter.check_window_limit(
+                key=user_rate_key,
+                limit=settings.MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT,
+                window=settings.MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed_request:
+                return error_response(
+                    status_code=429,
+                    messages=["Too many train schedule create requests. Please try again later."],
+                )
+            
+            # train must exist
+            train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
+            if not train_details:
+                return error_response(
+                    status_code=400,
+                    messages=[f"Train {train_id} does not exist"],
+                )
+
+            # route must exist for this train
+            route = await self.masterdata_repo.get_route_by_train_id(train_id=train_id)
+            if not route:
+                return error_response(
+                    status_code=400,
+                    messages=[f"Route does not exist for train {train_id}"],
+                )
+
+            # route stations must exist
+            route_stations = await self.masterdata_repo.get_route_stations_by_route_id(route_id=route.id)
+            if not route_stations:
+                return error_response(
+                    status_code=400,
+                    messages=[f"Route stations not found for train {train_id}"],
+                )
+
+            # fetching train-seats details
+            train_seats = await self.masterdata_repo.get_train_seats_by_train_id(
+                train_id=train_id
+            )
+
+            # fetching stations details
+            station_ids = [rs.station_id for rs in route_stations]
+            station_list_details = await self.masterdata_repo.get_station_by_station_ids(station_ids=station_ids)
+            station_map = {station.id: station for station in station_list_details}
+            for rs in route_stations:
+                station = station_map.get(rs.station_id, None)
+                if station:
+                    rs.name = station.name
+                    rs.code = station.code
+                    rs.city = station.city
+                    rs.state = station.state
+                    
+            # validate route station integrity
+            self._validate_route_stations(route_stations=route_stations)
+            
             # create schedule
             schedule = await self.masterdata_repo.create_schedule(
                 train_id=train_id,
@@ -139,7 +154,7 @@ class TrainSchedulesService:
                     "status": schedule.status,
                     "event_type": self.OUTBOX_EVENT_SCHEDULE_CREATED,
                     "event_version": 1,
-                    "created_by_admin_user_id": admin_user_id,
+                    "created_by_user_id": user_id,
                     "correlation_id": correlation_id,
                     "request_id": request_id,
                     "event_created_at": str(now_ist()),
@@ -147,48 +162,41 @@ class TrainSchedulesService:
                 status=self.OUTBOX_STATUS_PENDING,
             )
 
-            # 7) single commit
             await self._db_session.commit()
 
-        # handling the rollback cases if any exception is occured
+            return success_response(
+                status_code=201,
+                messages=[f"Train schedule created successfully"],
+                data={
+                    "schedule_id": schedule.id,
+                    "train_id": schedule.train_id,
+                    "departure_date": str(schedule.departure_date),
+                    "status": schedule.status,
+                    "dispatch_status": "accepted",
+                }
+            )
+
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
-            # unique(train_id, departure_date)
-            if "uq_trainid_depdate" in msg or (
-                "schedules" in msg and "train_id" in msg and "departure_date" in msg
-            ):
-                raise BaseAppException(
-                    status_code=400,
-                    messages=["Schedule already exists for this train_id and departure_date"],
-                )
-            raise BaseAppException(
+            return error_response(
                 status_code=400,
-                messages=["Unable to create schedule due to data constraint violation"],
+                messages=[f"Unable to create train schedule due to data constraint violation. {msg}"],
             )
-
-        except Exception:
+        
+        except BaseAppException as e:
             await self._db_session.rollback()
-            raise
-
-        return {
-            "id": schedule.id,
-            "train_id": schedule.train_id,
-            "departure_date": str(schedule.departure_date),
-            "status": schedule.status,
-            "dispatch_status": "accepted",
-        }
-
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+        
 
     def _validate_route_stations(self, *, route_stations: list) -> None:
-
-        """
-        Validates existing ROUTE_STATIONS data before creating schedule:
-        - sequence must be 1..N
-        - no time overlap: next arrival > previous departure
-        - first distance must be 0
-        - remaining distances must be >0
-        """
 
         if not route_stations:
             raise BaseAppException(
