@@ -19,7 +19,7 @@ class InventorySQLAlchemyRepository:
         self._db_session = db_session
 
 
-    async def get_inventory_schedules_by_schedule_id(
+    async def get_inventory_schedule_by_schedule_id(
         self,
         schedule_id: int,
     ) -> ScheduleInventory | None:
