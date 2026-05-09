@@ -400,3 +400,7 @@
 2026-05-09 16:25:17 | INFO | ES client created for index: routes_v1
 2026-05-09 16:25:17 | INFO | ES client created for index: stations_v1
 2026-05-09 16:25:20 | INFO | SpawnProcess-106-16854 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:25:20.759625 | 2026-05-09 16:25:20.824659 | 65 | None | 200
+2026-05-09 16:27:20 | INFO | ES client created for index: routes_v1
+2026-05-09 16:27:20 | INFO | ES client created for index: stations_v1
+2026-05-09 16:27:26 | INFO | ES client created for index: routes_v1
+2026-05-09 16:27:26 | INFO | ES client created for index: stations_v1
