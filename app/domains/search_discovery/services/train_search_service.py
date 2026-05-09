@@ -1,7 +1,11 @@
 
 from datetime import datetime
-import json
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
 
@@ -30,140 +34,158 @@ class TrainSearchService:
                 page=page,
                 size=size,
             )
-        except Exception:
-            raise BaseAppException(
+        except Exception as e:
+            return exception_response(
                 status_code=503,
                 messages=["Search service temporarily unavailable"],
             )
-
-        print(f"es_result: {(json.dumps(es_result.body))}")
-
-        hits_block = es_result.get("hits", {})
-        total_block = hits_block.get("total", {})
-        total_value = total_block.get("value", 0) if isinstance(total_block, dict) else 0
-        hits = hits_block.get("hits", [])
-
-        results = []
-        seen_keys = set()
-        for hit in hits:
+        
+        try:
             
-            source_doc = hit.get("_source", {}) or {}
-            inner_hits = hit.get("inner_hits", {}) or {}
+            hits_block = es_result.get("hits", {})
+            total_block = hits_block.get("total", {})
+            total_value = total_block.get("value", 0) if isinstance(total_block, dict) else 0
+            hits = hits_block.get("hits", [])
 
-            source_matches = (
-                inner_hits.get("source_match", {})
-                .get("hits", {})
-                .get("hits", [])
+            results = []
+            seen_keys = set()
+            for hit in hits:
+                
+                source_doc = hit.get("_source", {}) or {}
+                inner_hits = hit.get("inner_hits", {}) or {}
+
+                source_matches = (
+                    inner_hits.get("source_match", {})
+                    .get("hits", {})
+                    .get("hits", [])
+                )
+                destination_matches = (
+                    inner_hits.get("destination_match", {})
+                    .get("hits", {})
+                    .get("hits", [])
+                )
+                schedule_matches = (
+                    inner_hits.get("matched_schedule", {})
+                    .get("hits", {})
+                    .get("hits", [])
+                )
+
+                if not source_matches or not destination_matches or not schedule_matches:
+                    continue
+
+                source_station = self._pick_best_route_match(source_matches)
+                destination_station = self._pick_best_route_match(destination_matches)
+                matched_schedule = (schedule_matches[0].get("_source", {}) or {})
+
+                if not source_station or not destination_station:
+                    continue
+
+                source_seq = int(source_station.get("sequence_number", 0))
+                destination_seq = int(destination_station.get("sequence_number", 0))
+
+                # enforce journey direction
+                if source_seq <= 0 or destination_seq <= 0 or source_seq >= destination_seq:
+                    continue
+
+                travel_distance = self._compute_distance(
+                    source_station.get("distance_from_origin"),
+                    destination_station.get("distance_from_origin"),
+                )
+                duration_minutes = self._compute_duration_minutes(
+                    source_station.get("departure_time"),
+                    destination_station.get("arrival_time"),
+                )
+
+                total_available = int(matched_schedule.get("available", 0))
+                availability_status = "AVAILABLE" if total_available > 0 else "WAITLIST"
+
+                result_item = {
+                    "train_id": source_doc.get("train_id"),
+                    "train_number": source_doc.get("train_number"),
+                    "train_name": source_doc.get("train_name"),
+                    "journey_date": journey_date,
+                    "source_station": {
+                        "route_id": source_station.get("route_id", 0),
+                        "station_id": source_station.get("station_id"),
+                        "code": source_station.get("code"),
+                        "name": source_station.get("name"),
+                        "city": source_station.get("city"),
+                        "sequence_number": source_seq,
+                        "departure_time": source_station.get("departure_time"),
+                        "distance_from_origin": source_station.get("distance_from_origin"),
+                    },
+                    "destination_station": {
+                        "route_id": destination_station.get("route_id", 0),
+                        "station_id": destination_station.get("station_id"),
+                        "code": destination_station.get("code"),
+                        "name": destination_station.get("name"),
+                        "city": destination_station.get("city"),
+                        "sequence_number": destination_seq,
+                        "arrival_time": destination_station.get("arrival_time"),
+                        "distance_from_origin": destination_station.get("distance_from_origin"),
+                    },
+                    "travel": {
+                        "duration_minutes": duration_minutes,
+                        "distance_km": travel_distance,
+                    },
+                    "availability_summary": {
+                        "status": availability_status,
+                        "total_available": total_available,
+                    },
+                    "booking_context": {
+                        "schedule_id": matched_schedule.get("schedule_id"),
+                        "route_id": source_doc.get("routes", [])[0].get("route_id", 0)
+                    },
+                }
+
+                dedupe_key = (
+                    str(source_doc.get("train_id")),
+                    str(matched_schedule.get("schedule_id")),
+                    str(source_station.get("station_id")),
+                    str(destination_station.get("station_id")),
+                )
+                if dedupe_key in seen_keys:
+                    continue
+
+                seen_keys.add(dedupe_key)
+                results.append(result_item)
+
+            returned = len(results)
+            has_next = (page * size) < total_value
+
+            if results:
+                return success_response(
+                    status_code=200,
+                    messages=[f"Trains found"],
+                    data={
+                        "query": {
+                            "source": source,
+                            "destination": destination,
+                            "journey_date": journey_date,
+                        },
+                        "pagination": {
+                            "page": page,
+                            "size": size,
+                            "returned": returned,
+                            "total": total_value,
+                            "has_next": has_next,
+                        },
+                        "results": results,
+                    }
+                )
+            else:
+                return error_response(
+                    status_code=404,
+                    messages=[f"Trains not found"],
+                )
+        
+        
+        except Exception as e:
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
             )
-            destination_matches = (
-                inner_hits.get("destination_match", {})
-                .get("hits", {})
-                .get("hits", [])
-            )
-            schedule_matches = (
-                inner_hits.get("matched_schedule", {})
-                .get("hits", {})
-                .get("hits", [])
-            )
 
-            if not source_matches or not destination_matches or not schedule_matches:
-                continue
-
-            source_station = self._pick_best_route_match(source_matches)
-            destination_station = self._pick_best_route_match(destination_matches)
-            matched_schedule = (schedule_matches[0].get("_source", {}) or {})
-
-            if not source_station or not destination_station:
-                continue
-
-            source_seq = int(source_station.get("sequence_number", 0))
-            destination_seq = int(destination_station.get("sequence_number", 0))
-
-            # enforce journey direction
-            if source_seq <= 0 or destination_seq <= 0 or source_seq >= destination_seq:
-                continue
-
-            travel_distance = self._compute_distance(
-                source_station.get("distance_from_origin"),
-                destination_station.get("distance_from_origin"),
-            )
-            duration_minutes = self._compute_duration_minutes(
-                source_station.get("departure_time"),
-                destination_station.get("arrival_time"),
-            )
-
-            total_available = int(matched_schedule.get("available", 0))
-            availability_status = "AVAILABLE" if total_available > 0 else "WAITLIST"
-
-            result_item = {
-                "train_id": source_doc.get("train_id"),
-                "train_number": source_doc.get("train_number"),
-                "train_name": source_doc.get("train_name"),
-                "journey_date": journey_date,
-                "source_station": {
-                    "route_id": source_station.get("route_id", 0),
-                    "station_id": source_station.get("station_id"),
-                    "code": source_station.get("code"),
-                    "name": source_station.get("name"),
-                    "city": source_station.get("city"),
-                    "sequence_number": source_seq,
-                    "departure_time": source_station.get("departure_time"),
-                    "distance_from_origin": source_station.get("distance_from_origin"),
-                },
-                "destination_station": {
-                    "route_id": destination_station.get("route_id", 0),
-                    "station_id": destination_station.get("station_id"),
-                    "code": destination_station.get("code"),
-                    "name": destination_station.get("name"),
-                    "city": destination_station.get("city"),
-                    "sequence_number": destination_seq,
-                    "arrival_time": destination_station.get("arrival_time"),
-                    "distance_from_origin": destination_station.get("distance_from_origin"),
-                },
-                "travel": {
-                    "duration_minutes": duration_minutes,
-                    "distance_km": travel_distance,
-                },
-                "availability_summary": {
-                    "status": availability_status,
-                    "total_available": total_available,
-                },
-                "booking_context": {
-                    "schedule_id": matched_schedule.get("schedule_id"),
-                    "route_id": source_doc.get("routes", [])[0].get("route_id", 0)
-                },
-            }
-
-            dedupe_key = (
-                str(source_doc.get("train_id")),
-                str(matched_schedule.get("schedule_id")),
-                str(source_station.get("station_id")),
-                str(destination_station.get("station_id")),
-            )
-            if dedupe_key in seen_keys:
-                continue
-
-            seen_keys.add(dedupe_key)
-            results.append(result_item)
-
-        returned = len(results)
-        has_next = (page * size) < total_value
-
-        return {
-            "query": {
-                "source": source,
-                "destination": destination,
-                "journey_date": journey_date,
-            },
-            "pagination": {
-                "page": page,
-                "size": size,
-                "returned": returned,
-                "total": total_value,
-                "has_next": has_next,
-            },
-            "results": results,
-        }
 
     def _pick_best_route_match(self, route_hits: list[dict]) -> dict | None:
         if not route_hits:

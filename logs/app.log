@@ -540,3 +540,55 @@
 2026-05-09 21:35:45 | INFO | ES client created for index: stations
 2026-05-09 21:35:46 | INFO | SpawnProcess-293-18481 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:35:46.249467 | 2026-05-09 21:35:46.256297 | 6 | None | 404
 2026-05-09 21:35:50 | INFO | SpawnProcess-293-18481 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:35:50.414696 | 2026-05-09 21:35:50.419468 | 4 | None | 200
+2026-05-09 21:36:19 | INFO | ES client created for index: routes
+2026-05-09 21:36:19 | INFO | ES client created for index: stations
+2026-05-09 21:36:22 | INFO | ES client created for index: routes
+2026-05-09 21:36:22 | INFO | ES client created for index: stations
+2026-05-09 21:36:29 | INFO | ES client created for index: routes
+2026-05-09 21:36:29 | INFO | ES client created for index: stations
+2026-05-09 21:36:34 | INFO | ES client created for index: routes
+2026-05-09 21:36:34 | INFO | ES client created for index: stations
+2026-05-09 21:36:44 | INFO | ES client created for index: routes
+2026-05-09 21:36:44 | INFO | ES client created for index: stations
+2026-05-09 21:36:48 | INFO | ES client created for index: routes
+2026-05-09 21:36:48 | INFO | ES client created for index: stations
+2026-05-09 21:37:02 | INFO | ES client created for index: routes
+2026-05-09 21:37:02 | INFO | ES client created for index: stations
+2026-05-09 21:37:27 | INFO | ES client created for index: routes
+2026-05-09 21:37:27 | INFO | ES client created for index: stations
+2026-05-09 21:37:40 | INFO | ES client created for index: routes
+2026-05-09 21:37:40 | INFO | ES client created for index: stations
+2026-05-09 21:38:07 | INFO | ES client created for index: routes
+2026-05-09 21:38:07 | INFO | ES client created for index: stations
+2026-05-09 21:38:10 | INFO | ES client created for index: routes
+2026-05-09 21:38:10 | INFO | ES client created for index: stations
+2026-05-09 21:38:23 | INFO | ES client created for index: routes
+2026-05-09 21:38:23 | INFO | ES client created for index: stations
+2026-05-09 21:38:56 | INFO | ES client created for index: routes
+2026-05-09 21:38:56 | INFO | ES client created for index: stations
+2026-05-09 21:38:59 | INFO | ES client created for index: routes
+2026-05-09 21:38:59 | INFO | ES client created for index: stations
+2026-05-09 21:39:08 | INFO | ES client created for index: routes
+2026-05-09 21:39:08 | INFO | ES client created for index: stations
+2026-05-09 21:40:02 | INFO | ES client created for index: routes
+2026-05-09 21:40:02 | INFO | ES client created for index: stations
+2026-05-09 21:40:05 | INFO | ES client created for index: routes
+2026-05-09 21:40:05 | INFO | ES client created for index: stations
+2026-05-09 21:40:17 | INFO | ES client created for index: routes
+2026-05-09 21:40:17 | INFO | ES client created for index: stations
+2026-05-09 21:40:40 | INFO | ES client created for index: routes
+2026-05-09 21:40:40 | INFO | ES client created for index: stations
+2026-05-09 21:40:52 | INFO | ES client created for index: routes
+2026-05-09 21:40:52 | INFO | ES client created for index: stations
+2026-05-09 21:40:57 | INFO | ES client created for index: routes
+2026-05-09 21:40:57 | INFO | ES client created for index: stations
+2026-05-09 21:41:02 | INFO | ES client created for index: routes
+2026-05-09 21:41:02 | INFO | ES client created for index: stations
+2026-05-09 21:41:06 | INFO | SpawnProcess-321-19108 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:41:06.800340 | 2026-05-09 21:41:06.806215 | 5 | None | 404
+2026-05-09 21:41:47 | INFO | SpawnProcess-321-19108 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:41:47.040407 | 2026-05-09 21:41:47.103929 | 63 | 1 validation error for TrainSearchQueryRequest
+  Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-09 21:42:12 | INFO | SpawnProcess-321-19108 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:42:12.852660 | 2026-05-09 21:42:12.857023 | 4 | None | 404
+2026-05-09 21:42:20 | INFO | SpawnProcess-321-19108 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:42:20.879194 | 2026-05-09 21:42:20.879901 | 0 | 1 validation error for TrainSearchQueryRequest
+  Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500

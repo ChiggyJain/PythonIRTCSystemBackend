@@ -19,7 +19,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user.search.stations",
+        "name": "user:search:stations",
         "logging": {
             "console": True, 
             "file": True
@@ -49,13 +49,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "v1.search.trains",
+        "name": "user:search:trains",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 120,
+            "limit": 100,
             "window": 60,
         },
     }
@@ -65,20 +65,13 @@ async def search_trains(
     service: TrainSearchService = Depends(get_train_search_service),
 ):
     
-    data = await service.search_trains(
+    return await service.search_trains(
         source=query.source,
         destination=query.destination,
         journey_date=str(query.journey_date),
         page=query.page,
         size=query.size,
     )
-
-    return success_response(
-        data=data,
-        messages=["Train search results fetched successfully"],
-        status_code=200,
-    )
-
 
 router.add_api_route(
     "/search/trains",

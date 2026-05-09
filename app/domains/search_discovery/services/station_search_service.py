@@ -1,6 +1,4 @@
 
-from passlib import exc
-
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
