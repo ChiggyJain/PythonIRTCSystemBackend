@@ -139,7 +139,7 @@ class Settings(BaseSettings):
     ELASTICSEARCH_PASSWORD: str | None = None
     ELASTICSEARCH_VERIFY_CERTS: bool = False
     ELASTICSEARCH_REQUEST_TIMEOUT_SECONDS: int = 10
-    ELASTICSEARCH_STATIONS_INDEX: str = "stations_v1"
+    ELASTICSEARCH_STATIONS_INDEX: str = "stations"
     ELASTICSEARCH_ROUTES_INDEX: str = "routes_v1"
 
     # booking config
