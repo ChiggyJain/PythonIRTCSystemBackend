@@ -56,7 +56,7 @@ class AuthService:
 
             # Access token row validations    
             if not access_token_row:
-                return  error_response(
+                return error_response(
                     status_code=401,
                     messages=["Access token not found"],
                 )
@@ -66,10 +66,33 @@ class AuthService:
                     messages=["Invalid access token type"],
                 ) 
             if int(access_token_row.user_id) != access_user_id:
-                raise error_response(
-                    messages=["User-ID is not match with stored access-token user-id"],
+                return error_response(
                     status_code=401,
-                )   
+                    messages=["User-ID is not match with stored access-token user-id"],
+                )  
+
+            # Refresh row validations
+            refresh_token_row = await token_services.get_refresh(refresh_token_id)
+            if not refresh_token_row:
+                return error_response(
+                    status_code=401,
+                    messages=["Refresh token not found"],
+                )
+            if refresh_token_row.token_type != "refresh":
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid refresh token type"],
+                )
+            if int(refresh_token_row.user_id) != refresh_user_id:
+                return error_response(
+                    status_code=401,
+                    messages=["User-ID is not match with stored refresh-token user-id"],
+                )
+            if refresh_token_row.revoked:
+                return error_response(
+                    status_code=401,
+                    messages=["Refresh token already revoked"],
+                ) 
                 
                 
 

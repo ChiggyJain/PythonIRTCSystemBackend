@@ -166,31 +166,7 @@ async def logout(
 
     
 
-    # Refresh row validations
-    refresh_token_row = await token_service.get_refresh(refresh_token_id)
-    if not refresh_token_row:
-        raise BaseAppException(
-            messages=["Refresh token not found"],
-            status_code=401,
-        )
-
-    if refresh_token_row.token_type != "refresh":
-        raise BaseAppException(
-            messages=["Invalid refresh token type"],
-            status_code=401,
-        )
-
-    if int(refresh_token_row.user_id) != refresh_user_id:
-        raise BaseAppException(
-            messages=["Refresh token user mismatch"],
-            status_code=401,
-        )
-
-    if refresh_token_row.revoked:
-        raise BaseAppException(
-            messages=["Refresh token already revoked"],
-            status_code=401,
-        )
+    
 
     if not token_service.is_raw_token_matches_stored_hash(
         raw_token=body.refresh_token,
