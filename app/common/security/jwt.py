@@ -1,14 +1,3 @@
-"""
-JWT Utility (Enterprise)
-Supports:
-- access token
-- refresh token
-- token type
-- expiry
-- issuer
-- audience
-- IST datetime
-"""
 
 from datetime import timedelta
 from jose import jwt, JWTError
@@ -16,13 +5,8 @@ from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 
-
 settings = get_settings()
 
-
-# =========================
-# Create token
-# =========================
 
 def _create_token(
     *,
@@ -55,10 +39,6 @@ def _create_token(
     return encoded
 
 
-# =========================
-# Access token
-# =========================
-
 def create_access_token(
     *,
     user_id: int,
@@ -82,10 +62,6 @@ def create_access_token(
     )
 
 
-# =========================
-# Refresh token
-# =========================
-
 def create_refresh_token(
     *,
     user_id: int,
@@ -108,10 +84,6 @@ def create_refresh_token(
         against_token_id=against_token_id,
     )
 
-
-# =========================
-# Decode token
-# =========================
 
 def decode_token(
     token: str,
