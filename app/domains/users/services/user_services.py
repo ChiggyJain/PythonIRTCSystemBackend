@@ -4,6 +4,7 @@ from passlib import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.logger import app_logger
+from app.core import settings
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
@@ -27,11 +28,10 @@ from app.common.cache.redis_cache import (
     cache_set_delete,
     cache_set_members,
 )
-from app.common.cache.config import (
-    CACHE_TTL_PROFILE,
-)
 from app.domains.auth.services.token_services import TokenService
+from app.core.settings import get_settings
 
+settings = get_settings()
 
 
 class UsersService:
@@ -234,7 +234,7 @@ class UsersService:
 
         # storing user profile data into redis-cache
         try:
-            await cache_set(cacheKey, data, ttl=CACHE_TTL_PROFILE)
+            await cache_set(cacheKey, data, ttl=settings.USER_PROFILE_CACHE_TTL_SECONDS)
         except Exception as exc:
             app_logger.warning(
                 f"profile_details cache_set failed | user_id={user_id} | error={str(exc)}"

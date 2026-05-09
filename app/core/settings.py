@@ -4,31 +4,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """
-    Application Settings
-    This class loads environment variables using pydantic-settings.
-    Why BaseSettings?
-    -----------------
-    - Supports .env
-    - Supports environment variables
-    - Type validation
-    - Production safe
-    This object should NOT be created multiple times.
-    It will be cached using lru_cache (singleton per worker).
-    """
-
-    # =========================
+    
     # APP CONFIG
-    # =========================
-
     APP_NAME: str = "IRTC Backend"
     APP_ENV: str = "local"
     APP_DEBUG: bool = True
 
-    # =========================
-    # MYSQL CONFIG
-    # =========================
+    # cache profile ttl seconds
+    USER_PROFILE_CACHE_TTL_SECONDS: int = 300
 
+    # MYSQL CONFIG
     MYSQL_DB_HOST: str
     MYSQL_DB_PORT: int
     MYSQL_DB_NAME: str

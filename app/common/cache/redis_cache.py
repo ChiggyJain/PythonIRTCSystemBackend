@@ -1,7 +1,3 @@
-"""
-Redis Cache Utility
-Reusable cache helper
-"""
 
 from datetime import date, datetime
 import json
