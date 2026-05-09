@@ -114,7 +114,7 @@ class Settings(BaseSettings):
 
     # Station KAFKA TOPIC and CONSUMER
     MASTERDATA_STATION_CREATED: str = "masterdata-station-created"
-    MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumer-v1"
+    MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumergrp-1"
     MASTERDATA_STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER
