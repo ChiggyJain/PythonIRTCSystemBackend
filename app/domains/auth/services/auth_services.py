@@ -86,7 +86,14 @@ class AuthService:
                     messages=["Invalid refresh token"],
                 )
             
-
+            tokens = await token_services.rotate_tokens_by_refresh(
+                user_id=user_id,
+                user_profile=user_profile,
+                current_access_token_id=access_token_id,
+                current_refresh_token_id=refresh_token_id,
+                ip_address=request.client.host if request.client else None,
+                user_agent=request.headers.get("user-agent"),
+            )
 
             pass
 

@@ -49,34 +49,15 @@ router = APIRouter()
 async def refresh_token(
     body: RefreshTokenRequest,
     request: Request,
-    token_service: TokenService = Depends(
-        get_token_service
+    auth_service: AuthService = Depends(
+        get_auth_service
     ),
 ):
 
-
-    
-
-    
-
-    
-
-    
-
-    # Single flow: revoke old pair + issue new pair + cache cleanup
-    tokens = await token_service.rotate_tokens_by_refresh(
-        user_id=user_id,
-        user_profile=user_profile,
-        current_access_token_id=access_token_id,
-        current_refresh_token_id=refresh_token_id,
-        ip_address=request.client.host if request.client else None,
-        user_agent=request.headers.get("user-agent"),
-    )
-
-    return success_response(
-        messages=["Token refreshed successfully"],
-        data=tokens,
-    )
+    payload = body.model_dump()
+    payload["ip_address"] = request.client.host if request.client else None
+    payload["user_agent"] = request.headers.get("user-agent")
+    return await auth_service.rotate_tokens_by_refresh(payload=payload)
 
 
 router.add_api_route(
