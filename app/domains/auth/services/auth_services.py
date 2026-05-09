@@ -31,7 +31,9 @@ class AuthService:
         try:
             
             # extracted parameters data
-            refresh_token = payload["refresh_token"]
+            refresh_token = payload.get("refresh_token", None)
+            ip_address = payload.get("ip_address", None)
+            user_agent = payload.get("user_agent", None)
 
             # Decode refresh token payload  
             user_details_from_refresh_token = await get_current_user_details_from_refresh_token(refresh_token)
@@ -91,8 +93,8 @@ class AuthService:
                 user_profile=user_profile,
                 current_access_token_id=access_token_id,
                 current_refresh_token_id=refresh_token_id,
-                ip_address=request.client.host if request.client else None,
-                user_agent=request.headers.get("user-agent"),
+                ip_address=ip_address,
+                user_agent=user_agent,
             )
 
             pass
