@@ -1,8 +1,6 @@
 
 import asyncio
 import json
-
-from sqlalchemy import Boolean
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
