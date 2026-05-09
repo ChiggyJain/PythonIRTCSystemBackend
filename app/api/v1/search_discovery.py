@@ -1,7 +1,6 @@
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, Query
-from app.core.response import success_response
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
 from app.dependencies.search_discovery import (

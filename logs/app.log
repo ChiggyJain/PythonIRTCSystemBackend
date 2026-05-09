@@ -634,3 +634,5 @@ size
     For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
 2026-05-09 21:49:53 | INFO | ES client created for index: routes
 2026-05-09 21:49:53 | INFO | ES client created for index: stations
+2026-05-09 21:50:21 | INFO | ES client created for index: routes
+2026-05-09 21:50:21 | INFO | ES client created for index: stations
