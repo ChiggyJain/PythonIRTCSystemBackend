@@ -63,8 +63,8 @@ class Settings(BaseSettings):
     EMAILVERIFICATION_OTP_EMAIL_SUBJECT_PREFIX: str = "IRTC Security"
     
     # email changed related kafka topic and consumer
-    EMAILCHANGED_OTP_DISPATCH_TOPIC: str = "emailchanged-otp-dispatch-v1"
-    EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumer-v1"
+    EMAILCHANGED_OTP_DISPATCH_TOPIC: str = "emailchanged-otp-dispatch"
+    EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumergrp-1"
     EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
     
     # email changed related email and sms provider name
