@@ -66,7 +66,7 @@ async def signup_user(
     service: UsersService = Depends(get_users_service),
 ):
 
-    user = await service.signup_user(
+    rsp = await service.signup_user(
         first_name=body.first_name,
         last_name=body.last_name,
         mobile=body.mobile,
@@ -75,14 +75,7 @@ async def signup_user(
         gender=body.gender,
         profile=body.profile
     )
-
-    return success_response(
-        messages=["User created successfully"],
-        data={
-            "userId": user.id,
-            "userEmail": user.email,
-        },
-    )
+    return rsp
 
 
 router.add_api_route(

@@ -74,7 +74,14 @@ class UsersService:
                 messages=[f"{str(e)}"],
                 data=None
             )
-        return user
+        return success_response(
+            status_code=200,
+            messages=["User created successfully"],
+            data={
+                "userId": user.id,
+                "userEmail": user.email,
+            },
+        )
     
 
 
