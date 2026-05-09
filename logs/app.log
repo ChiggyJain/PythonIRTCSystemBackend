@@ -178,3 +178,14 @@
 2026-05-09 12:13:24 | INFO | SpawnProcess-17-21270 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 12:13:24.380729 | 2026-05-09 12:13:24.394216 | 13 |  | 500
 2026-05-09 12:14:31 | INFO | ES client created for index: routes_v1
 2026-05-09 12:14:31 | INFO | ES client created for index: stations_v1
+2026-05-09 12:15:55 | INFO | ES client created for index: routes_v1
+2026-05-09 12:15:55 | INFO | ES client created for index: stations_v1
+2026-05-09 12:16:01 | INFO | ES client created for index: routes_v1
+2026-05-09 12:16:01 | INFO | ES client created for index: stations_v1
+2026-05-09 12:16:07 | INFO | ES client created for index: routes_v1
+2026-05-09 12:16:07 | INFO | ES client created for index: stations_v1
+2026-05-09 12:16:11 | INFO | SpawnProcess-23-21434 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 12:16:11.457730 | 2026-05-09 12:16:11.472661 | 14 | None | 500
+2026-05-09 12:16:22 | INFO | ES client created for index: routes_v1
+2026-05-09 12:16:22 | INFO | ES client created for index: stations_v1
+2026-05-09 12:16:22 | INFO | SpawnProcess-25-21460 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 12:16:22.895533 | 2026-05-09 12:16:22.905753 | 10 |  | 500
+2026-05-09 12:16:38 | INFO | SpawnProcess-25-21460 | v1.auth.logout | 127.0.0.1 | POST | /api/v1/auth/logout | 2026-05-09 12:16:38.283191 | 2026-05-09 12:16:38.391071 | 107 | None | 200
