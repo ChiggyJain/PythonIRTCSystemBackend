@@ -386,7 +386,7 @@ class PasswordChangeOtpService:
             await self._db_session.commit()
 
             # 2) Cache cleanup as post-commit side-effect (best effort)
-            user_index_key = build_cache_set_key(f"auth:user:access:index:{user_id}")
+            user_index_key = build_cache_set_key(f"user:access:index:{user_id}")
             try:
                 access_jti_set = await cache_set_members(key=user_index_key)
                 for access_jti in access_jti_set:

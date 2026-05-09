@@ -159,7 +159,7 @@ class UsersService:
 
                 # storing all access-token-row-id into redis for respective user
                 # set format
-                cacheKey = build_cache_set_key(f"auth:user:access:index:{user.id}")
+                cacheKey = build_cache_set_key(f"user:access:index:{user.id}")
                 await cache_set_add(cacheKey, str(token_rsp["access_token_id"]))
                 
                 return success_response(

@@ -237,7 +237,7 @@ Fail-open behavior is used when limiter infrastructure fails.
 ## Caching
 - Profile cache key: `cache:v1.users.profile:{user_id}` (TTL 300s)
 - Access token cache key: `cache:user:access:jti:{token_id}`
-- User access-token index set: `cache:auth:user:access:index:{user_id}`
+- User access-token index set: `cache:user:access:index:{user_id}`
 
 Cache is invalidated on:
 - logout/refresh token rotation
