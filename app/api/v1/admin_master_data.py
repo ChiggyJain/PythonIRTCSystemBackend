@@ -6,7 +6,7 @@ from app.core.exceptions import BaseAppException
 from app.core.response import success_response
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.core.settings import get_settings
-from app.dependencies.auth import get_current_admin_user_details_from_access_token
+from app.common.security.token_decoder import get_current_admin_user_details_from_access_token
 from app.dependencies.master_data import (
     get_stations_service, 
     get_trains_service,

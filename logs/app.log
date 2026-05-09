@@ -132,3 +132,5 @@
 2026-05-09 11:00:20 | INFO | ES client created for index: stations_v1
 2026-05-09 11:41:30 | INFO | ES client created for index: routes_v1
 2026-05-09 11:41:30 | INFO | ES client created for index: stations_v1
+2026-05-09 12:00:10 | INFO | ES client created for index: routes_v1
+2026-05-09 12:00:10 | INFO | ES client created for index: stations_v1
