@@ -29,6 +29,10 @@ from app.common.models import idempotencyrecord_models # noqa
 from app.domains.inventory.models import schedule_inventory_models # noqa
 from app.domains.inventory.models import seat_inventory_models # noqa
 from app.domains.inventory.models import route_stop_models # noqa
+from app.domains.booking.models import bookings_models # noqa
+from app.domains.booking.models import booking_seats_models # noqa
+from app.domains.booking.models import booking_passgenger_models # noqa
+from app.domains.booking.models import booking_saga_logs_models # noqa
 
 
 
