@@ -901,3 +901,5 @@
 2026-05-09 17:49:28 | INFO | ES client created for index: stations_v1
 2026-05-09 17:49:36 | INFO | ES client created for index: routes_v1
 2026-05-09 17:49:36 | INFO | ES client created for index: stations_v1
+2026-05-09 17:50:42 | INFO | ES client created for index: routes_v1
+2026-05-09 17:50:42 | INFO | ES client created for index: stations_v1
