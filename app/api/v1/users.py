@@ -311,20 +311,15 @@ router.add_api_route(
 )
 
 
-
-# ---------------------------------
-# email change otp request
-# ---------------------------------
-
 @feature_control(
     {
-        "name": "v1.users.email_change_request_otp",
+        "name": "user:emailchange:requestotp",
         "logging": {""
             "console": True, 
             "file": True
         },
         "rate_limit": {
-            "limit": 10, 
+            "limit": 100, 
             "window": 60
         },
     }
@@ -336,23 +331,7 @@ async def email_change_request_otp(
     service: EmailChangedOtpService = Depends(get_email_changed_otp_service),
 ):
     
-    # ---------------------------------------------
-    # extra user-level rate limit (in addition to IP)
-    # key example: ratelimit:v1.users.email_change_request_otp:user:101
-    # ---------------------------------------------
-    user_rate_key = f"ratelimit:v1.users.email_change_request_otp:user:{user_id_from_access_token}"
-    user_allowed = await rate_limiter.check_window_limit(
-        key=user_rate_key,
-        limit=settings.EMAILCHANGE_OTP_USER_RATE_LIMIT,
-        window=settings.EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS,
-    )
-    if not user_allowed:
-        raise BaseAppException(
-            status_code=429,
-            messages=["Too many OTP requests for this user. Please try again later."],
-        )
-    
-    result = await service.request_email_change_otp(
+    return await service.request_email_change_otp(
         user_id=user_id_from_access_token,
         channel=body.channel,
         new_email=str(body.new_email),

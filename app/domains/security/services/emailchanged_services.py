@@ -11,7 +11,13 @@ from app.common.utils.datetime import now_ist
 from app.common.utils.logger import app_logger
 from app.common.cache.redis_cache import cache_delete
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
 from app.core.settings import get_settings
+from app.common.utils.ratelimiter import rate_limiter
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
@@ -53,82 +59,98 @@ class EmailChangedOtpService:
         request_id: str | None = None,
     ) -> dict:
         
-        channel = (channel or "").strip().upper()
-        if channel != "EMAIL":
-            raise BaseAppException(status_code=400, messages=["channel must be EMAIL"])
-
-        new_email = (new_email or "").strip().lower()
-        if not new_email:
-            raise BaseAppException(status_code=400, messages=["new_email is required"])
-
-        user = await self.security_repo.get_active_user(user_id)
-        if not user:
-            raise BaseAppException(status_code=404, messages=["User not found"])
-
-        old_email = (user.email or "").strip().lower()
-        if old_email == new_email:
-            raise BaseAppException(status_code=400, messages=["New email must be different"])
-
-        existing = await self.security_repo.get_active_user_by_email(new_email)
-        if existing and int(existing.id) != int(user_id):
-            raise BaseAppException(status_code=400, messages=["Email already in use"])
-
-        now = now_ist()
-
-        # Cooldown + one-active policy
-        active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
-            user_id=user_id,
-            purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
-            channel="EMAIL",
-            now_time=now,
-        )
-
-        if active_otp_challenge:
-            elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
-            if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
-                retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
-                raise BaseAppException(
-                    status_code=429,
-                    messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
-                    data={
-                        "retry_after_seconds": retry_after_seconds,
-                        "challenge_id": active_otp_challenge.challenge_id,
-                    },
-                )
-
-            active_meta = self._decrypt_metadata_json(active_otp_challenge.metadata_json)
-            active_new_email = (active_meta.get("new_email") or "").strip().lower()
-
-            # Same target email -> reuse active challenge
-            if active_new_email == new_email:
-                expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
-                return {
-                    "challenge_id": active_otp_challenge.challenge_id,
-                    "expires_in_sec": expires_in_sec,
-                    "destination_masked": active_otp_challenge.destination_masked,
-                    "dispatch_status": "already_active",
-                }
-
-            # Different new email after cooldown -> supersede old active challenge
-            active_otp_challenge.status = self.OTP_STATUS_EXPIRED
-            active_otp_challenge.last_error_code = "SUPERSEDED_BY_NEW_REQUEST"
-            active_otp_challenge.updated_at = now
-
-        otp = self._generate_otp()
-        otp_hash = self._hash_otp(otp)
-        otp_ciphertext = self._encrypt_otp(otp)
-        challenge_id = self._build_challenge_id(user_id)
-        expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
-
-        metadata_ciphertext = self._encrypt_metadata_json(
-            {
-                "old_email": old_email,
-                "new_email": new_email,
-            }
-        )
-
         try:
+            
+            # extra user-level rate limit (in addition to IP)
+            user_rate_key = f"user:emailchange:requestotp:{user_id}"
+            user_allowed_request = await rate_limiter.check_window_limit(
+                key=user_rate_key,
+                limit=settings.EMAILCHANGE_OTP_USER_RATE_LIMIT,
+                window=settings.EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS,
+            )
+            if not user_allowed_request:
+                return error_response(
+                    status_code=429,
+                    messages=["Too many OTP requests for this user. Please try again later."],
+                )
+            
+            channel = (channel or "").strip().upper()
+            if channel != "EMAIL":
+                return error_response(status_code=400, messages=["channel must be EMAIL"])
 
+            new_email = (new_email or "").strip().lower()
+            if not new_email:
+                return error_response(status_code=400, messages=["new_email is required"])
+
+            user = await self.security_repo.get_active_user(user_id)
+            if not user:
+                return error_response(status_code=404, messages=["User not found"])
+
+            old_email = (user.email or "").strip().lower()
+            if old_email == new_email:
+                return error_response(status_code=400, messages=["New email must be different"])
+
+            existing = await self.security_repo.get_active_user_by_email(new_email)
+            if existing and int(existing.id) != int(user_id):
+                return error_response(status_code=400, messages=["Email already in use"])
+
+            now = now_ist()
+
+            # Cooldown + one-active policy
+            active_otp_challenge = await self.security_repo.get_latest_active_otp_challenge(
+                user_id=user_id,
+                purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
+                channel="EMAIL",
+                now_time=now,
+            )
+
+            if active_otp_challenge:
+                elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
+                if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
+                    retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
+                    return error_response(
+                        status_code=429,
+                        messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
+                        data={
+                            "retry_after_seconds": retry_after_seconds,
+                            "challenge_id": active_otp_challenge.challenge_id,
+                        },
+                    )
+
+                active_meta = self._decrypt_metadata_json(active_otp_challenge.metadata_json)
+                active_new_email = (active_meta.get("new_email") or "").strip().lower()
+
+                # Same target email -> reuse active challenge
+                if active_new_email == new_email:
+                    expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
+                    return success_response(
+                        status_code=200,
+                        messages=[f"OTP request is already accepted"],
+                        data={
+                            "challenge_id": active_otp_challenge.challenge_id,
+                            "expires_in_sec": expires_in_sec,
+                            "destination_masked": active_otp_challenge.destination_masked,
+                            "dispatch_status": "already_active",
+                        }
+                    )
+
+                # Different new email after cooldown -> supersede old active challenge
+                active_otp_challenge.status = self.OTP_STATUS_EXPIRED
+                active_otp_challenge.last_error_code = "SUPERSEDED_BY_NEW_REQUEST"
+                active_otp_challenge.updated_at = now
+
+            otp = self._generate_otp()
+            otp_hash = self._hash_otp(otp)
+            otp_ciphertext = self._encrypt_otp(otp)
+            challenge_id = self._build_challenge_id(user_id)
+            expires_at = now + timedelta(seconds=self.OTP_TTL_SECONDS)
+            metadata_ciphertext = self._encrypt_metadata_json(
+                {
+                    "old_email": old_email,
+                    "new_email": new_email,
+                }
+            )
+            
             await self.security_repo.add_otp_challenge(
                 challenge_id=challenge_id,
                 user_id=user_id,
@@ -180,16 +202,27 @@ class EmailChangedOtpService:
 
             await self._db_session.commit()
 
-        except Exception:
+            return success_response(
+                status_code=200,
+                messages=[f"OTP request accepted"],
+                data={
+                    "challenge_id": challenge_id,
+                    "expires_in_sec": self.OTP_TTL_SECONDS,
+                    "destination_masked": self._mask_email(new_email),
+                    "dispatch_status": "accepted",
+                }
+            )
+        
+        except BaseAppException as e:
             await self._db_session.rollback()
-            raise
-
-        return {
-            "challenge_id": challenge_id,
-            "expires_in_sec": self.OTP_TTL_SECONDS,
-            "destination_masked": self._mask_email(new_email),
-            "dispatch_status": "accepted",
-        }
+            raise e
+        
+        except Exception as e:
+            await self._db_session.rollback()
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
 
 
     async def confirm_email_change_otp(
