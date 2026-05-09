@@ -57,49 +57,11 @@ async def refresh_token(
 
     
 
-    refresh_token_row = await token_service.get_refresh(refresh_token_id)
-    if not refresh_token_row:
-        raise BaseAppException(
-            status_code=401,
-            messages=["Refresh token not found"]
-        )
+    
 
-    # DB-level type safety check
-    if refresh_token_row.token_type != "refresh":
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid refresh token type"],
-        )
+    
 
-    # DB-level ownership safety check
-    if int(refresh_token_row.user_id) != user_id:
-        raise BaseAppException(
-            status_code=401,
-            messages=["Refresh token user mismatch"],
-        )
-
-    if refresh_token_row.revoked:
-        raise BaseAppException(
-            status_code=401,
-            messages=["Refresh token already revoked"]
-        )
-
-    if not token_service.is_raw_token_matches_stored_hash(
-        raw_token=body.refresh_token,
-        stored_hash=refresh_token_row.token_hash,
-    ):
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid refresh token"],
-        )
-
-    # Optional linked access token type sanity check (if row still active)
-    access_token_row = await token_service.get_access(access_token_id)
-    if access_token_row and access_token_row.token_type != "access":
-        raise BaseAppException(
-            status_code=401,
-            messages=["Invalid linked access token type"],
-        )
+    
 
     # Single flow: revoke old pair + issue new pair + cache cleanup
     tokens = await token_service.rotate_tokens_by_refresh(

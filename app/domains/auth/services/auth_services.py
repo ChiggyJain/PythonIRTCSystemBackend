@@ -30,9 +30,10 @@ class AuthService:
         
         try:
             
+            # extracted parameters data
             refresh_token = payload["refresh_token"]
 
-            # Decode refresh token payload
+            # Decode refresh token payload  
             user_details_from_refresh_token = await get_current_user_details_from_refresh_token(refresh_token)
 
             user_profile = user_details_from_refresh_token.get("profile", "User")
@@ -40,6 +41,52 @@ class AuthService:
             access_token_id = int(user_details_from_refresh_token.get("against_token_id"))
             refresh_token_id = int(user_details_from_refresh_token.get("jti"))
             
+            # token services
+            token_services = TokenService(self._db_session)
+
+            # fetching refresh-token details
+            async with self._db_session.begin():
+                access_token_row = await token_services.user_tokens_repo.get_by_id(access_token_id)
+                refresh_token_row = await token_services.user_tokens_repo.get_by_id(refresh_token_id)
+
+            # access token row validations
+            if access_token_row and access_token_row.token_type != "access":
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid linked access token type"],
+                )
+    
+            # refresh token row validations
+            if not refresh_token_row:
+                return error_response(
+                    status_code=401,
+                    messages=["Refresh token not found"]
+                )
+            if refresh_token_row.token_type != "refresh":
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid refresh token type"],
+                )
+            if int(refresh_token_row.user_id) != user_id:
+                return error_response(
+                    status_code=401,
+                    messages=["Refresh token user mismatch"],
+                )
+            if refresh_token_row.revoked:
+                return error_response(
+                    status_code=401,
+                    messages=["Refresh token already revoked"]
+                )
+
+            if not token_services.is_raw_token_matches_stored_hash(
+                raw_token=refresh_token, stored_hash=refresh_token_row.token_hash,
+            ):
+                return error_response(
+                    status_code=401,
+                    messages=["Invalid refresh token"],
+                )
+            
+
 
             pass
 
