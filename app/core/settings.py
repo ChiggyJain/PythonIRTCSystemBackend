@@ -96,12 +96,22 @@ class Settings(BaseSettings):
     EMAILCHANGE_CONFIRM_USER_RATE_LIMIT: int = 5
     EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS: int = 60
 
+    # admin station create request rate limitter
     MASTERDATA_STATION_CREATE_USER_RATE_LIMIT: int = 10
     MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+
+    # admin train create request rate limitter
     MASTERDATA_TRAIN_CREATE_USER_RATE_LIMIT: int = 10
     MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
-    
+    # admin route create request rate limitter
+    MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT: int = 10
+    MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+
+    # admin schedule create request rate limitter
+    MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
+    MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+
     # Station KAFKA TOPIC and CONSUMER
     MASTERDATA_STATION_CREATED: str = "masterdata-station-created"
     MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumer-v1"
