@@ -68,9 +68,9 @@ class InventoryService:
             event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
             existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing:
-                return error_response(
+                return success_response(
                     status_code=201,
-                    messages=["Scheudle already processed"],
+                    messages=["Schedule already processed"],
                     data={
                         "schedule_id": schedule_id,
                     }
@@ -78,7 +78,7 @@ class InventoryService:
 
             try:
                 departure_date = date.fromisoformat(departure_date_raw)
-            except ValueError:
+            except ValueError as e:
                 return error_response(
                     status_code=400,
                     messages=["departure_date must be in YYYY-MM-DD format"],
@@ -122,12 +122,14 @@ class InventoryService:
 
             await self._db_session.commit()
 
-            return {
-                "status": "processed",
-                "event_key": event_key,
-                "schedule_id": schedule_id,
-            }
-
+            return success_response(
+                status_code=201,
+                messages=["Schedule processed"],
+                data={
+                    "schedule_id": schedule_id,
+                }
+            )
+        
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
