@@ -1,9 +1,10 @@
 
-
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.exceptions import BaseAppException
 from app.common.security.token_decoder import (
     get_current_user_details_from_refresh_token
 )
+from app.core.exceptions import BaseAppException
 from app.domains.auth.services.token_services import TokenService
 from app.core.response import (
     success_response, 
@@ -125,11 +126,14 @@ class AuthService:
                 status_code=200,
                 messages=["Logout successful from current active device session"],
             )
-                
+        
+        except BaseAppException as e:
+            raise e
+        
         except Exception as e:
             return exception_response(
                 status_code=500,
-                messages=[f"{str(e)}111"],
+                messages=[f"{str(e)}"],
             )
 
 
