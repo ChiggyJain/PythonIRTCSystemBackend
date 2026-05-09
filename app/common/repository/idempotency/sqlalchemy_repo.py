@@ -9,12 +9,12 @@ from app.common.models.idempotencyrecord_models import IdempotencyRecords
 class IdempotencySQLAlchemyRepository:
 
     def __init__(self, db_session: AsyncSession):
-        self.db = db_session
+        self.db_session = db_session
 
 
     async def get_idempotency_record_by_event_key(self, event_key: str) -> IdempotencyRecords | None:
         stmt = select(IdempotencyRecords).where(IdempotencyRecords.event_key == event_key)
-        result = await self.db.execute(stmt)
+        result = await self.db_session.execute(stmt)
         return result.scalar_one_or_none()
 
 
@@ -29,7 +29,7 @@ class IdempotencySQLAlchemyRepository:
             created_at=now_ist(),
             updated_at=now_ist(),
         )
-        self.db.add(row)
-        await self.db.flush()
+        self.db_session.add(row)
+        await self.db_session.flush()
         return row
 
