@@ -21,9 +21,7 @@ from app.common.utils.ratelimiter import rate_limiter
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 from app.common.cache.redis_cache import(
-    build_cache_key, 
     cache_delete,
-    build_cache_set_key, 
     cache_set_members, 
     cache_set_delete
 )
@@ -454,10 +452,7 @@ class PasswordChangeOtpService:
         
 
 
-    # =========================
-    # internal helpers
-    # =========================
-
+    
     def _normalize_channel(
         self,
         channel: str,
