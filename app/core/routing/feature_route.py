@@ -58,7 +58,7 @@ class FeatureAPIRoute(APIRoute):
 
                 limit = rate_limit_config.get("limit")
                 window = rate_limit_config.get("window")
-                key = f"ratelimit:{given_api_name}:ip:{ip}"
+                key = f"{given_api_name}:ip:{ip}"
                 allowed = await rate_limiter.check_window_limit(
                     key=key,
                     limit=limit,
