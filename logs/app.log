@@ -515,3 +515,32 @@
 2026-05-09 16:51:26 | INFO | ES client created for index: stations_v1
 2026-05-09 16:51:42 | INFO | ES client created for index: routes_v1
 2026-05-09 16:51:42 | INFO | ES client created for index: stations_v1
+2026-05-09 16:52:13 | INFO | SpawnProcess-181-19965 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 16:52:12.880697 | 2026-05-09 16:52:13.299064 | 418 | None | 200
+2026-05-09 16:52:27 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:52:27.658652 | 2026-05-09 16:52:27.664018 | 5 | None | 401
+2026-05-09 16:52:39 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp | 127.0.0.1 | POST | /api/v1/users/password/change/request-otp | 2026-05-09 16:52:39.280086 | 2026-05-09 16:52:39.365476 | 85 | None | 200
+2026-05-09 16:52:49 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-05-09 16:52:49.592364 | 2026-05-09 16:52:49.599203 | 6 | None | 400
+2026-05-09 16:53:20 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-05-09 16:53:20.011532 | 2026-05-09 16:53:20.014923 | 3 | None | 400
+2026-05-09 16:53:21 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-05-09 16:53:21.593002 | 2026-05-09 16:53:21.596213 | 3 | None | 400
+2026-05-09 16:54:53 | INFO | SpawnProcess-181-19965 | user:passwordchange:requestotp:confirm | 127.0.0.1 | POST | /api/v1/users/password/change/confirm | 2026-05-09 16:54:53.113880 | 2026-05-09 16:54:53.504320 | 390 | None | 200
+2026-05-09 16:56:24 | INFO | ES client created for index: routes_v1
+2026-05-09 16:56:24 | INFO | ES client created for index: stations_v1
+2026-05-09 16:56:38 | INFO | ES client created for index: routes_v1
+2026-05-09 16:56:38 | INFO | ES client created for index: stations_v1
+2026-05-09 16:57:10 | INFO | ES client created for index: routes_v1
+2026-05-09 16:57:10 | INFO | ES client created for index: stations_v1
+2026-05-09 16:57:40 | INFO | ES client created for index: routes_v1
+2026-05-09 16:57:40 | INFO | ES client created for index: stations_v1
+2026-05-09 16:57:57 | INFO | ES client created for index: routes_v1
+2026-05-09 16:57:57 | INFO | ES client created for index: stations_v1
+2026-05-09 16:58:06 | INFO | ES client created for index: routes_v1
+2026-05-09 16:58:06 | INFO | ES client created for index: stations_v1
+2026-05-09 16:58:22 | INFO | ES client created for index: routes_v1
+2026-05-09 16:58:22 | INFO | ES client created for index: stations_v1
+2026-05-09 16:58:33 | INFO | ES client created for index: routes_v1
+2026-05-09 16:58:33 | INFO | ES client created for index: stations_v1
+2026-05-09 16:58:46 | INFO | ES client created for index: routes_v1
+2026-05-09 16:58:46 | INFO | ES client created for index: stations_v1
+2026-05-09 16:58:58 | INFO | ES client created for index: routes_v1
+2026-05-09 16:58:58 | INFO | ES client created for index: stations_v1
+2026-05-09 16:59:07 | INFO | ES client created for index: routes_v1
+2026-05-09 16:59:07 | INFO | ES client created for index: stations_v1
