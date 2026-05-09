@@ -71,7 +71,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         user_id: int,
     ) -> dict[str, Any] | None:
 
-        # Select only profile fields needed by API response.
         stmt = select(
             Users.id.label("id"),
             Users.first_name.label("first_name"),
@@ -83,15 +82,12 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
             Users.mobile_verified_last_datetime.label("mobile_verified_last_datetime"),
             Users.email.label("email"),
             Users.is_email_verified.label("is_email_verified"),
-            Users.email_verified_last_datetime.label("email_verified_last_datetime"),
-            
+            Users.email_verified_last_datetime.label("email_verified_last_datetime"),            
         ).where(
             Users.id == user_id
         )
-
         result = await self.db_session.execute(stmt)
         row = result.mappings().first()
         if not row:
             return None
-
         return dict(row)

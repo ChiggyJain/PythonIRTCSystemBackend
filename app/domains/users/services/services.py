@@ -74,7 +74,7 @@ class UsersService:
                     gender=gender,
                     profile=profile
                 )
-                
+
             return success_response(
                 status_code=200,
                 messages=["User created successfully"],
@@ -206,9 +206,9 @@ class UsersService:
 
         profile = await self.users_repo.get_profile_snapshot_by_id(user_id=user_id)
         if not profile:
-            raise BaseAppException(
-                messages=["User not found"],
+            return error_response(
                 status_code=404,
+                messages=["User not found"],
             )
         
         data = {
