@@ -1,9 +1,4 @@
 
-"""
-Auth Token Service
-Handles JWT + DB tokens
-"""
-
 from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -52,7 +47,6 @@ class TokenService:
 
         # Single timestamp source for this flow
         now_time = now_ist()
-
         access_expire = now_time + timedelta(
             minutes=settings.JWT_ACCESS_EXPIRE_MINUTES
         )
@@ -65,73 +59,69 @@ class TokenService:
 
         try:
 
-            # Create rows first (flush-only) to get IDs.
-            access_token_row = await self.user_tokens_repo.create_token(
-                user_id=user_id,
-                token_hash="temp",
-                token_type="access",
-                expires_at=access_expire,
-                ip_address=ip_address,
-                user_agent=user_agent,
-            )
+            async with self._db_session.begin():
+                # Create rows first (flush-only) to get IDs.
+                access_token_row = await self.user_tokens_repo.create_token(
+                    user_id=user_id,
+                    token_hash="temp",
+                    token_type="access",
+                    expires_at=access_expire,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                )  
+                refresh_token_row = await self.user_tokens_repo.create_token(
+                    user_id=user_id,
+                    token_hash="temp",
+                    token_type="refresh",
+                    expires_at=refresh_expire,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                )
+                # Build JWTs with DB IDs.
+                access_token = create_access_token(
+                    user_id=user_id,
+                    user_profile=user_profile,
+                    token_id=access_token_row.id,
+                    against_token_type="refresh",
+                    against_token_id=refresh_token_row.id
+                )
+                refresh_token = create_refresh_token(
+                    user_id=user_id,
+                    user_profile=user_profile,
+                    token_id=refresh_token_row.id,
+                    against_token_type="access",
+                    against_token_id=access_token_row.id
+                )
+                # Store only hashes.
+                now_time = now_ist()
+                access_token_row.token_hash = build_token_hash(access_token)
+                access_token_row.updated_at = now_time
+                refresh_token_row.token_hash = build_token_hash(refresh_token)
+                refresh_token_row.updated_at = now_time
             
-            refresh_token_row = await self.user_tokens_repo.create_token(
-                user_id=user_id,
-                token_hash="temp",
-                token_type="refresh",
-                expires_at=refresh_expire,
-                ip_address=ip_address,
-                user_agent=user_agent,
-            )
-            
-            # Build JWTs with DB IDs.
-            access_token = create_access_token(
-                user_id=user_id,
-                user_profile=user_profile,
-                token_id=access_token_row.id,
-                against_token_type="refresh",
-                against_token_id=refresh_token_row.id
-            )
+            # storing access-token-row-id into redis for respective user
+            # key-value with expire seconds
+            cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_row.id}")
+            await cache_set(key=cacheKey, value=user_id, ttl=access_expire_seconds)
 
-            refresh_token = create_refresh_token(
-                user_id=user_id,
-                user_profile=user_profile,
-                token_id=refresh_token_row.id,
-                against_token_type="access",
-                against_token_id=access_token_row.id
-            )
+            # storing all access-token-row-id into redis for respective user
+            # set format
+            cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
+            await cache_set_add(cacheKey, str(access_token_row.id))
 
-            # Store only hashes.
-            now_time = now_ist()
+            return {
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+            }
 
-            access_token_row.token_hash = build_token_hash(access_token)
-            access_token_row.updated_at = now_time
+        except Exception as e:
+            return {
+                "messages" : [f"{str(e)}"],
+                "access_token" : "",
+                "refresh_token" : "",
+            }
 
-            refresh_token_row.token_hash = build_token_hash(refresh_token)
-            refresh_token_row.updated_at = now_time
-
-            # Single DB commit for whole token creation flow.
-            await self._db_session.commit()
-
-            
-        except Exception:
-            await self._db_session.rollback()
-            raise
-
-        # storing access-token-row-id into redis for respective user
-        # key-value with expire seconds
-        cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_row.id}")
-        await cache_set(key=cacheKey, value=user_id, ttl=access_expire_seconds)
-
-        # storing all access-token-row-id into redis for respective user
-        # set format
-        cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-        await cache_set_add(cacheKey, str(access_token_row.id))
-
-        return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-        }
+        
 
 
     async def revoke(
