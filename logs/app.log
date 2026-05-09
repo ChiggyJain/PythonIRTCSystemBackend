@@ -504,3 +504,23 @@
 2026-05-09 21:31:38 | INFO | ES client created for index: stations
 2026-05-09 21:31:51 | INFO | ES client created for index: routes
 2026-05-09 21:31:51 | INFO | ES client created for index: stations
+2026-05-09 21:32:45 | INFO | SpawnProcess-273-18142 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:32:45.819390 | 2026-05-09 21:32:45.835832 | 16 | None | 200
+2026-05-09 21:33:00 | INFO | SpawnProcess-273-18142 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:33:00.719116 | 2026-05-09 21:33:00.726881 | 7 | None | 200
+2026-05-09 21:33:27 | INFO | ES client created for index: routes
+2026-05-09 21:33:27 | INFO | ES client created for index: stations
+2026-05-09 21:33:34 | INFO | ES client created for index: routes
+2026-05-09 21:33:34 | INFO | ES client created for index: stations
+2026-05-09 21:33:38 | INFO | ES client created for index: routes
+2026-05-09 21:33:38 | INFO | ES client created for index: stations
+2026-05-09 21:33:45 | INFO | ES client created for index: routes
+2026-05-09 21:33:45 | INFO | ES client created for index: stations
+2026-05-09 21:33:52 | INFO | ES client created for index: routes
+2026-05-09 21:33:52 | INFO | ES client created for index: stations
+2026-05-09 21:33:59 | INFO | ES client created for index: routes
+2026-05-09 21:33:59 | INFO | ES client created for index: stations
+2026-05-09 21:34:05 | INFO | ES client created for index: routes
+2026-05-09 21:34:05 | INFO | ES client created for index: stations
+2026-05-09 21:34:07 | INFO | ES client created for index: routes
+2026-05-09 21:34:07 | INFO | ES client created for index: stations
+2026-05-09 21:34:12 | INFO | SpawnProcess-284-18319 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:34:12.339461 | 2026-05-09 21:34:12.346592 | 7 | None | 200
+2026-05-09 21:34:16 | INFO | SpawnProcess-284-18319 | user.search.stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-09 21:34:16.569381 | 2026-05-09 21:34:16.573296 | 3 | None | 404

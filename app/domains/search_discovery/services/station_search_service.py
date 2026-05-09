@@ -56,13 +56,19 @@ class StationSearchService:
                 }
             )
 
-        return success_response(
-            status_code=200,
-            messages=["Stations fetched successfully"],
-            data={
-                "query": q,
-                "count": len(results),
-                "results": results,
-            },
-        )
+        if results:
+            return success_response(
+                status_code=200,
+                messages=["Stations found"],
+                data={
+                    "query": q,
+                    "count": len(results),
+                    "results": results,
+                },
+            )
+        else:
+            return error_response(
+                status_code=404,
+                messages=["Stations not found"],
+            )
         
