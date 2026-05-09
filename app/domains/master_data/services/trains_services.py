@@ -128,7 +128,7 @@ class TrainsService:
 
             return success_response(
                 status_code=201,
-                messages=[f""],
+                messages=[f"Trains created successfully"],
                 data={
                     "id": train.id,
                     "train_number": train.train_number,
