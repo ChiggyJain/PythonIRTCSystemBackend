@@ -244,3 +244,10 @@
 2026-05-09 15:32:20 | INFO | ES client created for index: stations_v1
 2026-05-09 15:33:22 | INFO | ES client created for index: routes_v1
 2026-05-09 15:33:22 | INFO | ES client created for index: stations_v1
+2026-05-09 15:42:37 | INFO | ES client created for index: routes_v1
+2026-05-09 15:42:37 | INFO | ES client created for index: stations_v1
+2026-05-09 15:42:59 | INFO | SpawnProcess-1-14520 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 15:42:59.500453 | 2026-05-09 15:42:59.877877 | 377 | None | 200
+2026-05-09 15:43:17 | INFO | SpawnProcess-1-14520 | user:refreshtoken | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-05-09 15:43:17.290853 | 2026-05-09 15:43:17.386046 | 95 | None | 200
+2026-05-09 15:43:49 | INFO | SpawnProcess-1-14520 | user:refreshtoken | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-05-09 15:43:49.139079 | 2026-05-09 15:43:49.143104 | 4 | None | 401
+2026-05-09 15:44:34 | INFO | SpawnProcess-1-14520 | user:refreshtoken | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-05-09 15:44:34.775522 | 2026-05-09 15:44:34.776797 | 1 |  | 500
+2026-05-09 15:44:43 | INFO | SpawnProcess-1-14520 | user:refreshtoken | 127.0.0.1 | POST | /api/v1/auth/refresh | 2026-05-09 15:44:43.442622 | 2026-05-09 15:44:43.450663 | 8 | None | 401
