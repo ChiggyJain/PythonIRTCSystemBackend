@@ -140,7 +140,7 @@ class Settings(BaseSettings):
     ELASTICSEARCH_VERIFY_CERTS: bool = False
     ELASTICSEARCH_REQUEST_TIMEOUT_SECONDS: int = 10
     ELASTICSEARCH_STATIONS_INDEX: str = "stations"
-    ELASTICSEARCH_ROUTES_INDEX: str = "routes_v1"
+    ELASTICSEARCH_ROUTES_INDEX: str = "routes"
 
     # booking config
     BOOKING_TTL_SECONDS: int = 600

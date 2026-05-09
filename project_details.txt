@@ -225,7 +225,7 @@ python3 -m app.workers.outbox.masterdata_schedules_inventory_worker
 
 
 ElasticSearch Commands =>
-curl -X DELETE "localhost:9200/routes_v1"
+curl -X DELETE "localhost:9200/routes"
 http://127.0.0.1:9200/stations/_search?pretty=true
 http://127.0.0.1:9200/stations/_count
 
