@@ -97,8 +97,10 @@ class UsersService:
     ):
 
         try:
+            
+            async with self._db_session.begin():
+                user = await self.users_repo.get_by_email(email)
 
-            user = await self.users_repo.get_by_email(email)
             if not user:
                 return error_response(
                     status_code=400,
@@ -127,12 +129,14 @@ class UsersService:
             
             # create tokens
             token_service = TokenService(self._db_session)
-            token_rsp = await token_service.create_tokens(
-                user_id=user.id,
-                user_profile=user.profile,
-                ip_address=ip_address,
-                user_agent=user_agent
-            )
+
+            async with self._db_session.begin():
+                token_rsp = await token_service.create_tokens(
+                    user_id=user.id,
+                    user_profile=user.profile,
+                    ip_address=ip_address,
+                    user_agent=user_agent
+                )
             if token_rsp["access_token"]!="" and token_rsp["refresh_token"]!="":
                 return success_response(
                     status_code=200,

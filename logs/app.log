@@ -253,3 +253,27 @@
 2026-05-09 09:49:29 | INFO | ES client created for index: routes_v1
 2026-05-09 09:49:29 | INFO | ES client created for index: stations_v1
 2026-05-09 09:49:39 | INFO | SpawnProcess-184-12222 | v1.users.login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 09:49:38.709828 | 2026-05-09 09:49:39.152753 | 442 | None | 200
+2026-05-09 10:11:19 | INFO | ES client created for index: routes_v1
+2026-05-09 10:11:19 | INFO | ES client created for index: stations_v1
+2026-05-09 10:13:06 | INFO | ES client created for index: routes_v1
+2026-05-09 10:13:06 | INFO | ES client created for index: stations_v1
+2026-05-09 10:13:16 | INFO | ES client created for index: routes_v1
+2026-05-09 10:13:16 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:00 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:00 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:03 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:03 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:10 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:10 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:17 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:17 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:23 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:23 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:27 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:27 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:32 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:32 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:38 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:38 | INFO | ES client created for index: stations_v1
+2026-05-09 10:14:42 | INFO | ES client created for index: routes_v1
+2026-05-09 10:14:42 | INFO | ES client created for index: stations_v1
