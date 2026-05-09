@@ -262,13 +262,13 @@ class PasswordChangeOtpService:
             
             # Extra user-level rate limit (in addition to route IP-based limit)
             user_rate_key = f"user:passwordchange:requestotp:confirm:{user_id}"
-            user_allowed = await rate_limiter.check_window_limit(
+            user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.PWDCHANGED_CONFIRM_USER_RATE_LIMIT,
                 window=settings.PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS,
             )
-            if not user_allowed:
-                raise BaseAppException(
+            if not user_allowed_request:
+                return error_response(
                     status_code=429,
                     messages=["Too many password change confirm attempts for this user. Please try again later."],
                 )
@@ -281,7 +281,7 @@ class PasswordChangeOtpService:
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
             )
             if not challenge:
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["Invalid OTP challenge"],
                 )
@@ -289,12 +289,11 @@ class PasswordChangeOtpService:
             now = now_ist()
 
             if challenge.status == self.OTP_STATUS_VERIFIED:
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["OTP already used"],
                 )
-
-                
+                            
             if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
                 challenge.last_error_code = "OTP_EXPIRED"
@@ -314,7 +313,7 @@ class PasswordChangeOtpService:
                     metadata_json={"challenge_id": challenge_id},
                 )
                 await self._db_session.commit()
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["OTP expired"],
                 )
@@ -324,7 +323,7 @@ class PasswordChangeOtpService:
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
                 await self._db_session.commit()
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["OTP attempts exceeded"],
                 )
@@ -354,7 +353,7 @@ class PasswordChangeOtpService:
                     },
                 )
                 await self._db_session.commit()
-                raise BaseAppException(
+                return error_response(
                     status_code=400,
                     messages=["Invalid OTP"],
                 )
@@ -372,9 +371,9 @@ class PasswordChangeOtpService:
             )
             if not updated:
                 await self._db_session.rollback()
-                raise BaseAppException(
+                return error_response(
                     status_code=404,
-                    messages=["User not found"],
+                    messages=["User not found for updating the password"],
                 )
             
             revoked_count = await self.security_repo.revoke_active_tokens_for_user(

@@ -213,6 +213,7 @@ class SecuritySQLAlchemyRepository(SecurityRepositoryBase):
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
 
+
     async def revoke_active_tokens_for_user(
         self,
         *,
