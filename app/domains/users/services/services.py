@@ -22,6 +22,16 @@ from app.common.cache.redis_cache import (
     cache_set,
     build_cache_key,
 )
+from app.common.cache.redis_cache import (
+    build_cache_key,
+    cache_set,
+    build_cache_set_key,
+    cache_set_add,
+    cache_delete,
+    cache_set_remove,
+    cache_set_delete,
+    cache_set_members,
+)
 from app.common.cache.config import (
     CACHE_TTL_PROFILE,
     CACHE_KEY_USER_PROFILE,
@@ -140,6 +150,17 @@ class UsersService:
                 )
 
             if token_rsp["access_token"]!="" and token_rsp["refresh_token"]!="":
+
+                # storing access-token-row-id into redis for respective user
+                # key-value with expire seconds
+                cacheKey = build_cache_key(f"auth:user:access:jti:{token_rsp["access_token_id"]}")
+                await cache_set(key=cacheKey, value=user.id, ttl=token_rsp["access_expire_seconds"])
+
+                # storing all access-token-row-id into redis for respective user
+                # set format
+                cacheKey = build_cache_set_key(f"auth:user:access:index:{user.id}")
+                await cache_set_add(cacheKey, str(token_rsp["access_token_id"]))
+                
                 return success_response(
                     status_code=200,
                     messages=["Login successful"],
@@ -150,6 +171,7 @@ class UsersService:
                         }
                     },
                 )
+            
             else:
                 return error_response(
                     status_code=400,

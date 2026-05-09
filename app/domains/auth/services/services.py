@@ -56,6 +56,9 @@ class TokenService:
         refresh_expire = now_time + timedelta(
             days=settings.JWT_REFRESH_EXPIRE_DAYS
         )
+        refresh_expire_seconds = int(
+            (refresh_expire - now_time).total_seconds()
+        )
 
         try:
 
@@ -98,23 +101,14 @@ class TokenService:
             refresh_token_row.token_hash = build_token_hash(refresh_token)
             refresh_token_row.updated_at = now_time
 
-            # storing access-token-row-id into redis for respective user
-            # key-value with expire seconds
-            cacheKey = build_cache_key(f"auth:user:access:jti:{access_token_row.id}")
-            await cache_set(key=cacheKey, value=user_id, ttl=access_expire_seconds)
-
-            # storing all access-token-row-id into redis for respective user
-            # set format
-            cacheKey = build_cache_set_key(f"auth:user:access:index:{user_id}")
-            await cache_set_add(cacheKey, str(access_token_row.id))
-
             return {
                 "messages" : [f"Tokens generated successfully"],
                 "access_token_id" : access_token_row.id,
                 "access_token": access_token,
+                "access_expire_seconds" : access_expire_seconds,
                 "refresh_token_id" : refresh_token_row.id,
                 "refresh_token": refresh_token,
-                
+                "refresh_expire_seconds" : refresh_expire_seconds,                
             }
 
         except Exception as e:
@@ -122,8 +116,10 @@ class TokenService:
                 "messages" : [f"{str(e)}"],
                 "access_token_id" : "",
                 "access_token" : "",
+                "access_expire_seconds" : "",
                 "refresh_token_id" : "",
                 "refresh_token" : "",
+                "refresh_expire_seconds" : "",
             }
 
         
