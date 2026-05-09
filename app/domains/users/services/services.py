@@ -26,6 +26,7 @@ from app.common.cache.config import (
     CACHE_TTL_PROFILE,
     CACHE_KEY_USER_PROFILE,
 )
+from app.domains.auth.services.services import TokenService
 
 
 class UsersService:
@@ -51,7 +52,8 @@ class UsersService:
         # to avoid blocking async event loop under concurrency.
         hashed_password = await to_thread.run_sync(hash_password, password)
 
-        try:            
+        try:
+
             async with self._db_session.begin():
                 user = await self.users_repo.create_user(
                     first_name=first_name,
@@ -62,6 +64,15 @@ class UsersService:
                     gender=gender,
                     profile=profile
                 )
+            return success_response(
+                status_code=200,
+                messages=["User created successfully"],
+                data={
+                    "userId": user.id,
+                    "userEmail": user.email,
+                },
+            )
+        
         except IntegrityError as e:
             return error_response(
                 status_code=400,
@@ -74,57 +85,63 @@ class UsersService:
                 messages=[f"{str(e)}"],
                 data=None
             )
-        return success_response(
-            status_code=200,
-            messages=["User created successfully"],
-            data={
-                "userId": user.id,
-                "userEmail": user.email,
-            },
-        )
+        
     
-
-
-    # ---------------------------------
-    # login user
-    # ---------------------------------
-
     async def login_user(
         self,
         *,
         email: str,
         password: str,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
     ):
 
-        user = await self.users_repo.get_by_email(email)
-        if not user:
-            raise BaseAppException(
-                messages=[
-                    "Invalid email or password"
-                ],
-                status_code=400,
-            )
-        if user.status != "A":
-            raise BaseAppException(
-                messages=[
-                    "User account inactive"
-                ],
-                status_code=403,
-            )
+        try:
 
-        # bcrypt verify is CPU-bound; run it in thread worker
-        # so FastAPI event loop remains responsive under concurrency.
-        is_valid = await to_thread.run_sync(verify_password, password, user.password)
-        if not is_valid:
-            raise BaseAppException(
-                messages=[
-                    "Invalid email or password"
-                ],
-                status_code=400,
+            user = await self.users_repo.get_by_email(email)
+            if not user:
+                return error_response(
+                    status_code=400,
+                    messages=[
+                        "Invalid email or password"
+                    ],
+                )
+            if user.status!="A":
+                return error_response(
+                    status_code=403,
+                    messages=[
+                        "User account inactive"
+                    ],
+                )
+
+            # bcrypt verify is CPU-bound; run it in thread worker
+            # so FastAPI event loop remains responsive under concurrency.
+            is_valid = await to_thread.run_sync(verify_password, password, user.password)
+            if not is_valid:
+                return error_response(
+                    status_code=400,
+                    messages=[
+                        "Invalid email or password"
+                    ],
+                )
+            
+            # create tokens
+            token_service = TokenService(self._db_session)
+            tokens = await token_service.create_tokens(
+                user_id=user.id,
+                user_profile=user.profile,
+                ip_address=ip_address,
+                user_agent=user_agent
             )
+            
 
-
-        return user
+        except Exception as e:
+            return exception_response(
+                status_code=500,
+                messages=[f"{str(e)}"],
+                data=None
+            )
+    
 
 
     # ---------------------------------

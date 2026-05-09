@@ -54,8 +54,6 @@ router = APIRouter()
             "file" : False
         },
         "rate_limit": {
-            # "limit": 1000,
-            # "window": 3600,
             "limit": 200000,
             "window": 60,
         },
@@ -86,9 +84,6 @@ router.add_api_route(
 )
 
 
-# -------------------------
-# user login process
-# -------------------------
 
 @feature_control(
     {
@@ -98,8 +93,6 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            # "limit": 5,
-            # "window": 60,
             "limit": 200000,
             "window": 60,
         },
@@ -113,7 +106,12 @@ async def login_user(
 ):
 
     # validate user
-    user = await service.login_user(email=body.email, password=body.password)
+    user = await service.login_user(
+        email=body.email, 
+        password=body.password,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
     
     # create tokens
     tokens = await token_service.create_tokens(
