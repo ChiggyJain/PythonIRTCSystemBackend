@@ -35,3 +35,4 @@
 2026-05-09 14:56:48 | INFO | ES client created for index: stations_v1
 2026-05-09 14:56:55 | INFO | ES client created for index: routes_v1
 2026-05-09 14:56:55 | INFO | ES client created for index: stations_v1
+2026-05-09 14:57:12 | INFO | SpawnProcess-25-10826 | user:profile | 127.0.0.1 | GET | /api/v1/users/profile_details | 2026-05-09 14:57:12.469602 | 2026-05-09 14:57:12.487061 | 17 | None | 200
