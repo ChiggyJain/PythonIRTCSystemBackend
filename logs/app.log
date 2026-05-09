@@ -600,3 +600,35 @@ size
     For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
 2026-05-09 21:43:53 | INFO | ES client created for index: routes
 2026-05-09 21:43:53 | INFO | ES client created for index: stations
+2026-05-09 21:44:04 | INFO | SpawnProcess-323-19208 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:44:04.349704 | 2026-05-09 21:44:04.351446 | 1 | 1 validation error for TrainSearchQueryRequest
+  Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
+2026-05-09 21:47:28 | INFO | ES client created for index: routes
+2026-05-09 21:47:28 | INFO | ES client created for index: stations
+2026-05-09 21:47:43 | INFO | ES client created for index: routes
+2026-05-09 21:47:43 | INFO | ES client created for index: stations
+2026-05-09 21:48:01 | INFO | ES client created for index: routes
+2026-05-09 21:48:01 | INFO | ES client created for index: stations
+2026-05-09 21:48:04 | INFO | ES client created for index: routes
+2026-05-09 21:48:04 | INFO | ES client created for index: stations
+2026-05-09 21:48:11 | INFO | ES client created for index: routes
+2026-05-09 21:48:11 | INFO | ES client created for index: stations
+2026-05-09 21:48:14 | INFO | ES client created for index: routes
+2026-05-09 21:48:14 | INFO | ES client created for index: stations
+2026-05-09 21:48:20 | INFO | ES client created for index: routes
+2026-05-09 21:48:20 | INFO | ES client created for index: stations
+2026-05-09 21:48:35 | INFO | ES client created for index: routes
+2026-05-09 21:48:35 | INFO | ES client created for index: stations
+2026-05-09 21:48:37 | INFO | ES client created for index: routes
+2026-05-09 21:48:37 | INFO | ES client created for index: stations
+2026-05-09 21:48:39 | INFO | ES client created for index: routes
+2026-05-09 21:48:39 | INFO | ES client created for index: stations
+2026-05-09 21:48:41 | INFO | ES client created for index: routes
+2026-05-09 21:48:41 | INFO | ES client created for index: stations
+2026-05-09 21:48:48 | INFO | ES client created for index: routes
+2026-05-09 21:48:48 | INFO | ES client created for index: stations
+2026-05-09 21:48:59 | INFO | ES client created for index: routes
+2026-05-09 21:48:59 | INFO | ES client created for index: stations
+2026-05-09 21:49:01 | INFO | SpawnProcess-336-19436 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-09 21:49:01.675841 | 2026-05-09 21:49:01.677694 | 1 | 1 validation error for TrainSearchQueryRequest
+  Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500

@@ -1,21 +1,10 @@
 
-"""
-FastAPI Exception Handlers
-Handles errors not caught by middleware.
-Handles:
----------
-- HTTPException
-- ValidationError
-- RequestValidationError
-- Generic Exception
-All responses converted to standard format.
-"""
-
 from fastapi import (
     FastAPI, Request
 )
 from fastapi.exceptions import RequestValidationError
 from fastapi import HTTPException
+from pydantic import ValidationError
 from app.core.response import build_response
 
 
@@ -25,14 +14,8 @@ from app.core.response import build_response
 
 
 def register_exception_handlers(app: FastAPI):
-    """
-    Register all exception handlers
-    """
-
-    # -------------------------
+    
     # HTTPException
-    # -------------------------
-
     @app.exception_handler(HTTPException)
     async def http_exception_handler(
         request: Request,
@@ -44,10 +27,8 @@ def register_exception_handlers(app: FastAPI):
             data=None,
         )
 
-    # -------------------------
-    # Validation Error
-    # -------------------------
 
+    # FastAPI Request Validation
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(
         request: Request,
@@ -55,7 +36,6 @@ def register_exception_handlers(app: FastAPI):
     ):
 
         errors = []
-
         for err in exc.errors():
             msg = err.get("msg")
             # remove "Value error, "
@@ -69,10 +49,29 @@ def register_exception_handlers(app: FastAPI):
             data=None,
         )
 
-    # -------------------------
-    # Unknown Exception
-    # -------------------------
 
+    # Pydantic Validation Error
+    @app.exception_handler(ValidationError)
+    async def pydantic_validation_exception_handler(
+        request: Request,
+        exc: ValidationError,
+    ):
+
+        errors = []
+        for err in exc.errors():
+            msg = err.get("msg")
+            if msg.startswith("Value error,"):
+                msg = msg.replace("Value error,", "").strip()
+            errors.append(msg)
+
+        return build_response(
+            status_code=422,
+            messages=errors,
+            data=None,
+        )
+    
+    
+    # Unknown Exception
     @app.exception_handler(Exception)
     async def global_exception_handler(
         request: Request,
