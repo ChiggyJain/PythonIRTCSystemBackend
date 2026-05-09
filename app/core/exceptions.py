@@ -1,32 +1,9 @@
-"""
-Global Exception System
-All custom exceptions must inherit from BaseAppException.
-These exceptions will be converted to standard response format.
-Design goals:
--------------
-- global usage
-- reusable
-- safe for async
-- safe for multi worker
-- safe for middleware
-"""
 
 from typing import (
     List, Optional
 )
 
-
-# =========================================================
-# Base Exception
-# =========================================================
-
-
 class BaseAppException(Exception):
-    """
-    Base exception for application
-    All custom exceptions must inherit this.
-    """
-
     def __init__(
         self,
         status_code: int,
@@ -38,16 +15,7 @@ class BaseAppException(Exception):
         self.data = data
 
 
-# =========================================================
-# Bad Request
-# =========================================================
-
-
 class BadRequestException(BaseAppException):
-    """
-    400 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Bad Request"],
@@ -60,16 +28,7 @@ class BadRequestException(BaseAppException):
         )
 
 
-# =========================================================
-# Not Found
-# =========================================================
-
-
 class NotFoundException(BaseAppException):
-    """
-    404 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Not Found"],
@@ -82,16 +41,7 @@ class NotFoundException(BaseAppException):
         )
 
 
-# =========================================================
-# Unauthorized
-# =========================================================
-
-
 class UnauthorizedException(BaseAppException):
-    """
-    401 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Unauthorized"],
@@ -104,16 +54,7 @@ class UnauthorizedException(BaseAppException):
         )
 
 
-# =========================================================
-# Forbidden
-# =========================================================
-
-
 class ForbiddenException(BaseAppException):
-    """
-    403 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Forbidden"],
@@ -125,17 +66,7 @@ class ForbiddenException(BaseAppException):
             data=data,
         )
 
-
-# =========================================================
-# Conflict
-# =========================================================
-
-
 class ConflictException(BaseAppException):
-    """
-    409 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Conflict"],
@@ -148,16 +79,7 @@ class ConflictException(BaseAppException):
         )
 
 
-# =========================================================
-# Internal Server Error
-# =========================================================
-
-
 class InternalServerException(BaseAppException):
-    """
-    500 error
-    """
-
     def __init__(
         self,
         messages: List[str] = ["Internal Server Error"],
