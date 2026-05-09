@@ -1,0 +1,6 @@
+2026-05-09 20:12:06 | INFO | ES client created for index: routes
+2026-05-09 20:12:06 | INFO | ES client created for index: stations
+2026-05-09 20:12:52 | INFO | SpawnProcess-1-8283 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 20:12:51.659256 | 2026-05-09 20:12:52.157200 | 497 | None | 200
+2026-05-09 20:13:18 | INFO | SpawnProcess-1-8283 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-09 20:13:18.904916 | 2026-05-09 20:13:18.992702 | 87 | None | 201
+2026-05-09 20:14:22 | INFO | SpawnProcess-1-8283 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-09 20:14:21.749869 | 2026-05-09 20:14:22.117067 | 367 | None | 200
+2026-05-09 20:14:33 | INFO | SpawnProcess-1-8283 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-09 20:14:33.625424 | 2026-05-09 20:14:33.702480 | 77 | None | 400
