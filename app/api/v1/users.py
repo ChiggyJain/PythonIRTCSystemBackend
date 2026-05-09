@@ -156,14 +156,9 @@ router.add_api_route(
 
 
 
-
-# ---------------------------------
-# password change request otp
-# ---------------------------------
-
 @feature_control(
     {
-        "name": "v1.users.password_change_request_otp",
+        "name": "user:passwordchangerequestotp",
         "logging": {
             "console": True,
             "file": True,
@@ -180,22 +175,6 @@ async def password_change_request_otp(
     user_id_from_access_token: int = Depends(get_current_user_id_from_access_token),
     service: PasswordChangeOtpService = Depends(get_password_change_otp_service),
 ):
-    
-    # ---------------------------------------------
-    # extra user-level rate limit (in addition to IP)
-    # key example: ratelimit:v1.users.password_change_request_otp:user:101
-    # ---------------------------------------------
-    user_rate_key = f"ratelimit:v1.users.password_change_request_otp:user:{user_id_from_access_token}"
-    user_allowed = await rate_limiter.check_window_limit(
-        key=user_rate_key,
-        limit=settings.PWDCHANGED_OTP_USER_RATE_LIMIT,
-        window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
-    )
-    if not user_allowed:
-        raise BaseAppException(
-            status_code=429,
-            messages=["Too many OTP requests for this user. Please try again later."],
-        )
     
     result = await service.request_password_change_otp(
         user_id=user_id_from_access_token,

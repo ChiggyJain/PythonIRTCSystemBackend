@@ -1,13 +1,4 @@
 
-"""
-Password Change OTP Service
-Step 2 scope:
-- OTP challenge creation
-- Outbox row creation (Kafka publish will be separate worker step)
-- OTP verification for password change
-- Password update + token revoke
-"""
-
 from anyio import to_thread
 from datetime import timedelta
 import base64
@@ -20,12 +11,21 @@ from app.common.utils.logger import app_logger
 from app.common.utils.datetime import now_ist
 from app.common.utils.password import hash_password
 from app.core.exceptions import BaseAppException
+from app.core.response import (
+    success_response, 
+    error_response,
+    exception_response
+)
 from app.core.settings import get_settings
+from app.common.utils.ratelimiter import rate_limiter
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 from app.common.cache.redis_cache import(
-    build_cache_key, cache_delete,
-    build_cache_set_key, cache_set_members, cache_set_delete
+    build_cache_key, 
+    cache_delete,
+    build_cache_set_key, 
+    cache_set_members, 
+    cache_set_delete
 )
 
 
@@ -69,6 +69,21 @@ class PasswordChangeOtpService:
         request_id: str | None = None,
     ) -> dict:
 
+
+        # extra user-level rate limit (in addition to IP)
+        cacheKey = f"user:passwordchangerequestotp:user_id:{user_id}"
+        user_allowed_request = await rate_limiter.check_window_limit(
+            key=cacheKey,
+            limit=settings.PWDCHANGED_OTP_USER_RATE_LIMIT,
+            window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
+        )
+        if not user_allowed_request:
+            return error_response(
+                status_code=429,
+                messages=["Too many OTP requests for this user. Please try again later."],
+            )
+    
+    
         # normalize the channel (EMAIL/MOBILE)
         channel = self._normalize_channel(channel)
 
