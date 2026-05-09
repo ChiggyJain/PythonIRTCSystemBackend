@@ -16,7 +16,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "v1.inventory.schedules.schedule_id.availability",
+        "name": "inventory:schedule:availability",
         "logging": {
             "console": True,
             "file": True,

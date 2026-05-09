@@ -150,22 +150,31 @@ class InventoryService:
             )
 
 
-
-
-
     async def get_inventory_schedules_availabiliity(self, schedule_id: int):
-        inventory_schedules = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
-        if inventory_schedules == None:
+        inventory_schedule = await self.inventory_repo.get_inventory_schedules_by_schedule_id(schedule_id=schedule_id)
+        if not inventory_schedule:
             return error_response(
                 status_code=404,
-                messages=[f"No schedules inventory found"],
+                messages=[f"No schedule inventory found"],
                 data=None
             )
         else:
             return success_response(
                 status_code=200,
-                messages=["Schedules inventory found"],
-                data=inventory_schedules
+                messages=["Schedule inventory found"],
+                data={
+                    "schedule_inventory_id" : inventory_schedule.id,
+                    "schedule_id" : inventory_schedule.schedule_id,
+                    "train_id" : inventory_schedule.train_id,
+                    "train_number" : inventory_schedule.train_number,
+                    "train_name" : inventory_schedule.train_name,
+                    "departure_date" : str(inventory_schedule.departure_date),
+                    "total_seats" : inventory_schedule.total_seats,
+                    "available_seats" : inventory_schedule.available_seats,
+                    "locked" : inventory_schedule.locked,
+                    "booked" : inventory_schedule.booked,
+                    "status" : inventory_schedule.status,
+                }
             )
         
 
