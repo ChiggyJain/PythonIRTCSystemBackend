@@ -6,7 +6,7 @@ from app.common.utils.logger import log_message
 from app.common.utils.ratelimiter import rate_limiter
 from app.common.utils.datetime import now_ist
 from app.common.utils.execution_context import get_worker_name
-
+from app.core.response import standardize_response
 
 
 class FeatureAPIRoute(APIRoute):
@@ -56,10 +56,9 @@ class FeatureAPIRoute(APIRoute):
                         f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
                     )
                     log_message(log_msg, logging_config=logging_config)
-                    from app.core.response import standardize_response
                     return standardize_response(
-                        messages=["Too many requests"],
                         status_code=429,
+                        messages=["Too many requests"],
                     )
 
             try:
