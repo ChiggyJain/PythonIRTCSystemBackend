@@ -5,6 +5,7 @@ from app.api.v1.auth import router as auth_router
 from app.api.v1.admin_master_data import router as admin_master_data_router
 from app.api.v1.search_discovery import router as search_discovery_router
 from app.api.v1.inventory import router as inventory_router
+from app.api.v1.bookings import router as booking_router
 
 router = APIRouter()
 
@@ -35,4 +36,9 @@ router.include_router(
 router.include_router(
     inventory_router,
     prefix="/inventory",
+)
+
+router.include_router(
+    booking_router,
+    prefix="/bookings",
 )
