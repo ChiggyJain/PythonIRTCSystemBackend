@@ -593,7 +593,7 @@ class InventoryService:
                 select(
                    func.sum(case((SeatInventory.status == "AVAILABLE", 1), else_=0)).label("available"),
                    func.sum(case((SeatInventory.status == "LOCKED", 1), else_=0)).label("locked"),
-                   func.sum(case((SeatInventory.status == "BOOKED", 1), else_=0)).label("booked"),
+                   func.sum(case((SeatInventory.status == "BOOKED", 1), else_=0)).label("booked")
                 )
                 .where(
                     SeatInventory.schedule_id == schedule_id
