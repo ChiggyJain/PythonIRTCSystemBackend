@@ -5,7 +5,6 @@ from typing import (
 from fastapi.responses import JSONResponse
 
 
-
 def standardize_response(
     status_code: int,
     messages: List[str],
