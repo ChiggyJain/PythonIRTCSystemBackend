@@ -237,6 +237,28 @@ class BookingService:
                 holdSeatData = data.get("data", None)
             print(f"holdSeatData: {holdSeatData}")
 
+            # updating saga-logs table
+            isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "id": created_booking_saga_logs.id
+                },
+                update_data = {
+                    "response" : holdSeatData,
+                    "status" : "COMPLETED"
+                }
+            )
+
+            # updating booking table
+            isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                where_data={
+                    "id": bookingId
+                },
+                update_data = {
+                    "status" : "SEATS_HELD"
+                }
+            )
+
+
 
             return standardize_response(
                 status_code=200,
