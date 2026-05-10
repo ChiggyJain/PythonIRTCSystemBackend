@@ -407,7 +407,7 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
-            await self._db_session.commit()
+            # await self._db_session.commit()
 
             """
             # task is pending
