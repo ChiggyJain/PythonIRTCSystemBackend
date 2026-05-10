@@ -181,7 +181,7 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
-            
+
             booking_details = orm_to_dict(created_booking)
             booking_details["booking_id"] = created_booking.id
             bookingId = created_booking.id
@@ -216,10 +216,15 @@ class BookingService:
                 error = None, 
                 status = "PENDING"
             )
+            booking_details["saga_logs"] = orm_to_dict(created_booking_saga_logs)
 
             await self._db_session.commit()
             
-
+            return standardize_response(
+                status_code=200,
+                messages=[f"Booking created"],
+                data=booking_details
+            )
             
         
             # execute saga Step1: Hold seats in inventory
@@ -228,12 +233,12 @@ class BookingService:
                 from_station_sequence_number, to_station_sequence_number
             )
 
-
             return standardize_response(
                 status_code=200,
                 messages=[f"Booking created: {totalAmount}"],
                 data=booking_details
             )
+            
         
             """
             
