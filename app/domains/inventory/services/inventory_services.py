@@ -436,7 +436,7 @@ class InventoryService:
                     "lock_expires_at": locked_expires_at.strftime(
                         "%Y-%m-%d %H:%M:%S"
                     ),
-                    "counts": recounts_schedule_aggregates_status_rsp_obj
+                    "recounts_schedule_aggregates": recounts_schedule_aggregates_status_rsp_obj
                 }
             )
 
