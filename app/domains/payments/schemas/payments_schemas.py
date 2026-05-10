@@ -12,8 +12,8 @@ from pydantic import (
 
 class CreatePaymentOrderRequest(BaseModel):
 
-    user_id: int
     idempotency_key: str
+    user_id: int
     booking_id: int
     amount: int
     

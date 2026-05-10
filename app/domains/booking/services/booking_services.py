@@ -216,7 +216,7 @@ class BookingService:
                 error = None, 
                 status = "PENDING"
             )
-            booking_details["saga_logs"] = orm_to_dict(created_booking_saga_logs)
+            booking_details["hold_seats_saga_logs"] = orm_to_dict(created_booking_saga_logs)
 
             # commit the records into db level
             await self._db_session.commit()
@@ -261,10 +261,8 @@ class BookingService:
             # commit the records into db level
             await self._db_session.commit()
             
-            
-
-            # adding entries into booking-saga-logs table
-            created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
+            # adding entries into booking-saga-logs table related to creating payment order request
+            created_booking_saga_logs2 = await self.booking_repo.create_booking_saga_logs(
                 booking_id = bookingId, 
                 saga_step = "CREATE_PAYMENT", 
                 request = {
@@ -276,7 +274,45 @@ class BookingService:
                 error = None, 
                 status = "PENDING"
             )
-            booking_details["saga_logs"] = orm_to_dict(created_booking_saga_logs)
+            booking_details["create_payment_saga_logs"] = orm_to_dict(created_booking_saga_logs)
+
+
+            # creating payment order request into external payment services
+            createdPaymentOrderRequestData = None
+            async with httpx.AsyncClient() as client:
+                response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/orders", json={
+                    "idempotency_key" : f"{booking_details["id"]}-payment",
+                    "user_id" : user_id,
+                    "booking_id" : booking_details["id"],
+                    "amount" : booking_details["total_amount"],
+                })
+                response.raise_for_status()
+                data = response.json()
+                createdPaymentOrderRequestData = data.get("data", None)
+            print(f"createdPaymentOrderRequestData: {createdPaymentOrderRequestData}")
+
+
+            # updating saga-logs table
+            isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "id": created_booking_saga_logs2.id
+                },
+                update_data = {
+                    "response" : createdPaymentOrderRequestData,
+                    "status" : "COMPLETED"
+                }
+            )
+
+            # updating booking table
+            isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                where_data={
+                    "id": bookingId
+                },
+                update_data = {
+                    "payment_order_id" : createdPaymentOrderRequestData["payment_order_id"],
+                    "status" : "PAYMENT_PENDING"
+                }
+            )
 
 
 
