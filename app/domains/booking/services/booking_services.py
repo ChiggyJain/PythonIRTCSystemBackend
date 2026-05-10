@@ -193,24 +193,42 @@ class BookingService:
                 orm_to_dict(passenger)
                 for passenger in created_booking_passengers
             ]
+            created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
+                booking_id = bookingId, 
+                saga_step = "HOLD_SEATS", 
+                request = {
+                    "user_id" : booking_details["user_id"], 
+                    "schedule_id" : booking_details["schedule_id"], 
+                    "seat_ids" : seat_ids, 
+                    "ttlSeconds" : settings.LOCK_TTL_SECONDS,
+                    "from_station_sequence_number" : from_station_sequence_number, 
+                    "to_station_sequence_number" : to_station_sequence_number                     
+                },
+                response = None, 
+                error = None, 
+                status = "PENDING"
+            )
 
             await self._db_session.commit()
             
+
+            
+        
+            # execute saga Step1: Hold seats in inventory
+            await executeHoldSeats(
+                booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
+                from_station_sequence_number, to_station_sequence_number
+            )
+
+
             return standardize_response(
                 status_code=200,
                 messages=[f"Booking created: {totalAmount}"],
                 data=booking_details
             )
         
-
             """
-
-            # execute saga step1: Hold seats in inventory
-            await executeHoldSeats(
-                booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
-                from_station_sequence_number, to_station_sequence_number
-            )
-
+            
             # execute saga step2: Create payment order
             createdPaymentOrderData = await executeCreatePayment(booking_details)
 

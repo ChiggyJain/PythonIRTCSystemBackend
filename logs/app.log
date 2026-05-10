@@ -684,3 +684,51 @@
 2026-05-10 13:57:48 | INFO | SpawnProcess-1-8586 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 13:57:48.590030 | 2026-05-10 13:57:48.822319 | 232 | None | 500
 2026-05-10 13:58:57 | INFO | ES client created for index: routes
 2026-05-10 13:58:57 | INFO | ES client created for index: stations
+2026-05-10 13:59:24 | INFO | SpawnProcess-2-8672 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 13:59:24.056370 | 2026-05-10 13:59:24.062406 | 6 | None | 200
+2026-05-10 13:59:24 | INFO | SpawnProcess-2-8672 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 13:59:24.088823 | 2026-05-10 13:59:24.102028 | 13 | None | 200
+2026-05-10 13:59:24 | INFO | SpawnProcess-2-8672 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 13:59:23.948759 | 2026-05-10 13:59:24.104976 | 156 | None | 400
+2026-05-10 13:59:53 | INFO | SpawnProcess-2-8672 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 13:59:53.178429 | 2026-05-10 13:59:53.183001 | 4 | None | 200
+2026-05-10 13:59:53 | INFO | SpawnProcess-2-8672 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 13:59:53.210881 | 2026-05-10 13:59:53.216793 | 5 | None | 200
+2026-05-10 13:59:53 | INFO | SpawnProcess-2-8672 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 13:59:53.127273 | 2026-05-10 13:59:53.301979 | 174 | None | 500
+2026-05-10 14:02:03 | INFO | ES client created for index: routes
+2026-05-10 14:02:03 | INFO | ES client created for index: stations
+2026-05-10 14:02:06 | INFO | ES client created for index: routes
+2026-05-10 14:02:06 | INFO | ES client created for index: stations
+2026-05-10 14:02:15 | INFO | ES client created for index: routes
+2026-05-10 14:02:15 | INFO | ES client created for index: stations
+2026-05-10 14:02:18 | INFO | ES client created for index: routes
+2026-05-10 14:02:18 | INFO | ES client created for index: stations
+2026-05-10 14:02:31 | INFO | ES client created for index: routes
+2026-05-10 14:02:31 | INFO | ES client created for index: stations
+2026-05-10 14:02:45 | INFO | ES client created for index: routes
+2026-05-10 14:02:45 | INFO | ES client created for index: stations
+2026-05-10 14:02:48 | INFO | ES client created for index: routes
+2026-05-10 14:02:48 | INFO | ES client created for index: stations
+2026-05-10 14:02:52 | INFO | ES client created for index: routes
+2026-05-10 14:02:52 | INFO | ES client created for index: stations
+2026-05-10 14:03:32 | INFO | ES client created for index: routes
+2026-05-10 14:03:32 | INFO | ES client created for index: stations
+2026-05-10 14:05:58 | INFO | ES client created for index: routes
+2026-05-10 14:05:58 | INFO | ES client created for index: stations
+2026-05-10 14:06:01 | INFO | ES client created for index: routes
+2026-05-10 14:06:01 | INFO | ES client created for index: stations
+2026-05-10 14:06:11 | INFO | ES client created for index: routes
+2026-05-10 14:06:11 | INFO | ES client created for index: stations
+2026-05-10 14:06:27 | INFO | ES client created for index: routes
+2026-05-10 14:06:27 | INFO | ES client created for index: stations
+2026-05-10 14:06:31 | INFO | ES client created for index: routes
+2026-05-10 14:06:31 | INFO | ES client created for index: stations
+2026-05-10 14:06:34 | INFO | ES client created for index: routes
+2026-05-10 14:06:34 | INFO | ES client created for index: stations
+2026-05-10 14:06:43 | INFO | ES client created for index: routes
+2026-05-10 14:06:43 | INFO | ES client created for index: stations
+2026-05-10 14:06:49 | INFO | ES client created for index: routes
+2026-05-10 14:06:49 | INFO | ES client created for index: stations
+2026-05-10 14:06:52 | INFO | ES client created for index: routes
+2026-05-10 14:06:52 | INFO | ES client created for index: stations
+2026-05-10 14:07:17 | INFO | ES client created for index: routes
+2026-05-10 14:07:17 | INFO | ES client created for index: stations
+2026-05-10 14:08:22 | INFO | ES client created for index: routes
+2026-05-10 14:08:22 | INFO | ES client created for index: stations
+2026-05-10 14:08:40 | INFO | ES client created for index: routes
+2026-05-10 14:08:40 | INFO | ES client created for index: stations
