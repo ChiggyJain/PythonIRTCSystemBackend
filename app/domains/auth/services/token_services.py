@@ -1,10 +1,8 @@
 
 from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.common.utils.logger import app_logger
 from app.common.security.token_hash import (
     build_token_hash,
-    is_token_hash_match,
 )
 from app.common.security.jwt import (
     create_access_token,
@@ -13,14 +11,6 @@ from app.common.security.jwt import (
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.domains.auth.repository.sqlalchemy_repo import TokenRepositorySQLAlchemy
-from app.common.cache.redis_cache import (
-    cache_set,
-    cache_set_add,
-    cache_delete,
-    cache_set_remove,
-    cache_set_delete,
-    cache_set_members,
-)
 
 
 settings = get_settings()
