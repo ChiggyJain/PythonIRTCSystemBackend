@@ -298,50 +298,57 @@ class InventoryService:
             from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
             to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
             curDateTime = now_ist()
-            dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
-            locked_expires_at = dt + timedelta(seconds=ttlSeconds)
+            locked_expires_at = (curDateTime + timedelta(seconds=ttl_seconds))
 
             if not seat_ids:
-                raise BaseAppException(
+                return standardize_response(
                     status_code=400,
                     messages=["seat_ids is required"],
                 )
             
+            # fetching schedule-inventory details
+            inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)        
+            if not inventory_schedule:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Schedule inventory not found"],
+                )
+            if inventory_schedule.status!="ACTIVE":
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Schedule inventory is not active"],
+                )
+
+            # row-level lock on requested seats
+            locked_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(
+                schedule_id=schedule_id, seat_ids=seat_ids
+            )
+
+            # all requested seats must exist
+            if len(locked_seat_inventory_list)!=len(seat_ids):
+                found_ids = {
+                    row.seat_id
+                    for row in locked_seat_inventory_list
+                }
+                missing_ids = [
+                    seat_id
+                    for seat_id in seat_ids
+                    if seat_id not in found_ids
+                ]
+                return standardize_response(
+                    status_code=409,
+                    messages=[f"Seats already locked: {missing_ids}"],
+                )
+        
+
             # TRANSACTION START
             async with self._db_session.begin():
 
-                # fetching schedule-inventory details
-                inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)        
-                if inventory_schedule is None:
-                    raise BaseAppException(
-                        status_code=404,
-                        messages=[f"No schedule inventory found"],
-                    )
-                if inventory_schedule.status!="ACTIVE":
-                    raise BaseAppException(
-                        status_code=400,
-                        messages=[f"Schedule inventory is not active"],
-                    )
                 
-                # Row-level seat locking
-                # FOR UPDATE SKIP LOCKED
-                locked_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(schedule_id=schedule_id, seat_ids=seat_ids)
+                
+                
 
-                # Some seats already locked
-                if len(locked_seat_inventory_list)!=len(seat_ids):
-                    found_ids = {
-                        row.seat_id
-                        for row in locked_seat_inventory_list
-                    }
-                    missing_ids = [
-                        seat_id
-                        for seat_id in seat_ids
-                        if seat_id not in found_ids
-                    ]
-                    raise BaseAppException(
-                        status_code=409,
-                        messages=[f"Seats already locked: {missing_ids}"],
-                    )
+                
                 
                 # Check overlapping segment locks
                 overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(

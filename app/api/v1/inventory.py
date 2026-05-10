@@ -10,7 +10,7 @@ from app.common.security.token_decoder import(
 )
 from app.domains.inventory.services.inventory_services import InventoryService
 from app.dependencies.inventory import get_inventory_service
-from app.domains.inventory.schemas.seat_locks_schemas import LockSeatsRequest
+from app.domains.inventory.schemas.lock_seats_schemas import LockSeatsRequest
 
 
 settings = get_settings()
@@ -84,7 +84,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:booking:create",
+        "name": "lock:seats",
         "logging": {
             "console": True,
             "file": True,
