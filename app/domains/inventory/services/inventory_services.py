@@ -436,7 +436,11 @@ class InventoryService:
                     "lock_expires_at": locked_expires_at.strftime(
                         "%Y-%m-%d %H:%M:%S"
                     ),
-                    "recounts_schedule_aggregates": recounts_schedule_aggregates_status_rsp_obj
+                    "recounts_schedule_aggregates": {
+                        "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                        "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                        "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+                    }
                 }
             )
 
