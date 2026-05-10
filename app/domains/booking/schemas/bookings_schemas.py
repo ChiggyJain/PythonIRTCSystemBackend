@@ -93,8 +93,9 @@ class CreateBookingRequest(BaseModel):
             raise ValueError(
                 "duplicate seat_ids are not allowed."
             )
-
+        
         return value
+
 
     @model_validator(mode="after")
     def validate_booking_request(self):
