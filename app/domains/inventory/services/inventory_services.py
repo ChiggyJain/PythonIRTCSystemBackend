@@ -197,7 +197,8 @@ class InventoryService:
 
                 seat_inventory_list = await self.inventory_repo.get_seat_inventory_details(
                     where_conditions = [
-                        SeatInventory.schedule_id == schedule_id
+                        SeatInventory.schedule_id == schedule_id,
+                        SeatInventory.seat_id.in_(seat_ids)
                     ],
                     order_by = [
                         SeatInventory.seat_number.asc()
