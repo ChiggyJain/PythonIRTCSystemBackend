@@ -95,7 +95,7 @@ class TrainSearchService:
                 )
 
                 total_available = int(matched_schedule.get("available", 0))
-                availability_status = "AVAILABLE" if total_available > 0 else "WAITLIST"
+                availability_status = "AVAILABLE" if total_available > 0 else "NOT AVAILABLE"
 
                 result_item = {
                     "train_id": source_doc.get("train_id"),
