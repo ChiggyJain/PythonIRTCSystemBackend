@@ -69,7 +69,7 @@ class BookingService:
             # fetching schedule availability from external inventory service
             inventoryScheduleDataObj = None
             async with httpx.AsyncClient() as client:
-                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/inventory/schedules/{schedule_id}/availability")
+                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/{schedule_id}/availability")
                 response.raise_for_status()
                 data = response.json()
                 inventoryScheduleDataObj = data.get("data", None)
@@ -94,7 +94,7 @@ class BookingService:
             # fetching seats details from external inventory service
             seatData = None
             async with httpx.AsyncClient() as client:
-                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/inventory/schedules/{schedule_id}/seats", params={
+                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/{schedule_id}/seats", params={
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })

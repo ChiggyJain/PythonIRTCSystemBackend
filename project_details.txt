@@ -531,10 +531,10 @@ http://127.0.0.1:8000/api/v1/bookings/bookings
 {
   "idempotency_key" : "Booking1",
   "schedule_id": 1,
-  "from_station_id" : 11,
-  "to_station_id" : 12,
-  "from_station_sequence_number" : 21,
-  "to_station_sequence_number" : 22,
+  "from_station_id" : 1,
+  "to_station_id" : 2,
+  "from_station_sequence_number" : 1,
+  "to_station_sequence_number" : 2,
   "seat_ids": [
     1
   ],

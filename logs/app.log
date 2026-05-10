@@ -421,3 +421,14 @@
 2026-05-10 11:37:19 | INFO | ES client created for index: stations
 2026-05-10 11:37:27 | INFO | ES client created for index: routes
 2026-05-10 11:37:27 | INFO | ES client created for index: stations
+2026-05-10 11:38:51 | INFO | SpawnProcess-211-29487 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-10 11:38:51.436954 | 2026-05-10 11:38:51.806791 | 369 | None | 200
+2026-05-10 11:38:59 | INFO | SpawnProcess-211-29487 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 11:38:59.989541 | 2026-05-10 11:38:59.990682 | 1 |  | 500
+2026-05-10 11:39:17 | INFO | SpawnProcess-211-29487 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 11:39:17.257948 | 2026-05-10 11:39:17.360249 | 102 | None | 500
+2026-05-10 11:40:28 | INFO | ES client created for index: routes
+2026-05-10 11:40:28 | INFO | ES client created for index: stations
+2026-05-10 11:40:33 | INFO | ES client created for index: routes
+2026-05-10 11:40:33 | INFO | ES client created for index: stations
+2026-05-10 11:40:38 | INFO | SpawnProcess-213-29940 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 11:40:38.393930 | 2026-05-10 11:40:38.394934 | 1 | 'InventoryService' object has no attribute 'get_inventory_schedule_availabiliity' | 500
+2026-05-10 11:40:38 | INFO | SpawnProcess-213-29940 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 11:40:38.291468 | 2026-05-10 11:40:38.471195 | 179 | None | 500
+2026-05-10 11:41:27 | INFO | ES client created for index: routes
+2026-05-10 11:41:27 | INFO | ES client created for index: stations
