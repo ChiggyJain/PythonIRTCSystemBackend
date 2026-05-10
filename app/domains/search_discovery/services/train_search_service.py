@@ -3,8 +3,6 @@ from datetime import datetime
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     standardize_response, 
-    standardize_response,
-    standardize_response
 )
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
