@@ -106,7 +106,7 @@ class BookingService:
             if seatData == None:
                 return standardize_response(
                     status_code=404,
-                    messages=[f"Seats details not found for Train-Schedule-ID: {schedule_id}"],
+                    messages=[f"Seat details not found for Train-Schedule-ID: {schedule_id}"],
                 )
 
             # verify all requested seats exist and are available
@@ -141,14 +141,7 @@ class BookingService:
 
             
             print(f"totalAmount: {totalAmount}")
-            return standardize_response(
-                status_code=200,
-                messages=[f"Booking created: {totalAmount}"],
-            )
-
-
-            """
-
+            
             # preparing keys to acquire seat locks in redis via lua_script
             allRedisKeys = []
             for eachSeatId in seat_ids:
@@ -157,8 +150,9 @@ class BookingService:
             curTimeStamp = int(datetime.now().timestamp())    
             redisKeyValue = f"pre-{curTimeStamp}:{curTimeStamp}"
             acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue, settings.BOOKING_TTL_SECONDS)
-            if acquiredSeatLocksResponse.isSuccess == False:
-                raise BaseAppException(
+            print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
+            if acquiredSeatLocksResponse["isSuccess"] == False:
+                return standardize_response(
                     status_code=400,
                     messages=[f"One or more seats are being booked by another user. Please try again"],
                 )
@@ -188,6 +182,7 @@ class BookingService:
                 status="PENDING",
             )
             booking_details = orm_to_dict(created_booking)
+            booking_details["booking_id"] = created_booking.id
             bookingId = created_booking.id
             created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
             booking_details["seats"] = [
@@ -199,6 +194,16 @@ class BookingService:
                 orm_to_dict(passenger)
                 for passenger in created_booking_passengers
             ]
+
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"Booking created: {totalAmount}"],
+                data=acquiredSeatLocksResponse
+            )
+        
+
+            """
 
             # execute saga step1: Hold seats in inventory
             await executeHoldSeats(
