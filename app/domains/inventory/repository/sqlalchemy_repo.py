@@ -40,32 +40,25 @@ class InventorySQLAlchemyRepository:
         offset: Optional[int] = None,
     ) -> List[SeatInventory] | None:
 
-        # SELECT
         if select_columns:
             stmt: Select = select(*select_columns)
         else:
             stmt: Select = select(SeatInventory)
 
-        # WHERE
         if where_conditions:
             stmt = stmt.where(*where_conditions)
 
-        # ORDER BY
         if order_by:
             stmt = stmt.order_by(*order_by)
 
-        # LIMIT
         if limit:
             stmt = stmt.limit(limit)
 
-        # OFFSET
         if offset:
             stmt = stmt.offset(offset)
 
-        # EXECUTE
         result = await self._db_session.execute(stmt)
 
-        # RETURN
         if select_columns:
             return result.mappings().all()
 
@@ -81,32 +74,25 @@ class InventorySQLAlchemyRepository:
         offset: Optional[int] = None,
     ) -> List[SeatSegmentLockInventory] | None:
 
-        # SELECT
         if select_columns:
             stmt: Select = select(*select_columns)
         else:
             stmt: Select = select(SeatSegmentLockInventory)
 
-        # WHERE
         if where_conditions:
             stmt = stmt.where(*where_conditions)
 
-        # ORDER BY
         if order_by:
             stmt = stmt.order_by(*order_by)
 
-        # LIMIT
         if limit:
             stmt = stmt.limit(limit)
 
-        # OFFSET
         if offset:
             stmt = stmt.offset(offset)
 
-        # EXECUTE
         result = await self._db_session.execute(stmt)
 
-        # RETURN
         if select_columns:
             return result.mappings().all()
 
