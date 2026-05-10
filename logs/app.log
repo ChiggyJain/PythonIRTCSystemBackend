@@ -117,3 +117,7 @@
 2026-05-10 09:29:10 | INFO | ES client created for index: routes
 2026-05-10 09:29:10 | INFO | ES client created for index: stations
 2026-05-10 09:29:11 | INFO | SpawnProcess-31-13800 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-10 09:29:11.402162 | 2026-05-10 09:29:11.432709 | 30 | None | 200
+2026-05-10 09:39:54 | INFO | ES client created for index: routes
+2026-05-10 09:39:54 | INFO | ES client created for index: stations
+2026-05-10 09:40:05 | INFO | ES client created for index: routes
+2026-05-10 09:40:05 | INFO | ES client created for index: stations

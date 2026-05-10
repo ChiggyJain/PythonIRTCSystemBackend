@@ -149,8 +149,8 @@ class Settings(BaseSettings):
 
     # internal service communication url
     INTERNAL_SERVICE_KEY: str ="irtc-internal-service-key-2026"
-    INVENTORY_SERVICE_URL: str ="http://127.0.0.1:8000"
-    PAYMENT_SERVICE_URL: str ="http://127.0.0.1:8000"
+    INVENTORY_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
+    PAYMENT_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
 
 
     
