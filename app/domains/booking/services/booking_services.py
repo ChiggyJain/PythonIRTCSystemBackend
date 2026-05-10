@@ -144,7 +144,10 @@ class BookingService:
                 status_code=200,
                 messages=[f"Booking created: {totalAmount}"],
             )
-        
+
+
+            """
+
             # preparing keys to acquire seat locks in redis via lua_script
             allRedisKeys = []
             for eachSeatId in seat_ids:
@@ -158,9 +161,6 @@ class BookingService:
                     status_code=400,
                     messages=[f"One or more seats are being booked by another user. Please try again"],
                 )
-
-            
-            
 
             curDateTime = now_ist()
             dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
@@ -227,9 +227,17 @@ class BookingService:
             )
 
             return booking_details
-        
-        except Exception:
 
+            """
+        
+        except Exception as e:
+
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+        
+            """
             if booking_details:
                 await compensateAll(booking_details, seat_ids)
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -248,6 +256,8 @@ class BookingService:
                 status_code=400,
                 messages=["Unable to create booking"],
             )
+
+            """
 
 
 
