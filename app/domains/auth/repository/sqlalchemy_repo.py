@@ -1,7 +1,6 @@
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette import status
 from app.domains.auth.models.usertokens_models import UserTokens
 from app.domains.auth.repository.base import (
     TokenRepositoryBase,
@@ -45,10 +44,6 @@ class TokenRepositorySQLAlchemy(
         return obj
 
 
-    # -------------------------
-    # get by token
-    # -------------------------
-
     async def get_by_token(
         self,
         token_hash: str,
@@ -62,10 +57,6 @@ class TokenRepositorySQLAlchemy(
         return res.scalar_one_or_none()
     
 
-    # -------------------------
-    # get by id
-    # -------------------------
-
     async def get_by_id(
         self,
         token_id: int,
@@ -78,10 +69,6 @@ class TokenRepositorySQLAlchemy(
         res = await self._db_session.execute(stmt)
         return res.scalar_one_or_none()
 
-
-    # -------------------------
-    # revoke
-    # -------------------------
 
     async def revoke_token(
         self,
@@ -100,10 +87,6 @@ class TokenRepositorySQLAlchemy(
         await self._db_session.execute(stmt)
 
     
-    # -------------------------
-    # revoke by user
-    # -------------------------
-
     async def revoke_token_by_user(
         self,
         user_id: int,
