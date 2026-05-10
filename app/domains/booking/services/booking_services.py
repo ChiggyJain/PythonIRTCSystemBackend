@@ -52,6 +52,7 @@ class BookingService:
             seat_ids = payload.get("seat_ids", [])
             seat_ids.sort()
             passengers = payload.get("passengers", [])
+            booking_details = {}
             IDEMPOTENCY_EVENT_TYPE = "booking"
             IDEMPOTENCY_EVENT_KEY_PREFIX = "booking"
 
@@ -158,7 +159,7 @@ class BookingService:
                     messages=[f"One or more seats are being booked by another user. Please try again"],
                 )
 
-            booking_details = {}
+            
             
 
             curDateTime = now_ist()
