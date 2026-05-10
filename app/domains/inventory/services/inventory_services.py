@@ -3,6 +3,11 @@ from decimal import Decimal
 from datetime import date, datetime, timedelta
 from typing import List
 from sqlalchemy import select, update, or_, func
+from sqlalchemy import (
+    select,
+    func,
+    case,
+)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.logger import app_logger
@@ -586,15 +591,9 @@ class InventoryService:
             # fetching seats summary from seat-inventory
             stmt = (
                 select(
-                    func.count().filter(
-                        SeatInventory.status == "AVAILABLE"
-                    ).label("available"),
-                    func.count().filter(
-                        SeatInventory.status == "LOCKED"
-                    ).label("locked"),
-                    func.count().filter(
-                        SeatInventory.status == "BOOKED"
-                    ).label("booked"),
+                   func.sum(case((SeatInventory.status == "AVAILABLE", 1), else_=0)).label("available"),
+                   func.sum(case((SeatInventory.status == "LOCKED", 1), else_=0)).label("locked"),
+                   func.sum(case((SeatInventory.status == "BOOKED", 1), else_=0)).label("booked"),
                 )
                 .where(
                     SeatInventory.schedule_id == schedule_id
