@@ -258,7 +258,9 @@ class BookingService:
                 }
             )
 
-
+            # commit the records into db level
+            await self._db_session.commit()
+            
 
             return standardize_response(
                 status_code=200,
