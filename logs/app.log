@@ -1125,3 +1125,23 @@
 2026-05-10 15:41:54 | INFO | ES client created for index: stations
 2026-05-10 15:42:03 | INFO | ES client created for index: routes
 2026-05-10 15:42:03 | INFO | ES client created for index: stations
+2026-05-10 15:50:20 | INFO | SpawnProcess-329-17913 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-10 15:50:19.901273 | 2026-05-10 15:50:20.155988 | 254 | None | 200
+2026-05-10 15:50:32 | INFO | SpawnProcess-329-17913 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 15:50:32.953178 | 2026-05-10 15:50:32.958114 | 4 | None | 200
+2026-05-10 15:50:33 | INFO | SpawnProcess-329-17913 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 15:50:32.994198 | 2026-05-10 15:50:33.002922 | 8 | None | 200
+2026-05-10 15:50:33 | INFO | SpawnProcess-329-17913 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-10 15:50:33.105973 | 2026-05-10 15:50:33.106848 | 0 | [{'type': 'missing', 'loc': ('body',), 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.5/v/missing'}] | 500
+2026-05-10 15:50:33 | INFO | SpawnProcess-329-17913 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 15:50:32.871349 | 2026-05-10 15:50:33.108066 | 236 | None | 500
+2026-05-10 15:52:56 | INFO | ES client created for index: routes
+2026-05-10 15:52:56 | INFO | ES client created for index: stations
+2026-05-10 15:52:58 | INFO | ES client created for index: routes
+2026-05-10 15:52:58 | INFO | ES client created for index: stations
+2026-05-10 15:53:07 | INFO | SpawnProcess-331-18398 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 15:53:07.529599 | 2026-05-10 15:53:07.533492 | 3 | None | 200
+2026-05-10 15:53:07 | INFO | SpawnProcess-331-18398 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 15:53:07.552525 | 2026-05-10 15:53:07.561893 | 9 | None | 200
+2026-05-10 15:53:07 | INFO | SpawnProcess-331-18398 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 15:53:07.445720 | 2026-05-10 15:53:07.638260 | 192 | None | 500
+2026-05-10 15:54:38 | INFO | SpawnProcess-331-18398 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 15:54:38.685977 | 2026-05-10 15:54:38.688274 | 2 | None | 200
+2026-05-10 15:54:38 | INFO | SpawnProcess-331-18398 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 15:54:38.705586 | 2026-05-10 15:54:38.709825 | 4 | None | 200
+2026-05-10 15:54:38 | INFO | SpawnProcess-331-18398 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 15:54:38.666704 | 2026-05-10 15:54:38.711416 | 44 | None | 400
+2026-05-10 15:54:45 | INFO | SpawnProcess-331-18398 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 15:54:45.592386 | 2026-05-10 15:54:45.595481 | 3 | None | 200
+2026-05-10 15:54:45 | INFO | SpawnProcess-331-18398 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 15:54:45.612956 | 2026-05-10 15:54:45.617148 | 4 | None | 200
+2026-05-10 15:54:45 | INFO | SpawnProcess-331-18398 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-10 15:54:45.726219 | 2026-05-10 15:54:45.727072 | 0 | [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'user_id=1&schedule_id=1&seat_ids=1&ttl_seconds=600&from_station_sequence_number=1&to_station_sequence_number=2', 'url': 'https://errors.pydantic.dev/2.5/v/model_attributes_type'}] | 500
+2026-05-10 15:54:45 | INFO | SpawnProcess-331-18398 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 15:54:45.574059 | 2026-05-10 15:54:45.728286 | 154 | None | 500
+2026-05-10 15:56:37 | INFO | SpawnProcess-331-18398 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-10 15:56:37.652862 | 2026-05-10 15:56:37.765266 | 112 | None | 500

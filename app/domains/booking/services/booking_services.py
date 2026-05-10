@@ -224,7 +224,7 @@ class BookingService:
             # hold seats into external inventory service
             holdSeatData = None
             async with httpx.AsyncClient() as client:
-                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", params={
+                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", data={
                     "user_id" : user_id,
                     "schedule_id" : schedule_id,
                     "seat_ids" : seat_ids,
