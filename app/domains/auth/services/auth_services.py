@@ -7,9 +7,9 @@ from app.common.security.token_decoder import (
 from app.core.exceptions import BaseAppException
 from app.domains.auth.services.token_services import TokenService
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.common.cache.redis_cache import (
     cache_delete,
@@ -117,7 +117,7 @@ class AuthService:
             await cache_set(key=new_access_key, value=user_id, ttl=new_token_rsp["access_expire_seconds"])
             await cache_set_add(user_access_index_key, str(new_token_rsp["access_token_id"]))
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["Token refreshed successfully"],
                 data={
@@ -130,7 +130,7 @@ class AuthService:
             raise e
         
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )
@@ -229,7 +229,7 @@ class AuthService:
             await cache_delete(key=access_cache_key)
             await cache_set_remove(user_access_index_key, str(access_token_id))
             
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["Logout successful from current active device session"],
             )
@@ -238,7 +238,7 @@ class AuthService:
             raise e
         
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )
@@ -338,7 +338,7 @@ class AuthService:
                 await cache_delete(key=access_key)
             await cache_set_delete(key=user_index_key)
             
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["Logout successful from all active devices session"],
             )
@@ -347,7 +347,7 @@ class AuthService:
             raise e
         
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )

@@ -15,7 +15,7 @@ from app.core.config import APP_NAME
 from app.core.settings import get_settings
 from app.middlewares.exception_middleware import ExceptionMiddleware
 from app.core.exception_handlers import register_exception_handlers
-from app.core.response import success_response
+from app.core.response import standardize_response
 from app.infrastructure.elasticsearch.client import build_elasticsearch_client
 from app.core.exceptions import BaseAppException
 
@@ -90,7 +90,7 @@ async def health_check():
     - Monitoring
     """
 
-    return success_response(
+    return standardize_response(
         data={"service": APP_NAME},
         messages=["Service running"],
     )
@@ -100,7 +100,7 @@ async def health_check():
 async def readiness_check():
     try:
         await app.state.routes_es_client.client.ping()
-        return success_response(
+        return standardize_response(
             data={"ready": True},
             messages=["Service ready"],
         )

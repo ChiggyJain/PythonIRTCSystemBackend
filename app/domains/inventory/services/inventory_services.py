@@ -12,9 +12,9 @@ from app.common.utils.datetime import (
 )
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.core.settings import get_settings
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
@@ -70,7 +70,7 @@ class InventoryService:
             event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
             existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing:
-                return success_response(
+                return standardize_response(
                     status_code=201,
                     messages=["Schedule already processed"],
                     data={
@@ -124,7 +124,7 @@ class InventoryService:
 
             await self._db_session.commit()
 
-            return success_response(
+            return standardize_response(
                 status_code=201,
                 messages=["Schedule processed"],
                 data={
@@ -146,7 +146,7 @@ class InventoryService:
         
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
             )
@@ -160,7 +160,7 @@ class InventoryService:
                 messages=[f"No schedule inventory found"],
             )
         else:
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["Schedule inventory found"],
                 data={
@@ -270,7 +270,7 @@ class InventoryService:
                         messages=["Seats details not found"],
                     )
                 else:
-                    return success_response(
+                    return standardize_response(
                         status_code=200,
                         messages=["Seats details found"],
                         data={
@@ -286,7 +286,7 @@ class InventoryService:
             line_number = tb[-1].lineno
             file_name = tb[-1].filename
             function_name = tb[-1].name
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[
                     f"Error: {str(e)}",
@@ -567,7 +567,7 @@ class InventoryService:
 
                 # TRANSACTION END
 
-                return success_response(
+                return standardize_response(
                     status_code=200,
                     messages=["Seats locked successfully"],
                     data={

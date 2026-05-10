@@ -6,9 +6,9 @@ from sqlalchemy.exc import IntegrityError
 from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.core.settings import get_settings
 from app.common.utils.ratelimiter import rate_limiter
@@ -164,7 +164,7 @@ class TrainSchedulesService:
 
             await self._db_session.commit()
 
-            return success_response(
+            return standardize_response(
                 status_code=201,
                 messages=[f"Train schedule created successfully"],
                 data={
@@ -190,7 +190,7 @@ class TrainSchedulesService:
         
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
             )

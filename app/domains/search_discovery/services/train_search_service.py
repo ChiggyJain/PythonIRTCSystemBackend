@@ -2,9 +2,9 @@
 from datetime import datetime
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
@@ -35,7 +35,7 @@ class TrainSearchService:
                 size=size,
             )
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=503,
                 messages=["Search service temporarily unavailable"],
             )
@@ -154,7 +154,7 @@ class TrainSearchService:
             has_next = (page * size) < total_value
 
             if results:
-                return success_response(
+                return standardize_response(
                     status_code=200,
                     messages=[f"Trains found"],
                     data={
@@ -181,7 +181,7 @@ class TrainSearchService:
         
         
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )

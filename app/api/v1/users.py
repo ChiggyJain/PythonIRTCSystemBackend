@@ -7,7 +7,7 @@ from app.core.exceptions import BaseAppException
 from app.core.settings import get_settings
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.common.decorators.feature_control import feature_control
-from app.core.response import success_response
+from app.core.response import standardize_response
 from app.domains.users.schemas.schemas import (
     UserSignupRequest, 
     UserLoginRequest

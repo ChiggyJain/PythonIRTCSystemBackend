@@ -7,9 +7,9 @@ from app.common.utils.logger import app_logger
 from app.core import settings
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.common.utils.password import (
     hash_password, 
@@ -70,7 +70,7 @@ class UsersService:
                     profile=profile
                 )
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["User created successfully"],
                 data={
@@ -86,7 +86,7 @@ class UsersService:
                 data=None
             )
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
                 data=None
@@ -155,7 +155,7 @@ class UsersService:
                 cacheKey = f"user:access:index:{user.id}"
                 await cache_set_add(cacheKey, str(token_rsp["access_token_id"]))
                 
-                return success_response(
+                return standardize_response(
                     status_code=200,
                     messages=["Login successful"],
                     data={
@@ -174,7 +174,7 @@ class UsersService:
                 )
         
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
                 data=None
@@ -196,7 +196,7 @@ class UsersService:
                 f"User profile details cache get failed | user_id={user_id} | error={str(exc)}"
             )
         if cachedData:
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=["User profile details found successfully"],
                 data=cachedData,
@@ -240,7 +240,7 @@ class UsersService:
                 f"profile_details cache_set failed | user_id={user_id} | error={str(exc)}"
             )
 
-        return success_response(
+        return standardize_response(
             status_code=200,
             messages=["User profile details found successfully"],
             data=data,

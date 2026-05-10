@@ -12,9 +12,9 @@ from app.common.utils.datetime import now_ist
 from app.common.utils.password import hash_password
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.core.settings import get_settings
 from app.common.utils.ratelimiter import rate_limiter
@@ -148,7 +148,7 @@ class PasswordChangeOtpService:
                     )
                 # Reuse current active challenge instead of creating another row.
                 expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
-                return success_response(
+                return standardize_response(
                     status_code=200,
                     messages=[f"OTP request is already accepted"],
                     data={
@@ -211,7 +211,7 @@ class PasswordChangeOtpService:
 
             await self._db_session.commit()
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=[f"OTP request accepted"],
                 data={
@@ -228,7 +228,7 @@ class PasswordChangeOtpService:
 
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )
@@ -430,7 +430,7 @@ class PasswordChangeOtpService:
                 await cache_delete(key=access_key)
             await cache_set_delete(key=user_index_key)
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=[f"Password changed successfully"],
                 data={
@@ -444,7 +444,7 @@ class PasswordChangeOtpService:
         
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
             )

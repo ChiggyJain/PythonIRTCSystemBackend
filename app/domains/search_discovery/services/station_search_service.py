@@ -1,9 +1,9 @@
 
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.station_repository import StationElasticsearchRepository
@@ -28,7 +28,7 @@ class StationSearchService:
                 size=size,
             )
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=503,
                 messages=["Search service temporarily unavailable"],
             )
@@ -59,7 +59,7 @@ class StationSearchService:
                 )
 
             if results:
-                return success_response(
+                return standardize_response(
                     status_code=200,
                     messages=["Stations found"],
                     data={
@@ -75,7 +75,7 @@ class StationSearchService:
                 )
             
         except Exception as e:
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"],
             )

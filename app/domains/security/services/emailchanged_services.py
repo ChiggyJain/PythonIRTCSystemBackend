@@ -12,9 +12,9 @@ from app.common.utils.logger import app_logger
 from app.common.cache.redis_cache import cache_delete
 from app.core.exceptions import BaseAppException
 from app.core.response import (
-    success_response, 
+    standardize_response, 
     standardize_response,
-    exception_response
+    standardize_response
 )
 from app.core.settings import get_settings
 from app.common.utils.ratelimiter import rate_limiter
@@ -123,7 +123,7 @@ class EmailChangedOtpService:
                 # Same target email -> reuse active challenge
                 if active_new_email == new_email:
                     expires_in_sec = max(0, int((active_otp_challenge.expires_at - now).total_seconds()))
-                    return success_response(
+                    return standardize_response(
                         status_code=200,
                         messages=[f"OTP request is already accepted"],
                         data={
@@ -202,7 +202,7 @@ class EmailChangedOtpService:
 
             await self._db_session.commit()
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=[f"OTP request accepted"],
                 data={
@@ -219,7 +219,7 @@ class EmailChangedOtpService:
         
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
             )
@@ -394,7 +394,7 @@ class EmailChangedOtpService:
             cacheKey = f"user:profile:{user_id}"
             await cache_delete(cacheKey)
 
-            return success_response(
+            return standardize_response(
                 status_code=200,
                 messages=[f"Email changed successfully"],
                 data={
@@ -410,7 +410,7 @@ class EmailChangedOtpService:
         
         except Exception as e:
             await self._db_session.rollback()
-            return exception_response(
+            return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
             )
