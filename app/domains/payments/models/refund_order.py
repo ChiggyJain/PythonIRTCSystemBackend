@@ -11,13 +11,12 @@ from app.common.utils.datetime import now_ist
 from app.infrastructure.database.base import Base
 
 
-class PaymentOrders(Base):
+class RefundOrders(Base):
     
-    __tablename__ = "PAYMENT_ORDERS"
+    __tablename__ = "REFUND_ORDERS"
     __table_args__ = (
         UniqueConstraint("idempotency_key", name="uq_idempotencyKey"),
-        UniqueConstraint("gateway_order_id", name="uq_gatewayOrderId"),
-        UniqueConstraint("gateway_payment_id", name="uq_paymentOrderId"),
+        UniqueConstraint("payment_order_id", name="uq_paymentOrderId"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
