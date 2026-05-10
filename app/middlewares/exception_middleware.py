@@ -17,7 +17,7 @@ Must be registered in main.py
 from fastapi import Request, HTTPException
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.core.response import build_response
+from app.core.response import standardize_response
 from app.core.exceptions import BaseAppException
 
 
@@ -34,7 +34,7 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
 
         except BaseAppException as exc:
 
-            return build_response(
+            return standardize_response(
                 status_code=exc.status_code,
                 messages=exc.messages,
                 data=exc.data,
@@ -49,14 +49,14 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
                 if isinstance(msg, str) and msg.startswith("Value error,"):
                     msg = msg.replace("Value error,", "").strip()
                 errors.append(msg)
-            return build_response(
+            return standardize_response(
                 status_code=422,
                 messages=errors,
                 data=None,
             )
         
         except HTTPException as exc:
-            return build_response(
+            return standardize_response(
                 status_code=exc.status_code,
                 messages=[str(exc.detail)],
                 data=None,
@@ -64,7 +64,7 @@ class ExceptionMiddleware(BaseHTTPMiddleware):
     
         except Exception as exc:
 
-            return build_response(
+            return standardize_response(
                 status_code=500,
                 messages=["Internal Server Error"],
                 data=None,

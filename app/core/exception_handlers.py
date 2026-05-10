@@ -5,7 +5,7 @@ from fastapi import (
 from fastapi.exceptions import RequestValidationError
 from fastapi import HTTPException
 from pydantic import ValidationError
-from app.core.response import build_response
+from app.core.response import standardize_response
 
 
 def register_exception_handlers(app: FastAPI):
@@ -16,7 +16,7 @@ def register_exception_handlers(app: FastAPI):
         request: Request,
         exc: HTTPException,
     ):
-        return build_response(
+        return standardize_response(
             status_code=exc.status_code,
             messages=[str(exc.detail)],
             data=None,
@@ -38,7 +38,7 @@ def register_exception_handlers(app: FastAPI):
                 msg = msg.replace("Value error,", "").strip()
             errors.append(msg)
 
-        return build_response(
+        return standardize_response(
             status_code=422,
             messages=errors,
             data=None,
@@ -59,7 +59,7 @@ def register_exception_handlers(app: FastAPI):
                 msg = msg.replace("Value error,", "").strip()
             errors.append(msg)
 
-        return build_response(
+        return standardize_response(
             status_code=422,
             messages=errors,
             data=None,
@@ -72,7 +72,7 @@ def register_exception_handlers(app: FastAPI):
         request: Request,
         exc: Exception,
     ):
-        return build_response(
+        return standardize_response(
             status_code=500,
             messages=["Internal Server Error"],
             data=None,
