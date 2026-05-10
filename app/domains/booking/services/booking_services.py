@@ -226,9 +226,9 @@ class BookingService:
             holdSeatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", params={
+                    "user_id" : user_id,
                     "schedule_id" : schedule_id,
                     "seat_ids" : seat_ids,
-                    "user_id" : user_id,
                     "ttl_seconds" : settings.LOCK_TTL_SECONDS,
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
