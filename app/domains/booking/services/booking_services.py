@@ -220,6 +220,25 @@ class BookingService:
 
             await self._db_session.commit()
             
+
+
+            # holding seats into external inventory service
+            holdSeatData = None
+            async with httpx.AsyncClient() as client:
+                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", params={
+                    "schedule_id" : schedule_id,
+                    "seat_ids" : seat_ids,
+                    "user_id" : user_id,
+                    "ttl_seconds" : settings.LOCK_TTL_SECONDS,
+                    "from_station_sequence_number" : from_station_sequence_number,
+                    "to_station_sequence_number" : to_station_sequence_number
+                })
+                response.raise_for_status()
+                data = response.json()
+                holdSeatData = data.get("data", None)
+            print(f"holdSeatData: {holdSeatData}")
+
+
             return standardize_response(
                 status_code=200,
                 messages=[f"Booking created"],
@@ -227,6 +246,8 @@ class BookingService:
             )
             
         
+
+
             # execute saga Step1: Hold seats in inventory
             await executeHoldSeats(
                 booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
