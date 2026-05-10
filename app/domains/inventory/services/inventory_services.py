@@ -447,7 +447,8 @@ class InventoryService:
 
 
         status_changes = {
-            "operation_status" : "FAILED",
+            "status_code" : 500,
+            "messages" : [f"Operation failed"],
             "now_available": 0,
             "now_occupied": 0,
             "locked_to_booked": 0,
@@ -537,11 +538,13 @@ class InventoryService:
 
                 seat_inventory.version+= 1
 
-            status_changes["operation_status"] = "SUCCESS"
+            status_changes["status_code"] = 200
+            status_changes["messages"] = f"Operation success"
 
         except Exception as e:
             status_changes = {
-                "operation_status" : "FAILED",
+                "status_code" : 500,
+                "messages" : [f"{str(e)}"],
                 "now_available": 0,
                 "now_occupied": 0,
                 "locked_to_booked": 0,
@@ -558,7 +561,8 @@ class InventoryService:
     ):
 
         count_changes = {
-            "operation_status" : "FAILED",
+            "status_code" : 500,
+            "messages" : [f"Operation failed"],
             "available": 0,
             "locked": 0,
             "booked": 0,
@@ -608,7 +612,8 @@ class InventoryService:
                 schedule_inventory.version += 1
 
             count_changes = {
-                "operation_status" : "SUCCESS",
+                "status_code" : 200,
+                "messages" : [f"Operation success"],
                 "available": counts["available"],
                 "locked": counts["locked"],
                 "booked": counts["booked"],
@@ -616,7 +621,8 @@ class InventoryService:
         
         except Exception as e:
             count_changes = {
-                "operation_status" : "FAILED",
+                "status_code" : 500,
+                "messages" : [f"{str(e)}"],
                 "available": 0,
                 "locked": 0,
                 "booked": 0,
