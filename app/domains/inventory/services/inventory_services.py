@@ -339,66 +339,63 @@ class InventoryService:
                     status_code=409,
                     messages=[f"Seats already locked: {missing_ids}"],
                 )
-        
+
+            # check for overlapping segment locks on any of the requested seats
+            overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(
+                schedule_id=schedule_id, 
+                seat_ids=seat_ids, 
+                from_station_sequence_number=from_station_sequence_number, 
+                to_station_sequence_number=to_station_sequence_number
+            )
+            if overlapping_lock_seat_segment_list:
+                blocked_seat_ids = list({
+                    row.seat_id
+                    for row in overlapping_lock_seat_segment_list
+                })
+                return standardize_response(
+                    status_code=409,
+                    messages=[
+                        f"Seats already booked/locked: {blocked_seat_ids}"    
+                    ],
+                )
+            
+            # create segment seat lock rows for the requested segment
+            # bulk adding
+            seat_segment_lock_payloads = []
+            for seat in locked_seat_inventory_list:
+                seat_segment_lock_payloads.append({
+                    "schedule_id": schedule_id,
+                    "seat_id": seat.seat_id,
+                    "from_station_sequence_number": from_station_sequence_number,
+                    "to_station_sequence_number": to_station_sequence_number,
+                    "locked_at" : now_ist(),
+                    "locked_by_user_id": user_id,
+                    "locked_expires_at": locked_expires_at,
+                    "status" : "LOCKED"
+                })
+            await self.inventory_repo.add_seat_segement_lock_details(
+                schedule_id=schedule_id,
+                seat_details=seat_segment_lock_payloads
+            )
+
+            # set lockedBy/lockedAt/lockExpiresAt on seat-inventory that didn't have it yet
+            seat_pk_ids = [row.id for row in locked_seat_inventory_list]
+            await self.inventory_repo.update_seat_inventory_details(
+                where_data={
+                    "id": seat_pk_ids
+                },
+                update_data={
+                    "locked_by_user_id": user_id,
+                    "locked_at": now_ist(),
+                    "locked_expires_at": locked_expires_at
+                }
+            )
+                        
+
 
             # TRANSACTION START
             async with self._db_session.begin():
 
-                
-                
-                
-
-                
-                
-                # Check overlapping segment locks
-                overlapping_lock_seat_segment_list = await self.inventory_repo.lock_seat_segment_for_booking(
-                    schedule_id=schedule_id, 
-                    seat_ids=seat_ids, 
-                    from_station_sequence_number=from_station_sequence_number, 
-                    to_station_sequence_number=to_station_sequence_number
-                )
-                if overlapping_lock_seat_segment_list:
-                    blocked_seat_ids = list({
-                        row.seat_id
-                        for row in overlapping_lock_seat_segment_list
-                    })
-                    raise BaseAppException(
-                        status_code=409,
-                        messages=[
-                            f"Seats already booked/locked: {blocked_seat_ids}"    
-                        ],
-                    )
-
-                # Create seat segment locks
-                seat_segment_lock_payloads = []
-                for seat in locked_seat_inventory_list:
-                    seat_segment_lock_payloads.append({
-                        "schedule_id": schedule_id,
-                        "seat_id": seat.seat_id,
-                        "from_station_sequence_number": from_station_sequence_number,
-                        "to_station_sequence_number": to_station_sequence_number,
-                        "locked_at" : now_ist(),
-                        "locked_by_user_id": user_id,
-                        "locked_expires_at": locked_expires_at,
-                        "status" : "LOCKED"
-                    })
-                await self.inventory_repo.add_seat_segement_lock_details(
-                    schedule_id=schedule_id,
-                    seat_details=seat_segment_lock_payloads
-                )
-
-                # Update seat inventory lock info
-                seat_pk_ids = [row.id for row in locked_seat_inventory_list]
-                await self.inventory_repo.update_seat_inventory_details(
-                    where_data={
-                        "id": seat_pk_ids
-                    },
-                    update_data={
-                        "locked_by_user_id": user_id,
-                        "locked_at": now_ist(),
-                        "locked_expires_at": locked_expires_at
-                    }
-                )
 
                 # Recompute seat statuses
                 await self.recompute_segment_seat_statuses(
