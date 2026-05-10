@@ -402,6 +402,13 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
+            """
+            # task is pending
+            # publish seats-availability update (fire and forget) into kafka topics
+            # elastic search route_indexes based on schedule_id and train_id
+            # schedule_id, train_id
+            """
+
             await self._db_session.commit()
 
             return standardize_response(
@@ -409,6 +416,7 @@ class InventoryService:
                 messages=["Seats locked successfully"],
                 data={
                     "schedule_id": schedule_id,
+                    "train_id" : inventory_schedule["train_id"],
                     "locked_seats": [
                         {
                             "seat_id": seat.seat_id,
@@ -427,15 +435,18 @@ class InventoryService:
             )
 
 
-        except BaseAppException:
+        except BaseAppException as e:
             await self._db_session.rollback()
-            raise
-
-        except Exception as ex:
-            await self._db_session.rollback()
-            raise BaseAppException(
+            return standardize_response(
                 status_code=500,
                 messages=[str(ex)],
+            )
+
+        except Exception as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[str(e)],
             )
 
 
