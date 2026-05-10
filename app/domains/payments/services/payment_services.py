@@ -13,22 +13,14 @@ from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
-from app.common.cache.redis_cache import (
-    acquireBookingSeatLocksThroughRedis,
-    releaseBookingSeatLocksThroughRedis
-)
-from app.services.saga_services import (
-    executeHoldSeats,
-    executeCreatePayment,
-    compensateAll
-)
+
 
 
 settings = get_settings()
 
 
 
-class BookingService:
+class PaymentService:
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
@@ -37,7 +29,7 @@ class BookingService:
         
 
 
-    async def create_booking_details(self, *, payload: dict) -> dict:
+    async def create_payment_order_details(self, *, payload: dict) -> dict:
         
         try:
 
