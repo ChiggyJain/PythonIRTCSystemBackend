@@ -550,15 +550,16 @@ http://127.0.0.1:8000/api/v1/bookings/bookings
 }
 
 
+TRUNCATE SEAT_SEGMENT_LOCK;
 TRUNCATE IDEMPOTENCY_RECORDS;
 TRUNCATE BOOKINGS;
 TRUNCATE BOOKING_SEATS;
 TRUNCATE BOOKING_PASSENGERS;
-TRUNCATE SEAT_SEGMENT_LOCK;
+TRUNCATE BOOKING_SAGA_LOGS;
 
 UPDATE SCHEDULE_INVENTORY 
 SET 
-available_seats=12,
+available_seats=total_seats,
 locked=0,
 booked=0,
 version=0,
@@ -575,8 +576,7 @@ locked_at=NULL,
 locked_expires_at=NULL,
 status="AVAILABLE"
 WHERE 1
-AND schedule_id IN (1)
-AND seat_id IN (1);
+AND schedule_id IN (1);
 
 
 
