@@ -205,7 +205,7 @@ class InventorySQLAlchemyRepository:
                     price=price_value,
                     created_at=now_ist(),
                     updated_at=now_ist(),
-                    status="AVAILABLE",
+                    status=seat.get("status", "AVAILABLE"),
                 )
             )
 
