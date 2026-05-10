@@ -619,17 +619,17 @@ class InventoryService:
             )
 
             if schedule_inventory:
-                schedule_inventory.available = counts["available"]
-                schedule_inventory.locked = counts["locked"]
-                schedule_inventory.booked = counts["booked"]
+                schedule_inventory.available = int(counts["available"])
+                schedule_inventory.locked = int(counts["locked"])
+                schedule_inventory.booked = int(counts["booked"])
                 schedule_inventory.version += 1
 
             count_changes = {
                 "status_code" : 200,
                 "messages" : [f"Operation success"],
-                "available": counts["available"],
-                "locked": counts["locked"],
-                "booked": counts["booked"],
+                "available": int(counts["available"]),
+                "locked": int(counts["locked"]),
+                "booked": int(counts["booked"]),
             }
         
         except Exception as e:
@@ -640,7 +640,7 @@ class InventoryService:
                 "locked": 0,
                 "booked": 0,
             }
-
+        
         return count_changes
 
         
