@@ -1103,3 +1103,5 @@
 2026-05-10 15:38:14 | INFO | ES client created for index: stations
 2026-05-10 15:38:30 | INFO | ES client created for index: routes
 2026-05-10 15:38:30 | INFO | ES client created for index: stations
+2026-05-10 15:39:35 | INFO | ES client created for index: routes
+2026-05-10 15:39:35 | INFO | ES client created for index: stations

@@ -247,17 +247,6 @@ class BookingService:
         
 
 
-            # execute saga Step1: Hold seats in inventory
-            await executeHoldSeats(
-                booking_details, seat_ids, settings.LOCK_TTL_SECONDS,
-                from_station_sequence_number, to_station_sequence_number
-            )
-
-            return standardize_response(
-                status_code=200,
-                messages=[f"Booking created: {totalAmount}"],
-                data=booking_details
-            )
             
         
             """
