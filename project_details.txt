@@ -529,22 +529,21 @@ http://127.0.0.1:8000/api/v1/admin/master-data/train-schedules
 
 http://127.0.0.1:8000/api/v1/bookings/bookings
 {
-  "idempotency_key" : "ABC11ss2",
+  "idempotency_key" : "Booking1",
   "schedule_id": 1,
   "from_station_id" : 11,
   "to_station_id" : 12,
   "from_station_sequence_number" : 21,
   "to_station_sequence_number" : 22,
   "seat_ids": [
-    1,
-    2,
-    3
+    1
   ],
   "passengers": [
     {
       "name": "Chirag",
-      "age": 21,
-      "gender": "Male/Female/Transgender/Other"
+      "age": "21",
+      "gender": "Male",
+      "seat_id" : 1
     }
   ]
 }
