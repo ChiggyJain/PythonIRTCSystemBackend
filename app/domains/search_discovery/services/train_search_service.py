@@ -136,6 +136,15 @@ class TrainSearchService:
                     },
                 }
 
+                if not all([
+                    int(matched_schedule.get("schedule_id"))>0, 
+                    int(source_doc.get("train_id"))>0, 
+                    int(source_station.get("station_id"))>0, 
+                    int(destination_station.get("station_id"))>0,
+                    int(source_doc.get("routes", [])[0].get("route_id", 0))>0,
+                ]):
+                    continue
+
                 dedupe_key = (
                     str(source_doc.get("train_id")),
                     str(matched_schedule.get("schedule_id")),
