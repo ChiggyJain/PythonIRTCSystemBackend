@@ -95,6 +95,7 @@ class BookingService:
             seatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/{schedule_id}/seats", params={
+                    "seat_ids" : ",".join(seat_ids),
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })
