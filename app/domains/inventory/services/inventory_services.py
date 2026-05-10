@@ -1,6 +1,7 @@
 
 from decimal import Decimal
 from datetime import date, datetime, timedelta
+from typing import List
 from sqlalchemy import select, update, or_, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -179,13 +180,12 @@ class InventoryService:
 
     async def get_inventory_schedule_seats_availabiliity(
         self, 
-        schedule_id: int, 
-        seat_ids: str,
-        from_station_sequence_number: int, 
-        to_station_sequence_number: int
+        schedule_id: int = 0, 
+        seat_ids: List[int] = [],
+        from_station_sequence_number: int = 0, 
+        to_station_sequence_number: int = 0
     ):
 
-        seat_ids = 1,2,3
         try:
             
             inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)

@@ -92,13 +92,10 @@ class BookingService:
                 )
             
             # fetching seats details from external inventory service
-            print(f"{",".join(seat_ids)}")
-
-            pass
             seatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/{schedule_id}/seats", params={
-                    "seat_ids" : ",".join(seat_ids),
+                    "seat_ids" : ",".join(map(str, seat_ids)),
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })
