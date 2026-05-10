@@ -44,7 +44,7 @@ async def create_payment_order(
 
 router.add_api_route(
     "/orders",
-    create_booking,
+    create_payment_order,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
