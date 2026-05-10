@@ -263,3 +263,8 @@
 2026-05-10 10:17:26 | INFO | ES client created for index: stations
 2026-05-10 10:17:51 | INFO | ES client created for index: routes
 2026-05-10 10:17:51 | INFO | ES client created for index: stations
+2026-05-10 10:37:39 | INFO | ES client created for index: routes
+2026-05-10 10:37:39 | INFO | ES client created for index: stations
+2026-05-10 10:37:54 | INFO | ES client created for index: routes
+2026-05-10 10:37:54 | INFO | ES client created for index: stations
+2026-05-10 10:38:36 | INFO | SpawnProcess-121-22202 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-10 10:38:36.484638 | 2026-05-10 10:38:36.813897 | 329 | None | 200
