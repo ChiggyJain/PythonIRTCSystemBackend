@@ -18,6 +18,9 @@ from app.domains.booking.models import bookings_models # noqa
 from app.domains.booking.models import booking_seats_models # noqa
 from app.domains.booking.models import booking_passgenger_models # noqa
 from app.domains.booking.models import booking_saga_logs_models # noqa
+from app.domains.payments.models import payment_orders_models # noqa
+from app.domains.payments.models import refund_orders_models # noqa
+from app.domains.payments.models import payment_audit_logs_models # noqa
 
 
 
