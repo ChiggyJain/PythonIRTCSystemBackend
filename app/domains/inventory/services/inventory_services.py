@@ -185,6 +185,7 @@ class InventoryService:
         to_station_sequence_number: int
     ):
 
+        seat_ids = 1,2,3
         try:
             
             inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)
