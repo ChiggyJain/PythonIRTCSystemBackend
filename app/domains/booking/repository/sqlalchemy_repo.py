@@ -15,7 +15,7 @@ from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
 class BookingSQLAlchemyRepository:
 
     def __init__(self, db_session: AsyncSession):
-        self.db = db_session
+        self._db_session = db_session
 
 
 

@@ -158,8 +158,7 @@ class BookingService:
                 )
 
             curDateTime = now_ist()
-            dt = datetime.strptime(curDateTime, "%Y-%m-%d %H:%M:%S")
-            locked_expires_at = dt + timedelta(seconds=settings.LOCK_TTL_SECONDS)
+            locked_expires_at = (curDateTime + timedelta(seconds=settings.LOCK_TTL_SECONDS))
 
             created_booking = await self.booking_repo.create_booking(
                 user_id=user_id,
@@ -199,7 +198,7 @@ class BookingService:
             return standardize_response(
                 status_code=200,
                 messages=[f"Booking created: {totalAmount}"],
-                data=acquiredSeatLocksResponse
+                data=booking_details
             )
         
 
