@@ -2,6 +2,10 @@
 IRTC System Design Youtube URL =>
 https://www.youtube.com/watch?v=K_cTtCXCPeY&list=PLhNPruYZ0mVOF-poB1cDcU8ICktc_ehxs
 
+IRTC Repos URL =>
+https://github.com/designkarle/irctc-backend
+
+
 Project Prompt =>
 
 Hey,
