@@ -160,6 +160,7 @@ class BookingService:
             curDateTime = now_ist()
             locked_expires_at = (curDateTime + timedelta(seconds=settings.LOCK_TTL_SECONDS))
 
+            # adding entries into bookings table
             created_booking = await self.booking_repo.create_booking(
                 user_id=user_id,
                 schedule_id=schedule_id,
@@ -180,19 +181,26 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
+            
             booking_details = orm_to_dict(created_booking)
             booking_details["booking_id"] = created_booking.id
             bookingId = created_booking.id
+
+            # adding entries into booking-seat table
             created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
             booking_details["seats"] = [
                 orm_to_dict(seat)
                 for seat in created_booking_seats
             ]
+
+            # adding entries into booking-passengers table
             created_booking_passengers = await self.booking_repo.create_booking_passengers(booking_id=bookingId, passenger_details=passengers)
             booking_details["passengers"] = [
                 orm_to_dict(passenger)
                 for passenger in created_booking_passengers
             ]
+
+            # adding entries into booking-saga-logs table
             created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
                 booking_id = bookingId, 
                 saga_step = "HOLD_SEATS", 
