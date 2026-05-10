@@ -398,7 +398,7 @@ class InventoryService:
             )            
 
             # recount aggregates from actual seat rows (prevents counter drift)
-            counts = await self.recount_schedule_aggregates(
+            recounts_schedule_aggregates_status_rsp_obj = await self.recount_schedule_aggregates(
                 schedule_id=schedule_id
             )
 
@@ -422,7 +422,7 @@ class InventoryService:
                     "lock_expires_at": locked_expires_at.strftime(
                         "%Y-%m-%d %H:%M:%S"
                     ),
-                    "counts": counts
+                    "counts": recounts_schedule_aggregates_status_rsp_obj
                 }
             )
 
