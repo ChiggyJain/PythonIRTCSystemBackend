@@ -155,9 +155,9 @@ class BookingSQLAlchemyRepository:
             request=request,
             response=response,
             error=error,
-            status=status,
             created_at=now_ist(),
             updated_at=now_ist(),
+            status=status,
         )
         self._db_session.add(row)
         await self._db_session.flush()
