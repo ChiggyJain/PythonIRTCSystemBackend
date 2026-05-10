@@ -74,20 +74,20 @@ class BookingService:
                 inventoryScheduleDataObj = data.get("data", None)
             print(f"inventoryScheduleDataObj: {inventoryScheduleDataObj}")
             if inventoryScheduleDataObj == None:
-                raise BaseAppException(
-                    status_code=400,
+                return standardize_response(
+                    status_code=404,
                     messages=[f"No inventory schedule found for Train-Schedule-ID: {schedule_id}"],
                 )
             if inventoryScheduleDataObj["status"]!="ACTIVE":
-                raise BaseAppException(
-                    status_code=400,
-                    messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Inventory schedule not active for Train-Schedule-ID: {schedule_id}"],
                 )
             departure_date = datetime.strptime(inventoryScheduleDataObj["departure_date"], "%Y-%m-%d").date()
             if departure_date<today_ist():
-                raise BaseAppException(
-                    status_code=400,
-                    messages=[f"Train is already departed for Train-Schedule-ID: {schedule_id}"],
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Train already departed for Train-Schedule-ID: {schedule_id}"],
                 )
             
             # fetching seats details from external inventory service
@@ -100,22 +100,24 @@ class BookingService:
                 response.raise_for_status()
                 data = response.json()
                 seatData = data.get("data", None)
+            print(f"seatData: {seatData}")
             if seatData == None:
-                raise BaseAppException(
-                    status_code=400,
-                    messages=[f"Seats details is not found for Train-Schedule-ID: {schedule_id}"],
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Seats details not found for Train-Schedule-ID: {schedule_id}"],
                 )
 
+            # verify all requested seats exist and are available
             # calculating seat price and availability details
-            seatMap = {eachSeatDataObj["seat_id"] : eachSeatDataObj for eachSeatDataObj in seatData.seats}
+            seatMap = {eachSeatDataObj["seat_id"] : eachSeatDataObj for eachSeatDataObj in seatData["seats"]}
             bookingSeats = []
             totalAmount = 0
             for eachGivenSeatId in seat_ids:
                 seat = seatMap.get(eachGivenSeatId, None)
                 if seat == None:
-                    raise BaseAppException(
-                        status_code=400,
-                        messages=[f"Given Seat-ID: {eachGivenSeatId} is not in inventory schedule"],
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Given Seat-ID: {eachGivenSeatId} not found in schedule"],
                     )
                 is_seat_available = (
                     seat["segment_status"] == "AVAILABLE"
@@ -127,15 +129,21 @@ class BookingService:
                     else seat["status"] == "AVAILABLE"
                 )
                 if is_seat_available == False:
-                    raise BaseAppException(
+                    return standardize_response(
                         status_code=400,
-                        messages=[f"Seat: {seat["seat_number"]} is not available"],
+                        messages=[f"Seat-Number: {seat["seat_number"]} is not available"],
                     )
                 if is_seat_available == True:
                     bookingSeats.append(seat)
                     totalAmount+= seat["price"]
 
-    
+            
+            print(f"totalAmount: {totalAmount}")
+            return standardize_response(
+                status_code=200,
+                messages=[f"Booking created: {totalAmount}"],
+            )
+        
             # preparing keys to acquire seat locks in redis via lua_script
             allRedisKeys = []
             for eachSeatId in seat_ids:
