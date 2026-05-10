@@ -13,7 +13,7 @@ from app.common.cache.redis_cache import cache_delete
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -69,30 +69,30 @@ class EmailChangedOtpService:
                 window=settings.EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many OTP requests for this user. Please try again later."],
                 )
             
             channel = (channel or "").strip().upper()
             if channel != "EMAIL":
-                return error_response(status_code=400, messages=["channel must be EMAIL"])
+                return standardize_response(status_code=400, messages=["channel must be EMAIL"])
 
             new_email = (new_email or "").strip().lower()
             if not new_email:
-                return error_response(status_code=400, messages=["new_email is required"])
+                return standardize_response(status_code=400, messages=["new_email is required"])
 
             user = await self.security_repo.get_active_user(user_id)
             if not user:
-                return error_response(status_code=404, messages=["User not found"])
+                return standardize_response(status_code=404, messages=["User not found"])
 
             old_email = (user.email or "").strip().lower()
             if old_email == new_email:
-                return error_response(status_code=400, messages=["New email must be different"])
+                return standardize_response(status_code=400, messages=["New email must be different"])
 
             existing = await self.security_repo.get_active_user_by_email(new_email)
             if existing and int(existing.id) != int(user_id):
-                return error_response(status_code=400, messages=["Email already in use"])
+                return standardize_response(status_code=400, messages=["Email already in use"])
 
             now = now_ist()
 
@@ -108,7 +108,7 @@ class EmailChangedOtpService:
                 elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
                 if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
                     retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
-                    return error_response(
+                    return standardize_response(
                         status_code=429,
                         messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
                         data={
@@ -247,7 +247,7 @@ class EmailChangedOtpService:
                 window=settings.EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many email change confirm attempts for this user. Please try again later."],
                 )
@@ -258,12 +258,12 @@ class EmailChangedOtpService:
                 purpose=self.OTP_PURPOSE_EMAIL_CHANGE,
             )
             if not challenge:
-                return error_response(status_code=400, messages=["Invalid OTP challenge"])
+                return standardize_response(status_code=400, messages=["Invalid OTP challenge"])
 
             now = now_ist()
 
             if challenge.status == self.OTP_STATUS_VERIFIED:
-                return error_response(status_code=400, messages=["OTP already used"])
+                return standardize_response(status_code=400, messages=["OTP already used"])
 
             if challenge.expires_at <= now:
                 challenge.status = self.OTP_STATUS_EXPIRED
@@ -284,14 +284,14 @@ class EmailChangedOtpService:
                     metadata_json={"challenge_id": challenge_id},
                 )
                 await self._db_session.commit()
-                return error_response(status_code=400, messages=["OTP expired"])
+                return standardize_response(status_code=400, messages=["OTP expired"])
 
             if challenge.attempts_used >= challenge.max_attempts:
                 challenge.status = self.OTP_STATUS_BLOCKED
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
                 await self._db_session.commit()
-                return error_response(status_code=400, messages=["OTP attempts exceeded"])
+                return standardize_response(status_code=400, messages=["OTP attempts exceeded"])
 
             if not self._verify_otp(otp=otp, otp_hash=challenge.otp_hash):
                 challenge.attempts_used += 1
@@ -319,25 +319,25 @@ class EmailChangedOtpService:
                     },
                 )
                 await self._db_session.commit()
-                return error_response(status_code=400, messages=["Invalid OTP"])
+                return standardize_response(status_code=400, messages=["Invalid OTP"])
 
             meta = self._decrypt_metadata_json(challenge.metadata_json)
             old_email = (meta.get("old_email") or "").strip().lower()
             new_email = (meta.get("new_email") or "").strip().lower()
 
             if not new_email:
-                return error_response(status_code=400, messages=["Invalid email change metadata"])
+                return standardize_response(status_code=400, messages=["Invalid email change metadata"])
 
             user = await self.security_repo.get_active_user(user_id)
             if not user:
-                return error_response(status_code=404, messages=["User not found"])
+                return standardize_response(status_code=404, messages=["User not found"])
 
             if old_email and (user.email or "").strip().lower() != old_email:
-                return error_response(status_code=409, messages=["Email change request no longer valid"])
+                return standardize_response(status_code=409, messages=["Email change request no longer valid"])
 
             existing = await self.security_repo.get_active_user_by_email(new_email)
             if existing and int(existing.id) != int(user_id):
-                return error_response(status_code=400, messages=["Email already in use"])
+                return standardize_response(status_code=400, messages=["Email already in use"])
 
             changed_at = now_ist()
             updated = await self.security_repo.mark_user_email_changed_verified(
@@ -347,7 +347,7 @@ class EmailChangedOtpService:
             )
             if not updated:
                 await self._db_session.rollback()
-                return error_response(status_code=404, messages=["User not found"])
+                return standardize_response(status_code=404, messages=["User not found"])
 
             challenge.attempts_used += 1
             challenge.status = self.OTP_STATUS_VERIFIED

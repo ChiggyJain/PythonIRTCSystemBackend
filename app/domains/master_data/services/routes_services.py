@@ -6,7 +6,7 @@ from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -52,7 +52,7 @@ class RoutesService:
                 window=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many train-route create requests. Please try again later."],
                 )
@@ -60,7 +60,7 @@ class RoutesService:
             # train existence check
             train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
             if not train_details:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[f"Train id {train_id} does not exist"],
                 )
@@ -69,7 +69,7 @@ class RoutesService:
             station_ids = [item["station_id"] for item in station_details]
             existing_station_count = await self.masterdata_repo.count_existing_station_ids(station_ids=station_ids)
             if existing_station_count != len(station_ids):
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["One or more station_id does not exist"],
                 )
@@ -184,7 +184,7 @@ class RoutesService:
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=[f"Unable to create train route due to data constraint violation. {msg}"],
             )

@@ -13,7 +13,7 @@ from app.common.utils.password import hash_password
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -77,7 +77,7 @@ class PasswordChangeOtpService:
                 window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many OTP requests for this user. Please try again later."],
                 )
@@ -89,14 +89,14 @@ class PasswordChangeOtpService:
             # fetching active user details
             user = await self.security_repo.get_active_user(user_id)
             if not user:
-                return error_response(
+                return standardize_response(
                     status_code=404,
                     messages=["User not found"],
                 )  
             if user.is_mobile_verified == "N":
                 print(f"In future we have to check mobile is verified or not. Pending-Task")
             if user.is_email_verified == "N":
-                return error_response(
+                return standardize_response(
                     status_code=401,
                     messages=["Password change process is not allow without verifying email"],
                 )
@@ -138,7 +138,7 @@ class PasswordChangeOtpService:
                 elapsed_seconds = int((now - active_otp_challenge.created_at).total_seconds())
                 if elapsed_seconds < self.OTP_REQUEST_COOLDOWN_SECONDS:
                     retry_after_seconds = self.OTP_REQUEST_COOLDOWN_SECONDS - elapsed_seconds
-                    return error_response(
+                    return standardize_response(
                         status_code=429,
                         messages=[f"OTP already requested. Please retry after {retry_after_seconds} seconds"],
                         data={
@@ -253,7 +253,7 @@ class PasswordChangeOtpService:
 
             # checking new password is match with confirm_password
             if new_password != confirm_password:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["password and confirm password must match"],
                 )
@@ -266,7 +266,7 @@ class PasswordChangeOtpService:
                 window=settings.PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many password change confirm attempts for this user. Please try again later."],
                 )
@@ -279,7 +279,7 @@ class PasswordChangeOtpService:
                 purpose=self.OTP_PURPOSE_PASSWORD_CHANGE,
             )
             if not challenge:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["Invalid OTP challenge"],
                 )
@@ -287,7 +287,7 @@ class PasswordChangeOtpService:
             now = now_ist()
 
             if challenge.status == self.OTP_STATUS_VERIFIED:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["OTP already used"],
                 )
@@ -311,7 +311,7 @@ class PasswordChangeOtpService:
                     metadata_json={"challenge_id": challenge_id},
                 )
                 await self._db_session.commit()
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["OTP expired"],
                 )
@@ -321,7 +321,7 @@ class PasswordChangeOtpService:
                 challenge.last_error_code = "OTP_ATTEMPTS_EXCEEDED"
                 challenge.updated_at = now
                 await self._db_session.commit()
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["OTP attempts exceeded"],
                 )
@@ -351,7 +351,7 @@ class PasswordChangeOtpService:
                     },
                 )
                 await self._db_session.commit()
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["Invalid OTP"],
                 )
@@ -369,7 +369,7 @@ class PasswordChangeOtpService:
             )
             if not updated:
                 await self._db_session.rollback()
-                return error_response(
+                return standardize_response(
                     status_code=404,
                     messages=["User not found for updating the password"],
                 )

@@ -2,7 +2,7 @@
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
@@ -69,7 +69,7 @@ class StationSearchService:
                     },
                 )
             else:
-                return error_response(
+                return standardize_response(
                     status_code=404,
                     messages=["Stations not found"],
                 )

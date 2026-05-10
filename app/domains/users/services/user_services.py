@@ -8,7 +8,7 @@ from app.core import settings
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.common.utils.password import (
@@ -80,7 +80,7 @@ class UsersService:
             )
         
         except IntegrityError as e:
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=["Email already exists"],
                 data=None
@@ -108,14 +108,14 @@ class UsersService:
                 user = await self.users_repo.get_by_email(email)
 
             if not user:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[
                         "Invalid email or password"
                     ],
                 )
             if user.status!="A":
-                return error_response(
+                return standardize_response(
                     status_code=403,
                     messages=[
                         "User account inactive"
@@ -126,7 +126,7 @@ class UsersService:
             # so FastAPI event loop remains responsive under concurrency.
             is_valid = await to_thread.run_sync(verify_password, password, user.password)
             if not is_valid:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[
                         "Invalid email or password"
@@ -167,7 +167,7 @@ class UsersService:
                 )
             
             else:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=token_rsp["messages"],
                     data=None
@@ -206,7 +206,7 @@ class UsersService:
         async with self._db_session.begin():
             profile = await self.users_repo.get_profile_snapshot_by_id(user_id=user_id)
             if not profile:
-                return error_response(
+                return standardize_response(
                     status_code=404,
                     messages=["User profile details not found"],
                 )

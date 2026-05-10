@@ -13,7 +13,7 @@ from app.common.utils.datetime import (
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -53,18 +53,18 @@ class InventoryService:
             departure_date_raw = str(payload.get("departure_date", ""))
 
             if schedule_id <= 0:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["Invalid schedule_id in payload"],
                 )
             if train_id <= 0:
-                return error_response(status_code=400, messages=["Invalid train_id in payload"])
+                return standardize_response(status_code=400, messages=["Invalid train_id in payload"])
             if not train_number:
-                return error_response(status_code=400, messages=["Invalid train_number in payload"])
+                return standardize_response(status_code=400, messages=["Invalid train_number in payload"])
             if not train_name:
-                return error_response(status_code=400, messages=["Invalid train_name in payload"])
+                return standardize_response(status_code=400, messages=["Invalid train_name in payload"])
             if not departure_date_raw:
-                return error_response(status_code=400, messages=["Invalid departure_date in payload"])
+                return standardize_response(status_code=400, messages=["Invalid departure_date in payload"])
             
             # checking idempotency key
             event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
@@ -81,7 +81,7 @@ class InventoryService:
             try:
                 departure_date = date.fromisoformat(departure_date_raw)
             except ValueError as e:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=["departure_date must be in YYYY-MM-DD format"],
                 )
@@ -135,7 +135,7 @@ class InventoryService:
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=[f"Unable to create train route due to data constraint violation. {msg}"],
             )
@@ -155,7 +155,7 @@ class InventoryService:
     async def get_inventory_schedule_availabiliity(self, schedule_id: int):
         inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)
         if not inventory_schedule:
-            return error_response(
+            return standardize_response(
                 status_code=404,
                 messages=[f"No schedule inventory found"],
             )
@@ -190,7 +190,7 @@ class InventoryService:
             
             inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)
             if not inventory_schedule:
-                return error_response(
+                return standardize_response(
                     status_code=404,
                     messages=[f"No schedule inventory found"],
                 )
@@ -265,7 +265,7 @@ class InventoryService:
                     })
 
                 if len(updated_seats)<0:
-                    return error_response(
+                    return standardize_response(
                         status_code=404,
                         messages=["Seats details not found"],
                     )

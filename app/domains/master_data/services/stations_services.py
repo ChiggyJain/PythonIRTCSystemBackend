@@ -5,7 +5,7 @@ from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -54,7 +54,7 @@ class StationsService:
                 window=settings.MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many station create requests. Please try again later."],
                 )
@@ -109,7 +109,7 @@ class StationsService:
         
         except IntegrityError:
             await self._db_session.rollback()
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=["Station code already exists"],
             )

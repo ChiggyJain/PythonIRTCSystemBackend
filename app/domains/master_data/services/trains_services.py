@@ -6,7 +6,7 @@ from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -70,7 +70,7 @@ class TrainsService:
                 window=settings.MASTERDATA_TRAIN_CREATE_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many train create requests. Please try again later."],
                 )
@@ -152,7 +152,7 @@ class TrainsService:
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=[f"Unable to create train due to data constraint violation. {msg}"],
             )

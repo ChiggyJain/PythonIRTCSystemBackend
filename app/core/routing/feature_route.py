@@ -56,8 +56,8 @@ class FeatureAPIRoute(APIRoute):
                         f"{start_time} | {end_time} | {duration} | {error} | {status_code}"
                     )
                     log_message(log_msg, logging_config=logging_config)
-                    from app.core.response import error_response
-                    return error_response(
+                    from app.core.response import standardize_response
+                    return standardize_response(
                         messages=["Too many requests"],
                         status_code=429,
                     )

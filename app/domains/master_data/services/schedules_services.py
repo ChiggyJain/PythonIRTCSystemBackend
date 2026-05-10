@@ -7,7 +7,7 @@ from app.common.utils.datetime import now_ist
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     success_response, 
-    error_response,
+    standardize_response,
     exception_response
 )
 from app.core.settings import get_settings
@@ -53,7 +53,7 @@ class TrainSchedulesService:
                 window=settings.MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
-                return error_response(
+                return standardize_response(
                     status_code=429,
                     messages=["Too many train schedule create requests. Please try again later."],
                 )
@@ -61,7 +61,7 @@ class TrainSchedulesService:
             # train must exist
             train_details = await self.masterdata_repo.get_train_by_id(train_id=train_id)
             if not train_details:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[f"Train {train_id} does not exist"],
                 )
@@ -69,7 +69,7 @@ class TrainSchedulesService:
             # route must exist for this train
             route = await self.masterdata_repo.get_route_by_train_id(train_id=train_id)
             if not route:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[f"Route does not exist for train {train_id}"],
                 )
@@ -77,7 +77,7 @@ class TrainSchedulesService:
             # route stations must exist
             route_stations = await self.masterdata_repo.get_route_stations_by_route_id(route_id=route.id)
             if not route_stations:
-                return error_response(
+                return standardize_response(
                     status_code=400,
                     messages=[f"Route stations not found for train {train_id}"],
                 )
@@ -179,7 +179,7 @@ class TrainSchedulesService:
         except IntegrityError as ex:
             await self._db_session.rollback()
             msg = str(getattr(ex, "orig", ex)).lower()
-            return error_response(
+            return standardize_response(
                 status_code=400,
                 messages=[f"Unable to create train schedule due to data constraint violation. {msg}"],
             )
