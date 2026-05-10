@@ -105,7 +105,7 @@ class BookingSQLAlchemyRepository:
                 price=item.get("price", 0.00),
                 created_at=now_ist(),
                 updated_at=now_ist(),
-                status=item.get("status", "ACTIVE"),
+                status="ACTIVE",
             )
             rows.append(row)
         self._db_session.add_all(rows)
