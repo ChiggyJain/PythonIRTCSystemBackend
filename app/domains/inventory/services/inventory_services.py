@@ -407,7 +407,7 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
-            # await self._db_session.commit()
+            await self._db_session.commit()
 
             """
             # task is pending
@@ -416,6 +416,7 @@ class InventoryService:
             # schedule_id, train_id, count.available, counts.locked, counts.booked
             """
 
+            
             return standardize_response(
                 status_code=200,
                 messages=["Seats locked successfully"],
