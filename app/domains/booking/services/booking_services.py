@@ -31,7 +31,7 @@ settings = get_settings()
 class BookingService:
 
     def __init__(self, db_session: AsyncSession):
-        self.db = db_session
+        self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.booking_repo = BookingSQLAlchemyRepository(db_session)
         
@@ -180,6 +180,7 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
+            self._db_session.commit()
             booking_details = orm_to_dict(created_booking)
             booking_details["booking_id"] = created_booking.id
             bookingId = created_booking.id
