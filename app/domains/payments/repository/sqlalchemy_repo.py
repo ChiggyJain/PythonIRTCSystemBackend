@@ -6,10 +6,9 @@ from typing import Any
 from sqlalchemy import select, update, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
-from app.domains.booking.models.bookings_models import Bookings
-from app.domains.booking.models.booking_seats_models import BookingSeats
-from app.domains.booking.models.booking_passgenger_models import BookingPassengers
-from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
+from app.domains.payments.models.payment_orders_models import PaymentOrders
+from app.domains.payments.models.refund_orders_models import RefundOrders
+from app.domains.payments.models.payment_audit_logs_models import PaymentAuditLogs
 
 
 class PaymentSQLAlchemyRepository:
