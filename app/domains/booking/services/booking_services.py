@@ -166,7 +166,7 @@ class BookingService:
                 train_id=inventoryScheduleDataObj["train_id"],
                 train_number=inventoryScheduleDataObj["train_number"],
                 train_name=inventoryScheduleDataObj["train_name"],
-                departure_date=inventoryScheduleDataObj["departure_date"],
+                departure_date=datetime.strptime(inventoryScheduleDataObj["departure_date"], "%Y-%m-%d").date(),
                 total_amount=totalAmount,
                 seat_count=len(seat_ids),
                 from_station_id=from_station_id,
@@ -180,7 +180,6 @@ class BookingService:
                 version=0,
                 status="PENDING",
             )
-            self._db_session.commit()
             booking_details = orm_to_dict(created_booking)
             booking_details["booking_id"] = created_booking.id
             bookingId = created_booking.id
@@ -195,7 +194,8 @@ class BookingService:
                 for passenger in created_booking_passengers
             ]
 
-
+            await self._db_session.commit()
+            
             return standardize_response(
                 status_code=200,
                 messages=[f"Booking created: {totalAmount}"],
