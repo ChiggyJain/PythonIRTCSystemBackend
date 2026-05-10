@@ -57,7 +57,7 @@ class BookingService:
             IDEMPOTENCY_EVENT_KEY_PREFIX = "booking"
 
             # checking given idempotency key exists or not
-            event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{idempotency_key}"
+            event_key = f"booking:{idempotency_key}"
             existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing_idempotency_record:
                 return standardize_response(
@@ -261,6 +261,24 @@ class BookingService:
             # commit the records into db level
             await self._db_session.commit()
             
+            
+
+            # adding entries into booking-saga-logs table
+            created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
+                booking_id = bookingId, 
+                saga_step = "CREATE_PAYMENT", 
+                request = {
+                    "booking_id" : booking_details["id"], 
+                    "amount" : booking_details["total_amount"], 
+                    "user_id" : booking_details["user_id"], 
+                },
+                response = None, 
+                error = None, 
+                status = "PENDING"
+            )
+            booking_details["saga_logs"] = orm_to_dict(created_booking_saga_logs)
+
+
 
             return standardize_response(
                 status_code=200,
