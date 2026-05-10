@@ -215,7 +215,6 @@ class InventoryService:
                         SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
                     ],
                     order_by = [
-                        # SeatSegmentLockInventory.seat_number.asc()
                         SeatSegmentLockInventory.seat_id.asc()
                     ]
                 )
@@ -229,11 +228,8 @@ class InventoryService:
                     where_conditions = [
                         SeatSegmentLockInventory.schedule_id == schedule_id,
                         SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
-                        SeatSegmentLockInventory.from_station_sequence_number < to_station_sequence_number,
-                        SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
                     ],
                     order_by = [
-                        # SeatSegmentLockInventory.seat_number.asc()
                         SeatSegmentLockInventory.seat_id.asc()
                     ]
                 )
@@ -279,19 +275,9 @@ class InventoryService:
                     )
                 
         except Exception as e:
-            import traceback
-            tb = traceback.extract_tb(e.__traceback__)
-            line_number = tb[-1].lineno
-            file_name = tb[-1].filename
-            function_name = tb[-1].name
             return standardize_response(
                 status_code=500,
-                messages=[
-                    f"Error: {str(e)}",
-                    f"File: {file_name}",
-                    f"Function: {function_name}",
-                    f"Line: {line_number}"
-                ]
+                messages=[f"{str(e)}"]
             )
 
 

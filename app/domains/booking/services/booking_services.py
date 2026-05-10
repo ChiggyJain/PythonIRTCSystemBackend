@@ -55,25 +55,24 @@ class BookingService:
             IDEMPOTENCY_EVENT_TYPE = "booking"
             IDEMPOTENCY_EVENT_KEY_PREFIX = "booking"
 
-            return standardize_response(
-                status_code=200,
-                messages=[f"Booking created successfully"],
-                data=None,
-            )
-            
             # checking given idempotency key exists or not
             event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{idempotency_key}"
             existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing_idempotency_record:
-                return existing_idempotency_record.event_response
+                return standardize_response(
+                    status_code=200,
+                    messages=[f"Booking created successfully"],
+                    data=None,
+                )
             
-            # fetching schedule-inventory details
+            # fetching schedule availability from external inventory service
             inventoryScheduleDataObj = None
             async with httpx.AsyncClient() as client:
-                response = await client.get(f"http://127.0.0.1:8000/inventory/schedules/{schedule_id}/availability")
+                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/inventory/schedules/{schedule_id}/availability")
                 response.raise_for_status()
                 data = response.json()
                 inventoryScheduleDataObj = data.get("data", None)
+            print(f"inventoryScheduleDataObj: {inventoryScheduleDataObj}")
             if inventoryScheduleDataObj == None:
                 raise BaseAppException(
                     status_code=400,
@@ -84,16 +83,17 @@ class BookingService:
                     status_code=400,
                     messages=[f"Inventory schedule is not active for Train-Schedule-ID: {schedule_id}"],
                 )
-            if inventoryScheduleDataObj["departure_date"]<today_ist():
+            departure_date = datetime.strptime(inventoryScheduleDataObj["departure_date"], "%Y-%m-%d").date()
+            if departure_date<today_ist():
                 raise BaseAppException(
                     status_code=400,
                     messages=[f"Train is already departed for Train-Schedule-ID: {schedule_id}"],
                 )
             
-            # fetching seats details
+            # fetching seats details from external inventory service
             seatData = None
             async with httpx.AsyncClient() as client:
-                response = await client.get(f"http://127.0.0.1:8000/inventory/schedules/{schedule_id}/seats", params={
+                response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/inventory/schedules/{schedule_id}/seats", params={
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })
