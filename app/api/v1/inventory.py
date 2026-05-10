@@ -4,8 +4,13 @@ from typing import List
 from app.common.decorators.feature_control import feature_control
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.core.settings import get_settings
+from app.common.security.token_decoder import(
+    get_current_user_id_from_access_token,
+    get_current_user_details_from_access_token
+)
 from app.domains.inventory.services.inventory_services import InventoryService
 from app.dependencies.inventory import get_inventory_service
+from app.domains.inventory.schemas.seat_locks_schemas import SeatLocksRequest
 
 
 settings = get_settings()
@@ -90,15 +95,13 @@ router.add_api_route(
         },
     }
 )
-async def create_booking(
-    body: CreateBookingRequest,
+async def lock_seats(
+    body: SeatLocksRequest,
     request: Request,
-    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),
-    service: BookingService = Depends(get_booking_service),
+    service: InventoryService = Depends(get_inventory_service),
 ):
     
     payload = body.model_dump()
-    payload["user_id"] = int(user_details_from_access_token.get("sub"))
     payload["ip_address"] = request.client.host if request.client else None
     payload["user-agent"] = request.headers.get("user-agent")
     payload["correlation_id"] = request.headers.get("x-correlation-id")
@@ -107,7 +110,7 @@ async def create_booking(
 
 router.add_api_route(
     "/schedules/seats/lock",
-    create_booking,
+    lock_seats,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )

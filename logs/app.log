@@ -809,3 +809,11 @@
 2026-05-10 14:27:20 | INFO | ES client created for index: stations
 2026-05-10 14:28:00 | INFO | ES client created for index: routes
 2026-05-10 14:28:00 | INFO | ES client created for index: stations
+2026-05-10 14:39:24 | INFO | ES client created for index: routes
+2026-05-10 14:39:24 | INFO | ES client created for index: stations
+2026-05-10 14:39:53 | INFO | ES client created for index: routes
+2026-05-10 14:39:53 | INFO | ES client created for index: stations
+2026-05-10 14:39:56 | INFO | ES client created for index: routes
+2026-05-10 14:39:56 | INFO | ES client created for index: stations
+2026-05-10 14:40:01 | INFO | ES client created for index: routes
+2026-05-10 14:40:01 | INFO | ES client created for index: stations
