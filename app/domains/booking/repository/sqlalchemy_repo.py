@@ -99,13 +99,13 @@ class BookingSQLAlchemyRepository:
         for item in seat_details:
             row = BookingSeats(
                 booking_id=booking_id,
-                seat_id=item["seat_id"],
-                seat_number=item["seat_number"],
-                seat_type=item["seat_type"],
-                price=item["price"],
-                status="ACTIVE",
+                seat_id=item.get("seat_id", 0),
+                seat_number=item.get("seat_number", 0),
+                seat_type=item.get("seat_type", "LOWER"),
+                price=item.get("price", 0.00),
                 created_at=now_ist(),
                 updated_at=now_ist(),
+                status=item.get("status", "ACTIVE"),
             )
             rows.append(row)
         self._db_session.add_all(rows)
@@ -124,13 +124,13 @@ class BookingSQLAlchemyRepository:
         for item in passenger_details:
             row = BookingPassengers(
                 booking_id=booking_id,
-                seat_id=item["seat_id"],
-                name=item["name"],
-                age=item["age"],
-                gender=item["gender"],
-                status="ACTIVE",
+                seat_id=item.get("seat_id", 0),
+                name=item.get("name", "Default"),
+                age=item.get("age", 1),
+                gender=item.get("gender", "Male"),
                 created_at=now_ist(),
                 updated_at=now_ist(),
+                status=item.get("status", "ACTIVE"),
             )
             rows.append(row)
         self._db_session.add_all(rows)
