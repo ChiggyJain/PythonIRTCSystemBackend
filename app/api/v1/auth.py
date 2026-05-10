@@ -1,5 +1,4 @@
 
-from aiohttp import payload
 from fastapi import (
     APIRouter, Depends, Request
 )
@@ -13,7 +12,6 @@ from app.domains.auth.schemas.schemas import (
     RefreshTokenRequest,
     LogoutRequest,
 )
-from app.core.exceptions import BaseAppException
 from app.common.security.token_decoder import(
     get_current_user_details_from_access_token,
 )
