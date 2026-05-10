@@ -1,8 +1,8 @@
 """create tables
 
-Revision ID: 835c83bee110
+Revision ID: 2e4b28ae0655
 Revises: 
-Create Date: 2026-05-09 08:49:09.759320
+Create Date: 2026-05-10 09:07:56.294520
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '835c83bee110'
+revision: str = '2e4b28ae0655'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -237,6 +237,22 @@ def upgrade() -> None:
     sa.UniqueConstraint('schedule_id', 'seat_id', name='uq_scheduleIdSeatId'),
     sa.UniqueConstraint('schedule_id', 'seat_number', name='uq_scheduleIdSeatNumber')
     )
+    op.create_table('SEAT_SEGMENT_LOCK',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('schedule_id', sa.Integer(), nullable=False),
+    sa.Column('seat_id', sa.Integer(), nullable=False),
+    sa.Column('from_station_sequence_number', sa.Integer(), nullable=False),
+    sa.Column('to_station_sequence_number', sa.Integer(), nullable=False),
+    sa.Column('locked_by_user_id', sa.Integer(), nullable=True),
+    sa.Column('locked_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('locked_expires_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('booking_id', sa.Integer(), nullable=True),
+    sa.Column('version', sa.Integer(), server_default='0', nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('status', sa.Enum('AVAILABLE', 'LOCKED', 'BOOKED', 'CANCELLED', name='seat_segement_status_enum'), server_default='AVAILABLE', nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('SECURITY_EVENT_LOG',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -338,6 +354,7 @@ def downgrade() -> None:
     op.drop_index('ix_security_event_name_created', table_name='SECURITY_EVENT_LOG')
     op.drop_index('ix_security_event_correlation_id', table_name='SECURITY_EVENT_LOG')
     op.drop_table('SECURITY_EVENT_LOG')
+    op.drop_table('SEAT_SEGMENT_LOCK')
     op.drop_table('SEAT_INVENTORY')
     op.drop_index('ix_status', table_name='SEATS')
     op.drop_table('SEATS')
