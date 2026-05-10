@@ -175,7 +175,7 @@ class BookingService:
                 to_station_sequence_number=to_station_sequence_number,
                 idempotency_key=idempotency_key,
                 payment_order_id=None,
-                locked_expires_at=locked_expires_at,
+                locked_expires_at=locked_expires_at.strftime("%Y-%m-%d %H:%M:%S"),
                 failure_reason=None,
                 version=0,
                 status="PENDING",

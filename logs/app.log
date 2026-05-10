@@ -607,3 +607,11 @@
 2026-05-10 12:15:03 | INFO | SpawnProcess-320-33736 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 12:15:03.145357 | 2026-05-10 12:15:03.292070 | 146 | None | 500
 2026-05-10 12:15:30 | INFO | ES client created for index: routes
 2026-05-10 12:15:30 | INFO | ES client created for index: stations
+2026-05-10 12:16:23 | INFO | SpawnProcess-321-33792 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 12:16:23.177045 | 2026-05-10 12:16:23.182881 | 5 | None | 200
+2026-05-10 12:16:23 | INFO | SpawnProcess-321-33792 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 12:16:23.210862 | 2026-05-10 12:16:23.225942 | 15 | None | 200
+2026-05-10 12:16:23 | INFO | SpawnProcess-321-33792 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 12:16:23.074424 | 2026-05-10 12:16:23.234910 | 160 | None | 500
+2026-05-10 12:17:29 | INFO | ES client created for index: routes
+2026-05-10 12:17:29 | INFO | ES client created for index: stations
+2026-05-10 12:17:31 | INFO | SpawnProcess-323-33950 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-10 12:17:31.788569 | 2026-05-10 12:17:31.793758 | 5 | None | 200
+2026-05-10 12:17:31 | INFO | SpawnProcess-323-33950 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-10 12:17:31.821492 | 2026-05-10 12:17:31.835502 | 14 | None | 200
+2026-05-10 12:17:31 | INFO | SpawnProcess-323-33950 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-10 12:17:31.708371 | 2026-05-10 12:17:31.838011 | 129 | None | 400
