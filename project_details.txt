@@ -527,6 +527,7 @@ http://127.0.0.1:8000/api/v1/admin/master-data/train-schedules
 }
 
 
+http://127.0.0.1:8000/api/v1/bookings/bookings
 
 
 
