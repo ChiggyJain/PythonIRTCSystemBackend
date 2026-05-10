@@ -12,7 +12,7 @@ from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
-from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
+from app.domains.payments.repository.sqlalchemy_repo import PaymentSQLAlchemyRepository
 
 
 
@@ -25,7 +25,7 @@ class PaymentService:
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
-        self.booking_repo = BookingSQLAlchemyRepository(db_session)
+        self.payment_repo = PaymentSQLAlchemyRepository(db_session)
         
 
 
