@@ -212,6 +212,7 @@ class InventoryService:
                     ],
                     where_conditions = [
                         SeatSegmentLockInventory.schedule_id == schedule_id,
+                        SeatSegmentLockInventory.seat_id.in_(seat_ids),
                         SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
                         SeatSegmentLockInventory.from_station_sequence_number < to_station_sequence_number,
                         SeatSegmentLockInventory.to_station_sequence_number > from_station_sequence_number,
@@ -229,6 +230,7 @@ class InventoryService:
                     ],
                     where_conditions = [
                         SeatSegmentLockInventory.schedule_id == schedule_id,
+                        SeatSegmentLockInventory.seat_id.in_(seat_ids),
                         SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"]),
                     ],
                     order_by = [
