@@ -390,47 +390,40 @@ class InventoryService:
                     "locked_expires_at": locked_expires_at
                 }
             )
-                        
 
+            # recompute each seat's summary status from its segment locks
+            recomputed_segment_seat_status_rsp_obj = await self.recompute_segment_seat_statuses(
+                schedule_id=schedule_id,
+                seat_ids=seat_ids
+            )            
 
-            # TRANSACTION START
-            async with self._db_session.begin():
+            # recount aggregates from actual seat rows (prevents counter drift)
+            counts = await self.recount_schedule_aggregates(
+                schedule_id=schedule_id
+            )
 
+            return standardize_response(
+                status_code=200,
+                messages=["Seats locked successfully"],
+                data={
+                    "schedule_id": schedule_id,
+                    "locked_seats": [
+                        {
+                            "seat_id": seat.seat_id,
+                            "seat_number": seat.seat_number,
+                            "lock_expires_at": locked_expires_at.strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            )
+                        }
+                        for seat in locked_seat_inventory_list
+                    ],
+                    "lock_expires_at": locked_expires_at.strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
+                    "counts": counts
+                }
+            )
 
-                # Recompute seat statuses
-                await self.recompute_segment_seat_statuses(
-                    schedule_id=schedule_id,
-                    seat_ids=seat_ids
-                )
-
-                # Recompute aggregate counters
-                counts = await self.recount_schedule_aggregates(
-                    schedule_id=schedule_id
-                )
-
-                # TRANSACTION END
-
-                return standardize_response(
-                    status_code=200,
-                    messages=["Seats locked successfully"],
-                    data={
-                        "schedule_id": schedule_id,
-                        "locked_seats": [
-                            {
-                                "seat_id": seat.seat_id,
-                                "seat_number": seat.seat_number,
-                                "lock_expires_at": locked_expires_at.strftime(
-                                    "%Y-%m-%d %H:%M:%S"
-                                )
-                            }
-                            for seat in locked_seat_inventory_list
-                        ],
-                        "lock_expires_at": locked_expires_at.strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        ),
-                        "counts": counts
-                    }
-                )
 
         except BaseAppException:
             await self._db_session.rollback()
@@ -452,95 +445,111 @@ class InventoryService:
         seat_ids: list[str]
     ):
 
+
         status_changes = {
+            "operation_status" : "FAILED",
             "now_available": 0,
             "now_occupied": 0,
             "locked_to_booked": 0,
             "booked_to_locked": 0,
         }
+        
+        try:
+                
+            for seat_id in seat_ids:
 
-        for seat_id in seat_ids:
-
-            # Fetch active segment locks
-            lock_stmt = (
-                select(
-                    SeatSegmentLockInventory.status
+                # fetch seat segment locks
+                lock_stmt = (
+                    select(
+                        SeatSegmentLockInventory.status
+                    )
+                    .where(
+                        SeatSegmentLockInventory.schedule_id == schedule_id,
+                        SeatSegmentLockInventory.seat_id == seat_id,
+                        SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"])
+                    )
                 )
-                .where(
-                    SeatSegmentLockInventory.schedule_id == schedule_id,
-                    SeatSegmentLockInventory.seat_id == seat_id,
-                    SeatSegmentLockInventory.status.in_(["LOCKED", "BOOKED"])
+                lock_result = await self._db_session.execute(lock_stmt)
+                locks = lock_result.scalars().all()
+
+                # Determine final seat status
+                if len(locks) == 0:
+                    new_status = "AVAILABLE"
+                elif "LOCKED" in locks:
+                    new_status = "LOCKED"
+                else:
+                    new_status = "BOOKED"
+
+                # fetch seat inventory row
+                seat_stmt = (
+                    select(SeatInventory)
+                    .where(
+                        SeatInventory.schedule_id == schedule_id,
+                        SeatInventory.seat_id == seat_id
+                    )
+                    .with_for_update(skip_locked=True)
                 )
-            )
-            lock_result = await self._db_session.execute(lock_stmt)
-            locks = lock_result.scalars().all()
+                seat_result = await self._db_session.execute(seat_stmt)
+                seat_inventory = seat_result.scalar_one_or_none()
+                if seat_inventory is None:
+                    continue
 
-            # Determine final seat status
-            if len(locks) == 0:
-                new_status = "AVAILABLE"
-            elif "LOCKED" in locks:
-                new_status = "LOCKED"
-            else:
-                new_status = "BOOKED"
+                old_status = seat_inventory.status
 
-            # Lock seat inventory row
-            seat_stmt = (
-                select(SeatInventory)
-                .where(
-                    SeatInventory.schedule_id == schedule_id,
-                    SeatInventory.seat_id == seat_id
-                )
-                .with_for_update(skip_locked=True)
-            )
-            seat_result = await self._db_session.execute(seat_stmt)
-            seat_inventory = seat_result.scalar_one_or_none()
-            if seat_inventory is None:
-                continue
+                # Skip if no changes
+                if old_status == new_status:
+                    continue
 
-            old_status = seat_inventory.status
+                # Transition tracking
+                if (
+                    old_status == "AVAILABLE"
+                    and new_status != "AVAILABLE"
+                ):
+                    status_changes["now_occupied"] += 1
 
-            # Skip if no changes
-            if old_status == new_status:
-                continue
+                if (
+                    old_status != "AVAILABLE"
+                    and new_status == "AVAILABLE"
+                ):
+                    status_changes["now_available"] += 1
 
-            # Transition tracking
-            if (
-                old_status == "AVAILABLE"
-                and new_status != "AVAILABLE"
-            ):
-                status_changes["now_occupied"] += 1
+                if (
+                    old_status == "LOCKED"
+                    and new_status == "BOOKED"
+                ):
+                    status_changes["locked_to_booked"] += 1
 
-            if (
-                old_status != "AVAILABLE"
-                and new_status == "AVAILABLE"
-            ):
-                status_changes["now_available"] += 1
+                if (
+                    old_status == "BOOKED"
+                    and new_status == "LOCKED"
+                ):
+                    status_changes["booked_to_locked"] += 1
 
-            if (
-                old_status == "LOCKED"
-                and new_status == "BOOKED"
-            ):
-                status_changes["locked_to_booked"] += 1
+                # Update inventory seat status
+                seat_inventory.status = new_status
 
-            if (
-                old_status == "BOOKED"
-                and new_status == "LOCKED"
-            ):
-                status_changes["booked_to_locked"] += 1
+                # Reset lock/booking metadata
+                if new_status == "AVAILABLE":
+                    seat_inventory.locked_by_user_id = None
+                    seat_inventory.locked_at = None
+                    seat_inventory.locked_expires_at = None
+                    seat_inventory.booking_id = None
 
-            # Update inventory seat status
-            seat_inventory.status = new_status
+                seat_inventory.version+= 1
 
-            # Reset lock/booking metadata
-            if new_status == "AVAILABLE":
-                seat_inventory.locked_by_user_id = None
-                seat_inventory.locked_at = None
-                seat_inventory.locked_expires_at = None
-                seat_inventory.booking_id = None
+            status_changes["operation_status"] = "SUCCESS"
 
-            seat_inventory.version+= 1
-
+        except Exception as e:
+            status_changes = {
+                "operation_status" : "FAILED",
+                "now_available": 0,
+                "now_occupied": 0,
+                "locked_to_booked": 0,
+                "booked_to_locked": 0,
+            }
+        
         return status_changes
+
 
 
     async def recount_schedule_aggregates(
@@ -548,50 +557,74 @@ class InventoryService:
         schedule_id: int
     ):
 
-        stmt = (
-            select(
-                func.count().filter(
-                    SeatInventory.status == "AVAILABLE"
-                ).label("available"),
-                func.count().filter(
-                    SeatInventory.status == "LOCKED"
-                ).label("locked"),
-                func.count().filter(
-                    SeatInventory.status == "BOOKED"
-                ).label("booked"),
-            )
-            .where(
-                SeatInventory.schedule_id == schedule_id
-            )
-        )
-        result = await self._db_session.execute(stmt)
-        counts = result.mappings().one()
-
-        schedule_stmt = (
-            select(ScheduleInventory)
-            .where(
-                ScheduleInventory.schedule_id == schedule_id
-            )
-            .with_for_update(skip_locked=True)
-        )
-        schedule_result = await self._db_session.execute(
-            schedule_stmt
-        )
-        schedule_inventory = (
-            schedule_result.scalar_one_or_none()
-        )
-
-        if schedule_inventory:
-            schedule_inventory.available = counts["available"]
-            schedule_inventory.locked = counts["locked"]
-            schedule_inventory.booked = counts["booked"]
-            schedule_inventory.version += 1
-
-        return {
-            "available": counts["available"],
-            "locked": counts["locked"],
-            "booked": counts["booked"],
+        count_changes = {
+            "operation_status" : "FAILED",
+            "available": 0,
+            "locked": 0,
+            "booked": 0,
         }
+
+        try:
+            
+            # fetching seats summary from seat-inventory
+            stmt = (
+                select(
+                    func.count().filter(
+                        SeatInventory.status == "AVAILABLE"
+                    ).label("available"),
+                    func.count().filter(
+                        SeatInventory.status == "LOCKED"
+                    ).label("locked"),
+                    func.count().filter(
+                        SeatInventory.status == "BOOKED"
+                    ).label("booked"),
+                )
+                .where(
+                    SeatInventory.schedule_id == schedule_id
+                )
+            )
+            result = await self._db_session.execute(stmt)
+            counts = result.mappings().one()
+
+            # fetching schedule inventory details for updating seats summary counters
+            schedule_stmt = (
+                select(ScheduleInventory)
+                .where(
+                    ScheduleInventory.schedule_id == schedule_id
+                )
+                .with_for_update(skip_locked=True)
+            )
+            schedule_result = await self._db_session.execute(
+                schedule_stmt
+            )
+            schedule_inventory = (
+                schedule_result.scalar_one_or_none()
+            )
+
+            if schedule_inventory:
+                schedule_inventory.available = counts["available"]
+                schedule_inventory.locked = counts["locked"]
+                schedule_inventory.booked = counts["booked"]
+                schedule_inventory.version += 1
+
+            count_changes = {
+                "operation_status" : "SUCCESS",
+                "available": counts["available"],
+                "locked": counts["locked"],
+                "booked": counts["booked"],
+            }
+        
+        except Exception as e:
+            count_changes = {
+                "operation_status" : "FAILED",
+                "available": 0,
+                "locked": 0,
+                "booked": 0,
+            }
+
+        return count_changes
+
+        
 
 
 
