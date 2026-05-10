@@ -10,7 +10,7 @@ from app.common.security.token_decoder import(
 )
 from app.domains.inventory.services.inventory_services import InventoryService
 from app.dependencies.inventory import get_inventory_service
-from app.domains.inventory.schemas.seat_locks_schemas import SeatLocksRequest
+from app.domains.inventory.schemas.seat_locks_schemas import LockSeatsRequest
 
 
 settings = get_settings()
@@ -96,7 +96,7 @@ router.add_api_route(
     }
 )
 async def lock_seats(
-    body: SeatLocksRequest,
+    body: LockSeatsRequest,
     request: Request,
     service: InventoryService = Depends(get_inventory_service),
 ):
@@ -106,7 +106,7 @@ async def lock_seats(
     payload["user-agent"] = request.headers.get("user-agent")
     payload["correlation_id"] = request.headers.get("x-correlation-id")
     payload["request_id"] = request.headers.get("x-request-id")
-    return await service.create_booking_details(payload=payload)
+    return await service.lock_seats(payload=payload)
 
 router.add_api_route(
     "/schedules/seats/lock",

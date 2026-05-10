@@ -9,7 +9,7 @@ from pydantic import (
 )
 
 
-class SeatLocksRequest(BaseModel):
+class LockSeatsRequest(BaseModel):
     
     user_id: int
     schedule_id: int
