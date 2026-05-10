@@ -1,6 +1,5 @@
 
 from anyio import to_thread
-from passlib import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from app.common.utils.logger import app_logger
@@ -18,7 +17,6 @@ from app.domains.users.repository.sqlalchemy_repo import (
 )
 from app.common.cache.redis_cache import (
     cache_get,
-    cache_set,
     cache_set,
     cache_set_add,
     cache_delete,
