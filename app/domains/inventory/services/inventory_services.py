@@ -402,6 +402,8 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
+            await self._db_session.commit()
+
             return standardize_response(
                 status_code=200,
                 messages=["Seats locked successfully"],

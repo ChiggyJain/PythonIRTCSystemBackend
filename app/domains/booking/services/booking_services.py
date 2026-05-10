@@ -218,11 +218,10 @@ class BookingService:
             )
             booking_details["saga_logs"] = orm_to_dict(created_booking_saga_logs)
 
+            # commit the records into db level
             await self._db_session.commit()
-            
 
-
-            # holding seats into external inventory service
+            # hold seats into external inventory service
             holdSeatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", params={
