@@ -403,3 +403,5 @@
 2026-05-10 11:35:21 | INFO | ES client created for index: stations
 2026-05-10 11:35:26 | INFO | ES client created for index: routes
 2026-05-10 11:35:26 | INFO | ES client created for index: stations
+2026-05-10 11:35:42 | INFO | ES client created for index: routes
+2026-05-10 11:35:42 | INFO | ES client created for index: stations
