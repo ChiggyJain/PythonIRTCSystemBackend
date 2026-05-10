@@ -416,7 +416,7 @@ class InventoryService:
                 messages=["Seats locked successfully"],
                 data={
                     "schedule_id": schedule_id,
-                    "train_id" : inventory_schedule["train_id"],
+                    "train_id" : inventory_schedule.train_id,
                     "locked_seats": [
                         {
                             "seat_id": seat.seat_id,
