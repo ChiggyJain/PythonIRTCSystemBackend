@@ -71,7 +71,7 @@ class PaymentService:
                     "user_id" : user_id
                 }
             }
-            payment_gateway_created_order_rsp_obj = payment_gateway_class_instances_obj.createOrder(**params2)
+            payment_gateway_created_order_rsp_obj = await payment_gateway_class_instances_obj.createOrder(**params2)
             
             # failed due to some reasons
             if payment_gateway_created_order_rsp_obj["status_code"]!=201:
@@ -104,7 +104,7 @@ class PaymentService:
             if payment_gateway_created_order_rsp_obj["status_code"] == 201:
                 
                 # creating payment orders into table
-                created_payment_orders_row =self.payment_repo.create_payment_orders(
+                created_payment_orders_row = await self.payment_repo.create_payment_orders(
                     idempotency_key=idempotency_key,
                     booking_id=booking_id,
                     user_id=user_id,
@@ -121,7 +121,7 @@ class PaymentService:
                 )
 
                 # creating payment audit logs into table
-                created_payment_orders_row =self.payment_repo.create_payment_audit_logs(
+                created_payment_orders_row = await self.payment_repo.create_payment_audit_logs(
                     payment_order_id=created_payment_orders_row.id,
                     action="ORDER_CREATED",
                     gateway_response=payment_gateway_created_order_rsp_obj["raw_response"],
