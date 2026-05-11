@@ -68,7 +68,7 @@ class BookingService:
             inventoryScheduleDataObj = None
             async with httpx.AsyncClient() as client:
                 response = await client.get(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/{schedule_id}/availability")
-                response.raise_for_status()
+                # response.raise_for_status()
                 data = response.json()
                 inventoryScheduleDataObj = data.get("data", None)
             print(f"inventoryScheduleDataObj: {inventoryScheduleDataObj}")
@@ -97,7 +97,7 @@ class BookingService:
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })
-                response.raise_for_status()
+                # response.raise_for_status()
                 data = response.json()
                 seatData = data.get("data", None)
             print(f"seatData: {seatData}")
@@ -137,9 +137,7 @@ class BookingService:
                     bookingSeats.append(seat)
                     totalAmount+= seat["price"]
 
-            
-            print(f"totalAmount: {totalAmount}")
-            
+        
             # preparing keys to acquire seat locks in redis via lua_script
             allRedisKeys = []
             for eachSeatId in seat_ids:
@@ -219,6 +217,7 @@ class BookingService:
             await self._db_session.commit()
 
             # hold seats into external inventory service
+            holdSeatRspObj = None
             holdSeatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", json={
@@ -229,10 +228,16 @@ class BookingService:
                     "from_station_sequence_number" : from_station_sequence_number,
                     "to_station_sequence_number" : to_station_sequence_number
                 })
-                response.raise_for_status()
-                data = response.json()
-                holdSeatData = data.get("data", None)
-            print(f"holdSeatData: {holdSeatData}")
+                # response.raise_for_status()
+                holdSeatRspObj = response.json()
+                holdSeatData = holdSeatRspObj.get("data", None)
+            print(f"holdSeatRspObj: {holdSeatRspObj}")
+            if holdSeatRspObj == None:
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"One or more seats are being booked by another user. Please try again"],
+                )
+
 
             # updating saga-logs table as compeleted
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
