@@ -70,7 +70,7 @@ class PaymentService:
             if payment_gateway_created_order_rsp_obj["status_code"] == 201:
                 
                 # creating payment orders into table
-                self.payment_repo.create_payment_orders(
+                created_payment_orders_row =self.payment_repo.create_payment_orders(
                     idempotency_key=idempotency_key,
                     booking_id=booking_id,
                     user_id=user_id,
@@ -87,7 +87,17 @@ class PaymentService:
                 )
 
                 # creating payment audit logs into table
-
+                created_payment_orders_row =self.payment_repo.create_payment_audit_logs(
+                    payment_order_id=created_payment_orders_row.id,
+                    action="ORDER_CREATED",
+                    gateway_response=payment_gateway_created_order_rsp_obj["raw_response"],
+                    metadata_json={
+                        "user_id" : user_id,
+                        "booking_id" : booking_id,
+                        "amount" : amount,
+                    },
+                    status="A"
+                )
 
 
         except Exception as e:
