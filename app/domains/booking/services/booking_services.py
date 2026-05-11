@@ -53,7 +53,6 @@ class BookingService:
             seat_ids.sort()
             passengers = payload.get("passengers", [])
             booking_details = {}
-            IDEMPOTENCY_EVENT_TYPE = "booking"
             
             # checking given idempotency key exists or not
             event_key = f"booking:{idempotency_key}"
@@ -61,8 +60,8 @@ class BookingService:
             if existing_idempotency_record:
                 return standardize_response(
                     status_code=200,
-                    messages=[f"Booking created successfully"],
-                    data=None,
+                    messages=[f"Booking already created"],
+                    data=existing_idempotency_record.event_response,
                 )
             
             # fetching schedule availability from external inventory service
@@ -183,25 +182,24 @@ class BookingService:
 
             booking_details = orm_to_dict(created_booking)
             booking_details["booking_id"] = created_booking.id
-            bookingId = created_booking.id
-
+            
             # adding entries into booking-seat table
-            created_booking_seats = await self.booking_repo.create_booking_seats(booking_id=bookingId, seat_details=bookingSeats)
-            booking_details["seats"] = [
-                orm_to_dict(seat)
-                for seat in created_booking_seats
-            ]
+            created_booking_seats = await self.booking_repo.create_booking_seats(
+                booking_id=booking_details["booking_id"], 
+                seat_details=bookingSeats
+            )
+            booking_details["seats"] = [orm_to_dict(seat) for seat in created_booking_seats]
 
             # adding entries into booking-passengers table
-            created_booking_passengers = await self.booking_repo.create_booking_passengers(booking_id=bookingId, passenger_details=passengers)
-            booking_details["passengers"] = [
-                orm_to_dict(passenger)
-                for passenger in created_booking_passengers
-            ]
+            created_booking_passengers = await self.booking_repo.create_booking_passengers(
+                booking_id=booking_details["booking_id"], 
+                passenger_details=passengers
+            )
+            booking_details["passengers"] = [orm_to_dict(passenger) for passenger in created_booking_passengers]
 
-            # adding entries into booking-saga-logs table
+            # adding entries into booking-saga-logs table as hold_seats
             created_booking_saga_logs1 = await self.booking_repo.create_booking_saga_logs(
-                booking_id = bookingId, 
+                booking_id = booking_details["booking_id"], 
                 saga_step = "HOLD_SEATS", 
                 request = {
                     "user_id" : booking_details["user_id"], 
@@ -224,8 +222,8 @@ class BookingService:
             holdSeatData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/lock", json={
-                    "user_id" : user_id,
-                    "schedule_id" : schedule_id,
+                    "user_id" : booking_details["user_id"],
+                    "schedule_id" : booking_details["schedule_id"],
                     "seat_ids" : seat_ids,
                     "ttl_seconds" : settings.LOCK_TTL_SECONDS,
                     "from_station_sequence_number" : from_station_sequence_number,
@@ -236,7 +234,7 @@ class BookingService:
                 holdSeatData = data.get("data", None)
             print(f"holdSeatData: {holdSeatData}")
 
-            # updating saga-logs table
+            # updating saga-logs table as compeleted
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
                 where_data={
                     "id": created_booking_saga_logs1.id
@@ -247,10 +245,10 @@ class BookingService:
                 }
             )
 
-            # updating booking table
+            # updating booking table as seats_held
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
                 where_data={
-                    "id": bookingId
+                    "id": booking_details["booking_id"]
                 },
                 update_data = {
                     "status" : "SEATS_HELD"
@@ -262,10 +260,10 @@ class BookingService:
             
             # adding entries into booking-saga-logs table related to creating payment order request
             created_booking_saga_logs2 = await self.booking_repo.create_booking_saga_logs(
-                booking_id = bookingId, 
+                booking_id = booking_details["booking_id"], 
                 saga_step = "CREATE_PAYMENT", 
                 request = {
-                    "booking_id" : booking_details["id"], 
+                    "booking_id" : booking_details["booking_id"], 
                     "amount" : booking_details["total_amount"], 
                     "user_id" : booking_details["user_id"], 
                 },
@@ -280,9 +278,9 @@ class BookingService:
             createdPaymentOrderRequestData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/orders", json={
-                    "idempotency_key" : f"{booking_details["id"]}-payment",
-                    "user_id" : user_id,
-                    "booking_id" : booking_details["id"],
+                    "idempotency_key" : f"{booking_details["booking_id"]}-payment",
+                    "user_id" : booking_details["user_id"],
+                    "booking_id" : booking_details["booking_id"],
                     "amount" : booking_details["total_amount"],
                 })
                 response.raise_for_status()
@@ -291,7 +289,7 @@ class BookingService:
             print(f"createdPaymentOrderRequestData: {createdPaymentOrderRequestData}")
 
 
-            # updating saga-logs table
+            # updating saga-logs table as completed
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
                 where_data={
                     "id": created_booking_saga_logs2.id
@@ -302,10 +300,10 @@ class BookingService:
                 }
             )
 
-            # updating booking table
+            # updating booking table as payment pending
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
                 where_data={
-                    "id": bookingId
+                    "id": booking_details["booking_id"],
                 },
                 update_data = {
                     "payment_order_id" : createdPaymentOrderRequestData["payment_order_id"],
@@ -328,8 +326,6 @@ class BookingService:
         
             """
             
-            # execute saga step2: Create payment order
-            createdPaymentOrderData = await executeCreatePayment(booking_details)
 
             # refreshing the booking-details
             booking_details["payment_order_id"] = createdPaymentOrderData["payment_order_id"]
