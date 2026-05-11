@@ -43,8 +43,7 @@ class CreatePaymentOrderRefundRequest(BaseModel):
     reason: str
     
     @field_validator(
-        "user_id",
-        "booking_id",
+        "payment_order_id",
         "amount",
     )
     @classmethod
