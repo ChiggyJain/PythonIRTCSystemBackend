@@ -1,5 +1,6 @@
 
 from datetime import date, datetime, timedelta
+from decimal import Decimal
 import json
 import httpx
 from sqlalchemy.exc import IntegrityError
@@ -80,7 +81,7 @@ class BookingService:
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(booking_details)
                                 case "CREATE_PAYMENT":
-                                    pass
+                                    rsp = await self.compensateCreatePayment(booking_details)
                                 case "CONFIRM_SEATS":
                                     pass
 
@@ -142,6 +143,56 @@ class BookingService:
                 status_code=500,
                 messages=[f"{str(e)}"]
             )
+        
+
+
+    async def compensateCreatePayment(self, *, payload: dict) -> dict:
+        
+        try:
+            
+            # extracted parameters
+            idempotency_key = f"{payload.get("booking_id")}-refund-compensation"
+            payment_order_id = int(payload.get("payment_order_id", 0))
+            amount = Decimal(payload.get("total_amount", 0.00))
+            reason = "booking_compensation"
+            booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
+            
+
+            # initiate refund process into external payment service
+            refundPaymentRspObj = None
+            # refundPaymentData = None
+            async with httpx.AsyncClient() as client:
+                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/payments/refunds", json={
+                    "idempotency_key" : idempotency_key,
+                    "payment_order_id" : payment_order_id,
+                    "amount" : amount,
+                    "reason" : reason,
+                })
+                refundPaymentRspObj = response.json()
+                # refundPaymentData = refundPaymentRspObj.get("data", None)
+            
+            # updating booking saga log table
+            isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "id": booking_saga_log_id
+                },
+                update_data = {
+                    "status" : "COMPENSATED"
+                }
+            )
+
+            await self._db_session.commit()
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"Compensated created payment process successfully"]
+            )
+
+        except Exception as e:
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )    
 
 
 
