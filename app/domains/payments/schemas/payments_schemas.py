@@ -1,5 +1,5 @@
 
-from typing import List, Literal
+from decimal import Decimal
 from pydantic import (
     BaseModel,
     field_validator,
@@ -14,7 +14,7 @@ class CreatePaymentOrderRequest(BaseModel):
     idempotency_key: str
     user_id: int
     booking_id: int
-    amount: int
+    amount: Decimal
     
     @field_validator(
         "user_id",
@@ -39,7 +39,7 @@ class CreatePaymentOrderRefundRequest(BaseModel):
 
     idempotency_key: str
     payment_order_id: int
-    amount: int
+    amount: Decimal
     reason: str
     
     @field_validator(
