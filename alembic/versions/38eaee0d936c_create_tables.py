@@ -1,8 +1,8 @@
 """create tables
 
-Revision ID: 0a3557f02744
+Revision ID: 38eaee0d936c
 Revises: 
-Create Date: 2026-05-11 11:07:04.338320
+Create Date: 2026-05-11 11:08:30.636698
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0a3557f02744'
+revision: str = '38eaee0d936c'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -162,7 +162,7 @@ def upgrade() -> None:
     sa.Column('version', sa.Integer(), server_default='0', nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
-    sa.Column('status', sa.Enum('CREATED', 'CAPTURED', 'FAILED', 'REFUND_INITIATED', 'REFUNDED', 'PARTIALLY_REFUNDED', 'FAILED', 'CANCELLED', 'EXPIRED', name='status_enum'), server_default='CREATED', nullable=False),
+    sa.Column('status', sa.Enum('CREATED', 'CAPTURED', 'REFUND_INITIATED', 'REFUNDED', 'PARTIALLY_REFUNDED', 'FAILED', 'CANCELLED', 'EXPIRED', name='status_enum'), server_default='CREATED', nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('gateway_order_id', name='uq_gatewayOrderId'),
     sa.UniqueConstraint('gateway_payment_id', name='uq_paymentOrderId'),

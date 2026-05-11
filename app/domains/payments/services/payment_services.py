@@ -121,7 +121,7 @@ class PaymentService:
                 )
 
                 # creating payment audit logs into table
-                created_payment_orders_row = await self.payment_repo.create_payment_audit_logs(
+                created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
                     payment_order_id=created_payment_orders_row.id,
                     action="ORDER_CREATED",
                     gateway_response=payment_gateway_created_order_rsp_obj["raw_response"],
