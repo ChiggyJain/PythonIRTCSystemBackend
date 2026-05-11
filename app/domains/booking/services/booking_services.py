@@ -273,6 +273,9 @@ class BookingService:
             )
             booking_details["create_payment_saga_logs"] = orm_to_dict(created_booking_saga_logs2)
 
+            # commit the records into db level
+            await self._db_session.commit()
+
 
             # creating payment order request into external payment services
             createdPaymentOrderRequestData = None
@@ -287,7 +290,7 @@ class BookingService:
                 data = response.json()
                 createdPaymentOrderRequestData = data.get("data", None)
             print(f"createdPaymentOrderRequestData: {createdPaymentOrderRequestData}")
-
+            booking_details["payment_orders"] = createdPaymentOrderRequestData
 
             # updating saga-logs table as completed
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -311,43 +314,27 @@ class BookingService:
                 }
             )
 
-
+            # updating json
+            booking_details["payment_order_id"] = createdPaymentOrderRequestData["payment_order_id"]
+            booking_details["status"] = "PAYMENT_PENDING"
+        
+            
+            # storing idempotency-key details
+            await self.idempotency_repo.add_idempotency_record(
+                event_key = event_key,
+                event_type = "created_booking",
+                event_response = booking_details
+            )
+            
+            # commit the records into db level
+            await self._db_session.commit()
 
             return standardize_response(
-                status_code=200,
+                status_code=201,
                 messages=[f"Booking created"],
                 data=booking_details
             )
             
-        
-
-
-            
-        
-            """
-            
-
-            # refreshing the booking-details
-            booking_details["payment_order_id"] = createdPaymentOrderData["payment_order_id"]
-            booking_details["status"] = "PAYMENT_PENDING"
-            booking_details["payment_order"] = {
-                "payment_order_id" : createdPaymentOrderData["payment_order_id"],
-                "gateway_order_id" : createdPaymentOrderData["gateway_order_id"],
-                "total_amount" : createdPaymentOrderData["total_amount"],
-                "currency" : createdPaymentOrderData["currency"],
-                "key_id" : createdPaymentOrderData["key_id"],
-            }
-
-            # storing idempotency-key details
-            await self.idempotency_repo.add_idempotency_record(
-                event_key = event_key,
-                event_type = IDEMPOTENCY_EVENT_TYPE,
-                event_response = booking_details
-            )
-
-            return booking_details
-
-            """
         
         except Exception as e:
 
