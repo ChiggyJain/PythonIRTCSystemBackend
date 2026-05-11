@@ -36,6 +36,9 @@ class BookingService:
         self.booking_repo = BookingSQLAlchemyRepository(db_session)
         
 
+    async def compensateAll(self, *, payload: dict) -> dict:
+        pass
+
 
     async def create_booking_details(self, *, payload: dict) -> dict:
         
@@ -59,7 +62,7 @@ class BookingService:
             existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing_idempotency_record:
                 return standardize_response(
-                    status_code=200,
+                    status_code=400,
                     messages=[f"Booking already created"],
                     data=existing_idempotency_record.event_response,
                 )
@@ -79,13 +82,13 @@ class BookingService:
                 )
             if inventoryScheduleDataObj["status"]!="ACTIVE":
                 return standardize_response(
-                    status_code=404,
+                    status_code=400,
                     messages=[f"Inventory schedule not active for Train-Schedule-ID: {schedule_id}"],
                 )
             departure_date = datetime.strptime(inventoryScheduleDataObj["departure_date"], "%Y-%m-%d").date()
             if departure_date<today_ist():
                 return standardize_response(
-                    status_code=404,
+                    status_code=400,
                     messages=[f"Train already departed for Train-Schedule-ID: {schedule_id}"],
                 )
             
@@ -233,11 +236,27 @@ class BookingService:
                 holdSeatData = holdSeatRspObj.get("data", None)
             print(f"holdSeatRspObj: {holdSeatRspObj}")
             if holdSeatRspObj == None:
+                params1 = {
+                    "booking_id" : booking_details["booking_id"],
+                    "seat_ids" : seat_ids,
+                    "reason" : f"Seats not locked into inventory external services."
+                }
+                await self.compensateAll(params1)
                 return standardize_response(
                     status_code=400,
-                    messages=[f"One or more seats are being booked by another user. Please try again"],
+                    messages=[f"Seats not locked into inventory external services."],
                 )
-
+            elif holdSeatRspObj.get("status_code") not in [200, 201]:
+                params1 = {
+                    "booking_id" : booking_details["booking_id"],
+                    "seat_ids" : seat_ids,
+                    "reason" : ", ".join(holdSeatRspObj.get("messages", ["Unknown error"]))
+                }
+                await self.compensateAll(params1)
+                return standardize_response(
+                    status_code=holdSeatRspObj.get("status_code"),
+                    messages=holdSeatRspObj.get("messages"),
+                )
 
             # updating saga-logs table as compeleted
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -263,7 +282,6 @@ class BookingService:
             )
             booking_details["status"] = "SEATS_HELD"
 
-
             # commit the records into db level
             await self._db_session.commit()
             
@@ -285,8 +303,8 @@ class BookingService:
             # commit the records into db level
             await self._db_session.commit()
 
-
             # creating payment order request into external payment services
+            createdPaymentOrderRequestRspObj = None
             createdPaymentOrderRequestData = None
             async with httpx.AsyncClient() as client:
                 response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/orders", json={
@@ -295,10 +313,44 @@ class BookingService:
                     "booking_id" : booking_details["booking_id"],
                     "amount" : booking_details["total_amount"],
                 })
-                response.raise_for_status()
-                data = response.json()
-                createdPaymentOrderRequestData = data.get("data", None)
-            print(f"createdPaymentOrderRequestData: {createdPaymentOrderRequestData}")
+                # response.raise_for_status()
+                createdPaymentOrderRequestRspObj = response.json()
+                createdPaymentOrderRequestData = createdPaymentOrderRequestRspObj.get("data", None)
+            print(f"createdPaymentOrderRequestRspObj: {createdPaymentOrderRequestRspObj}")
+            if createdPaymentOrderRequestRspObj == None:
+                params1 = {
+                    "booking_id" : booking_details["booking_id"],
+                    "seat_ids" : seat_ids,
+                    "reason" : "Payment orders not created into payment external services"
+                }
+                await self.compensateAll(params1)
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Payment orders not created into payment external services."],
+                )
+            elif createdPaymentOrderRequestRspObj.get("status_code") == 200:
+                params1 = {
+                    "booking_id" : booking_details["booking_id"],
+                    "seat_ids" : seat_ids,
+                    "reason" : "Payment orders already created into payment external services"
+                }
+                await self.compensateAll(params1)
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Payment orders already created into payment external services."],
+                )
+            elif createdPaymentOrderRequestRspObj.get("status_code") not in [200, 201]:
+                params1 = {
+                    "booking_id" : booking_details["booking_id"],
+                    "seat_ids" : seat_ids,
+                    "reason" : ", ".join(createdPaymentOrderRequestRspObj.get("messages", ["Unknown error"]))
+                }
+                await self.compensateAll(params1)
+                return standardize_response(
+                    status_code=400,
+                    messages=createdPaymentOrderRequestRspObj.get("messages")
+                )
+
             booking_details["payment_orders"] = createdPaymentOrderRequestData
             booking_details["payment_order_id"] = createdPaymentOrderRequestData["payment_order_id"]
 
@@ -346,7 +398,14 @@ class BookingService:
             
         
         except Exception as e:
-
+            
+            params1 = {
+                "booking_id" : booking_details.get("booking_id", 0),
+                "seat_ids" : seat_ids,
+                "reason" : str(e)
+            }
+            await self.compensateAll(params1)
+            
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]

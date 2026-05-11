@@ -418,7 +418,7 @@ class InventoryService:
 
             
             return standardize_response(
-                status_code=200,
+                status_code=201,
                 messages=["Seats locked successfully"],
                 data={
                     "schedule_id": schedule_id,
