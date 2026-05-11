@@ -343,27 +343,6 @@ class BookingService:
                 messages=[f"{str(e)}"]
             )
         
-            """
-            if booking_details:
-                await compensateAll(booking_details, seat_ids)
-                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
-                    where_data={
-                        "booking_id": booking_details["id"],
-                    },
-                    update_data = {
-                        "failure_reason" : "Fail to create booking details",
-                        "status" : "FAILED"
-                    }
-                )
-                releasedSeatLocksResponse = await releaseBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue)
-                
-
-            raise BaseAppException(
-                status_code=400,
-                messages=["Unable to create booking"],
-            )
-
-            """
 
 
 
