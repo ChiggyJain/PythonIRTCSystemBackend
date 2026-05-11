@@ -551,14 +551,6 @@ class InventoryService:
                 }
             )    
             
-
-
-
-
-
-
-
-        
         except BaseAppException as e:
             await self._db_session.rollback()
             return standardize_response(
