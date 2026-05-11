@@ -13,6 +13,7 @@ class RazorpayPaymentGateway(BasePaymentGateway):
     def __init__(self, **kwargs):
         pass
 
+
     async def createOrder(self, **kwargs):
 
         try:
@@ -58,6 +59,7 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             }
        
  
+
     async def verifyPaymentSignature(self, **kwargs):
         pass
 
@@ -66,3 +68,20 @@ class RazorpayPaymentGateway(BasePaymentGateway):
     
     async def fetchPayment(self, **kwargs):
         pass
+
+
+    async def initiateRefund(self, **kwargs):
+        
+        try:
+            
+            # extracted parameters
+            amount = kwargs.get("amount", 0)
+            currency = kwargs.get("currency", "INR")
+            receipt = kwargs.get("receipt", "")
+            notes = kwargs.get("notes", {})
+        
+        except Exception as e:
+            return {
+                "status_code" : 500,
+                "messages" : [f"{str(e)}"],
+            }

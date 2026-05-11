@@ -18,3 +18,7 @@ class BasePaymentGateway(ABC):
     @abstractmethod
     async def fetchPayment(self, **kwargs):
         pass
+
+    @abstractmethod
+    async def initiateRefund(self, **kwargs):
+        pass

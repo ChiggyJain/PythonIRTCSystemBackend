@@ -229,6 +229,26 @@ class PaymentService:
                         messages=[f"Gateway payment-id not found. No refund"]
                     )
                 
+                # fetching payment gateway instances details
+                params1 = {
+                    "payment_gateway_service_provider": payment_order.gateway_provider
+                }
+                payment_gateway_class_instances_obj = PaymentGatewayFactory.getPaymentGatewayInstances(**params1)
+                
+                # creating payment order request on selected payment gateway instances
+                params2 = {
+                    "amount": amount,
+                    "currency" : "INR",
+                    # this is our Unique-ID which we sending to payment-gateway for order creating request
+                    # this is from booking-table primary key right now
+                    "receipt" : booking_id,
+                    # this is additional json information which we sending to payment-gateway for order creating request
+                    "notes" : {
+                        "booking_id" : booking_id,
+                        "user_id" : user_id
+                    }
+                }
+                payment_gateway_created_order_rsp_obj = await payment_gateway_class_instances_obj.createOrder(**params2)
             
 
     
