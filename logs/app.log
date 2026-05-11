@@ -1597,3 +1597,5 @@
 2026-05-11 16:10:12 | INFO | SpawnProcess-1-12909 | unlock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/unlock | 2026-05-11 16:10:12.581448 | 2026-05-11 16:10:12.582605 | 1 | [{'type': 'model_attributes_type', 'loc': ('body',), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': b'{\n    "schedule_id" : 1,\n    "user_id" : 1,\n    "seat_ids" : [1],\n    "from_station_sequence_number" : 1,\n    "to_station_sequence_number" : 2\n}', 'url': 'https://errors.pydantic.dev/2.5/v/model_attributes_type'}] | 500
 2026-05-11 16:11:15 | INFO | ES client created for index: routes
 2026-05-11 16:11:15 | INFO | ES client created for index: stations
+2026-05-11 16:11:39 | INFO | ES client created for index: routes
+2026-05-11 16:11:39 | INFO | ES client created for index: stations
