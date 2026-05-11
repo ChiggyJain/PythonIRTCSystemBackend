@@ -1,6 +1,7 @@
 
 from datetime import date, datetime, timedelta
 import json
+from dns import message
 import httpx
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -64,7 +65,10 @@ class PaymentService:
             
             # failed due to some reasons
             if payment_gateway_created_order_rsp_obj["status_code"]!=201:
-                pass
+                return standardize_response(
+                    status_code=500,
+                    messages=payment_gateway_created_order_rsp_obj["messages"]
+                )
             
             # successfully created
             if payment_gateway_created_order_rsp_obj["status_code"] == 201:
@@ -99,7 +103,22 @@ class PaymentService:
                     status="A"
                 )
 
+                await self._db_session.commit()
+
+                return standardize_response(
+                    status_code=201,
+                    messages=[f"Payment orders created successfully"],
+                    data={
+                        "payment_order_id" : created_payment_orders_row.id,
+                        "gateway_service_provider" : created_payment_orders_row.gateway_provider,
+                        "gateway_order_id" : created_payment_orders_row.gateway_order_id,
+                        "amount" : created_payment_orders_row.total_amount,
+                        "currency" : created_payment_orders_row.currency,
+                        "payment_order_status" : created_payment_orders_row.status
+                    }
+                )
+
 
         except Exception as e:
-
-            pass
+            await self._db_session.rollback()
+            
