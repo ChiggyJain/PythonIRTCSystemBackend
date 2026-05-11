@@ -71,14 +71,39 @@ class RazorpayPaymentGateway(BasePaymentGateway):
 
 
     async def initiateRefund(self, **kwargs):
-        
+
         try:
             
             # extracted parameters
+            payment_id = kwargs.get("payment_id", "")
             amount = kwargs.get("amount", 0)
-            currency = kwargs.get("currency", "INR")
-            receipt = kwargs.get("receipt", "")
             notes = kwargs.get("notes", {})
+            
+            # actual razorpay implementation business logic will be come here
+            # dummy order response from razor payy
+            refund_response  = {
+                "amount": amount,
+                "amount_due": amount,
+                "amount_paid": 0,
+                "attempts": 0,
+                "created_at": int(time.time()),
+                "currency": "INR",
+                "entity": "order",
+                "id": str(uuid.uuid4()),
+                "notes": notes,
+                "offer_id": None,
+                "status": "created"
+            }
+
+            # hardcoded dummy response
+            return {
+                "status_code" : 200,
+                "messages" : [f"Payment gateway order refunded successfully"],
+                "payment_gateway_refund_id" : refund_response["id"],
+                "status" : refund_response["status"],
+                "amount" : refund_response["amount"],
+                "raw_response" : refund_response
+            }
         
         except Exception as e:
             return {
