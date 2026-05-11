@@ -78,7 +78,7 @@ class BookingService:
                             booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
                             match (each_booking_sag_log.saga_step):
                                 case "HOLD_SEATS":
-                                    await self.compensateHoldSeats(booking_details)
+                                    rsp = await self.compensateHoldSeats(booking_details)
                                 case "CREATE_PAYMENT":
                                     pass
                                 case "CONFIRM_SEATS":
@@ -98,12 +98,52 @@ class BookingService:
             
             # extracted parameters
             booking_id = int(payload.get("booking_id", 0))
+            user_id = int(payload.get("user_id", 0))
+            schedule_id = int(payload.get("schedule_id", 0))
             seat_ids = payload.get("seat_ids", [])
             seat_ids.sort()
-                
+            from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
+            to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
+            booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
+
+            # unlock hold seats into external inventory service
+            unLockHoldSeatRspObj = None
+            # unLockHoldSeatData = None
+            async with httpx.AsyncClient() as client:
+                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/unlock", json={
+                    "user_id" : user_id,
+                    "schedule_id" : schedule_id,
+                    "seat_ids" : seat_ids,
+                    "from_station_sequence_number" : from_station_sequence_number,
+                    "to_station_sequence_number" : to_station_sequence_number
+                })
+                unLockHoldSeatRspObj = response.json()
+                # unLockHoldSeatData = unLockHoldSeatRspObj.get("data", None)
+            
+            # updating booking saga log table
+            isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
+                where_data={
+                    "id": booking_saga_log_id
+                },
+                update_data = {
+                    "status" : "COMPENSATED"
+                }
+            )
+
+            await self._db_session.commit()
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"Compensated hold seats successfully"]
+            )
 
         except Exception as e:
-            pass
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+
+
 
 
 
