@@ -18,7 +18,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:booking:create",
+        "name": "user:payment:order:create",
         "logging": {
             "console": True,
             "file": True,
@@ -45,6 +45,40 @@ async def create_payment_order(
 router.add_api_route(
     "/orders",
     create_payment_order,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+@feature_control(
+    {
+        "name": "user:payment:order:refund",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 100,
+            "window": 60,
+        },
+    }
+)
+async def create_payment_order_refund(
+    body: CreatePaymentOrderRequest,
+    request: Request,
+    service: PaymentService = Depends(get_payment_service),
+):
+    
+    payload = body.model_dump()
+    payload["ip_address"] = request.client.host if request.client else None
+    payload["user-agent"] = request.headers.get("user-agent")
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.create_payment_order_refund_details(payload=payload)
+
+router.add_api_route(
+    "/refunds",
+    create_payment_order_refund,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
