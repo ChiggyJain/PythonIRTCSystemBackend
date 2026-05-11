@@ -201,7 +201,7 @@ class BookingService:
             ]
 
             # adding entries into booking-saga-logs table
-            created_booking_saga_logs = await self.booking_repo.create_booking_saga_logs(
+            created_booking_saga_logs1 = await self.booking_repo.create_booking_saga_logs(
                 booking_id = bookingId, 
                 saga_step = "HOLD_SEATS", 
                 request = {
@@ -216,7 +216,7 @@ class BookingService:
                 error = None, 
                 status = "PENDING"
             )
-            booking_details["hold_seats_saga_logs"] = orm_to_dict(created_booking_saga_logs)
+            booking_details["hold_seats_saga_logs"] = orm_to_dict(created_booking_saga_logs1)
 
             # commit the records into db level
             await self._db_session.commit()
@@ -240,7 +240,7 @@ class BookingService:
             # updating saga-logs table
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
                 where_data={
-                    "id": created_booking_saga_logs.id
+                    "id": created_booking_saga_logs1.id
                 },
                 update_data = {
                     "response" : holdSeatData,
@@ -274,7 +274,7 @@ class BookingService:
                 error = None, 
                 status = "PENDING"
             )
-            booking_details["create_payment_saga_logs"] = orm_to_dict(created_booking_saga_logs)
+            booking_details["create_payment_saga_logs"] = orm_to_dict(created_booking_saga_logs2)
 
 
             # creating payment order request into external payment services
