@@ -514,7 +514,15 @@ class InventoryService:
                 )
             
             # delete specific segment seat locks for this user/segment
-
+            cnt_of_seat_segment_lock_deleted = await self.inventory_repo.hard_delect_seat_sgement_locks_details(
+                schedule_id=schedule_id,
+                seat_ids=seat_ids,
+                user_id=user_id,
+                from_station_sequence_number=from_station_sequence_number,
+                to_station_sequence_number=to_station_sequence_number,
+                status="LOCKED"
+            )
+            
             
 
 
