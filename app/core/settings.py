@@ -148,7 +148,7 @@ class Settings(BaseSettings):
     LOCK_TTL_SECONDS: int = 600
 
     # payment gateway service provider config
-    payment_gateway_service_provider="razorpay"
+    payment_gateway_service_provider: str = "razorpay"
 
     # internal service communication url
     INTERNAL_SERVICE_KEY: str ="irtc-internal-service-key-2026"
