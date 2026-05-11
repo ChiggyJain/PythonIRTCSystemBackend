@@ -19,7 +19,11 @@ class IdempotencySQLAlchemyRepository:
 
 
     async def add_idempotency_record(
-        self, *, event_key: str, event_type: str | None = None, event_response: dict[str, Any] | None = None
+        self, 
+        *, 
+        event_key: str, 
+        event_type: str | None = None, 
+        event_response: dict[str, Any] | None = None
     ) -> IdempotencyRecords:
         
         row = IdempotencyRecords(
