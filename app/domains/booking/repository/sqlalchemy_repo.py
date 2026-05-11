@@ -3,7 +3,10 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from typing import Any
+from typing import Any, List, Optional
+from sqlalchemy import select
 from sqlalchemy import select, update, or_
+from sqlalchemy.sql import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.booking.models.bookings_models import Bookings
@@ -18,23 +21,37 @@ class BookingSQLAlchemyRepository:
         self._db_session = db_session
 
 
-
     async def get_booking_saga_logs_by_booking_id(
-        self,
-        *,
-        booking_id: int,
-        status: str
-    ) -> list[BookingSagaLogs]:
-        
-        stmt = (
-            select(BookingSagaLogs)
-            .where(
-                BookingSagaLogs.booking_id == booking_id,
-                BookingSagaLogs.status == status
-            )
-            .order_by(BookingSagaLogs.created_at.desc())
-        )
+        self, 
+        select_columns: Optional[List[Any]] = None,
+        where_conditions: Optional[List[Any]] = None,
+        order_by: Optional[List[Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[BookingSagaLogs] | None:
+
+        if select_columns:
+            stmt: Select = select(*select_columns)
+        else:
+            stmt: Select = select(BookingSagaLogs)
+
+        if where_conditions:
+            stmt = stmt.where(*where_conditions)
+
+        if order_by:
+            stmt = stmt.order_by(*order_by)
+
+        if limit:
+            stmt = stmt.limit(limit)
+
+        if offset:
+            stmt = stmt.offset(offset)
+
         result = await self._db_session.execute(stmt)
+
+        if select_columns:
+            return result.mappings().all()
+
         return list(result.scalars().all())
     
 

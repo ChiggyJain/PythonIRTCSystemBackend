@@ -11,17 +11,13 @@ from app.core.response import (
 from app.core.settings import get_settings
 from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
-from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
-from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.common.cache.redis_cache import (
     acquireBookingSeatLocksThroughRedis,
     releaseBookingSeatLocksThroughRedis
 )
-from app.services.saga_services import (
-    executeHoldSeats,
-    executeCreatePayment,
-    compensateAll
-)
+from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
+from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
+from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
 
 
 settings = get_settings()
@@ -37,7 +33,29 @@ class BookingService:
         
 
     async def compensateAll(self, *, payload: dict) -> dict:
-        pass
+        
+        try:
+            
+            # extracted parameters
+            booking_id = int(payload.get("booking_id", 0))
+            seat_ids = payload.get("seat_ids", [])
+            seat_ids.sort()
+            
+            if booking_id>0 and len(seat_ids)>0:
+
+                booking_saga_logs = await self.booking_repo.get_booking_saga_logs_by_booking_id(
+                    where_conditions = [
+                        BookingSagaLogs.booking_id == booking_id,
+                    ],
+                    order_by = [
+                        BookingSagaLogs.id.asc()
+                    ]
+                )
+
+                
+
+        except Exception as e:
+            pass
 
 
     async def create_booking_details(self, *, payload: dict) -> dict:
