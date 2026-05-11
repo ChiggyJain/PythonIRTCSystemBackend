@@ -25,23 +25,21 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             # actual razorpay implementation business logic will be come here
 
             # hardcoded dummy response is returning always with unique-ID into payment_gateway_order_id field
-            return standardize_response(
-                status_code=201,
-                messages=[f"Payment gateway created order request successfully"],
-                data={
-                    "payment_gateway_order_id" : str(uuid.uuid4()),
-                    "amount" : amount,
-                    "currency" : currency,
-                    "receipt"  : receipt,
-                    "raw_response" : {}
-                }
-            )
+            return {
+                "status_code" : 201,
+                "messages" : [f"Payment gateway created order request successfully"],
+                "payment_gateway_order_id" : str(uuid.uuid4()),
+                "amount" : amount,
+                "currency" : currency,
+                "receipt"  : receipt,
+                "raw_response" : {}
+            }
         
         except Exception as e:
-            return standardize_response(
-                status_code=500,
-                messages=[f"{str(e)}"],
-            )
+            return {
+                "status_code" : 500,
+                "messages" : [f"{str(e)}"],
+            }
        
  
     async def verifyPaymentSignature(self, **kwargs):

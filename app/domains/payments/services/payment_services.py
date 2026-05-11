@@ -60,6 +60,15 @@ class PaymentService:
                 }
             }
             payment_gateway_created_order_rsp_obj = payment_gateway_class_instances_obj.createOrder(**params2)
+            
+            # failed due to some reasons
+            if payment_gateway_created_order_rsp_obj["status_code"]!=201:
+                pass
+            
+            # successfully created
+            if payment_gateway_created_order_rsp_obj["status_code"] == 201:
+                pass
+
 
 
         except Exception as e:
