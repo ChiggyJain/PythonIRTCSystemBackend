@@ -23,7 +23,7 @@ class PaymentSQLAlchemyRepository:
         idempotency_key: str,
         booking_id: int,
         user_id: int,
-        total_amount: int,
+        total_amount: Decimal,
         currency: str = "INR",
         gateway_provider: str,
         gateway_order_id: str,
