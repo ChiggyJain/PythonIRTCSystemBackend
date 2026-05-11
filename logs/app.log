@@ -1527,3 +1527,10 @@
 2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:58:44.004626 | 2026-05-11 11:58:44.277092 | 272 | None | 201
 2026-05-11 11:59:27 | INFO | ES client created for index: routes
 2026-05-11 11:59:27 | INFO | ES client created for index: stations
+2026-05-11 12:00:04 | INFO | SpawnProcess-138-24801 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-11 12:00:04.837268 | 2026-05-11 12:00:04.899627 | 62 | None | 200
+2026-05-11 12:00:04 | INFO | SpawnProcess-138-24801 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-11 12:00:04.926535 | 2026-05-11 12:00:04.940488 | 13 | None | 200
+2026-05-11 12:00:05 | INFO | SpawnProcess-138-24801 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-11 12:00:04.980468 | 2026-05-11 12:00:05.005806 | 25 | None | 200
+2026-05-11 12:00:05 | INFO | SpawnProcess-138-24801 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 12:00:05.040443 | 2026-05-11 12:00:05.054673 | 14 | None | 201
+2026-05-11 12:00:05 | INFO | SpawnProcess-138-24801 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 12:00:04.738821 | 2026-05-11 12:00:05.064606 | 325 | None | 201
+2026-05-11 12:01:24 | INFO | ES client created for index: routes
+2026-05-11 12:01:24 | INFO | ES client created for index: stations
