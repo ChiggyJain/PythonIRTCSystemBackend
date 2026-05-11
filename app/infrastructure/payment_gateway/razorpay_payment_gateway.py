@@ -1,6 +1,5 @@
 
-from locale import currency
-
+import uuid
 from app.infrastructure.payment_gateway.base_payment_gateway import BasePaymentGateway
 
 class RazorpayPaymentGateway(BasePaymentGateway):
@@ -18,12 +17,11 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             notes = kwargs.get("notes", {})
             
             return {
-                "paymentGatewayOrderId" : "",
+                "payment_gateway_order_id" : str(uuid.uuid4()),
                 "amount" : amount,
                 "currency" : currency,
                 "receipt"  : receipt,
-                "raw_response" : ""
-
+                "raw_response" : {}
             }
         
         except Exception as e:
