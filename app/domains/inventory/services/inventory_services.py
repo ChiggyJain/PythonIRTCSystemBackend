@@ -624,7 +624,7 @@ class InventoryService:
             
             print(f"cnt schedule_inventory: {schedule_inventory}")
             if schedule_inventory:
-                schedule_inventory.available = int(counts["available"])
+                schedule_inventory.available_seats = int(counts["available"])
                 schedule_inventory.locked = int(counts["locked"])
                 schedule_inventory.booked = int(counts["booked"])
                 schedule_inventory.version += 1

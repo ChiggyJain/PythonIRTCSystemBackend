@@ -25,6 +25,4 @@ class Base(DeclarativeBase):
             __tablename__ = "users"
     """
 
-    __slots__ = ()
-    
     pass
