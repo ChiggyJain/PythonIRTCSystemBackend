@@ -1,5 +1,6 @@
 
 import uuid
+import time
 from app.core.exceptions import BaseAppException
 from app.core.response import (
     standardize_response, 
@@ -23,16 +24,31 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             notes = kwargs.get("notes", {})
             
             # actual razorpay implementation business logic will be come here
+            # dummy order response from razor payy
+            order_response  = {
+                "amount": amount,
+                "amount_due": amount,
+                "amount_paid": 0,
+                "attempts": 0,
+                "created_at": int(time.time()),
+                "currency": "INR",
+                "entity": "order",
+                "id": str(uuid.uuid4()),
+                "notes": notes,
+                "offer_id": None,
+                "receipt": receipt,
+                "status": "created"
+            }
 
-            # hardcoded dummy response is returning always with unique-ID into payment_gateway_order_id field
+            # hardcoded dummy response
             return {
                 "status_code" : 201,
                 "messages" : [f"Payment gateway created order request successfully"],
-                "payment_gateway_order_id" : str(uuid.uuid4()),
-                "amount" : amount,
-                "currency" : currency,
-                "receipt"  : receipt,
-                "raw_response" : {}
+                "payment_gateway_order_id" : order_response["id"],
+                "amount" : order_response["amount"],
+                "currency" : order_response["currency"],
+                "receipt"  : order_response["receipt"],
+                "raw_response" : order_response
             }
         
         except Exception as e:
