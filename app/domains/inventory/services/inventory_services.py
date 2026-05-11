@@ -463,7 +463,80 @@ class InventoryService:
 
 
     async def unlock_seats(self, *, payload: dict):
-        pass
+        
+        try:
+
+            # extracted parameters
+            user_id = int(payload.get("user_id", 0))
+            schedule_id = int(payload.get("schedule_id", 0))
+            seat_ids = payload.get("seat_ids", [])
+            from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
+            to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
+            
+            if not seat_ids:
+                return standardize_response(
+                    status_code=400,
+                    messages=["seat_ids is required"],
+                )
+            
+            # fetching schedule-inventory details
+            inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)        
+            if not inventory_schedule:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Schedule inventory not found"],
+                )
+            if inventory_schedule.status!="ACTIVE":
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Schedule inventory is not active"],
+                )
+            
+            # row-level lock on requested seats
+            locked_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(
+                schedule_id=schedule_id, seat_ids=seat_ids
+            )
+
+            # all requested seats must exist
+            if len(locked_seat_inventory_list)!=len(seat_ids):
+                found_ids = {
+                    row.seat_id
+                    for row in locked_seat_inventory_list
+                }
+                missing_ids = [
+                    seat_id
+                    for seat_id in seat_ids
+                    if seat_id not in found_ids
+                ]
+                return standardize_response(
+                    status_code=409,
+                    messages=[f"Seats are missing to unlock: {missing_ids}"],
+                )
+            
+            # delete specific segment seat locks for this user/segment
+
+            
+
+
+
+
+
+
+
+        
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[str(e)],
+            )
+
+        except Exception as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[str(e)],
+            )
 
 
 

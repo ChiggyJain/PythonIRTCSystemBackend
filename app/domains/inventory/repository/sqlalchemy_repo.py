@@ -3,7 +3,7 @@ from datetime import date
 from decimal import Decimal
 from typing import Any, List, Optional
 from sqlalchemy import select
-from sqlalchemy import select, update, or_
+from sqlalchemy import select, update, or_, delete
 from sqlalchemy.sql import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
@@ -145,6 +145,7 @@ class InventorySQLAlchemyRepository:
         res = await self._db_session.execute(stmt)
         return list(res.scalars().all())
     
+
 
     async def add_schedule_inventory(
         self,
@@ -288,3 +289,30 @@ class InventorySQLAlchemyRepository:
         )        
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
+    
+
+    async def hard_delect_seat_sgement_locks_details(
+        self,
+        *,
+        schedule_id: int,
+        seat_ids: List[int],
+        from_station_sequence_number: int,
+        to_station_sequence_number: int,
+        locked_by_user_id: int,
+        status: str = "LOCKED",
+    ) -> bool:
+        
+        stmt = (
+            delete(SeatSegmentLockInventory)
+            .where(
+                SeatSegmentLockInventory.schedule_id == schedule_id,
+                SeatSegmentLockInventory.seat_id.in_(seat_ids),
+                SeatSegmentLockInventory.from_station_sequence_number == from_station_sequence_number,
+                SeatSegmentLockInventory.to_station_sequence_number == to_station_sequence_number,
+                SeatSegmentLockInventory.locked_by_user_id == locked_by_user_id,
+                SeatSegmentLockInventory.status == status
+            )
+        )
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+
