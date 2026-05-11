@@ -235,20 +235,16 @@ class PaymentService:
                 }
                 payment_gateway_class_instances_obj = PaymentGatewayFactory.getPaymentGatewayInstances(**params1)
                 
-                # creating payment order request on selected payment gateway instances
+                # creating payment order refund request on selected payment gateway instances
                 params2 = {
+                    "payment_id" : payment_order.gateway_payment_id,
                     "amount": amount,
-                    "currency" : "INR",
-                    # this is our Unique-ID which we sending to payment-gateway for order creating request
-                    # this is from booking-table primary key right now
-                    "receipt" : booking_id,
-                    # this is additional json information which we sending to payment-gateway for order creating request
                     "notes" : {
-                        "booking_id" : booking_id,
-                        "user_id" : user_id
+                        "booking_id" : payment_order.booking_id,
+                        "reason" : reason
                     }
                 }
-                payment_gateway_created_order_rsp_obj = await payment_gateway_class_instances_obj.createOrder(**params2)
+                payment_gateway_order_refund_rsp_obj = await payment_gateway_class_instances_obj.initiateRefund(**params2)
             
 
     
