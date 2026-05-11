@@ -75,6 +75,7 @@ class BookingService:
                         pass                    
                     if booking_saga_logs_list:
                         for each_booking_sag_log in booking_saga_logs_list:
+                            booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
                             match (each_booking_sag_log.saga_step):
                                 case "HOLD_SEATS":
                                     await self.compensateHoldSeats(booking_details)
