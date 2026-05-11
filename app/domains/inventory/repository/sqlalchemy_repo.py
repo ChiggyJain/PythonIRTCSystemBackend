@@ -291,7 +291,7 @@ class InventorySQLAlchemyRepository:
         return bool(res.rowcount and res.rowcount > 0)
     
 
-    async def hard_delect_seat_sgement_locks_details(
+    async def hard_delete_seat_sgement_locks_details(
         self,
         *,
         schedule_id: int,
