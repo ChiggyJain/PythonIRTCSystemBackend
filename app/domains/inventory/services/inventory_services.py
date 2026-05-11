@@ -523,6 +523,33 @@ class InventoryService:
                 status="LOCKED"
             )
             
+            # recompute each seat's summary status from its segment locks
+            recomputed_segment_seat_status_rsp_obj = await self.recompute_segment_seat_statuses(
+                schedule_id=schedule_id,
+                seat_ids=seat_ids
+            )            
+
+            # recount aggregates from actual seat rows (prevents counter drift)
+            recounts_schedule_aggregates_status_rsp_obj = await self.recount_schedule_aggregates(
+                schedule_id=schedule_id
+            )
+
+            await self._db_session.commit()
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"Seats are unlocked successfully"],
+                data={
+                    "schedule_id" : schedule_id,
+                    "train_id" : "",
+                    "unlocked_seat_ids" : seat_ids,
+                    "recounts_schedule_aggregates": {
+                        "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                        "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                        "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+                    }
+                }
+            )    
             
 
 
