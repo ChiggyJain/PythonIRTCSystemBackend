@@ -1,8 +1,8 @@
 """create tables
 
-Revision ID: 2e4b28ae0655
+Revision ID: 0a3557f02744
 Revises: 
-Create Date: 2026-05-10 09:07:56.294520
+Create Date: 2026-05-11 11:07:04.338320
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2e4b28ae0655'
+revision: str = '0a3557f02744'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -135,6 +135,55 @@ def upgrade() -> None:
     )
     op.create_index('ix_outbox_events_created_at', 'OUTBOX_EVENTS', ['created_at'], unique=False)
     op.create_index('ix_outbox_events_status_next_retry', 'OUTBOX_EVENTS', ['status', 'next_retry_at'], unique=False)
+    op.create_table('PAYMENT_AUDIT_LOGS',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('payment_order_id', sa.Integer(), nullable=False),
+    sa.Column('action', sa.String(length=255), nullable=False),
+    sa.Column('gateway_response', sa.JSON(), nullable=True),
+    sa.Column('metadata_json', sa.JSON(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('status', sa.Enum('A', 'Z', name='status_enum'), server_default='A', nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('PAYMENT_ORDERS',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('idempotency_key', sa.String(length=100), nullable=False),
+    sa.Column('booking_id', sa.Integer(), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('total_amount', sa.Numeric(precision=10, scale=2), server_default='0.00', nullable=False),
+    sa.Column('currency', sa.String(length=30), server_default='INR', nullable=False),
+    sa.Column('gateway_provider', sa.String(length=30), server_default='razorpay', nullable=False),
+    sa.Column('gateway_order_id', sa.String(length=255), nullable=True),
+    sa.Column('gateway_payment_id', sa.String(length=255), nullable=True),
+    sa.Column('gateway_signature', sa.String(length=255), nullable=True),
+    sa.Column('failure_reason', sa.String(length=255), nullable=True),
+    sa.Column('metadata_json', sa.JSON(), nullable=True),
+    sa.Column('version', sa.Integer(), server_default='0', nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('status', sa.Enum('CREATED', 'CAPTURED', 'FAILED', 'REFUND_INITIATED', 'REFUNDED', 'PARTIALLY_REFUNDED', 'FAILED', 'CANCELLED', 'EXPIRED', name='status_enum'), server_default='CREATED', nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('gateway_order_id', name='uq_gatewayOrderId'),
+    sa.UniqueConstraint('gateway_payment_id', name='uq_paymentOrderId'),
+    sa.UniqueConstraint('idempotency_key', name='uq_idempotencyKey')
+    )
+    op.create_table('REFUND_ORDERS',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('idempotency_key', sa.String(length=255), nullable=False),
+    sa.Column('payment_order_id', sa.Integer(), nullable=False),
+    sa.Column('total_amount', sa.Numeric(precision=10, scale=2), server_default='0.00', nullable=False),
+    sa.Column('reason', sa.String(length=255), nullable=False),
+    sa.Column('gateway_refund_id', sa.String(length=255), nullable=True),
+    sa.Column('failure_reason', sa.String(length=255), nullable=True),
+    sa.Column('metadata_json', sa.JSON(), nullable=True),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('status', sa.Enum('INITIATED', 'PROCESSING', 'COMPLETED', 'FAILED', 'CANCELLED', 'EXPIRED', name='status_enum'), server_default='INITIATED', nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('gateway_refund_id', name='uq_gatewayRefundId'),
+    sa.UniqueConstraint('idempotency_key', name='uq_idempotencyKey')
+    )
     op.create_table('ROUTES',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('train_id', sa.Integer(), nullable=False),
@@ -366,6 +415,9 @@ def downgrade() -> None:
     op.drop_table('ROUTE_STATIONS')
     op.drop_index('ix_status', table_name='ROUTES')
     op.drop_table('ROUTES')
+    op.drop_table('REFUND_ORDERS')
+    op.drop_table('PAYMENT_ORDERS')
+    op.drop_table('PAYMENT_AUDIT_LOGS')
     op.drop_index('ix_outbox_events_status_next_retry', table_name='OUTBOX_EVENTS')
     op.drop_index('ix_outbox_events_created_at', table_name='OUTBOX_EVENTS')
     op.drop_table('OUTBOX_EVENTS')

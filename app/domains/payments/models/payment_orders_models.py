@@ -46,7 +46,7 @@ class PaymentOrders(Base):
     )   
     status: Mapped[str] = mapped_column(
         Enum(
-            "CREATED", "CAPTURED", "FAILED", 
+            "CREATED", "CAPTURED",
             "REFUND_INITIATED", "REFUNDED", "PARTIALLY_REFUNDED",
             "FAILED", "CANCELLED", "EXPIRED", 
             name="status_enum"
