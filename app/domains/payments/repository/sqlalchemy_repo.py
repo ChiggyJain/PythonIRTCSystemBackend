@@ -28,7 +28,7 @@ class PaymentSQLAlchemyRepository:
         gateway_provider: str,
         gateway_order_id: str,
         gateway_payment_id: str | None = None,
-        gateway_signature: str,
+        gateway_signature: str | None = None,
         failure_reason: str | None = None,
         metadata_json: dict[str, Any] | None,
         version: int = 0,
@@ -48,6 +48,30 @@ class PaymentSQLAlchemyRepository:
             failure_reason=failure_reason,
             metadata_json=metadata_json,
             version=version,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+            status=status,
+        )
+        self._db_session.add(row)
+        await self._db_session.flush()
+        return row
+    
+
+    async def create_payment_audit_logs(
+        self,
+        *,
+        payment_order_id: int,
+        action: str | None = None,
+        gateway_response: dict[str, Any] | None,
+        metadata_json: dict[str, Any] | None,
+        status: str = "A"
+    ) -> PaymentAuditLogs:
+        
+        row = PaymentAuditLogs(
+            payment_order_id=payment_order_id,
+            action=action,
+            gateway_response=gateway_response,
+            metadata_json=metadata_json,
             created_at=now_ist(),
             updated_at=now_ist(),
             status=status,

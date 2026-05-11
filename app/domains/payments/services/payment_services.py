@@ -39,6 +39,7 @@ class PaymentService:
             user_id = int(payload.get("user_id", 0))
             booking_id = int(payload.get("booking_id", 0))
             amount = payload.get("amount", 0)
+            currency = "INR"
 
             # fetching payment gateway instances details
             params1 = {
@@ -67,7 +68,25 @@ class PaymentService:
             
             # successfully created
             if payment_gateway_created_order_rsp_obj["status_code"] == 201:
-                pass
+                
+                # creating payment orders into table
+                self.payment_repo.create_payment_orders(
+                    idempotency_key=idempotency_key,
+                    booking_id=booking_id,
+                    user_id=user_id,
+                    total_amount=amount,
+                    currency=currency,
+                    gateway_provider=settings.payment_gateway_service_provider,
+                    gateway_order_id=payment_gateway_created_order_rsp_obj["payment_gateway_order_id"],
+                    gateway_payment_id=None,
+                    gateway_signature=None,
+                    failure_reason=None,
+                    metadata_json=None,
+                    version=0,
+                    status="CREATED"
+                )
+
+                # creating payment audit logs into table
 
 
 
