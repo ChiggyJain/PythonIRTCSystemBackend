@@ -244,6 +244,8 @@ class BookingService:
                     "status" : "COMPLETED"
                 }
             )
+            booking_details["hold_seats_saga_logs"]["response"] = holdSeatData
+            booking_details["hold_seats_saga_logs"]["status"] = "COMPLETED"
 
             # updating booking table as seats_held
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -254,6 +256,8 @@ class BookingService:
                     "status" : "SEATS_HELD"
                 }
             )
+            booking_details["status"] = "SEATS_HELD"
+
 
             # commit the records into db level
             await self._db_session.commit()
@@ -291,6 +295,7 @@ class BookingService:
                 createdPaymentOrderRequestData = data.get("data", None)
             print(f"createdPaymentOrderRequestData: {createdPaymentOrderRequestData}")
             booking_details["payment_orders"] = createdPaymentOrderRequestData
+            booking_details["payment_order_id"] = createdPaymentOrderRequestData["payment_order_id"]
 
             # updating saga-logs table as completed
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -302,6 +307,8 @@ class BookingService:
                     "status" : "COMPLETED"
                 }
             )
+            booking_details["create_payment_saga_logs"]["response"] = createdPaymentOrderRequestData
+            booking_details["create_payment_saga_logs"]["status"] = "COMPLETED"
 
             # updating booking table as payment pending
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -313,11 +320,8 @@ class BookingService:
                     "status" : "PAYMENT_PENDING"
                 }
             )
-
-            # updating json
-            booking_details["payment_order_id"] = createdPaymentOrderRequestData["payment_order_id"]
             booking_details["status"] = "PAYMENT_PENDING"
-        
+
             
             # storing idempotency-key details
             await self.idempotency_repo.add_idempotency_record(
