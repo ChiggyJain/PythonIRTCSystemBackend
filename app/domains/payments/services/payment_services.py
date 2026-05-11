@@ -290,7 +290,7 @@ class PaymentService:
 
                     # creating payment audit logs into table
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
-                        payment_order_id=payment_order.id
+                        payment_order_id=payment_order.id,
                         action="REFUND_INITIATED",
                         gateway_response=payment_gateway_order_refund_rsp_obj["raw_response"],
                         metadata_json={
