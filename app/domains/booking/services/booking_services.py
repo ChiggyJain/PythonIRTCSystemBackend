@@ -54,8 +54,7 @@ class BookingService:
             passengers = payload.get("passengers", [])
             booking_details = {}
             IDEMPOTENCY_EVENT_TYPE = "booking"
-            IDEMPOTENCY_EVENT_KEY_PREFIX = "booking"
-
+            
             # checking given idempotency key exists or not
             event_key = f"booking:{idempotency_key}"
             existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
