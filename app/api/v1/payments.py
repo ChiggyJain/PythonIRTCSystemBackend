@@ -8,6 +8,7 @@ from app.common.security.token_decoder import(
     get_current_user_details_from_access_token
 )
 from app.domains.payments.schemas.payments_schemas import CreatePaymentOrderRequest
+from app.domains.payments.schemas.payments_schemas import CreatePaymentOrderRefundRequest
 from app.domains.payments.services.payment_services import PaymentService
 from app.dependencies.payments import get_payment_service
 
@@ -64,7 +65,7 @@ router.add_api_route(
     }
 )
 async def create_payment_order_refund(
-    body: CreatePaymentOrderRequest,
+    body: CreatePaymentOrderRefundRequest,
     request: Request,
     service: PaymentService = Depends(get_payment_service),
 ):
