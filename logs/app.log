@@ -1366,3 +1366,4 @@
 2026-05-11 11:21:13 | INFO | ES client created for index: stations
 2026-05-11 11:21:16 | INFO | ES client created for index: routes
 2026-05-11 11:21:16 | INFO | ES client created for index: stations
+2026-05-11 11:21:34 | INFO | SpawnProcess-50-19334 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:21:34.590171 | 2026-05-11 11:21:34.697691 | 107 | None | 201
