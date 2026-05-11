@@ -17,6 +17,7 @@ from app.common.cache.redis_cache import (
 )
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
+from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
 
 
@@ -42,20 +43,68 @@ class BookingService:
             seat_ids.sort()
             
             if booking_id>0 and len(seat_ids)>0:
-
-                booking_saga_logs = await self.booking_repo.get_booking_saga_logs_by_booking_id(
+                
+                # fetching booking details
+                booking_list = await self.booking_repo.get_booking_details(
                     where_conditions = [
-                        BookingSagaLogs.booking_id == booking_id,
+                        Bookings.id == booking_id,
                     ],
                     order_by = [
-                        BookingSagaLogs.id.asc()
+                        Bookings.id.asc()
                     ]
                 )
+                if not booking_list:
+                    pass
+                
+                if booking_list:
+                    
+                    booking_details = orm_to_dict(booking_list[0])
+                    booking_details["booking_id"] = booking_details["id"]
+                    booking_details["seat_ids"] = seat_ids
 
+                    # fetching booking saga logs details
+                    booking_saga_logs_list = await self.booking_repo.get_booking_saga_logs_details(
+                        where_conditions = [
+                            BookingSagaLogs.booking_id == booking_details["id"],
+                        ],
+                        order_by = [
+                            BookingSagaLogs.id.asc()
+                        ]
+                    )
+                    if not booking_saga_logs_list:
+                        pass                    
+                    if booking_saga_logs_list:
+                        for each_booking_sag_log in booking_saga_logs_list:
+                            match (each_booking_sag_log.saga_step):
+                                case "HOLD_SEATS":
+                                    await self.compensateHoldSeats(booking_details)
+                                case "CREATE_PAYMENT":
+                                    pass
+                                case "CONFIRM_SEATS":
+                                    pass
+
+                    
                 
 
         except Exception as e:
             pass
+
+
+
+    async def compensateHoldSeats(self, *, payload: dict) -> dict:
+        
+        try:
+            
+            # extracted parameters
+            booking_id = int(payload.get("booking_id", 0))
+            seat_ids = payload.get("seat_ids", [])
+            seat_ids.sort()
+                
+
+        except Exception as e:
+            pass
+
+
 
 
     async def create_booking_details(self, *, payload: dict) -> dict:
