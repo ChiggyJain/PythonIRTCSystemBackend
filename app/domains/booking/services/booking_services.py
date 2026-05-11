@@ -55,7 +55,10 @@ class BookingService:
                     ]
                 )
                 if not booking_list:
-                    pass
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking details not found for compensating"]
+                    )
                 
                 if booking_list:
                     
@@ -73,7 +76,10 @@ class BookingService:
                         ]
                     )
                     if not booking_saga_logs_list:
-                        pass                    
+                        return standardize_response(
+                            status_code=404,
+                            messages=[f"Booking saga log details not found for compensating"]
+                        )                    
                     if booking_saga_logs_list:
                         for each_booking_sag_log in booking_saga_logs_list:
                             booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
@@ -84,12 +90,18 @@ class BookingService:
                                     rsp = await self.compensateCreatePayment(booking_details)
                                 case "CONFIRM_SEATS":
                                     pass
-
                     
-                
+
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking related all steps are compensated"]
+                    )
 
         except Exception as e:
-            pass
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
 
 
 
@@ -135,7 +147,7 @@ class BookingService:
 
             return standardize_response(
                 status_code=200,
-                messages=[f"Compensated hold seats successfully"]
+                messages=[f"Compensated hold seats process successfully"]
             )
 
         except Exception as e:
@@ -185,7 +197,7 @@ class BookingService:
 
             return standardize_response(
                 status_code=200,
-                messages=[f"Compensated created payment process successfully"]
+                messages=[f"Compensated created payment order process successfully"]
             )
 
         except Exception as e:
@@ -395,27 +407,57 @@ class BookingService:
                 holdSeatData = holdSeatRspObj.get("data", None)
             print(f"holdSeatRspObj: {holdSeatRspObj}")
             if holdSeatRspObj == None:
+                
                 params1 = {
                     "booking_id" : booking_details["booking_id"],
                     "seat_ids" : seat_ids,
                     "reason" : f"Seats not locked into inventory external services."
                 }
                 await self.compensateAll(params1)
+
+                # updating booking table as failed
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "id": booking_details["booking_id"]
+                    },
+                    update_data = {
+                        "failure_reason" : str(e),
+                        "status" : params1["reason"][:90]
+                    }
+                )
+                await self._db_session.commit()
+
                 return standardize_response(
                     status_code=400,
                     messages=[f"Seats not locked into inventory external services."],
                 )
+            
             elif holdSeatRspObj.get("status_code") not in [200, 201]:
+
                 params1 = {
                     "booking_id" : booking_details["booking_id"],
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(holdSeatRspObj.get("messages", ["Unknown error"]))
                 }
                 await self.compensateAll(params1)
+
+                # updating booking table as failed
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "id": booking_details["booking_id"]
+                    },
+                    update_data = {
+                        "failure_reason" : str(e),
+                        "status" : params1["reason"][:90]
+                    }
+                )
+                await self._db_session.commit()
+
                 return standardize_response(
                     status_code=holdSeatRspObj.get("status_code"),
                     messages=holdSeatRspObj.get("messages"),
                 )
+            
 
             # updating saga-logs table as compeleted
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -477,34 +519,78 @@ class BookingService:
                 createdPaymentOrderRequestData = createdPaymentOrderRequestRspObj.get("data", None)
             print(f"createdPaymentOrderRequestRspObj: {createdPaymentOrderRequestRspObj}")
             if createdPaymentOrderRequestRspObj == None:
+
                 params1 = {
                     "booking_id" : booking_details["booking_id"],
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders not created into payment external services"
                 }
                 await self.compensateAll(params1)
+
+                # updating booking table as failed
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "id": booking_details["booking_id"]
+                    },
+                    update_data = {
+                        "failure_reason" : str(e),
+                        "status" : params1["reason"][:90]
+                    }
+                )
+                await self._db_session.commit()
+
                 return standardize_response(
                     status_code=404,
                     messages=[f"Payment orders not created into payment external services."],
                 )
+            
             elif createdPaymentOrderRequestRspObj.get("status_code") == 200:
+
                 params1 = {
                     "booking_id" : booking_details["booking_id"],
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders already created into payment external services"
                 }
                 await self.compensateAll(params1)
+
+                # updating booking table as failed
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "id": booking_details["booking_id"]
+                    },
+                    update_data = {
+                        "failure_reason" : str(e),
+                        "status" : params1["reason"][:90]
+                    }
+                )
+                await self._db_session.commit()
+
                 return standardize_response(
                     status_code=400,
                     messages=[f"Payment orders already created into payment external services."],
                 )
+            
             elif createdPaymentOrderRequestRspObj.get("status_code") not in [200, 201]:
+
                 params1 = {
                     "booking_id" : booking_details["booking_id"],
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(createdPaymentOrderRequestRspObj.get("messages", ["Unknown error"]))
                 }
                 await self.compensateAll(params1)
+
+                # updating booking table as failed
+                isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                    where_data={
+                        "id": booking_details["booking_id"]
+                    },
+                    update_data = {
+                        "failure_reason" : str(e),
+                        "status" : params1["reason"][:90]
+                    }
+                )
+                await self._db_session.commit()
+
                 return standardize_response(
                     status_code=400,
                     messages=createdPaymentOrderRequestRspObj.get("messages")
@@ -565,6 +651,18 @@ class BookingService:
             }
             await self.compensateAll(params1)
             
+            # updating booking table as failed
+            isBookingRecordUpdated = await self.booking_repo.update_booking_details(
+                where_data={
+                    "id": booking_details["booking_id"]
+                },
+                update_data = {
+                    "failure_reason" : str(e),
+                    "status" : "FAILED"
+                }
+            )
+            await self._db_session.commit()
+
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
