@@ -1312,3 +1312,7 @@
 2026-05-11 11:08:44 | INFO | SpawnProcess-16-16629 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:08:44.757522 | 2026-05-11 11:08:44.873482 | 115 | None | 500
 2026-05-11 11:09:56 | INFO | ES client created for index: routes
 2026-05-11 11:09:56 | INFO | ES client created for index: stations
+2026-05-11 11:10:13 | INFO | SpawnProcess-18-16902 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:10:13.849623 | 2026-05-11 11:10:13.974777 | 125 | None | 201
+2026-05-11 11:10:44 | INFO | ES client created for index: routes
+2026-05-11 11:10:44 | INFO | ES client created for index: stations
+2026-05-11 11:11:12 | INFO | SpawnProcess-20-16946 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:11:12.617472 | 2026-05-11 11:11:12.740132 | 122 | None | 201

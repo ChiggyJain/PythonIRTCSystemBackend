@@ -156,8 +156,6 @@ class PaymentService:
                     status_code=201,
                     messages=[f"Payment orders created successfully"],
                     data={
-                        "status_code" : 201,
-                        "messages" : ["Payment orders created successfully"],
                         "payment_order_id" : created_payment_orders_row.id,
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
                         "gateway_provider_key_id" : "",
