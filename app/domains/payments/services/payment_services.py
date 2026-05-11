@@ -59,7 +59,7 @@ class PaymentService:
                     "user_id" : user_id
                 }
             }
-            payment_gateway_class_instances_obj.createOrder(**params2)
+            payment_gateway_created_order_rsp_obj = payment_gateway_class_instances_obj.createOrder(**params2)
 
 
         except Exception as e:
