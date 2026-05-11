@@ -621,7 +621,8 @@ class InventoryService:
             schedule_inventory = (
                 schedule_result.scalar_one_or_none()
             )
-
+            
+            print(f"cnt schedule_inventory: {schedule_inventory}")
             if schedule_inventory:
                 schedule_inventory.available = int(counts["available"])
                 schedule_inventory.locked = int(counts["locked"])
@@ -637,6 +638,7 @@ class InventoryService:
             }
         
         except Exception as e:
+            print(f"cnt schedule_inventory err: {str(e)}")
             count_changes = {
                 "status_code" : 500,
                 "messages" : [f"{str(e)}"],
