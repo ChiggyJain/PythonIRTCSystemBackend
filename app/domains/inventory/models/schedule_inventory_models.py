@@ -8,6 +8,8 @@ from app.infrastructure.database.base import Base
 
 class ScheduleInventory(Base):
 
+    __slots__ = ()
+
     __tablename__ = "SCHEDULE_INVENTORY"
     __table_args__ = (
         UniqueConstraint("schedule_id", name="uq_scheduledId"),

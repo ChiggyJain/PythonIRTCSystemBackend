@@ -1515,3 +1515,15 @@
 2026-05-11 11:53:07 | INFO | SpawnProcess-134-24183 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:53:06.969885 | 2026-05-11 11:53:07.375386 | 405 | None | 201
 2026-05-11 11:57:43 | INFO | ES client created for index: routes
 2026-05-11 11:57:43 | INFO | ES client created for index: stations
+2026-05-11 11:58:02 | INFO | SpawnProcess-136-24582 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-11 11:58:02.453254 | 2026-05-11 11:58:02.523758 | 70 | None | 200
+2026-05-11 11:58:02 | INFO | SpawnProcess-136-24582 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-11 11:58:02.555815 | 2026-05-11 11:58:02.571722 | 15 | None | 200
+2026-05-11 11:58:02 | INFO | SpawnProcess-136-24582 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:58:02.328882 | 2026-05-11 11:58:02.573928 | 245 | None | 400
+2026-05-11 11:58:20 | INFO | SpawnProcess-136-24582 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:58:20.535352 | 2026-05-11 11:58:20.536694 | 1 |  | 500
+2026-05-11 11:58:29 | INFO | SpawnProcess-136-24582 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-11 11:58:29.004415 | 2026-05-11 11:58:29.460136 | 455 | None | 200
+2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-11 11:58:44.031672 | 2026-05-11 11:58:44.034016 | 2 | None | 200
+2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-11 11:58:44.058791 | 2026-05-11 11:58:44.064424 | 5 | None | 200
+2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-11 11:58:44.182522 | 2026-05-11 11:58:44.211940 | 29 | None | 200
+2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:58:44.254599 | 2026-05-11 11:58:44.267701 | 13 | None | 201
+2026-05-11 11:58:44 | INFO | SpawnProcess-136-24582 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:58:44.004626 | 2026-05-11 11:58:44.277092 | 272 | None | 201
+2026-05-11 11:59:27 | INFO | ES client created for index: routes
+2026-05-11 11:59:27 | INFO | ES client created for index: stations
