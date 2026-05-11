@@ -3,18 +3,18 @@ from abc import ABC, abstractmethod
 
 class BasePaymentGateway(ABC):
     
-    @abstractmethod()
+    @abstractmethod
     async def createOrder(self, **kwargs):
         pass
 
-    @abstractmethod()
+    @abstractmethod
     async def verifyPaymentSignature(self, **kwargs):
         pass
 
-    @abstractmethod()
+    @abstractmethod
     async def verifyWebhookSignature(self, **kwargs):
         pass
 
-    @abstractmethod()
+    @abstractmethod
     async def fetchPayment(self, **kwargs):
         pass

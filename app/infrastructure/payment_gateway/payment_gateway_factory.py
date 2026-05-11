@@ -7,7 +7,7 @@ class PaymentGatewayFactory:
         "razorpay": RazorpayPaymentGateway,
     }
 
-    @staticmethod()
+    @staticmethod
     def getPaymentGatewayInstances(**kwargs):
         payment_gateway_service_provider = kwargs.get("payment_gateway_service_provider")
         instances_class = PaymentGatewayFactory._instances.get(payment_gateway_service_provider)
