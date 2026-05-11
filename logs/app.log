@@ -1479,3 +1479,18 @@
 2026-05-11 11:36:21 | INFO | ES client created for index: stations
 2026-05-11 11:36:55 | INFO | ES client created for index: routes
 2026-05-11 11:36:55 | INFO | ES client created for index: stations
+2026-05-11 11:37:16 | INFO | SpawnProcess-125-20696 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-11 11:37:16.261181 | 2026-05-11 11:37:16.767833 | 506 | None | 200
+2026-05-11 11:38:08 | INFO | SpawnProcess-125-20696 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-11 11:38:07.975357 | 2026-05-11 11:38:08.055797 | 80 | None | 201
+2026-05-11 11:38:17 | INFO | SpawnProcess-125-20696 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-11 11:38:17.283852 | 2026-05-11 11:38:17.296366 | 12 | None | 201
+2026-05-11 11:38:24 | INFO | SpawnProcess-125-20696 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-11 11:38:23.962047 | 2026-05-11 11:38:24.040082 | 78 | None | 201
+2026-05-11 11:38:30 | INFO | SpawnProcess-125-20696 | user:stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-11 11:38:30.541085 | 2026-05-11 11:38:30.620148 | 79 | None | 201
+2026-05-11 11:38:36 | INFO | SpawnProcess-125-20696 | user:trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-11 11:38:36.278888 | 2026-05-11 11:38:36.367730 | 88 | None | 201
+2026-05-11 11:38:41 | INFO | SpawnProcess-125-20696 | user:train:route:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-11 11:38:41.431560 | 2026-05-11 11:38:41.549305 | 117 | None | 201
+2026-05-11 11:38:48 | INFO | SpawnProcess-125-20696 | user:train:schedule:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-11 11:38:48.869103 | 2026-05-11 11:38:48.889594 | 20 | None | 201
+2026-05-11 11:38:52 | INFO | SpawnProcess-125-20696 | user:train:schedule:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-11 11:38:52.519901 | 2026-05-11 11:38:52.606087 | 86 | None | 201
+2026-05-11 11:38:56 | INFO | SpawnProcess-125-20696 | user:train:schedule:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-11 11:38:56.111241 | 2026-05-11 11:38:56.194256 | 83 | None | 201
+2026-05-11 11:42:06 | INFO | SpawnProcess-125-20696 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-11 11:42:06.489970 | 2026-05-11 11:42:06.495299 | 5 | None | 200
+2026-05-11 11:42:06 | INFO | SpawnProcess-125-20696 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-11 11:42:06.534765 | 2026-05-11 11:42:06.546517 | 11 | None | 200
+2026-05-11 11:42:06 | INFO | SpawnProcess-125-20696 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-11 11:42:06.598521 | 2026-05-11 11:42:06.631753 | 33 | None | 200
+2026-05-11 11:42:06 | INFO | SpawnProcess-125-20696 | user:booking:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-11 11:42:06.700705 | 2026-05-11 11:42:06.703464 | 2 | None | 200
+2026-05-11 11:42:06 | INFO | SpawnProcess-125-20696 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-11 11:42:06.261566 | 2026-05-11 11:42:06.713599 | 452 | None | 201
