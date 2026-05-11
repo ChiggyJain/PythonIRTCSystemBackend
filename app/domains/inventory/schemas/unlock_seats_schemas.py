@@ -61,7 +61,7 @@ class UnLockSeatsRequest(BaseModel):
 
 
     @model_validator(mode="after")
-    def validate_booking_request(self):
+    def validate_sequence_number(self):
 
         # sequence number cannot be same
         if (
