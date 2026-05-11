@@ -147,6 +147,9 @@ class Settings(BaseSettings):
     BOOKING_EXPIRY_CHECK_INTERVAL_MS: int = 30000
     LOCK_TTL_SECONDS: int = 600
 
+    # payment gateway service provider config
+    payment_gateway_service_provider="razorpay"
+
     # internal service communication url
     INTERNAL_SERVICE_KEY: str ="irtc-internal-service-key-2026"
     INVENTORY_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
