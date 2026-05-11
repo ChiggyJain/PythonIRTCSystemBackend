@@ -1862,3 +1862,11 @@
 2026-05-11 17:07:17 | INFO | ES client created for index: stations
 2026-05-11 17:07:20 | INFO | ES client created for index: routes
 2026-05-11 17:07:20 | INFO | ES client created for index: stations
+2026-05-11 17:09:04 | INFO | ES client created for index: routes
+2026-05-11 17:09:04 | INFO | ES client created for index: stations
+2026-05-11 17:09:07 | INFO | ES client created for index: routes
+2026-05-11 17:09:07 | INFO | ES client created for index: stations
+2026-05-11 17:09:13 | INFO | ES client created for index: routes
+2026-05-11 17:09:13 | INFO | ES client created for index: stations
+2026-05-11 17:09:24 | INFO | ES client created for index: routes
+2026-05-11 17:09:24 | INFO | ES client created for index: stations

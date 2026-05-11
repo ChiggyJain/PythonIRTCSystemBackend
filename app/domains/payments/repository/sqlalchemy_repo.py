@@ -2,8 +2,9 @@
 
 from datetime import date, datetime, timedelta
 from decimal import Decimal
-from typing import Any
 from sqlalchemy import select, update, or_
+from typing import Any, List, Optional
+from sqlalchemy.sql import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.payments.models.payment_orders_models import PaymentOrders
@@ -15,6 +16,42 @@ class PaymentSQLAlchemyRepository:
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
+
+
+    async def get_payment_orders_details(
+        self, 
+        select_columns: Optional[List[Any]] = None,
+        where_conditions: Optional[List[Any]] = None,
+        order_by: Optional[List[Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[PaymentOrders] | None:
+
+        if select_columns:
+            stmt: Select = select(*select_columns)
+        else:
+            stmt: Select = select(PaymentOrders)
+
+        if where_conditions:
+            stmt = stmt.where(*where_conditions)
+
+        if order_by:
+            stmt = stmt.order_by(*order_by)
+
+        if limit:
+            stmt = stmt.limit(limit)
+
+        if offset:
+            stmt = stmt.offset(offset)
+
+        result = await self._db_session.execute(stmt)
+
+        if select_columns:
+            return result.mappings().all()
+
+        return list(result.scalars().all())
+
+
 
 
     async def create_payment_orders(
