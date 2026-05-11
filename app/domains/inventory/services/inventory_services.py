@@ -462,6 +462,11 @@ class InventoryService:
 
 
 
+    async def unlock_seats(self, *, payload: dict):
+        pass
+
+
+
     async def recompute_segment_seat_statuses(
         self,
         schedule_id: int,
