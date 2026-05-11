@@ -110,7 +110,8 @@ class PaymentService:
                     messages=[f"Payment orders created successfully"],
                     data={
                         "payment_order_id" : created_payment_orders_row.id,
-                        "gateway_service_provider" : created_payment_orders_row.gateway_provider,
+                        "gateway_provider" : created_payment_orders_row.gateway_provider,
+                        "gateway_provider_key_id" : "",
                         "gateway_order_id" : created_payment_orders_row.gateway_order_id,
                         "amount" : created_payment_orders_row.total_amount,
                         "currency" : created_payment_orders_row.currency,
