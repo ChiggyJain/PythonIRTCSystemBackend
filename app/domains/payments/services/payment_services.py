@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 import json
 from dns import message
 import httpx
+from sqlalchemy import null
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import BaseAppException
@@ -192,7 +193,7 @@ class PaymentService:
             if existing_idempotency_record:
                 return standardize_response(
                     status_code=200,
-                    messages=[f"payment order refund already created successfully"],
+                    messages=[f"payment order refund request already created successfully"],
                     data=existing_idempotency_record.event_response,
                 )
 
@@ -208,7 +209,7 @@ class PaymentService:
             if not payment_order_list:
                 return standardize_response(
                     status_code=404,
-                    messages=[f"Payment order not found"]
+                    messages=[f"Payment order not found. No refund"]
                 )
             if payment_order_list:
                 payment_order = payment_order_list[0]
@@ -217,6 +218,17 @@ class PaymentService:
                         status_code=404,
                         messages=[f"Cannot refund the payment in {payment_order.status} status"]
                     )
+                if payment_order.gateway_order_id in [None, null, ""]:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Payment order request is not created on service provider. No refund"]
+                    )
+                if payment_order.gateway_payment_id in [None, null, ""]:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Gateway payment-id not found. No refund"]
+                    )
+                
             
 
     
