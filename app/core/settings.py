@@ -134,8 +134,8 @@ class Settings(BaseSettings):
     SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
 
     # masterdata schedule-inventory seat availability update topic and consumer
-    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED="masterdata-schedule-inventory-seat_availability_updated"
-    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_CONSUMER_GROUP="masterdata-schedule-inventory-seat_availability_updated-consumergrp-1"
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED="masterdata-schedule-inventory-seat-availability-updated"
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_CONSUMER_GROUP="masterdata-schedule-inventory-seat-availability-updated-consumergrp-1"
     KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_OUTBOX_MAX_RETRIES=6
 
     # ELASTICSEARCH CONFIG
