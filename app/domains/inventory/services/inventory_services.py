@@ -26,6 +26,7 @@ from app.domains.inventory.models.schedule_inventory_models import ScheduleInven
 from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.inventory.repository.sqlalchemy_repo import InventorySQLAlchemyRepository
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 settings = get_settings()
@@ -38,6 +39,7 @@ class InventoryService:
         self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.inventory_repo = InventorySQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def process_train_schedule_created_event_for_inventory(self, *, payload: dict) -> dict:
@@ -407,16 +409,17 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
+            params1 = {
+                "schedule_id" : inventory_schedule.schedule_id,
+                "train_id" : inventory_schedule.train_id,
+                "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+            }
+            rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+
             await self._db_session.commit()
 
-            """
-            # task is pending
-            # publish seats-availability update (fire and forget) into kafka topics
-            # elastic search route_indexes based on schedule_id and train_id
-            # schedule_id, train_id, count.available, counts.locked, counts.booked
-            """
-
-            
             return standardize_response(
                 status_code=201,
                 messages=["Seats locked successfully"],
@@ -751,6 +754,42 @@ class InventoryService:
             }
         
         return count_changes
+    
+
+
+    async def store_seat_update_availability_into_outbox_events(
+        self,
+        payload: dict
+    ):
+
+        rsp = {
+            "outbox_event_id" : 0
+        }
+        try:
+            
+            created_outbox_events_row = await self.outbox_repo.add_outbox_event(
+                aggregate_type="SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED",
+                aggregate_id=payload.get("schedule_id", 0),
+                event_type="SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED",
+                payload_json={
+                    "schedule_id": payload.get("schedule_id", 0),
+                    "train_id": payload.get("train_id", 0),
+                    "available": payload.get("available", 0),
+                    "locked": payload.get("locked", 0),
+                    "booked": payload.get("booked", 0),
+                },
+                status="PENDING"
+            )
+            rsp = {
+                "outbox_event_id" : created_outbox_events_row.id
+            }
+            
+        except Exception as e:
+            pass
+
+        return rsp
+        
+        
 
         
 
