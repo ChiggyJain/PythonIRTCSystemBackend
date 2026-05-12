@@ -82,3 +82,17 @@
 2026-05-12 16:44:40 | INFO | ES client created for index: routes
 2026-05-12 16:44:40 | INFO | ES client created for index: stations
 2026-05-12 16:44:40 | INFO | SpawnProcess-30-17061 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:44:40.933492 | 2026-05-12 16:44:40.960817 | 27 | None | 500
+2026-05-12 16:46:09 | INFO | ES client created for index: routes
+2026-05-12 16:46:09 | INFO | ES client created for index: stations
+2026-05-12 16:46:10 | INFO | SpawnProcess-31-18483 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:46:10.685204 | 2026-05-12 16:46:10.706088 | 20 | None | 500
+2026-05-12 16:47:45 | INFO | ES client created for index: routes
+2026-05-12 16:47:45 | INFO | ES client created for index: stations
+2026-05-12 16:47:46 | INFO | SpawnProcess-32-18532 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:47:46.381953 | 2026-05-12 16:47:46.400506 | 18 | None | 500
+2026-05-12 16:49:39 | INFO | ES client created for index: routes
+2026-05-12 16:49:39 | INFO | ES client created for index: stations
+2026-05-12 16:49:44 | INFO | SpawnProcess-33-18610 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:49:44.057543 | 2026-05-12 16:49:44.075074 | 17 | None | 500
+2026-05-12 16:50:16 | INFO | ES client created for index: routes
+2026-05-12 16:50:16 | INFO | ES client created for index: stations
+2026-05-12 16:51:20 | INFO | ES client created for index: routes
+2026-05-12 16:51:20 | INFO | ES client created for index: stations
+2026-05-12 16:51:23 | INFO | SpawnProcess-36-18674 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:51:23.637857 | 2026-05-12 16:51:23.655284 | 17 | None | 500

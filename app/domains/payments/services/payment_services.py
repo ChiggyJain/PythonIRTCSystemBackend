@@ -299,7 +299,7 @@ class PaymentService:
         try:
 
             # extracted parameters
-            payment_order_id = payload.get("payment_order_id", "")
+            payment_order_id = payload.get("payment_order_id", 0)
             gateway_payment_id = payload.get("gateway_payment_id", "")
             gateway_payment_signature = payload.get("gateway_payment_signature", "")
     
@@ -359,7 +359,7 @@ class PaymentService:
                 }
                 payment_gateway_verify_rsp_obj = await payment_gateway_class_instances_obj.verifyPaymentSignature(**params2)
                 if payment_gateway_verify_rsp_obj["status_code"]>0:
-                    
+                    print("step0")    
                     # updating the payment order table status
                     cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
                         where_data = {
@@ -368,7 +368,7 @@ class PaymentService:
                         update_data = {
                             "gateway_payment_id" : gateway_payment_id,
                             "gateway_signature" : gateway_payment_signature,
-                            "failure_reason" : None if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
+                            "failure_reason" : "ss" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
                             "version" : PaymentOrders.version + 1,
                             "status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                         }
@@ -416,6 +416,9 @@ class PaymentService:
 
     
         except Exception as e:
+            import sys
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            print("Line number:", exc_tb.tb_lineno)
             await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
