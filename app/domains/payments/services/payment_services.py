@@ -318,6 +318,7 @@ class PaymentService:
                     messages=[f"Payment order not found. No verification"]
                 )
             if payment_order_list:
+                
                 payment_order = payment_order_list[0]
                 if payment_order.status not in ["CREATED", "CREATED"]:
                     return standardize_response(
@@ -357,71 +358,42 @@ class PaymentService:
                 payment_gateway_verify_rsp_obj = await payment_gateway_class_instances_obj.verifyPaymentSignature(**params2)
                 if payment_gateway_verify_rsp_obj["status_code"]>0:
                     
-                    # creating refund orders into table
-                    created_refund_orders_row = await self.payment_repo.create_refund_orders(
-                        idempotency_key=idempotency_key,
-                        payment_order_id=payment_order.id,
-                        total_amount=amount,
-                        reason=reason,
-                        gateway_refund_id=payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                        failure_reason=None,
-                        metadata_json=None,
-                        status="INITIATED" if payment_gateway_refund_rsp_obj["status_code"] == 201 else "FAILED",
-                    )
-
                     # updating the payment order table status
-                    if payment_gateway_refund_rsp_obj["status_code"] == 200:
-                        cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
-                            where_data = {
-                                PaymentOrders.id == payment_order.id
-                            },
-                            update_data = {
-                                "version" : PaymentOrders.version + 1,
-                                "status" : "REFUND_INITIATED"
-                            }
-                        )
+                    cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
+                        where_data = {
+                            PaymentOrders.id == payment_order.id
+                        },
+                        update_data = {
+                            "gateway_payment_id" : gateway_payment_id,
+                            "gateway_payment_signature" : gateway_payment_signature,
+                            "failure_reason" : None if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
+                            "version" : PaymentOrders.version + 1,
+                            "status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
+                        }
+                    )
 
                     # creating payment audit logs into table
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
                         payment_order_id=payment_order.id,
-                        action="REFUND_INITIATED",
-                        gateway_response=payment_gateway_refund_rsp_obj["raw_response"],
+                        action="SIGNATURE_VERIFIED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "SIGNATURE_VERIFICATION_FAILED",
+                        gateway_response=None,
                         metadata_json={
-                            "refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : str(amount),
-                            "reason" : reason
+                            "gateway_payment_id" : gateway_payment_id,
+                            "gateway_payment_signature" : gateway_payment_signature,
                         },
                         status="A"
                     )
-                    
-                    # storing idempotency-key details
-                    await self.idempotency_repo.add_idempotency_record(
-                        event_key = event_key,
-                        event_type = "refund_orders",
-                        event_response = {
-                            "payment_order_id" : payment_order.id,
-                            "gateway_provider" : payment_order.gateway_provider,
-                            "gateway_provider_key_id" : "",
-                            "payment_refund_id" : created_refund_orders_row.id,
-                            "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : str(payment_gateway_refund_rsp_obj["amount"]),
-                            "refund_status" : payment_gateway_refund_rsp_obj["status"]
-                        }
-                    )
-
+                
                     await self._db_session.commit()
                     
                     return standardize_response(
-                        status_code=payment_gateway_refund_rsp_obj["status_code"],
-                        messages=payment_gateway_refund_rsp_obj["messages"],
+                        status_code=payment_gateway_verify_rsp_obj["status_code"],
+                        messages=payment_gateway_verify_rsp_obj["messages"],
                         data={
                             "payment_order_id" : payment_order.id,
-                            "gateway_provider" : payment_order.gateway_provider,
-                            "gateway_provider_key_id" : "",
-                            "payment_refund_id" : created_refund_orders_row.id,
-                            "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : str(payment_gateway_refund_rsp_obj["amount"]),
-                            "refund_status" : payment_gateway_refund_rsp_obj["status"]
+                            "gateway_order_id" : payment_order.gateway_order_id,
+                            "gateway_payment_id" : gateway_payment_id,
+                            "payment_order_status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                         }
                     )
 
