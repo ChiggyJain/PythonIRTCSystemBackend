@@ -71,8 +71,8 @@ class PasswordChangeOtpService:
             cacheKey = f"user:passwordchange:requestotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=cacheKey,
-                limit=settings.PWDCHANGED_OTP_USER_RATE_LIMIT,
-                window=settings.PWDCHANGED_OTP_USER_RATE_WINDOW_SECONDS,
+                limit=settings.PWDCHANGED_OTP_API_RATE_LIMIT_REQUEST,
+                window=settings.PWDCHANGED_OTP_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(
@@ -260,8 +260,8 @@ class PasswordChangeOtpService:
             user_rate_key = f"user:passwordchange:requestotp:confirm:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.PWDCHANGED_CONFIRM_USER_RATE_LIMIT,
-                window=settings.PWDCHANGED_CONFIRM_USER_RATE_WINDOW_SECONDS,
+                limit=settings.PWDCHANGED_CONFIRM_API_RATE_LIMIT_REQUEST,
+                window=settings.PWDCHANGED_CONFIRM_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(

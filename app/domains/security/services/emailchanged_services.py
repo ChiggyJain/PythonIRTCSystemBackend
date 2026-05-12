@@ -63,8 +63,8 @@ class EmailChangedOtpService:
             user_rate_key = f"user:emailchange:requestotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.EMAILCHANGE_OTP_USER_RATE_LIMIT,
-                window=settings.EMAILCHANGE_OTP_USER_RATE_WINDOW_SECONDS,
+                limit=settings.EMAILCHANGE_OTP_API_RATE_LIMIT_REQUEST,
+                window=settings.EMAILCHANGE_OTP_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(
@@ -241,8 +241,8 @@ class EmailChangedOtpService:
             user_rate_key = f"user:emailchange:requestotp:confirm:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.EMAILCHANGE_CONFIRM_USER_RATE_LIMIT,
-                window=settings.EMAILCHANGE_CONFIRM_USER_RATE_WINDOW_SECONDS,
+                limit=settings.EMAILCHANGE_CONFIRM_API_RATE_LIMIT_REQUEST,
+                window=settings.EMAILCHANGE_CONFIRM_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(
