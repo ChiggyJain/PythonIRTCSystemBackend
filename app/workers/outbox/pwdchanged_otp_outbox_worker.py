@@ -53,7 +53,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.PWDCHANGED_OTP_DISPATCH_TOPIC
+                    topic = settings.KAFKA_PWDCHANGED_OTP_DISPATCH_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
