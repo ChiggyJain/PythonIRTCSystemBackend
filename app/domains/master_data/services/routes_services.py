@@ -46,8 +46,8 @@ class RoutesService:
             user_rate_key = f"user:train:route:create:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_LIMIT,
-                window=settings.MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS,
+                limit=settings.ROUTE_CREATE_API_RATE_LIMIT_REQUEST,
+                window=settings.ROUTE_CREATE_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(

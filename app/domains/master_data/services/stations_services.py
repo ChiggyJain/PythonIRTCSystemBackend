@@ -48,8 +48,8 @@ class StationsService:
             user_rate_key = f"user:stations:create:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.MASTERDATA_STATION_CREATE_USER_RATE_LIMIT,
-                window=settings.MASTERDATA_STATION_CREATE_USER_RATE_WINDOW_SECONDS,
+                limit=settings.STATION_CREATE_API_RATE_LIMIT_REQUEST,
+                window=settings.STATION_CREATE_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
                 return standardize_response(

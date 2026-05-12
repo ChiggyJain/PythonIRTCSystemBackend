@@ -47,7 +47,7 @@ class TrainSchedulesService:
             user_rate_key = f"user:train:schedule:create:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
-                limit=settings.SCHEDULE_CREATE_API_RATE_LIMIT,
+                limit=settings.SCHEDULE_CREATE_API_RATE_LIMIT_REQUEST,
                 window=settings.SCHEDULE_CREATE_API_RATE_WINDOW_SECONDS,
             )
             if not user_allowed_request:
