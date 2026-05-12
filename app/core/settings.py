@@ -109,8 +109,8 @@ class Settings(BaseSettings):
     MASTERDATA_ROUTE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
 
     # admin schedule create request rate limitter
-    MASTERDATA_SCHEDULE_CREATE_USER_RATE_LIMIT: int = 10
-    MASTERDATA_SCHEDULE_CREATE_USER_RATE_WINDOW_SECONDS: int = 60
+    SCHEDULE_CREATE_API_RATE_LIMIT: int = 10
+    SCHEDULE_CREATE_API_RATE_WINDOW_SECONDS: int = 60
 
     # Station KAFKA TOPIC and CONSUMER
     MASTERDATA_STATION_CREATED: str = "masterdata-station-created"
