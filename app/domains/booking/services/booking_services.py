@@ -83,13 +83,12 @@ class BookingService:
                     if booking_saga_logs_list:
                         for each_booking_sag_log in booking_saga_logs_list:
                             booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
-                            print(f"each_booking_sag_log.saga_step : {each_booking_sag_log.saga_step}")
                             match (each_booking_sag_log.saga_step):
                                 case "HOLD_SEATS":
-                                    rsp = await self.compensateHoldSeats(booking_details)
+                                    rsp = await self.compensateHoldSeats(payload=booking_details)
                                     break
                                 case "CREATE_PAYMENT":
-                                    rsp = await self.compensateCreatePayment(booking_details)
+                                    rsp = await self.compensateCreatePayment(payload=booking_details)
                                     break
                                 case "CONFIRM_SEATS":
                                     break
