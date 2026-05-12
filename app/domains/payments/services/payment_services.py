@@ -451,7 +451,7 @@ class PaymentService:
             }
             
         except Exception as e:
-            print(f"store_payment_updated_status_into_outbox_events func ex: {str(e)}")
+            pass
 
         return rsp
 
