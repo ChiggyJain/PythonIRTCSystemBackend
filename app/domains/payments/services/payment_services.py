@@ -83,8 +83,6 @@ class PaymentService:
                     event_key = event_key,
                     event_type = "payment_orders",
                     event_response = {
-                        "status_code" : payment_gateway_created_order_rsp_obj["status_code"],
-                        "messages" : payment_gateway_created_order_rsp_obj["messages"],
                         "payment_order_id" : "",
                         "gateway_provider" : "",
                         "gateway_provider_key_id" : "",
@@ -105,6 +103,8 @@ class PaymentService:
             # successfully created
             if payment_gateway_created_order_rsp_obj["status_code"] == 201:
                 
+                payment_gateway_created_order_rsp_obj_status_code = payment_gateway_created_order_rsp_obj["status_code"]
+
                 # creating payment orders into table
                 created_payment_orders_row = await self.payment_repo.create_payment_orders(
                     idempotency_key=idempotency_key,
@@ -119,7 +119,7 @@ class PaymentService:
                     failure_reason=None,
                     metadata_json=None,
                     version=0,
-                    status="CREATED"
+                    status="CREATED" if payment_gateway_created_order_rsp_obj_status_code == 201 else "FAILED",
                 )
 
                 # creating payment audit logs into table
@@ -140,8 +140,6 @@ class PaymentService:
                     event_key = event_key,
                     event_type = "payment_orders",
                     event_response = {
-                        "status_code" : 201,
-                        "messages" : ["Payment orders created successfully"],
                         "payment_order_id" : created_payment_orders_row.id,
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
                         "gateway_provider_key_id" : "",
@@ -244,11 +242,8 @@ class PaymentService:
                         "reason" : reason
                     }
                 }
-                payment_gateway_order_refund_rsp_obj = await payment_gateway_class_instances_obj.initiateRefund(**params2)
-            
-                if payment_gateway_order_refund_rsp_obj["status_code"]>0:
-                    
-                    payment_gateway_refund_rsp_obj_status_code = payment_gateway_order_refund_rsp_obj["status_code"]
+                payment_gateway_refund_rsp_obj = await payment_gateway_class_instances_obj.initiateRefund(**params2)
+                if payment_gateway_refund_rsp_obj["status_code"]>0:
                     
                     # creating refund orders into table
                     created_refund_orders_row = await self.payment_repo.create_refund_orders(
@@ -256,14 +251,14 @@ class PaymentService:
                         payment_order_id=payment_order.id,
                         total_amount=amount,
                         reason=reason,
-                        gateway_refund_id=payment_gateway_order_refund_rsp_obj["payment_gateway_refund_id"],
+                        gateway_refund_id=payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
                         failure_reason=None,
                         metadata_json=None,
-                        status="INITIATED" if payment_gateway_refund_rsp_obj_status_code == 201 else "FAILED",
+                        status="INITIATED" if payment_gateway_refund_rsp_obj["status_code"] == 201 else "FAILED",
                     )
 
                     # updating the payment order table status
-                    if payment_gateway_refund_rsp_obj_status_code == 200:
+                    if payment_gateway_refund_rsp_obj["status_code"] == 200:
                         cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
                             where_data = {
                                 PaymentOrders.id == payment_order.id
@@ -278,9 +273,9 @@ class PaymentService:
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
                         payment_order_id=payment_order.id,
                         action="REFUND_INITIATED",
-                        gateway_response=payment_gateway_order_refund_rsp_obj["raw_response"],
+                        gateway_response=payment_gateway_refund_rsp_obj["raw_response"],
                         metadata_json={
-                            "refund_id" : payment_gateway_order_refund_rsp_obj["payment_gateway_refund_id"],
+                            "refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
                             "amount" : amount,
                             "reason" : reason
                         },
@@ -296,25 +291,25 @@ class PaymentService:
                             "gateway_provider" : payment_order.gateway_provider,
                             "gateway_provider_key_id" : "",
                             "payment_refund_id" : created_refund_orders_row.id,
-                            "gateway_refund_id" : payment_gateway_order_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : payment_gateway_order_refund_rsp_obj["amount"],
-                            "refund_status" : payment_gateway_order_refund_rsp_obj["status"]
+                            "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
+                            "amount" : payment_gateway_refund_rsp_obj["amount"],
+                            "refund_status" : payment_gateway_refund_rsp_obj["status"]
                         }
                     )
 
                     await self._db_session.commit()
-
+                    
                     return standardize_response(
-                        status_code=201,
-                        messages=[f"Payment refund request inititated successfully"],
+                        status_code=payment_gateway_refund_rsp_obj["status_code"],
+                        messages=payment_gateway_refund_rsp_obj["messages"],
                         data={
                             "payment_order_id" : payment_order.id,
                             "gateway_provider" : payment_order.gateway_provider,
                             "gateway_provider_key_id" : "",
                             "payment_refund_id" : created_refund_orders_row.id,
-                            "gateway_refund_id" : payment_gateway_order_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : payment_gateway_order_refund_rsp_obj["amount"],
-                            "refund_status" : payment_gateway_order_refund_rsp_obj["status"]
+                            "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
+                            "amount" : payment_gateway_refund_rsp_obj["amount"],
+                            "refund_status" : payment_gateway_refund_rsp_obj["status"]
                         }
                     )
 
