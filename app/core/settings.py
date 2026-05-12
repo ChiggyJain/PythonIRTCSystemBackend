@@ -129,9 +129,9 @@ class Settings(BaseSettings):
     
     # Schedule KAFKA TOPIC and CONSUMER
     KAFKA_SCHEDULE_CREATED: str = "masterdata-schedule-created"
-    MASTERDATA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumergrp-1"
-    MASTERDATA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "masterdata-schedule-events-inventory-consumergrp-1"
-    MASTERDATA_SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
+    KAFKA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumergrp-1"
+    KAFKA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "masterdata-schedule-events-inventory-consumergrp-1"
+    SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
 
     # masterdata schedule-inventory seat availability update topic and consumer
     KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED="masterdata-schedule-inventory-seat_availability_updated"
