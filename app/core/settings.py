@@ -128,15 +128,15 @@ class Settings(BaseSettings):
     MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
     # Schedule KAFKA TOPIC and CONSUMER
-    MASTERDATA_SCHEDULE_CREATED: str = "masterdata-schedule-created"
+    KAFKA_SCHEDULE_CREATED: str = "masterdata-schedule-created"
     MASTERDATA_SCHEDULE_CONSUMER_GROUP: str = "masterdata-schedule-events-dispatch-consumergrp-1"
     MASTERDATA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "masterdata-schedule-events-inventory-consumergrp-1"
     MASTERDATA_SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
 
     # masterdata schedule-inventory seat availability update topic and consumer
-    MASTERDATA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED="masterdata-schedule-inventory-seat_availability_updated"
-    MASTERDATA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_CONSUMER_GROUP="masterdata-schedule-inventory-seat_availability_updated-consumergrp-1"
-    MASTERDATA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_OUTBOX_MAX_RETRIES=6
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED="masterdata-schedule-inventory-seat_availability_updated"
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_CONSUMER_GROUP="masterdata-schedule-inventory-seat_availability_updated-consumergrp-1"
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_OUTBOX_MAX_RETRIES=6
 
     # ELASTICSEARCH CONFIG
     ELASTICSEARCH_URL: str = "http://127.0.0.1:9200"

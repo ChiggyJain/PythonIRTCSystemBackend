@@ -44,7 +44,7 @@ class InventoryService:
 
         try:
             
-            IDEMPOTENCY_EVENT_TYPE = "MASTERDATA_SCHEDULE_CREATED"
+            IDEMPOTENCY_EVENT_TYPE = "KAFKA_SCHEDULE_CREATED"
             IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
 
             schedule_id = int(payload.get("schedule_id", 0))
