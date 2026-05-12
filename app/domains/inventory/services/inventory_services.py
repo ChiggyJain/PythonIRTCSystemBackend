@@ -1,6 +1,7 @@
 
 from decimal import Decimal
 from datetime import date, datetime, timedelta
+import sched
 from typing import List
 from sqlalchemy import select, update, or_, func
 from sqlalchemy import (
@@ -594,7 +595,17 @@ class InventoryService:
             user_id = int(payload.get("user_id", 0))
             from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
             to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
-            
+
+            if not booking_id:
+                return standardize_response(
+                    status_code=400,
+                    messages=["booking_id is required"],
+                )
+            if not user_id:
+                return standardize_response(
+                    status_code=400,
+                    messages=["user_id is required"],
+                )        
             if not seat_ids:
                 return standardize_response(
                     status_code=400,
@@ -632,17 +643,25 @@ class InventoryService:
                 ]
                 return standardize_response(
                     status_code=409,
-                    messages=[f"Seats are missing to unlock: {missing_ids}"],
+                    messages=[f"Seats are missing to confirm: {missing_ids}"],
                 )
             
-            # delete specific segment seat locks for this user/segment
-            cnt_of_seat_segment_lock_deleted = await self.inventory_repo.hard_delete_seat_sgement_locks_details(
-                schedule_id=schedule_id,
-                seat_ids=seat_ids,
-                locked_by_user_id=user_id,
-                from_station_sequence_number=from_station_sequence_number,
-                to_station_sequence_number=to_station_sequence_number,
-                status="LOCKED"
+            # confirming the seats
+            await self.inventory_repo.update_seat_segment_locks_details(
+                where_data={
+                    "schedule_id": schedule_id,
+                    "seat_id" : seat_ids,
+                    "locked_by_user_id" : user_id,
+                    "from_station_sequence_number" : from_station_sequence_number,
+                    "to_station_sequence_number" : to_station_sequence_number,
+                    "status" : "LOCKED",
+                },
+                update_data={
+                    "booking_id" : booking_id,
+                    "locked_expires_at" : None,
+                    "version" : SeatSegmentLockInventory.version+1,
+                    "status": "BOOKED",
+                }
             )
             
             # recompute each seat's summary status from its segment locks
@@ -675,7 +694,8 @@ class InventoryService:
                 data={
                     "schedule_id" : inventory_schedule.schedule_id,
                     "train_id" : inventory_schedule.train_id,
-                    "unlocked_seat_ids" : seat_ids,
+                    "booking_id" : booking_id,
+                    "confirm_seat_ids" : seat_ids,
                     "recounts_schedule_aggregates": {
                         "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
                         "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],

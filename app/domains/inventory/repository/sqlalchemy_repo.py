@@ -291,6 +291,30 @@ class InventorySQLAlchemyRepository:
         return bool(res.rowcount and res.rowcount > 0)
     
 
+    async def update_seat_segment_locks_details(
+        self,
+        *,
+        where_data: dict,
+        update_data: dict,
+    ) -> bool:
+
+        update_data["updated_at"] = now_ist()
+        conditions = []
+        for key, value in where_data.items():
+            column = getattr(SeatSegmentLockInventory, key)
+            if isinstance(value, list):
+                conditions.append(column.in_(value))
+            else:
+                conditions.append(column == value)
+        stmt = (
+            update(SeatInventory)
+            .where(*conditions)
+            .values(**update_data)
+        )        
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+    
+
     async def hard_delete_seat_sgement_locks_details(
         self,
         *,
