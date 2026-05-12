@@ -2090,3 +2090,18 @@
 2026-05-12 09:53:58 | INFO | SpawnProcess-13-13679 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:53:58.646633 | 2026-05-12 09:53:58.815106 | 168 | None | 500
 2026-05-12 09:57:02 | INFO | ES client created for index: routes
 2026-05-12 09:57:02 | INFO | ES client created for index: stations
+2026-05-12 09:59:19 | INFO | SpawnProcess-14-13832 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/availability | 2026-05-12 09:59:19.971367 | 2026-05-12 09:59:19.975435 | 4 | None | 200
+2026-05-12 09:59:20 | INFO | SpawnProcess-14-13832 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/seats | 2026-05-12 09:59:19.994835 | 2026-05-12 09:59:20.005399 | 10 | None | 200
+2026-05-12 09:59:20 | INFO | SpawnProcess-14-13832 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-12 09:59:20.083224 | 2026-05-12 09:59:20.101727 | 18 | None | 201
+2026-05-12 09:59:20 | INFO | SpawnProcess-14-13832 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-12 09:59:20.130678 | 2026-05-12 09:59:20.137828 | 7 | None | 500
+2026-05-12 09:59:20 | INFO | SpawnProcess-14-13832 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:59:19.866664 | 2026-05-12 09:59:20.148888 | 282 | None | 500
+2026-05-12 10:01:27 | INFO | ES client created for index: routes
+2026-05-12 10:01:27 | INFO | ES client created for index: stations
+2026-05-12 10:01:33 | INFO | ES client created for index: routes
+2026-05-12 10:01:33 | INFO | ES client created for index: stations
+2026-05-12 10:02:31 | INFO | ES client created for index: routes
+2026-05-12 10:02:31 | INFO | ES client created for index: stations
+2026-05-12 10:03:03 | INFO | ES client created for index: routes
+2026-05-12 10:03:03 | INFO | ES client created for index: stations
+2026-05-12 10:03:35 | INFO | ES client created for index: routes
+2026-05-12 10:03:35 | INFO | ES client created for index: stations

@@ -101,7 +101,7 @@ class PaymentService:
                     metadata_json={
                         "user_id" : user_id,
                         "booking_id" : booking_id,
-                        "amount" : amount,
+                        "amount" : str(amount),
                     },
                     status="A"
                 )
@@ -247,7 +247,7 @@ class PaymentService:
                         gateway_response=payment_gateway_refund_rsp_obj["raw_response"],
                         metadata_json={
                             "refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : amount,
+                            "amount" : str(amount),
                             "reason" : reason
                         },
                         status="A"
