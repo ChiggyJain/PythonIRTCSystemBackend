@@ -57,3 +57,11 @@ class CreatePaymentOrderRefundRequest(BaseModel):
                 f"{info.field_name} must be greater than 0."
             )
         return value   
+
+
+class VerifyPaymentRequest(BaseModel):
+
+    gateway_payment_order_id: str
+    gateway_payment_id: str
+    gateway_payment_signature: str
+    

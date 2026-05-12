@@ -9,6 +9,7 @@ from app.common.security.token_decoder import(
 )
 from app.domains.payments.schemas.payments_schemas import CreatePaymentOrderRequest
 from app.domains.payments.schemas.payments_schemas import CreatePaymentOrderRefundRequest
+from app.domains.payments.schemas.payments_schemas import VerifyPaymentRequest
 from app.domains.payments.services.payment_services import PaymentService
 from app.dependencies.payments import get_payment_service
 
@@ -84,5 +85,39 @@ router.add_api_route(
     route_class_override=FeatureAPIRoute,
 )
 
+
+
+@feature_control(
+    {
+        "name": "user:payment:verify",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 100,
+            "window": 60,
+        },
+    }
+)
+async def verify_payment(
+    body: VerifyPaymentRequest,
+    request: Request,
+    service: PaymentService = Depends(get_payment_service),
+):
+    
+    payload = body.model_dump()
+    payload["ip_address"] = request.client.host if request.client else None
+    payload["user-agent"] = request.headers.get("user-agent")
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.verify_payment_details(payload=payload)
+
+router.add_api_route(
+    "/orders/verify",
+    verify_payment,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
 
 
