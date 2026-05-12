@@ -2,6 +2,7 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 import json
+import sched
 import httpx
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,7 +43,13 @@ class BookingService:
             booking_id = int(payload.get("booking_id", 0))
             seat_ids = payload.get("seat_ids", [])
             seat_ids.sort()
-            
+
+            if booking_id <= 0 or not seat_ids:
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passed for booking compensation steps"]
+                )
+
             if booking_id>0 and len(seat_ids)>0:
                 
                 # fetching booking details
@@ -110,7 +117,6 @@ class BookingService:
         try:
             
             # extracted parameters
-            booking_id = int(payload.get("booking_id", 0))
             user_id = int(payload.get("user_id", 0))
             schedule_id = int(payload.get("schedule_id", 0))
             seat_ids = payload.get("seat_ids", [])
@@ -118,6 +124,18 @@ class BookingService:
             from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
             to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
             booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
+
+            if (
+                user_id<=0 or schedule_id<=0 
+                or not seat_ids 
+                or from_station_sequence_number<=0 
+                or to_station_sequence_number<=0
+                or booking_saga_log_id<=0
+            ):
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passed for compensating on hold seats steps"]
+                )
 
             # unlock hold seats into external inventory service
             unLockHoldSeatRspObj = None
@@ -171,7 +189,12 @@ class BookingService:
             reason = "booking_compensation"
             booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
             
-
+            if (booking_saga_log_id<=0):
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passed for compensating on create payment steps"]
+                )
+            
             # initiate refund process into external payment service
             refundPaymentRspObj = None
             # refundPaymentData = None
@@ -240,7 +263,7 @@ class BookingService:
             if existing_idempotency_record:
                 return standardize_response(
                     status_code=400,
-                    messages=[f"Booking already created"],
+                    messages=[f"Booking already created. Duplicate request"],
                     data=existing_idempotency_record.event_response,
                 )
             
