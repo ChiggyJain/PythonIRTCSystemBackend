@@ -81,15 +81,12 @@ class BookingService:
                             messages=[f"Booking saga log details not found for compensating"]
                         )                    
                     if booking_saga_logs_list:
-                        print(f"booking_saga_logs_list: {booking_saga_logs_list}")
                         for each_booking_sag_log in booking_saga_logs_list:
-                            print(f"each_booking_sag_log.saga_step: {each_booking_sag_log.saga_step}")
                             booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
                             match each_booking_sag_log.saga_step:
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(payload=booking_details)
                                 case "CREATE_PAYMENT":
-                                    print("CREATE_PAYMENT: CREATE_PAYMENT")
                                     rsp = await self.compensateCreatePayment(payload=booking_details)
                                 case "CONFIRM_SEATS":
                                     pass                                    
@@ -168,9 +165,9 @@ class BookingService:
         try:
             
             # extracted parameters
-            idempotency_key = f"{payload.get("booking_id")}-refund-compensation"
+            idempotency_key = f"{payload.get("booking_id", 0)}-refund-compensation"
             payment_order_id = int(payload.get("payment_order_id", 0))
-            amount = Decimal(payload.get("total_amount", 0.00))
+            amount = payload.get("total_amount", 0)
             reason = "booking_compensation"
             booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
             
@@ -207,6 +204,7 @@ class BookingService:
             )
 
         except Exception as e:
+            print(f"{str(e)}")
             await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
