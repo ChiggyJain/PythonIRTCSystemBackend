@@ -373,7 +373,7 @@ class PaymentService:
                             "status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                         }
                     )
-
+                    print("step1")
                     # creating payment audit logs into table
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
                         payment_order_id=payment_order.id,
@@ -385,7 +385,7 @@ class PaymentService:
                         },
                         status="A"
                     )
-
+                    print("step2")
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
                     params1 = {
@@ -397,6 +397,8 @@ class PaymentService:
                         "payment_order_status": "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                     }
                     rsp = await self.store_payment_updated_status_into_outbox_events(payload=params1)
+
+                    print("step3")
 
                     await self._db_session.commit()
                     
