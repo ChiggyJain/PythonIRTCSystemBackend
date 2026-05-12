@@ -115,7 +115,7 @@ class PaymentService:
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
                         "gateway_provider_key_id" : "",
                         "gateway_order_id" : created_payment_orders_row.gateway_order_id,
-                        "amount" : created_payment_orders_row.total_amount,
+                        "amount" : str(created_payment_orders_row.total_amount),
                         "currency" : created_payment_orders_row.currency,
                         "payment_order_status" : created_payment_orders_row.status
                     }
@@ -131,7 +131,7 @@ class PaymentService:
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
                         "gateway_provider_key_id" : "",
                         "gateway_order_id" : created_payment_orders_row.gateway_order_id,
-                        "amount" : created_payment_orders_row.total_amount,
+                        "amount" : str(created_payment_orders_row.total_amount),
                         "currency" : created_payment_orders_row.currency,
                         "payment_order_status" : created_payment_orders_row.status
                     }
@@ -263,7 +263,7 @@ class PaymentService:
                             "gateway_provider_key_id" : "",
                             "payment_refund_id" : created_refund_orders_row.id,
                             "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : payment_gateway_refund_rsp_obj["amount"],
+                            "amount" : str(payment_gateway_refund_rsp_obj["amount"]),
                             "refund_status" : payment_gateway_refund_rsp_obj["status"]
                         }
                     )
@@ -279,7 +279,7 @@ class PaymentService:
                             "gateway_provider_key_id" : "",
                             "payment_refund_id" : created_refund_orders_row.id,
                             "gateway_refund_id" : payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
-                            "amount" : payment_gateway_refund_rsp_obj["amount"],
+                            "amount" : str(payment_gateway_refund_rsp_obj["amount"]),
                             "refund_status" : payment_gateway_refund_rsp_obj["status"]
                         }
                     )
