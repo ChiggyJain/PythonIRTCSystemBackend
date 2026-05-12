@@ -81,6 +81,9 @@ ROUTES_INDEX_MAPPING = {
                     "departure_date" : {
                         "type" : "date"
                     },
+                    "total" : {
+                        "type" : "integer"
+                    },
                     "available" : {
                         "type" : "integer"
                     },
