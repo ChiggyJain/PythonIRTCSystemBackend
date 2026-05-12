@@ -363,7 +363,7 @@ class PaymentService:
                     # updating the payment order table status
                     cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
                         where_data = {
-                            "id" == payment_order.id,
+                            "id" : payment_order.id,
                         },
                         update_data = {
                             "gateway_payment_id" : gateway_payment_id,
