@@ -10,7 +10,7 @@ settings = get_settings()
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.EMAILCHANGED_OTP_DISPATCH_TOPIC,
+        topic=settings.KAFKA_EMAILCHANGED_OTP_DISPATCH_TOPIC,
         group_id=settings.EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-consumer",
     )
