@@ -89,6 +89,7 @@ class BookingService:
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(payload=booking_details)
                                 case "CREATE_PAYMENT":
+                                    print("CREATE_PAYMENT: CREATE_PAYMENT")
                                     rsp = await self.compensateCreatePayment(payload=booking_details)
                                 case "CONFIRM_SEATS":
                                     pass                                    
