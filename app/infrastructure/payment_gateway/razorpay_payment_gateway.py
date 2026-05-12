@@ -32,7 +32,7 @@ class RazorpayPaymentGateway(BasePaymentGateway):
                 "amount_paid": 0,
                 "attempts": 0,
                 "created_at": int(time.time()),
-                "currency": "INR",
+                "currency": currency,
                 "entity": "order",
                 "id": str(uuid.uuid4()),
                 "notes": notes,
