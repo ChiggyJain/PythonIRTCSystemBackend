@@ -193,7 +193,7 @@ class PaymentService:
             if existing_idempotency_record:
                 return standardize_response(
                     status_code=200,
-                    messages=[f"payment order refund request already created successfully"],
+                    messages=[f"Payment refund request already inititated successfully"],
                     data=existing_idempotency_record.event_response,
                 )
 
@@ -221,12 +221,12 @@ class PaymentService:
                 if payment_order.gateway_order_id in [None, null, ""]:
                     return standardize_response(
                         status_code=404,
-                        messages=[f"Payment order request is not created on service provider. No refund"]
+                        messages=[f"Payment order request is not created on payment gateway service provider portal. No refund"]
                     )
                 if payment_order.gateway_payment_id in [None, null, ""]:
                     return standardize_response(
                         status_code=404,
-                        messages=[f"Gateway payment-id not found. No refund"]
+                        messages=[f"Payment gateway payment-id not found. No refund"]
                     )
                 
                 # fetching payment gateway instances details
@@ -252,7 +252,7 @@ class PaymentService:
                     # storing idempotency-key details
                     await self.idempotency_repo.add_idempotency_record(
                         event_key = event_key,
-                        event_type = "payment_orders",
+                        event_type = "refund_orders",
                         event_response = {
                             "status_code" : payment_gateway_order_refund_rsp_obj["status_code"],
                             "messages" : payment_gateway_order_refund_rsp_obj["messages"],
@@ -304,10 +304,10 @@ class PaymentService:
                     # storing idempotency-key details
                     await self.idempotency_repo.add_idempotency_record(
                         event_key = event_key,
-                        event_type = "payment_orders",
+                        event_type = "refund_orders",
                         event_response = {
                             "status_code" : 201,
-                            "messages" : ["Payment order refund created successfully"],
+                            "messages" : ["Payment refund request inititated successfully"],
                             "payment_order_id" : created_payment_orders_row.id,
                             "gateway_provider" : created_payment_orders_row.gateway_provider,
                             "gateway_provider_key_id" : "",
@@ -322,7 +322,7 @@ class PaymentService:
 
                     return standardize_response(
                         status_code=201,
-                        messages=[f"Payment orders created successfully"],
+                        messages=[f"Payment refund request inititated successfully"],
                         data={
                             "payment_order_id" : created_payment_orders_row.id,
                             "gateway_provider" : created_payment_orders_row.gateway_provider,
