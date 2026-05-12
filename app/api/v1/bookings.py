@@ -45,7 +45,7 @@ async def create_booking(
     return await service.create_booking_details(payload=payload)
 
 router.add_api_route(
-    "/bookings",
+    "/",
     create_booking,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
