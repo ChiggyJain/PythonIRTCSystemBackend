@@ -740,6 +740,7 @@ class BookingService:
                     messages=[f"Booking details not found"]
                 )
             if booking_list:
+
                 if not booking_list[0].user_id == user_id:
                     return standardize_response(
                         status_code=404,
@@ -756,7 +757,20 @@ class BookingService:
                         messages=[f"Booking is in {booking_list[0].status} status, cannot verify payment"]
                     )
                 
+                # calling payment service to verify and capture
+                verifyPaymentRspObj = None
+                # verifyPaymentRspData = None
+                async with httpx.AsyncClient() as client:
+                    response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/orders/verify", json={
+                        "payment_order_id" : booking_list[0].payment_order_id,
+                        "gateway_payment_id" : gateway_payment_id,
+                        "gateway_payment_signature" : gateway_payment_signature,
+                    })
+                    verifyPaymentRspObj = response.json()
+                    # verifyPaymentRspData = verifyPaymentRspObj.get("data", None)
+                print(f"verifyPaymentRspObj: {verifyPaymentRspObj}")
                 
+
 
             
     
