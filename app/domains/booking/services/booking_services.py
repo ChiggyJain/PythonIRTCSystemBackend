@@ -655,7 +655,7 @@ class BookingService:
             # updating booking table as failed
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
                 where_data={
-                    "id": booking_details["booking_id"]
+                    "id": booking_details.get("booking_id", 0),
                 },
                 update_data = {
                     "failure_reason" : str(e),
