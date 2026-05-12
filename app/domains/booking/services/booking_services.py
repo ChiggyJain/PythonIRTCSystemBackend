@@ -81,9 +81,11 @@ class BookingService:
                             messages=[f"Booking saga log details not found for compensating"]
                         )                    
                     if booking_saga_logs_list:
+                        print(f"booking_saga_logs_list: {booking_saga_logs_list}")
                         for each_booking_sag_log in booking_saga_logs_list:
+                            print(f"each_booking_sag_log.saga_step: {each_booking_sag_log.saga_step}")
                             booking_details["booking_saga_log_id"] = each_booking_sag_log.id 
-                            match (each_booking_sag_log.saga_step):
+                            match each_booking_sag_log.saga_step:
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(payload=booking_details)
                                 case "CREATE_PAYMENT":
