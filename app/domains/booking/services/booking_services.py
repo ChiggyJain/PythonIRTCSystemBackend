@@ -761,7 +761,7 @@ class BookingService:
                 verifyPaymentRspObj = None
                 # verifyPaymentRspData = None
                 async with httpx.AsyncClient() as client:
-                    response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/orders/verify", json={
+                    response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/orders/verify", json={
                         "payment_order_id" : booking_list[0].payment_order_id,
                         "gateway_payment_id" : gateway_payment_id,
                         "gateway_payment_signature" : gateway_payment_signature,
