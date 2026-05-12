@@ -155,6 +155,7 @@ class PaymentSQLAlchemyRepository:
         update_data: dict,
     ) -> bool:
 
+        print(f"ss1")
         update_data["updated_at"] = now_ist()
         conditions = []
         for key, value in where_data.items():
@@ -163,10 +164,20 @@ class PaymentSQLAlchemyRepository:
                 conditions.append(column.in_(value))
             else:
                 conditions.append(column == value)
+        print(f"ss2")
         stmt = (
             update(PaymentOrders)
             .where(*conditions)
             .values(**update_data)
+        )
+        # PRINT EXACT QUERY
+        print(f"ss3")
+        from sqlalchemy.dialects import mysql
+        print(
+            stmt.compile(
+                dialect=mysql.dialect(),
+                compile_kwargs={"literal_binds": True}
+            )
         )        
         res = await self._db_session.execute(stmt)
         return bool(res.rowcount and res.rowcount > 0)
