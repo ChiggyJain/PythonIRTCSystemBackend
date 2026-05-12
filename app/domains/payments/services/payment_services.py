@@ -74,37 +74,8 @@ class PaymentService:
                 }
             }
             payment_gateway_created_order_rsp_obj = await payment_gateway_class_instances_obj.createOrder(**params2)
-            
-            # failed due to some reasons
-            if payment_gateway_created_order_rsp_obj["status_code"]!=201:
-
-                # storing idempotency-key details
-                await self.idempotency_repo.add_idempotency_record(
-                    event_key = event_key,
-                    event_type = "payment_orders",
-                    event_response = {
-                        "payment_order_id" : "",
-                        "gateway_provider" : "",
-                        "gateway_provider_key_id" : "",
-                        "gateway_order_id" : "",
-                        "amount" : "",
-                        "currency" : "",
-                        "payment_order_status" : ""
-                    }
-                )
-
-                await self._db_session.commit()
+            if payment_gateway_created_order_rsp_obj["status_code"]>0:
                 
-                return standardize_response(
-                    status_code=500,
-                    messages=payment_gateway_created_order_rsp_obj["messages"]
-                )
-            
-            # successfully created
-            if payment_gateway_created_order_rsp_obj["status_code"] == 201:
-                
-                payment_gateway_created_order_rsp_obj_status_code = payment_gateway_created_order_rsp_obj["status_code"]
-
                 # creating payment orders into table
                 created_payment_orders_row = await self.payment_repo.create_payment_orders(
                     idempotency_key=idempotency_key,
@@ -119,7 +90,7 @@ class PaymentService:
                     failure_reason=None,
                     metadata_json=None,
                     version=0,
-                    status="CREATED" if payment_gateway_created_order_rsp_obj_status_code == 201 else "FAILED",
+                    status="CREATED" if payment_gateway_created_order_rsp_obj["status_code"] == 201 else "FAILED",
                 )
 
                 # creating payment audit logs into table
@@ -153,8 +124,8 @@ class PaymentService:
                 await self._db_session.commit()
 
                 return standardize_response(
-                    status_code=201,
-                    messages=[f"Payment orders created successfully"],
+                    status_code=payment_gateway_created_order_rsp_obj["status_code"],
+                    messages=payment_gateway_created_order_rsp_obj["messages"],
                     data={
                         "payment_order_id" : created_payment_orders_row.id,
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
@@ -315,6 +286,7 @@ class PaymentService:
 
     
         except Exception as e:
+            await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
