@@ -114,18 +114,18 @@ class Settings(BaseSettings):
 
     # Station KAFKA TOPIC and CONSUMER
     MASTERDATA_STATION_CREATED: str = "masterdata-station-created"
-    MASTERDATA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumergrp-1"
-    MASTERDATA_STATION_OUTBOX_MAX_RETRIES: int = 6
+    KAFKA_STATION_CONSUMER_GROUP: str = "masterdata-station-events-dispatch-consumergrp-1"
+    STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER
-    MASTERDATA_TRAIN_CREATED: str = "masterdata-train-created"
-    MASTERDATA_TRAIN_CONSUMER_GROUP: str = "masterdata-train-events-dispatch-consumergrp-1"
-    MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int = 6
+    KAFKA_TRAIN_CREATED: str = "masterdata-train-created"
+    KAFKA_TRAIN_CONSUMER_GROUP: str = "masterdata-train-events-dispatch-consumergrp-1"
+    TRAIN_OUTBOX_MAX_RETRIES: int = 6
     
     # Route KAFKA TOPIC and CONSUMER
     KAFKA_ROUTE_CREATED: str = "masterdata-route-created"
     KAFKA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumergrp-1"
-    MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
+    ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
     # Schedule KAFKA TOPIC and CONSUMER
     KAFKA_SCHEDULE_CREATED: str = "masterdata-schedule-created"

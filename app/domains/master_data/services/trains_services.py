@@ -19,7 +19,7 @@ settings = get_settings()
 class TrainsService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_TRAIN_CREATED = "MASTERDATA_TRAIN_CREATED"
+    OUTBOX_EVENT_TRAIN_CREATED = "KAFKA_TRAIN_CREATED"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session

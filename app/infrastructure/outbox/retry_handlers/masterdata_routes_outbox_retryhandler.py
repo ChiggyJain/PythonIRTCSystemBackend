@@ -20,7 +20,7 @@ class MasterDataRoutesOutboxRetryHandler(OutboxBaseRetryHandler):
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES)
+        max_retries = int(settings.ROUTE_OUTBOX_MAX_RETRIES)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(
