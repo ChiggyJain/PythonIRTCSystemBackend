@@ -237,7 +237,7 @@ class PaymentService:
                 
                 # creating payment order refund request on selected payment gateway instances
                 params2 = {
-                    "payment_id" : payment_order.gateway_payment_id,
+                    "gateway_payment_id" : payment_order.gateway_payment_id,
                     "amount": amount,
                     "notes" : {
                         "booking_id" : payment_order.booking_id,
@@ -246,17 +246,11 @@ class PaymentService:
                 }
                 payment_gateway_order_refund_rsp_obj = await payment_gateway_class_instances_obj.initiateRefund(**params2)
             
-                # failed due to some reasons
-                if payment_gateway_order_refund_rsp_obj["status_code"]!=200:
-
-                    return standardize_response(
-                        status_code=500,
-                        messages=payment_gateway_order_refund_rsp_obj["messages"]
-                    )
-                
-                # successfully created
-                if payment_gateway_order_refund_rsp_obj["status_code"] == 200:
+                if payment_gateway_order_refund_rsp_obj["status_code"]>0:
                     
+                    payment_gateway_refund_rsp_obj_status_code = payment_gateway_order_refund_rsp_obj["status_code"]
+                    payment_gateway_refund_rsp_obj_status_messages = payment_gateway_order_refund_rsp_obj["messages"]
+
                     # creating refund orders into table
                     created_refund_orders_row = await self.payment_repo.create_refund_orders(
                         idempotency_key=idempotency_key,
@@ -266,19 +260,20 @@ class PaymentService:
                         gateway_refund_id=payment_gateway_order_refund_rsp_obj["payment_gateway_refund_id"],
                         failure_reason=None,
                         metadata_json=None,
-                        status="INITIATED"
+                        status="INITIATED" if payment_gateway_refund_rsp_obj_status_code == 201 else "FAILED",
                     )
 
                     # updating the payment order table status
-                    cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
-                        where_data = {
-                            PaymentOrders.id == payment_order.id
-                        },
-                        update_data = {
-                            "version" : PaymentOrders.version + 1,
-                            "status" : "REFUND_INITIATED"
-                        }
-                    )
+                    if payment_gateway_refund_rsp_obj_status_code == 200:
+                        cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
+                            where_data = {
+                                PaymentOrders.id == payment_order.id
+                            },
+                            update_data = {
+                                "version" : PaymentOrders.version + 1,
+                                "status" : "REFUND_INITIATED"
+                            }
+                        )
 
                     # creating payment audit logs into table
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
@@ -298,8 +293,6 @@ class PaymentService:
                         event_key = event_key,
                         event_type = "refund_orders",
                         event_response = {
-                            "status_code" : 201,
-                            "messages" : ["Payment refund request inititated successfully"],
                             "payment_order_id" : payment_order.id,
                             "gateway_provider" : payment_order.gateway_provider,
                             "gateway_provider_key_id" : "",

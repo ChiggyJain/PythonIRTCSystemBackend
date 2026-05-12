@@ -75,24 +75,30 @@ class RazorpayPaymentGateway(BasePaymentGateway):
         try:
             
             # extracted parameters
-            payment_id = kwargs.get("payment_id", "")
+            gateway_payment_id = kwargs.get("gateway_payment_id", "")
             amount = kwargs.get("amount", 0)
             notes = kwargs.get("notes", {})
             
             # actual razorpay implementation business logic will be come here
             # dummy order response from razor payy
             refund_response  = {
-                "amount": amount,
-                "amount_due": amount,
-                "amount_paid": 0,
-                "attempts": 0,
-                "created_at": int(time.time()),
-                "currency": "INR",
-                "entity": "order",
                 "id": str(uuid.uuid4()),
+                "entity": "refund",
+                "amount": amount,
+                "receipt": "",
+                "currency": "INR",
+                "payment_id": gateway_payment_id,
                 "notes": notes,
-                "offer_id": None,
-                "status": "created"
+                "receipt": None,
+                "acquirer_data": {
+                    "arn": None
+                },
+                "created_at": int(time.time()),
+                "batch_id": None,
+                # "status" :"pending",
+                "status": "processed",
+                "speed_processed": "normal",
+                "speed_requested": "normal"
             }
 
             # hardcoded dummy response
