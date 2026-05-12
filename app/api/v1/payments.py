@@ -64,7 +64,7 @@ router.add_api_route(
         },
     }
 )
-async def create_payment_order_refund(
+async def create_payment_refund(
     body: CreatePaymentOrderRefundRequest,
     request: Request,
     service: PaymentService = Depends(get_payment_service),
@@ -75,11 +75,11 @@ async def create_payment_order_refund(
     payload["user-agent"] = request.headers.get("user-agent")
     payload["correlation_id"] = request.headers.get("x-correlation-id")
     payload["request_id"] = request.headers.get("x-request-id")
-    return await service.create_payment_order_refund_details(payload=payload)
+    return await service.create_payment_refund_details(payload=payload)
 
 router.add_api_route(
     "/refunds",
-    create_payment_order_refund,
+    create_payment_refund,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )

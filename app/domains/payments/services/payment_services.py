@@ -146,7 +146,7 @@ class PaymentService:
 
 
 
-    async def create_payment_order_refund_details(self, *, payload: dict) -> dict:
+    async def create_payment_refund_details(self, *, payload: dict) -> dict:
         
         try:
 
