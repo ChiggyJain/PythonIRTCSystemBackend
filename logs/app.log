@@ -164,3 +164,13 @@
 2026-05-12 18:04:35 | INFO | ES client created for index: stations
 2026-05-12 18:05:21 | INFO | ES client created for index: routes
 2026-05-12 18:05:21 | INFO | ES client created for index: stations
+2026-05-12 18:05:26 | INFO | SpawnProcess-7-23015 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-12 18:05:26.235082 | 2026-05-12 18:05:26.341939 | 106 | None | 200
+2026-05-12 18:07:36 | INFO | SpawnProcess-7-23015 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-12 18:07:36.369551 | 2026-05-12 18:07:36.705894 | 336 | None | 200
+2026-05-12 18:07:57 | INFO | SpawnProcess-7-23015 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/availability | 2026-05-12 18:07:57.332755 | 2026-05-12 18:07:57.335531 | 2 | None | 200
+2026-05-12 18:07:57 | INFO | SpawnProcess-7-23015 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/seats | 2026-05-12 18:07:57.354234 | 2026-05-12 18:07:57.359896 | 5 | None | 200
+2026-05-12 18:07:57 | INFO | SpawnProcess-7-23015 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-12 18:07:57.471529 | 2026-05-12 18:07:57.484737 | 13 | None | 201
+2026-05-12 18:07:57 | INFO | SpawnProcess-7-23015 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-12 18:07:57.511305 | 2026-05-12 18:07:57.519803 | 8 | None | 201
+2026-05-12 18:07:57 | INFO | SpawnProcess-7-23015 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-12 18:07:57.292344 | 2026-05-12 18:07:57.525941 | 233 | None | 201
+2026-05-12 18:08:08 | INFO | SpawnProcess-7-23015 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 18:08:08.070147 | 2026-05-12 18:08:08.149152 | 79 | None | 200
+2026-05-12 18:08:08 | INFO | SpawnProcess-7-23015 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-12 18:08:08.050607 | 2026-05-12 18:08:08.150683 | 100 | None | 200
+2026-05-12 18:08:25 | INFO | SpawnProcess-7-23015 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-12 18:08:25.424115 | 2026-05-12 18:08:25.504425 | 80 | None | 200
