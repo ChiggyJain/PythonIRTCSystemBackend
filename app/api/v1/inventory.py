@@ -12,6 +12,7 @@ from app.domains.inventory.services.inventory_services import InventoryService
 from app.dependencies.inventory import get_inventory_service
 from app.domains.inventory.schemas.lock_seats_schemas import LockSeatsRequest
 from app.domains.inventory.schemas.unlock_seats_schemas import UnLockSeatsRequest
+from app.domains.inventory.schemas.confirm_seats_schemas import ConfirmSeatsRequest
 
 
 settings = get_settings()
@@ -149,6 +150,41 @@ router.add_api_route(
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
+
+
+@feature_control(
+    {
+        "name": "confirmed:seats",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 100,
+            "window": 60,
+        },
+    }
+)
+async def confirm_seats(
+    body: ConfirmSeatsRequest,
+    request: Request,
+    service: InventoryService = Depends(get_inventory_service),
+):
+    
+    payload = body.model_dump()
+    payload["ip_address"] = request.client.host if request.client else None
+    payload["user-agent"] = request.headers.get("user-agent")
+    payload["correlation_id"] = request.headers.get("x-correlation-id")
+    payload["request_id"] = request.headers.get("x-request-id")
+    return await service.confirm_seats(payload=payload)
+
+router.add_api_route(
+    "/schedules/seats/confirm",
+    confirm_seats,
+    methods=["POST"],
+    route_class_override=FeatureAPIRoute,
+)
+
 
 
 

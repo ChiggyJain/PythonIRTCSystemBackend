@@ -583,6 +583,125 @@ class InventoryService:
 
 
 
+    async def confirm_seats(self, *, payload: dict):
+        
+        try:
+
+            # extracted parameters
+            schedule_id = int(payload.get("schedule_id", 0))
+            seat_ids = payload.get("seat_ids", [])
+            booking_id = int(payload.get("booking_id", 0))
+            user_id = int(payload.get("user_id", 0))
+            from_station_sequence_number = int(payload.get("from_station_sequence_number", 0))
+            to_station_sequence_number = int(payload.get("to_station_sequence_number", 0))
+            
+            if not seat_ids:
+                return standardize_response(
+                    status_code=400,
+                    messages=["seat_ids is required"],
+                )
+            
+            # fetching schedule-inventory details
+            inventory_schedule = await self.inventory_repo.get_inventory_schedule_by_schedule_id(schedule_id=schedule_id)        
+            if not inventory_schedule:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Schedule inventory not found"],
+                )
+            if inventory_schedule.status!="ACTIVE":
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Schedule inventory is not active"],
+                )
+            
+            # row-level lock on requested seats
+            locked_seat_inventory_list = await self.inventory_repo.lock_seats_inventory_for_booking(
+                schedule_id=schedule_id, seat_ids=seat_ids
+            )
+
+            # all requested seats must exist
+            if len(locked_seat_inventory_list)!=len(seat_ids):
+                found_ids = {
+                    row.seat_id
+                    for row in locked_seat_inventory_list
+                }
+                missing_ids = [
+                    seat_id
+                    for seat_id in seat_ids
+                    if seat_id not in found_ids
+                ]
+                return standardize_response(
+                    status_code=409,
+                    messages=[f"Seats are missing to unlock: {missing_ids}"],
+                )
+            
+            # delete specific segment seat locks for this user/segment
+            cnt_of_seat_segment_lock_deleted = await self.inventory_repo.hard_delete_seat_sgement_locks_details(
+                schedule_id=schedule_id,
+                seat_ids=seat_ids,
+                locked_by_user_id=user_id,
+                from_station_sequence_number=from_station_sequence_number,
+                to_station_sequence_number=to_station_sequence_number,
+                status="LOCKED"
+            )
+            
+            # recompute each seat's summary status from its segment locks
+            recomputed_segment_seat_status_rsp_obj = await self.recompute_segment_seat_statuses(
+                schedule_id=schedule_id,
+                seat_ids=seat_ids
+            )            
+
+            # recount aggregates from actual seat rows (prevents counter drift)
+            recounts_schedule_aggregates_status_rsp_obj = await self.recount_schedule_aggregates(
+                schedule_id=schedule_id
+            )
+
+            # adding records into outbox events table
+            # data published into kafka-topics via workers and consumer will be consume the message
+            params1 = {
+                "schedule_id" : inventory_schedule.schedule_id,
+                "train_id" : inventory_schedule.train_id,
+                "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+            }
+            rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+
+            await self._db_session.commit()
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"Seats are unlocked successfully"],
+                data={
+                    "schedule_id" : inventory_schedule.schedule_id,
+                    "train_id" : inventory_schedule.train_id,
+                    "unlocked_seat_ids" : seat_ids,
+                    "recounts_schedule_aggregates": {
+                        "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                        "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                        "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+                    }
+                }
+            )    
+            
+        except BaseAppException as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[str(e)],
+            )
+
+        except Exception as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[str(e)],
+            )
+        
+
+
+
+
     async def recompute_segment_seat_statuses(
         self,
         schedule_id: int,
