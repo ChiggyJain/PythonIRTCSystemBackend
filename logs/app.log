@@ -2038,3 +2038,35 @@
 2026-05-11 17:42:53 | INFO | ES client created for index: stations
 2026-05-11 17:44:12 | INFO | ES client created for index: routes
 2026-05-11 17:44:12 | INFO | ES client created for index: stations
+2026-05-12 09:43:59 | INFO | ES client created for index: routes
+2026-05-12 09:43:59 | INFO | ES client created for index: stations
+2026-05-12 09:45:11 | INFO | SpawnProcess-1-13211 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-12 09:45:10.852492 | 2026-05-12 09:45:11.203958 | 351 | None | 200
+2026-05-12 09:45:31 | INFO | SpawnProcess-1-13211 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-12 09:45:31.798027 | 2026-05-12 09:45:31.803073 | 5 | None | 200
+2026-05-12 09:45:31 | INFO | SpawnProcess-1-13211 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:45:31.619186 | 2026-05-12 09:45:31.806666 | 187 | None | 400
+2026-05-12 09:46:41 | INFO | SpawnProcess-1-13211 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/availability | 2026-05-12 09:46:41.805741 | 2026-05-12 09:46:41.807435 | 1 | None | 404
+2026-05-12 09:46:41 | INFO | SpawnProcess-1-13211 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:46:41.787116 | 2026-05-12 09:46:41.808669 | 21 | None | 404
+2026-05-12 09:47:26 | INFO | SpawnProcess-1-13211 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/availability | 2026-05-12 09:47:26.578676 | 2026-05-12 09:47:26.580348 | 1 | None | 200
+2026-05-12 09:47:26 | INFO | SpawnProcess-1-13211 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:47:26.560206 | 2026-05-12 09:47:26.581480 | 21 | None | 400
+2026-05-12 09:48:52 | INFO | SpawnProcess-1-13211 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/availability | 2026-05-12 09:48:52.467986 | 2026-05-12 09:48:52.469909 | 1 | None | 200
+2026-05-12 09:48:52 | INFO | SpawnProcess-1-13211 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/2/seats | 2026-05-12 09:48:52.488135 | 2026-05-12 09:48:52.494276 | 6 | None | 200
+2026-05-12 09:48:52 | INFO | SpawnProcess-1-13211 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-12 09:48:52.606090 | 2026-05-12 09:48:52.625179 | 19 | None | 201
+2026-05-12 09:48:52 | INFO | SpawnProcess-1-13211 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-12 09:48:52.650475 | 2026-05-12 09:48:52.657281 | 6 | None | 500
+2026-05-12 09:48:52 | INFO | SpawnProcess-1-13211 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/bookings | 2026-05-12 09:48:52.448549 | 2026-05-12 09:48:52.658437 | 209 | BookingService.compensateAll() takes 1 positional argument but 2 were given | 500
+2026-05-12 09:49:35 | INFO | ES client created for index: routes
+2026-05-12 09:49:35 | INFO | ES client created for index: stations
+2026-05-12 09:49:40 | INFO | ES client created for index: routes
+2026-05-12 09:49:40 | INFO | ES client created for index: stations
+2026-05-12 09:49:56 | INFO | ES client created for index: routes
+2026-05-12 09:49:56 | INFO | ES client created for index: stations
+2026-05-12 09:50:05 | INFO | ES client created for index: routes
+2026-05-12 09:50:05 | INFO | ES client created for index: stations
+2026-05-12 09:50:17 | INFO | ES client created for index: routes
+2026-05-12 09:50:17 | INFO | ES client created for index: stations
+2026-05-12 09:50:26 | INFO | ES client created for index: routes
+2026-05-12 09:50:26 | INFO | ES client created for index: stations
+2026-05-12 09:50:31 | INFO | ES client created for index: routes
+2026-05-12 09:50:31 | INFO | ES client created for index: stations
+2026-05-12 09:50:39 | INFO | ES client created for index: routes
+2026-05-12 09:50:39 | INFO | ES client created for index: stations
+2026-05-12 09:50:44 | INFO | ES client created for index: routes
+2026-05-12 09:50:44 | INFO | ES client created for index: stations

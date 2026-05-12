@@ -414,7 +414,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : f"Seats not locked into inventory external services."
                 }
-                await self.compensateAll(params1)
+                await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -440,7 +440,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(holdSeatRspObj.get("messages", ["Unknown error"]))
                 }
-                await self.compensateAll(params1)
+                await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -526,7 +526,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders not created into payment external services"
                 }
-                await self.compensateAll(params1)
+                await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -552,7 +552,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders already created into payment external services"
                 }
-                await self.compensateAll(params1)
+                await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -578,7 +578,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(createdPaymentOrderRequestRspObj.get("messages", ["Unknown error"]))
                 }
-                await self.compensateAll(params1)
+                await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -650,7 +650,7 @@ class BookingService:
                 "seat_ids" : seat_ids,
                 "reason" : str(e)
             }
-            await self.compensateAll(params1)
+            await self.compensateAll(payload=params1)
             
             # updating booking table as failed
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(
