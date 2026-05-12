@@ -318,8 +318,8 @@ class BookingService:
                 key = f"booking:lock:seat:{schedule_id}:{eachSeatId}:{from_station_sequence_number}:{to_station_sequence_number}"
                 allRedisKeys.append(key)
             curTimeStamp = int(datetime.now().timestamp())    
-            redisKeyValue = f"pre-{curTimeStamp}:{curTimeStamp}"
-            acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyValue, settings.BOOKING_TTL_SECONDS)
+            redisKeyLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
+            acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyLockValue, settings.BOOKING_TTL_SECONDS)
             print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
             if acquiredSeatLocksResponse["isSuccess"] == False:
                 return standardize_response(
