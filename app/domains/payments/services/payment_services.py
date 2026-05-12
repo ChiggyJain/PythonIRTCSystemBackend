@@ -325,6 +325,7 @@ class PaymentService:
                         status_code=400,
                         messages=[f"Payment order is in ${payment_order.status} status"],
                         data={
+                            "booking_id" : payment_order.booking_id,
                             "payment_order_id" : payment_order.id,
                             "gateway_order_id" : payment_order.gateway_order_id,
                             "gateway_payment_id" : payment_order.gateway_payment_id,
@@ -336,6 +337,7 @@ class PaymentService:
                         status_code=200,
                         messages=[f"Payment already captured"],
                         data={
+                            "booking_id" : payment_order.booking_id,
                             "payment_order_id" : payment_order.id,
                             "gateway_order_id" : payment_order.gateway_order_id,
                             "gateway_payment_id" : payment_order.gateway_payment_id,
@@ -402,6 +404,7 @@ class PaymentService:
                         status_code=payment_gateway_verify_rsp_obj["status_code"],
                         messages=payment_gateway_verify_rsp_obj["messages"],
                         data={
+                            "booking_id" : payment_order.booking_id,
                             "payment_order_id" : payment_order.id,
                             "gateway_order_id" : payment_order.gateway_order_id,
                             "gateway_payment_id" : gateway_payment_id,

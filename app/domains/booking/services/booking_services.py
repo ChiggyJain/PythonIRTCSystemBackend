@@ -767,15 +767,16 @@ class BookingService:
                         "gateway_payment_signature" : gateway_payment_signature,
                     })
                     verifyPaymentRspObj = response.json()
-                    # verifyPaymentRspData = verifyPaymentRspObj.get("data", None)
+                    verifyPaymentRspData = verifyPaymentRspObj.get("data", None)
                 print(f"verifyPaymentRspObj: {verifyPaymentRspObj}")
+                if verifyPaymentRspObj == None:
+                    return standardize_response(
+                        status_code=400,
+                        messages=[f"Payment orders not found"]
+                    )
                 
-
-
-            
     
         except Exception as e:
-            await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
