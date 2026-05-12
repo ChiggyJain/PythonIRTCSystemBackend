@@ -409,6 +409,7 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
+            # adding records into outbox events table
             params1 = {
                 "schedule_id" : inventory_schedule.schedule_id,
                 "train_id" : inventory_schedule.train_id,
@@ -537,14 +538,24 @@ class InventoryService:
                 schedule_id=schedule_id
             )
 
+            # adding records into outbox events table
+            params1 = {
+                "schedule_id" : inventory_schedule.schedule_id,
+                "train_id" : inventory_schedule.train_id,
+                "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
+                "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
+                "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
+            }
+            rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+
             await self._db_session.commit()
 
             return standardize_response(
                 status_code=200,
                 messages=[f"Seats are unlocked successfully"],
                 data={
-                    "schedule_id" : schedule_id,
-                    "train_id" : "",
+                    "schedule_id" : inventory_schedule.schedule_id,
+                    "train_id" : inventory_schedule.train_id,
                     "unlocked_seat_ids" : seat_ids,
                     "recounts_schedule_aggregates": {
                         "available" : recounts_schedule_aggregates_status_rsp_obj["available"],
