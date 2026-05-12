@@ -55,7 +55,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:booking:create",
+        "name": "user:booking:verify:payment",
         "logging": {
             "console": True,
             "file": True,

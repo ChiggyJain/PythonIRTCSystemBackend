@@ -24,3 +24,13 @@
 2026-05-12 16:28:05 | INFO | ES client created for index: stations
 2026-05-12 16:28:16 | INFO | ES client created for index: routes
 2026-05-12 16:28:16 | INFO | ES client created for index: stations
+2026-05-12 16:28:22 | INFO | SpawnProcess-5-15904 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:28:22.188614 | 2026-05-12 16:28:22.189946 | 1 | [{'type': 'string_type', 'loc': ('body', 'payment_order_id'), 'msg': 'Input should be a valid string', 'input': 1, 'url': 'https://errors.pydantic.dev/2.5/v/string_type'}] | 500
+2026-05-12 16:28:22 | INFO | SpawnProcess-5-15904 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-12 16:28:22.025476 | 2026-05-12 16:28:22.192581 | 167 | None | 422
+2026-05-12 16:29:49 | INFO | SpawnProcess-5-15904 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:29:49.682201 | 2026-05-12 16:29:49.683672 | 1 | [{'type': 'string_type', 'loc': ('body', 'payment_order_id'), 'msg': 'Input should be a valid string', 'input': 1, 'url': 'https://errors.pydantic.dev/2.5/v/string_type'}] | 500
+2026-05-12 16:29:49 | INFO | SpawnProcess-5-15904 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-12 16:29:49.631472 | 2026-05-12 16:29:49.685478 | 54 | None | 422
+2026-05-12 16:30:26 | INFO | SpawnProcess-5-15904 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:30:26.097959 | 2026-05-12 16:30:26.105648 | 7 | None | 500
+2026-05-12 16:30:47 | INFO | SpawnProcess-5-15904 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:30:47.501525 | 2026-05-12 16:30:47.505239 | 3 | None | 500
+2026-05-12 16:31:09 | INFO | ES client created for index: routes
+2026-05-12 16:31:09 | INFO | ES client created for index: stations
+2026-05-12 16:31:20 | INFO | ES client created for index: routes
+2026-05-12 16:31:20 | INFO | ES client created for index: stations
