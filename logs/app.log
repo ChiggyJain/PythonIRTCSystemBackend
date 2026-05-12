@@ -137,3 +137,6 @@
 2026-05-12 16:59:56 | INFO | SpawnProcess-60-19172 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:59:56.349892 | 2026-05-12 16:59:56.368087 | 18 | None | 500
 2026-05-12 17:00:21 | INFO | ES client created for index: routes
 2026-05-12 17:00:21 | INFO | ES client created for index: stations
+2026-05-12 17:00:26 | INFO | SpawnProcess-63-19223 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 17:00:26.859950 | 2026-05-12 17:00:26.956480 | 96 | None | 200
+2026-05-12 17:01:03 | INFO | ES client created for index: routes
+2026-05-12 17:01:03 | INFO | ES client created for index: stations

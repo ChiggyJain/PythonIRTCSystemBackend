@@ -434,7 +434,7 @@ class PaymentService:
             
             created_outbox_events_row = await self.outbox_repo.add_outbox_event(
                 aggregate_type="PAYMENT_ORDERS",
-                aggregate_id=payload.get("schedule_id", 0),
+                aggregate_id=payload.get("payment_order_id", 0),
                 event_type="PAYMENT_ORDERS_UPDATED_STATUS",
                 payload_json={
                     "payment_order_id": payload.get("payment_order_id", 0),
