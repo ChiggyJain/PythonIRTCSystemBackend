@@ -389,6 +389,7 @@ class PaymentService:
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
                     params1 = {
+                        "booking_id": payment_order.booking_id,
                         "payment_order_id": payment_order.id,
                         "gateway_order_id": payment_order.gateway_order_id,
                         "gateway_payment_id": gateway_payment_id,
@@ -437,6 +438,7 @@ class PaymentService:
                 aggregate_id=payload.get("payment_order_id", 0),
                 event_type="PAYMENT_ORDERS_UPDATED_STATUS",
                 payload_json={
+                    "booking_id": payload.get("booking_id", 0),
                     "payment_order_id": payload.get("payment_order_id", 0),
                     "gateway_order_id": payload.get("gateway_order_id", ""),
                     "gateway_payment_id": payload.get("gateway_payment_id", ""),
