@@ -75,6 +75,7 @@ class BookingService:
                             BookingSagaLogs.id.asc()
                         ]
                     )
+                    print(f"booking_saga_logs_list: {booking_saga_logs_list}")
                     if not booking_saga_logs_list:
                         return standardize_response(
                             status_code=404,
@@ -152,6 +153,7 @@ class BookingService:
             )
 
         except Exception as e:
+            await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
@@ -203,6 +205,7 @@ class BookingService:
             )
 
         except Exception as e:
+            await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
