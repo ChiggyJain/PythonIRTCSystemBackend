@@ -18,10 +18,11 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         update_schedule_param = {
             "schedule_id" : payload.get("schedule_id", 0),
             "departure_date" : payload.get("departure_date", ""),
-            "status" : payload.get("status", "A"),
-            "available" : payload.get("train_details", {}).get("total_seats", 0),
+            "total" : payload.get("train_details", {}).get("total_seats", 0),
+            "available" : 0,
             "locked" : 0,
-            "booked" : 0
+            "booked" : 0,
+            "status" : payload.get("status", "A"),
         }
         await routes_repo.upsert_schedule(train_id=train_id, schedules=update_schedule_param)
         app_logger.info(f"Indexed routes updated (schedules) to ES using TrainID: {train_id}")
