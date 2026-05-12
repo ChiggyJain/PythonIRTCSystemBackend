@@ -56,7 +56,7 @@ class PaymentService:
             
             # fetching payment gateway instances details
             params1 = {
-                "payment_gateway_service_provider": settings.payment_gateway_service_provider
+                "payment_gateway_service_provider": settings.PAYMENT_GATEWAY_SERVICE_PROVIDER
             }
             payment_gateway_class_instances_obj = PaymentGatewayFactory.getPaymentGatewayInstances(**params1)
 
@@ -83,7 +83,7 @@ class PaymentService:
                     user_id=user_id,
                     total_amount=amount,
                     currency=currency,
-                    gateway_provider=settings.payment_gateway_service_provider,
+                    gateway_provider=settings.PAYMENT_GATEWAY_SERVICE_PROVIDER,
                     gateway_order_id=payment_gateway_created_order_rsp_obj["payment_gateway_order_id"],
                     gateway_payment_id=None,
                     gateway_signature=None,
