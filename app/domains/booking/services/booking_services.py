@@ -227,6 +227,8 @@ class BookingService:
             seat_ids.sort()
             passengers = payload.get("passengers", [])
             booking_details = {}
+            allRedisLockKeys = []
+            redisKeyLockValue = ""
             
             # checking given idempotency key exists or not
             event_key = f"booking:{idempotency_key}"
@@ -313,15 +315,14 @@ class BookingService:
 
         
             # preparing keys to acquire seat locks in redis via lua_script
-            allRedisKeys = []
             for eachSeatId in seat_ids:
                 key = f"booking:lock:seat:{schedule_id}:{eachSeatId}:{from_station_sequence_number}:{to_station_sequence_number}"
-                allRedisKeys.append(key)
+                allRedisLockKeys.append(key)
             curTimeStamp = int(datetime.now().timestamp())    
             redisKeyLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
-            acquiredSeatLocksResponse = await acquireBookingSeatLocksThroughRedis(allRedisKeys, redisKeyLockValue, settings.BOOKING_TTL_SECONDS)
-            print(f"acquiredSeatLocksResponse: {acquiredSeatLocksResponse}")
-            if acquiredSeatLocksResponse["isSuccess"] == False:
+            acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue, settings.BOOKING_TTL_SECONDS)
+            print(f"acquiredSeatLocksRedisResponse: {acquiredSeatLocksRedisResponse}")
+            if acquiredSeatLocksRedisResponse["isSuccess"] == False:
                 return standardize_response(
                     status_code=400,
                     messages=[f"One or more seats are being booked by another user. Please try again"],
@@ -662,6 +663,9 @@ class BookingService:
                 }
             )
             await self._db_session.commit()
+
+            releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+            print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
             return standardize_response(
                 status_code=500,
