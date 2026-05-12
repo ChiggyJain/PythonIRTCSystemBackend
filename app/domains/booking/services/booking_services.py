@@ -422,11 +422,14 @@ class BookingService:
                         "id": booking_details["booking_id"]
                     },
                     update_data = {
-                        "failure_reason" : str(e),
-                        "status" : params1["reason"][:90]
+                        "failure_reason" : params1["reason"][:90],
+                        "status" : "FAILED",
                     }
                 )
                 await self._db_session.commit()
+
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
@@ -448,11 +451,14 @@ class BookingService:
                         "id": booking_details["booking_id"]
                     },
                     update_data = {
-                        "failure_reason" : str(e),
-                        "status" : params1["reason"][:90]
+                        "failure_reason" : params1["reason"][:90],
+                        "status" : "FAILED",
                     }
                 )
                 await self._db_session.commit()
+
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=holdSeatRspObj.get("status_code"),
@@ -534,11 +540,14 @@ class BookingService:
                         "id": booking_details["booking_id"]
                     },
                     update_data = {
-                        "failure_reason" : str(e),
-                        "status" : params1["reason"][:90]
+                        "failure_reason" : params1["reason"][:90],
+                        "status" : "FAILED",
                     }
                 )
                 await self._db_session.commit()
+
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=404,
@@ -560,11 +569,14 @@ class BookingService:
                         "id": booking_details["booking_id"]
                     },
                     update_data = {
-                        "failure_reason" : str(e),
-                        "status" : params1["reason"][:90]
+                        "failure_reason" : params1["reason"][:90],
+                        "status" : "FAILED",
                     }
                 )
                 await self._db_session.commit()
+
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
@@ -586,11 +598,14 @@ class BookingService:
                         "id": booking_details["booking_id"]
                     },
                     update_data = {
-                        "failure_reason" : str(e),
-                        "status" : params1["reason"][:90]
+                        "failure_reason" : params1["reason"][:90],
+                        "status" : "FAILED",
                     }
                 )
                 await self._db_session.commit()
+
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
