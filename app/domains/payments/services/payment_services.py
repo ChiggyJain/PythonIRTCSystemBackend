@@ -276,7 +276,7 @@ class PaymentService:
                 # successfully created
                 if payment_gateway_order_refund_rsp_obj["status_code"] == 200:
                     
-                    # creating payment orders into table
+                    # creating refund orders into table
                     created_payment_orders_row = await self.payment_repo.create_refund_orders(
                         idempotency_key=idempotency_key,
                         payment_order_id=payment_order.id,

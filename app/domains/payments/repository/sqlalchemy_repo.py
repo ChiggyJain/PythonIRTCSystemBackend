@@ -94,6 +94,36 @@ class PaymentSQLAlchemyRepository:
         return row
     
 
+    async def create_refund_orders(
+        self,
+        *,
+        idempotency_key: str,
+        payment_order_id: int,
+        total_amount: Decimal,
+        reason: str,
+        gateway_refund_id: str | None = None,
+        failure_reason: str | None = None,
+        metadata_json: dict[str, Any] | None,
+        status: str = "INITIATED"
+    ) -> RefundOrders:
+        
+        row = RefundOrders(
+            idempotency_key=idempotency_key,
+            payment_order_id=payment_order_id,
+            total_amount=total_amount,
+            reason=reason,
+            gateway_refund_id=gateway_refund_id,
+            failure_reason=failure_reason,
+            metadata_json=metadata_json,
+            created_at=now_ist(),
+            updated_at=now_ist(),
+            status=status,
+        )
+        self._db_session.add(row)
+        await self._db_session.flush()
+        return row
+    
+    
     async def create_payment_audit_logs(
         self,
         *,
