@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     
     # email changed related kafka topic and consumer
     KAFKA_EMAILCHANGED_OTP_DISPATCH_TOPIC: str = "emailchanged-otp-dispatch"
-    EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumergrp-1"
+    KAFKA_EMAILCHANGED_OTP_DISPATCH_CONSUMER_GROUP: str = "emailchanged-otp-dispatch-consumergrp-1"
     EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
     
     # email changed related email and sms provider name
