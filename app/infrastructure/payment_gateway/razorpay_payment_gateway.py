@@ -27,8 +27,8 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             # actual razorpay implementation business logic will be come here
             # dummy order response from razor payy
             order_response  = {
-                "amount": amount,
-                "amount_due": amount,
+                "amount": str(amount),
+                "amount_due": str(amount),
                 "amount_paid": 0,
                 "attempts": 0,
                 "created_at": int(time.time()),
@@ -84,7 +84,7 @@ class RazorpayPaymentGateway(BasePaymentGateway):
             refund_response  = {
                 "id": str(uuid.uuid4()),
                 "entity": "refund",
-                "amount": amount,
+                "amount": str(amount),
                 "receipt": "",
                 "currency": "INR",
                 "payment_id": gateway_payment_id,
