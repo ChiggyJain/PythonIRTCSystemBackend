@@ -359,21 +359,21 @@ class PaymentService:
                 }
                 payment_gateway_verify_rsp_obj = await payment_gateway_class_instances_obj.verifyPaymentSignature(**params2)
                 if payment_gateway_verify_rsp_obj["status_code"]>0:
-                    print("step0")    
+                    
                     # updating the payment order table status
                     cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
                         where_data = {
-                            PaymentOrders.id == payment_order.id,
+                            "id" == payment_order.id,
                         },
                         update_data = {
                             "gateway_payment_id" : gateway_payment_id,
                             "gateway_signature" : gateway_payment_signature,
-                            "failure_reason" : "ss" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
+                            "failure_reason" : None if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
                             "version" : PaymentOrders.version + 1,
                             "status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                         }
                     )
-                    print("step1")
+                    
                     # creating payment audit logs into table
                     created_payment_audit_logs_row = await self.payment_repo.create_payment_audit_logs(
                         payment_order_id=payment_order.id,
@@ -385,7 +385,7 @@ class PaymentService:
                         },
                         status="A"
                     )
-                    print("step2")
+                    
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
                     params1 = {
@@ -398,8 +398,7 @@ class PaymentService:
                     }
                     rsp = await self.store_payment_updated_status_into_outbox_events(payload=params1)
 
-                    print("step3")
-
+                    
                     await self._db_session.commit()
                     
                     return standardize_response(
@@ -416,9 +415,6 @@ class PaymentService:
 
     
         except Exception as e:
-            import sys
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            print("Line number:", exc_tb.tb_lineno)
             await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
