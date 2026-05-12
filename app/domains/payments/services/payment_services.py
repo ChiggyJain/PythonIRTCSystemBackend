@@ -17,7 +17,7 @@ from app.domains.payments.models.payment_orders_models import PaymentOrders
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
 from app.domains.payments.repository.sqlalchemy_repo import PaymentSQLAlchemyRepository
 from app.infrastructure.payment_gateway.payment_gateway_factory import PaymentGatewayFactory
-
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 settings = get_settings()
@@ -30,7 +30,7 @@ class PaymentService:
         self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.payment_repo = PaymentSQLAlchemyRepository(db_session)
-        
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
 
     async def create_payment_order_details(self, *, payload: dict) -> dict:
@@ -318,7 +318,7 @@ class PaymentService:
                     messages=[f"Payment order not found. No verification"]
                 )
             if payment_order_list:
-                
+
                 payment_order = payment_order_list[0]
                 if payment_order.status not in ["CREATED", "CREATED"]:
                     return standardize_response(
@@ -383,7 +383,19 @@ class PaymentService:
                         },
                         status="A"
                     )
-                
+
+                    # adding records into outbox events table
+                    # data published into kafka-topics via workers and consumer will be consume the message
+                    params1 = {
+                        "payment_order_id": payment_order.id,
+                        "gateway_order_id": payment_order.gateway_order_id,
+                        "gateway_payment_id": gateway_payment_id,
+                        "amount": str(payment_order.total_amount),
+                        "reason": ",".join(payment_gateway_verify_rsp_obj["messages"]),
+                        "payment_order_status": "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
+                    }
+                    rsp = await self.store_payment_updated_status_into_outbox_events(payload=params1)
+
                     await self._db_session.commit()
                     
                     return standardize_response(
@@ -405,5 +417,38 @@ class PaymentService:
                 messages=[f"{str(e)}"]
             )
 
+
+    async def store_payment_updated_status_into_outbox_events(
+        self,
+        payload: dict
+    ):
+
+        rsp = {
+            "outbox_event_id" : 0
+        }
+        try:
+            
+            created_outbox_events_row = await self.outbox_repo.add_outbox_event(
+                aggregate_type="PAYMENT_ORDERS",
+                aggregate_id=payload.get("schedule_id", 0),
+                event_type="PAYMENT_ORDERS_UPDATED_STATUS",
+                payload_json={
+                    "payment_order_id": payload.get("payment_order_id", 0),
+                    "gateway_order_id": payload.get("gateway_order_id", ""),
+                    "gateway_payment_id": payload.get("gateway_payment_id", ""),
+                    "amount": str(payload.get("amount", 0)),
+                    "reason": payload.get("reason", "")[:90],
+                    "payment_order_status": payload.get("payment_order_status", ""),
+                },
+                status="PENDING"
+            )
+            rsp = {
+                "outbox_event_id" : created_outbox_events_row.id
+            }
+            
+        except Exception as e:
+            pass
+
+        return rsp
 
 

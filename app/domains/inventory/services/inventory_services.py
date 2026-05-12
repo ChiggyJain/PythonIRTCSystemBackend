@@ -410,6 +410,7 @@ class InventoryService:
             )
 
             # adding records into outbox events table
+            # data published into kafka-topics via workers and consumer will be consume the message
             params1 = {
                 "schedule_id" : inventory_schedule.schedule_id,
                 "train_id" : inventory_schedule.train_id,
@@ -539,6 +540,7 @@ class InventoryService:
             )
 
             # adding records into outbox events table
+            # data published into kafka-topics via workers and consumer will be consume the message
             params1 = {
                 "schedule_id" : inventory_schedule.schedule_id,
                 "train_id" : inventory_schedule.train_id,
