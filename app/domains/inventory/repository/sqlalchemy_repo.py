@@ -307,7 +307,7 @@ class InventorySQLAlchemyRepository:
             else:
                 conditions.append(column == value)
         stmt = (
-            update(SeatInventory)
+            update(SeatSegmentLockInventory)
             .where(*conditions)
             .values(**update_data)
         )        
