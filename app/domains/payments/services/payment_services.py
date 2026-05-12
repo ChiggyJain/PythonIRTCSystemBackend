@@ -323,7 +323,7 @@ class PaymentService:
                 if payment_order.status not in ["CREATED", "CAPTURED"]:
                     return standardize_response(
                         status_code=400,
-                        messages=[f"Payment order is in ${payment_order.status} status"],
+                        messages=[f"Payment order is in {payment_order.status} status"],
                         data={
                             "booking_id" : payment_order.booking_id,
                             "payment_order_id" : payment_order.id,
