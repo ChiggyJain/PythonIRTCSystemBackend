@@ -69,7 +69,7 @@ class BookingService:
                     # fetching booking saga logs details
                     booking_saga_logs_list = await self.booking_repo.get_booking_saga_logs_details(
                         where_conditions = [
-                            BookingSagaLogs.booking_id == booking_details["id"],
+                            BookingSagaLogs.booking_id == booking_details["booking_id"],
                         ],
                         order_by = [
                             BookingSagaLogs.id.asc()
@@ -132,6 +132,7 @@ class BookingService:
                 })
                 unLockHoldSeatRspObj = response.json()
                 # unLockHoldSeatData = unLockHoldSeatRspObj.get("data", None)
+            print(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
             
             # updating booking saga log table
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -174,7 +175,7 @@ class BookingService:
             refundPaymentRspObj = None
             # refundPaymentData = None
             async with httpx.AsyncClient() as client:
-                response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/payments/refunds", json={
+                response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/refunds", json={
                     "idempotency_key" : idempotency_key,
                     "payment_order_id" : payment_order_id,
                     "amount" : amount,
@@ -182,6 +183,7 @@ class BookingService:
                 })
                 refundPaymentRspObj = response.json()
                 # refundPaymentData = refundPaymentRspObj.get("data", None)
+            print(f"refundPaymentRspObj: {refundPaymentRspObj}")
             
             # updating booking saga log table
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -414,7 +416,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : f"Seats not locked into inventory external services."
                 }
-                await self.compensateAll(payload=params1)
+                compensatedRspObj = await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -443,7 +445,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(holdSeatRspObj.get("messages", ["Unknown error"]))
                 }
-                await self.compensateAll(payload=params1)
+                compensatedRspObj = await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -532,7 +534,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders not created into payment external services"
                 }
-                await self.compensateAll(payload=params1)
+                compensatedRspObj = await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -561,7 +563,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : "Payment orders already created into payment external services"
                 }
-                await self.compensateAll(payload=params1)
+                compensatedRspObj = await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -590,7 +592,7 @@ class BookingService:
                     "seat_ids" : seat_ids,
                     "reason" : ", ".join(createdPaymentOrderRequestRspObj.get("messages", ["Unknown error"]))
                 }
-                await self.compensateAll(payload=params1)
+                compensatedRspObj = await self.compensateAll(payload=params1)
 
                 # updating booking table as failed
                 isBookingRecordUpdated = await self.booking_repo.update_booking_details(
@@ -665,7 +667,7 @@ class BookingService:
                 "seat_ids" : seat_ids,
                 "reason" : str(e)
             }
-            await self.compensateAll(payload=params1)
+            compensatedRspObj = await self.compensateAll(payload=params1)
             
             # updating booking table as failed
             isBookingRecordUpdated = await self.booking_repo.update_booking_details(

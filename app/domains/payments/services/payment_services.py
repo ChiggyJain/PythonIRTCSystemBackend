@@ -115,7 +115,8 @@ class PaymentService:
                         "gateway_provider" : created_payment_orders_row.gateway_provider,
                         "gateway_provider_key_id" : "",
                         "gateway_order_id" : created_payment_orders_row.gateway_order_id,
-                        "amount" : str(created_payment_orders_row.total_amount),
+                        # "amount" : str(created_payment_orders_row.total_amount),
+                        "amount" : created_payment_orders_row.total_amount,
                         "currency" : created_payment_orders_row.currency,
                         "payment_order_status" : created_payment_orders_row.status
                     }
