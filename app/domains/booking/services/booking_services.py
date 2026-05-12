@@ -715,6 +715,59 @@ class BookingService:
             )
         
 
+    async def verify_payment_details(self, *, payload: dict) -> dict:
+        
+        try:
+
+            # extracted parameters
+            user_id = payload.get("user_id", 0)
+            booking_id = payload.get("booking_id", 0)
+            gateway_payment_id = payload.get("gateway_payment_id", "")
+            gateway_payment_signature = payload.get("gateway_payment_signature", "")
+
+            # fetching booking details
+            booking_list = await self.booking_repo.get_booking_details(
+                where_conditions = [
+                    Bookings.id == booking_id,
+                ],
+                order_by = [
+                    Bookings.id.asc()
+                ]
+            )
+            if not booking_list:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Booking details not found"]
+                )
+            if booking_list:
+                if not booking_list[0].user_id == user_id:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking details found not match with given user"]
+                    )
+                if booking_list[0].status == "CONFIRMED":
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking payment is already confirmed"]
+                    )
+                if booking_list[0].status != "PAYMENT_PENDING":
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking is in {booking_list[0].status} status, cannot verify payment"]
+                    )
+                
+                
+
+            
+    
+        except Exception as e:
+            await self._db_session.rollback()
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+
+
 
 
 

@@ -156,3 +156,11 @@ class CreateBookingRequest(BaseModel):
             )
 
         return self
+    
+
+
+class VerifyPaymentRequest(BaseModel):
+
+    booking_id: int
+    gateway_payment_id: str
+    gateway_payment_signature: str
