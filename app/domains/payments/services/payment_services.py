@@ -249,8 +249,7 @@ class PaymentService:
                 if payment_gateway_order_refund_rsp_obj["status_code"]>0:
                     
                     payment_gateway_refund_rsp_obj_status_code = payment_gateway_order_refund_rsp_obj["status_code"]
-                    payment_gateway_refund_rsp_obj_status_messages = payment_gateway_order_refund_rsp_obj["messages"]
-
+                    
                     # creating refund orders into table
                     created_refund_orders_row = await self.payment_repo.create_refund_orders(
                         idempotency_key=idempotency_key,
