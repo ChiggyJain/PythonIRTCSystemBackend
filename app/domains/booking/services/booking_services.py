@@ -86,13 +86,10 @@ class BookingService:
                             match (each_booking_sag_log.saga_step):
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(payload=booking_details)
-                                    break
                                 case "CREATE_PAYMENT":
                                     rsp = await self.compensateCreatePayment(payload=booking_details)
-                                    break
                                 case "CONFIRM_SEATS":
-                                    break
-                                    
+                                    pass                                    
                     
 
                     return standardize_response(
