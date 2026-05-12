@@ -94,7 +94,10 @@ class TrainSearchService:
                     destination_station.get("arrival_time"),
                 )
 
+                total_seats = int(matched_schedule.get("total", 0))    
                 total_available = int(matched_schedule.get("available", 0))
+                total_locked = int(matched_schedule.get("locked", 0))
+                total_booked = int(matched_schedule.get("booked", 0))
                 availability_status = "AVAILABLE" if total_available > 0 else "NOT AVAILABLE"
 
                 result_item = {
@@ -126,9 +129,12 @@ class TrainSearchService:
                         "duration_minutes": duration_minutes,
                         "distance_km": travel_distance,
                     },
-                    "availability_summary": {
+                    "seats_availability_summary": {
                         "status": availability_status,
+                        "total_seats": total_seats,
                         "total_available": total_available,
+                        "total_locked": total_locked,
+                        "total_booked": total_booked,
                     },
                     "booking_context": {
                         "schedule_id": matched_schedule.get("schedule_id"),
