@@ -75,7 +75,6 @@ class BookingService:
                             BookingSagaLogs.id.asc()
                         ]
                     )
-                    print(f"booking_saga_logs_list: {booking_saga_logs_list}")
                     if not booking_saga_logs_list:
                         return standardize_response(
                             status_code=404,
@@ -87,10 +86,13 @@ class BookingService:
                             match (each_booking_sag_log.saga_step):
                                 case "HOLD_SEATS":
                                     rsp = await self.compensateHoldSeats(booking_details)
+                                    break
                                 case "CREATE_PAYMENT":
                                     rsp = await self.compensateCreatePayment(booking_details)
+                                    break
                                 case "CONFIRM_SEATS":
-                                    pass
+                                    break
+                                    
                     
 
                     return standardize_response(
