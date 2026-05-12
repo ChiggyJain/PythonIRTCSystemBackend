@@ -123,8 +123,8 @@ class Settings(BaseSettings):
     MASTERDATA_TRAIN_OUTBOX_MAX_RETRIES: int = 6
     
     # Route KAFKA TOPIC and CONSUMER
-    MASTERDATA_ROUTE_CREATED: str = "masterdata-route-created"
-    MASTERDATA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumergrp-1"
+    KAFKA_ROUTE_CREATED: str = "masterdata-route-created"
+    KAFKA_ROUTE_CONSUMER_GROUP: str = "masterdata-route-events-dispatch-consumergrp-1"
     MASTERDATA_ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
     # Schedule KAFKA TOPIC and CONSUMER
