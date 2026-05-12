@@ -151,3 +151,9 @@
 2026-05-12 17:02:02 | INFO | SpawnProcess-64-19255 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-12 17:02:02.451063 | 2026-05-12 17:02:02.480810 | 29 | None | 200
 2026-05-12 17:12:57 | INFO | ES client created for index: routes
 2026-05-12 17:12:57 | INFO | ES client created for index: stations
+2026-05-12 18:02:10 | INFO | ES client created for index: routes
+2026-05-12 18:02:10 | INFO | ES client created for index: stations
+2026-05-12 18:02:12 | INFO | SpawnProcess-1-22837 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-12 18:02:12.622229 | 2026-05-12 18:02:12.641227 | 18 | None | 404
+2026-05-12 18:02:18 | INFO | SpawnProcess-1-22837 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-12 18:02:18.856941 | 2026-05-12 18:02:18.952389 | 95 | None | 500
+2026-05-12 18:03:50 | INFO | ES client created for index: routes
+2026-05-12 18:03:50 | INFO | ES client created for index: stations

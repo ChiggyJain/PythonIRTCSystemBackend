@@ -38,7 +38,7 @@ class OutboxEvents(Base):
     __table_args__ = (
         Index("ix_outbox_events_status_next_retry", "status", "next_retry_at"),
         Index("ix_outbox_events_created_at", "created_at"),
-        UniqueConstraint("event_type", "aggregate_id", name="uq_outbox_event_aggregate"),
+        # UniqueConstraint("event_type", "aggregate_id", name="uq_outbox_event_aggregate"),
     )
 
     # Auto-increment primary key (project DB convention).
