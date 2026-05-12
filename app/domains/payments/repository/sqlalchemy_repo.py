@@ -147,3 +147,27 @@ class PaymentSQLAlchemyRepository:
         await self._db_session.flush()
         return row
     
+
+    async def update_payment_orders_details(
+        self,
+        *,
+        where_data: dict,
+        update_data: dict,
+    ) -> bool:
+
+        update_data["updated_at"] = now_ist()
+        conditions = []
+        for key, value in where_data.items():
+            column = getattr(PaymentOrders, key)
+            if isinstance(value, list):
+                conditions.append(column.in_(value))
+            else:
+                conditions.append(column == value)
+        stmt = (
+            update(PaymentOrders)
+            .where(*conditions)
+            .values(**update_data)
+        )        
+        res = await self._db_session.execute(stmt)
+        return bool(res.rowcount and res.rowcount > 0)
+    
