@@ -166,7 +166,7 @@ class BookingService:
             
             # extracted parameters
             idempotency_key = f"{payload.get("booking_id", 0)}-refund-compensation"
-            payment_order_id = int(payload.get("payment_order_id", 0))
+            payment_order_id = int(payload.get("payment_order_id", 0) or 0)
             amount = payload.get("total_amount", 0)
             reason = "booking_compensation"
             booking_saga_log_id = int(payload.get("booking_saga_log_id", 0))
@@ -204,7 +204,6 @@ class BookingService:
             )
 
         except Exception as e:
-            print(f"{str(e)}")
             await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
