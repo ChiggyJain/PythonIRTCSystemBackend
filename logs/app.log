@@ -34,3 +34,14 @@
 2026-05-12 16:31:09 | INFO | ES client created for index: stations
 2026-05-12 16:31:20 | INFO | ES client created for index: routes
 2026-05-12 16:31:20 | INFO | ES client created for index: stations
+2026-05-12 16:31:57 | INFO | ES client created for index: routes
+2026-05-12 16:31:57 | INFO | ES client created for index: stations
+2026-05-12 16:32:02 | INFO | ES client created for index: routes
+2026-05-12 16:32:02 | INFO | ES client created for index: stations
+2026-05-12 16:32:06 | INFO | ES client created for index: routes
+2026-05-12 16:32:06 | INFO | ES client created for index: stations
+2026-05-12 16:32:10 | INFO | ES client created for index: routes
+2026-05-12 16:32:10 | INFO | ES client created for index: stations
+2026-05-12 16:34:40 | INFO | SpawnProcess-12-16231 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 16:34:40.739554 | 2026-05-12 16:34:40.767398 | 27 | None | 500
+2026-05-12 16:35:26 | INFO | ES client created for index: routes
+2026-05-12 16:35:26 | INFO | ES client created for index: stations

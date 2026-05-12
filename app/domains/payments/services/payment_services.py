@@ -320,7 +320,7 @@ class PaymentService:
             if payment_order_list:
 
                 payment_order = payment_order_list[0]
-                if payment_order.status not in ["CREATED", "CREATED"]:
+                if payment_order.status not in ["CREATED", "CAPTURED"]:
                     return standardize_response(
                         status_code=400,
                         messages=[f"Payment order is in ${payment_order.status} status"],
