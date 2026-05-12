@@ -21,6 +21,14 @@ async def cache_get(
         return None
 
 
+async def cache_delete(
+    *keys: str,
+):
+
+    redis = get_redis()
+    await redis.delete(*keys)
+
+
 async def cache_set(
     key: str,
     value: Any,
@@ -37,15 +45,6 @@ async def cache_set(
         data,
         ex=ttl,
     )
-
-
-async def cache_delete(
-    key: str,
-):
-
-    redis = get_redis()
-    await redis.delete(key)
-
 
 
 async def cache_set_add(
@@ -185,3 +184,7 @@ async def releaseBookingSeatLocksThroughRedis(allKeys, keyValue):
     response = await redis.eval(lua_script, len(allKeys), *allKeys, keyValue)
     response_dict = json.loads(response)
     return response_dict
+
+
+async def forceReleaseSeatLocksThroughRedis(allKeys):
+    await cache_delete(*allKeys)
