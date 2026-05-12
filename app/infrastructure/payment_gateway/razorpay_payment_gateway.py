@@ -61,7 +61,51 @@ class RazorpayPaymentGateway(BasePaymentGateway):
  
 
     async def verifyPaymentSignature(self, **kwargs):
-        pass
+        try:
+            
+            # extracted parameters
+            gateway_payment_id = kwargs.get("gateway_payment_id", "")
+            amount = kwargs.get("amount", 0)
+            notes = kwargs.get("notes", {})
+            
+            # actual razorpay implementation business logic will be come here
+            # dummy order response from razor payy
+            refund_response  = {
+                "id": str(uuid.uuid4()),
+                "entity": "refund",
+                "amount": str(amount),
+                "receipt": "",
+                "currency": "INR",
+                "payment_id": gateway_payment_id,
+                "notes": notes,
+                "receipt": None,
+                "acquirer_data": {
+                    "arn": None
+                },
+                "created_at": int(time.time()),
+                "batch_id": None,
+                # "status" :"pending",
+                "status": "processed",
+                "speed_processed": "normal",
+                "speed_requested": "normal"
+            }
+
+            # hardcoded dummy response
+            return {
+                "status_code" : 200,
+                "messages" : [f"Payment gateway order refunded successfully"],
+                "payment_gateway_refund_id" : refund_response["id"],
+                "status" : refund_response["status"],
+                "amount" : refund_response["amount"],
+                "raw_response" : refund_response
+            }
+        
+        except Exception as e:
+            return {
+                "status_code" : 500,
+                "messages" : [f"{str(e)}"],
+            }
+        
 
     async def verifyWebhookSignature(self, **kwargs):
         pass

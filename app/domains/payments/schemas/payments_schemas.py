@@ -61,7 +61,7 @@ class CreatePaymentOrderRefundRequest(BaseModel):
 
 class VerifyPaymentRequest(BaseModel):
 
-    gateway_payment_order_id: str
+    payment_order_id: str
     gateway_payment_id: str
     gateway_payment_signature: str
     
