@@ -690,7 +690,7 @@ class InventoryService:
 
             return standardize_response(
                 status_code=200,
-                messages=[f"Seats are unlocked successfully"],
+                messages=[f"Seats are confirmed successfully"],
                 data={
                     "schedule_id" : inventory_schedule.schedule_id,
                     "train_id" : inventory_schedule.train_id,
