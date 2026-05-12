@@ -231,7 +231,7 @@ class BookingService:
             redisKeyLockValue = ""
             
             # checking given idempotency key exists or not
-            event_key = f"booking:{idempotency_key}"
+            event_key = f"{idempotency_key}:booking"
             existing_idempotency_record = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing_idempotency_record:
                 return standardize_response(
@@ -644,7 +644,7 @@ class BookingService:
             # storing idempotency-key details
             await self.idempotency_repo.add_idempotency_record(
                 event_key = event_key,
-                event_type = "created_booking",
+                event_type = "booking_created",
                 event_response = booking_details
             )
             
