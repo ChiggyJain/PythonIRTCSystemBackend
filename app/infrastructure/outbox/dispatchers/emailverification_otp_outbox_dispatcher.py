@@ -10,8 +10,8 @@ settings = get_settings()
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.EMAILVERIFICATION_OTP_DISPATCH_TOPIC,
-        group_id=settings.EMAILVERIFICATION_OTP_DISPATCH_CONSUMER_GROUP,
+        topic=settings.KAFKA_EMAILVERIFICATION_OTP_DISPATCH_TOPIC,
+        group_id=settings.KAFKA_EMAILVERIFICATION_OTP_DISPATCH_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-emailverification-consumer",
     )
     await consumer.start()

@@ -53,8 +53,8 @@ class Settings(BaseSettings):
     PWDCHANGED_OTP_SMS_PROVIDER: str = "NONE"
 
     # email verification related kafka topic and consumer
-    EMAILVERIFICATION_OTP_DISPATCH_TOPIC: str = "emailverification-otp-dispatch"
-    EMAILVERIFICATION_OTP_DISPATCH_CONSUMER_GROUP: str = "emailverification-otp-dispatch-consumergrp-1"
+    KAFKA_EMAILVERIFICATION_OTP_DISPATCH_TOPIC: str = "emailverification-otp-dispatch"
+    KAFKA_EMAILVERIFICATION_OTP_DISPATCH_CONSUMER_GROUP: str = "emailverification-otp-dispatch-consumergrp-1"
     EMAILVERIFICATION_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # email verification related email and sms provider name
