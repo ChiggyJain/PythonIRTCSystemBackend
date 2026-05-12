@@ -367,7 +367,7 @@ class PaymentService:
                         },
                         update_data = {
                             "gateway_payment_id" : gateway_payment_id,
-                            "gateway_payment_signature" : gateway_payment_signature,
+                            "gateway_signature" : gateway_payment_signature,
                             "failure_reason" : None if payment_gateway_verify_rsp_obj["status_code"] == 200 else "Payment signature verification failed",
                             "version" : PaymentOrders.version + 1,
                             "status" : "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
@@ -381,7 +381,7 @@ class PaymentService:
                         gateway_response=None,
                         metadata_json={
                             "gateway_payment_id" : gateway_payment_id,
-                            "gateway_payment_signature" : gateway_payment_signature,
+                            "gateway_signature" : gateway_payment_signature,
                         },
                         status="A"
                     )
