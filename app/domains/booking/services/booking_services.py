@@ -775,6 +775,11 @@ class BookingService:
                         messages=[f"Payment orders not found"]
                     )
                 
+                return standardize_response(
+                    status_code=verifyPaymentRspObj["status_code"],
+                    messages=verifyPaymentRspObj["messages"],
+                    data=verifyPaymentRspObj["data"],
+                )
     
         except Exception as e:
             return standardize_response(
