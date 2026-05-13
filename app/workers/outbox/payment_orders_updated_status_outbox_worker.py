@@ -90,11 +90,11 @@ async def run_worker() -> None:
                                 params = {
                                     "retry_handler_type": "PAYMENT_ORDERS_UPDATED_STATUS", "outbox_repo": outbox_repo
                                 }
-                                payment_orders_updated_status_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "error_message": str(exc)
                                 }
-                                await payment_orders_updated_status_outbox_retry_handler_class_obj.handle(**params)
+                                await outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True

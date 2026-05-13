@@ -108,11 +108,11 @@ async def run_worker() -> None:
                                 params = {
                                     "retry_handler_type": "EMAILCHANGED_OTP", "outbox_repo": outbox_repo, "security_repo": security_repo
                                 }
-                                emailchanged_otp_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "user_id": user_id, "error_message": str(exc)
                                 }
-                                await emailchanged_otp_outbox_retry_handler_class_obj.handle(**params)
+                                await outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True

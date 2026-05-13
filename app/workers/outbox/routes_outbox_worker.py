@@ -84,11 +84,11 @@ async def run_worker() -> None:
                                 params = {
                                     "retry_handler_type": "MASTERDATA_ROUTES", "outbox_repo": outbox_repo
                                 }
-                                masterdata_routes_outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
+                                outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
                                     "event": event, "error_message": str(exc)
                                 }
-                                await masterdata_routes_outbox_retry_handler_class_obj.handle(**params)
+                                await outbox_retry_handler_class_obj.handle(**params)
 
 
                 processed = True
