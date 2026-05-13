@@ -19,6 +19,7 @@ from app.common.cache.redis_cache import (
     releaseBookingSeatLocksThroughRedis
 )
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
+from app.domains.booking.models.booking_passgenger_models import BookingPassengers
 from app.domains.booking.models.booking_seats_models import BookingSeats
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.domains.booking.models.bookings_models import Bookings
@@ -38,7 +39,7 @@ class BookingService:
         self.booking_repo = BookingSQLAlchemyRepository(db_session)
         self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
 
-        
+
 
     async def compensateAll(self, *, payload: dict) -> dict:
         
@@ -857,7 +858,20 @@ class BookingService:
                         status_code=404,
                         messages=[f"Booking seats details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
                     )
-                if booking_seats_list:
+                # fetching the booking passengers details
+                booking_passengers_list = await self.booking_repo.get_booking_passengers_details(
+                    where_conditions = [
+                        BookingPassengers.booking_id == booking_id,
+                    ]
+                )
+                if not booking_passengers_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking passengers details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
+                    )  
+                 
+                if True:
+                    
                     seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
                     # automically claim this booking — if expiry job or cancel already changed it, bail out
                     cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
@@ -923,7 +937,7 @@ class BookingService:
             )
         
     
-    async def store_payment_orders_updated_status_into_outbox_events(
+    async def store_booking_confirmed_into_outbox_events(
         self,
         payload: dict
     ):
@@ -934,9 +948,9 @@ class BookingService:
         try:
             
             created_outbox_events_row = await self.outbox_repo.add_outbox_event(
-                aggregate_type="PAYMENT_ORDERS",
-                aggregate_id=payload.get("payment_order_id", 0),
-                event_type="PAYMENT_ORDERS_UPDATED_STATUS",
+                aggregate_type="BOOKINGS",
+                aggregate_id=payload.get("booking_id", 0),
+                event_type="BOOKINGS_UPDATED_STATUS",
                 payload_json={
                     "booking_id": payload.get("booking_id", 0),
                     "payment_order_id": payload.get("payment_order_id", 0),
