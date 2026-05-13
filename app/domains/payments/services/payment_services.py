@@ -397,9 +397,8 @@ class PaymentService:
                         "reason": ",".join(payment_gateway_verify_rsp_obj["messages"]),
                         "payment_order_status": "CAPTURED" if payment_gateway_verify_rsp_obj["status_code"] == 200 else "FAILED",
                     }
-                    rsp = await self.store_payment_orders_updated_status_into_outbox_events(payload=params1)
+                    outbox_events_rsp = await self.store_payment_orders_updated_status_into_outbox_events(payload=params1)
 
-                    
                     await self._db_session.commit()
                     
                     return standardize_response(
