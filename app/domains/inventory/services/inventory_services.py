@@ -765,6 +765,7 @@ class InventoryService:
                 where_conditions = {
                     SeatSegmentLockInventory.schedule_id == schedule_id,
                     SeatSegmentLockInventory.booking_id == booking_id,
+                    SeatSegmentLockInventory.locked_by_user_id == user_id,
                     SeatSegmentLockInventory.status == "BOOKED"
                 }
             )
