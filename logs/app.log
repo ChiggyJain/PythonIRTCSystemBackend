@@ -409,3 +409,28 @@
   Value error, source and destination cannot not be same [type=value_error, input_value={'source': 'BCT', 'destin..., 'page': 1, 'size': 20}, input_type=dict]
     For further information visit https://errors.pydantic.dev/2.5/v/value_error | 500
 2026-05-13 14:54:34 | INFO | SpawnProcess-1-14367 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-13 14:54:34.350577 | 2026-05-13 14:54:34.438430 | 87 | None | 200
+2026-05-13 15:36:32 | INFO | ES client created for index: routes
+2026-05-13 15:36:32 | INFO | ES client created for index: stations
+2026-05-13 15:36:38 | INFO | booking_updated_status_outbox_worker started
+2026-05-13 15:37:09 | INFO | booking_updated_status_outbox_worker started
+2026-05-13 15:37:20 | INFO | booking_updated_status_send_email_consumer started
+2026-05-13 15:37:37 | INFO | SpawnProcess-1-16298 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-13 15:37:36.988939 | 2026-05-13 15:37:37.410954 | 422 | None | 200
+2026-05-13 15:37:58 | INFO | SpawnProcess-1-16298 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 15:37:58.059783 | 2026-05-13 15:37:58.060785 | 1 |  | 500
+2026-05-13 15:38:27 | INFO | SpawnProcess-1-16298 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 15:38:27.689784 | 2026-05-13 15:38:27.695799 | 6 | None | 200
+2026-05-13 15:38:27 | INFO | SpawnProcess-1-16298 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 15:38:27.728788 | 2026-05-13 15:38:27.741979 | 13 | None | 200
+2026-05-13 15:38:27 | INFO | SpawnProcess-1-16298 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 15:38:27.807272 | 2026-05-13 15:38:27.835858 | 28 | None | 201
+2026-05-13 15:38:27 | INFO | SpawnProcess-1-16298 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 15:38:27.874526 | 2026-05-13 15:38:27.888501 | 13 | None | 201
+2026-05-13 15:38:27 | INFO | SpawnProcess-1-16298 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 15:38:27.560802 | 2026-05-13 15:38:27.901264 | 340 | None | 201
+2026-05-13 15:38:32 | INFO | SpawnProcess-1-16298 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 15:38:32.600040 | 2026-05-13 15:38:32.682345 | 82 | None | 200
+2026-05-13 15:38:32 | INFO | SpawnProcess-1-16298 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 15:38:32.573788 | 2026-05-13 15:38:32.685957 | 112 | None | 200
+2026-05-13 15:38:40 | INFO | SpawnProcess-1-16298 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-13 15:38:40.565429 | 2026-05-13 15:38:40.574653 | 9 | None | 200
+2026-05-13 15:38:49 | INFO | schedule_inventory_seat_availability_updated_outbox_worker started
+2026-05-13 15:38:53 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 15:38:54 | INFO | schedules_inventory_seat_availability_updated_consumer_worker started
+2026-05-13 15:38:54 | INFO | ES client created for index: routes
+2026-05-13 15:38:54 | INFO | ES client created for index: routes
+2026-05-13 15:38:54 | INFO | ES client created for index: routes
+2026-05-13 15:38:58 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 15:38:58 | INFO | SpawnProcess-1-16298 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 15:38:58.289871 | 2026-05-13 15:38:58.308166 | 18 | None | 200
+2026-05-13 15:38:59 | INFO | ES client created for index: routes
+2026-05-13 15:39:56 | INFO | SpawnProcess-1-16298 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-13 15:39:56.724538 | 2026-05-13 15:39:56.732749 | 8 | None | 200

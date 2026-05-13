@@ -90,3 +90,33 @@ router.add_api_route(
 
 
 
+@feature_control(
+    {
+        "name": "inventory:schedule:availability",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 1000,
+            "window": 60,
+        },
+    }
+)
+async def get_booking_details_by_booking_id(
+    booking_id: int,
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),    
+    service: BookingService = Depends(get_booking_service),
+):
+    payload = {
+        "booking_id" : booking_id,
+        "user_id" : user_details_from_access_token.get("sub")
+    }
+    return await service.get_booking_details_by_id(payload=payload)
+
+router.add_api_route(
+    "/{booking_id}",
+    get_booking_details_by_booking_id,
+    methods=["GET"],
+    route_class_override=FeatureAPIRoute,
+)
