@@ -110,7 +110,7 @@ async def get_booking_details_by_booking_id(
 ):
     payload = {
         "booking_id" : booking_id,
-        "user_id" : user_details_from_access_token.get("sub")
+        "user_id" : int(user_details_from_access_token.get("sub"))
     }
     return await service.get_booking_details_by_booking_id(payload=payload)
 

@@ -434,3 +434,9 @@
 2026-05-13 15:38:58 | INFO | SpawnProcess-1-16298 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 15:38:58.289871 | 2026-05-13 15:38:58.308166 | 18 | None | 200
 2026-05-13 15:38:59 | INFO | ES client created for index: routes
 2026-05-13 15:39:56 | INFO | SpawnProcess-1-16298 | user:search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-13 15:39:56.724538 | 2026-05-13 15:39:56.732749 | 8 | None | 200
+2026-05-13 15:53:39 | INFO | ES client created for index: routes
+2026-05-13 15:53:39 | INFO | ES client created for index: stations
+2026-05-13 15:53:40 | INFO | SpawnProcess-1-17956 | user:booking:details | 127.0.0.1 | GET | /api/v1/bookings/1 | 2026-05-13 15:53:40.356057 | 2026-05-13 15:53:40.363144 | 7 | None | 500
+2026-05-13 15:54:06 | INFO | ES client created for index: routes
+2026-05-13 15:54:06 | INFO | ES client created for index: stations
+2026-05-13 15:54:06 | INFO | SpawnProcess-3-18024 | user:booking:details | 127.0.0.1 | GET | /api/v1/bookings/1 | 2026-05-13 15:54:06.883311 | 2026-05-13 15:54:06.916967 | 33 | None | 200
