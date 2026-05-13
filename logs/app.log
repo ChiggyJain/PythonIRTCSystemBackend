@@ -259,3 +259,5 @@
 2026-05-13 11:36:24 | INFO | SpawnProcess-25-21523 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:36:24.719484 | 2026-05-13 11:36:24.801659 | 82 | None | 200
 2026-05-13 11:37:47 | INFO | ES client created for index: routes
 2026-05-13 11:37:47 | INFO | ES client created for index: stations
+2026-05-13 11:39:05 | INFO | ES client created for index: routes
+2026-05-13 11:39:05 | INFO | ES client created for index: stations

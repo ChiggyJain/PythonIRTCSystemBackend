@@ -922,7 +922,7 @@ class InventoryService:
         try:
             
             created_outbox_events_row = await self.outbox_repo.add_outbox_event(
-                aggregate_type="SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED",
+                aggregate_type="SCHEDULE_INVENTORY",
                 aggregate_id=payload.get("schedule_id", 0),
                 event_type="SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED",
                 payload_json={
