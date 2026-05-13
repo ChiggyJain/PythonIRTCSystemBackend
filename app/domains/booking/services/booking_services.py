@@ -847,7 +847,7 @@ class BookingService:
                         status_code=400,
                         messages=[f"Booking {booking_id} in unexpected status {booking_list[0].status} for payment-order-id: {payment_order_id}"]
                     )
-                # fetching the booking seats details
+                # fetching booking seats details
                 booking_seats_list = await self.booking_repo.get_booking_seats_details(
                     where_conditions = [
                         BookingSeats.booking_id == booking_id,
@@ -858,7 +858,7 @@ class BookingService:
                         status_code=404,
                         messages=[f"Booking seats details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
                     )
-                # fetching the booking passengers details
+                # fetching booking passengers details
                 booking_passengers_list = await self.booking_repo.get_booking_passengers_details(
                     where_conditions = [
                         BookingPassengers.booking_id == booking_id,
@@ -871,8 +871,9 @@ class BookingService:
                     )  
                  
                 if True:
-                    
+
                     seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
+
                     # automically claim this booking — if expiry job or cancel already changed it, bail out
                     cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
                         where_data = {
@@ -889,6 +890,7 @@ class BookingService:
                             status_code=200,
                             messages=[f"Booking {booking_id} already handled by another process, skipping"]
                         )
+                    
                     # confirming seats into external inventory services
                     confirmedSeatRspObj = None
                     confirmedSeatData = None
@@ -925,8 +927,43 @@ class BookingService:
                     releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
                     print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
 
-                    # 
-
+                    # adding records into outbox events table
+                    # data published into kafka-topics via workers and consumer will be consume the message
+                    params1 = {
+                        "booking_id" : booking_list[0].id,
+                        "schedule_id" : booking_list[0].schedule_id,
+                        "train_id" : booking_list[0].train_id,
+                        "train_number" : booking_list[0].train_number,
+                        "train_name" : booking_list[0].train_name,
+                        "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
+                        "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
+                        "departure_date" : str(booking_list[0].departure_date),
+                        "seats" : [
+                            {
+                                "seat_id" : seat.seat_id,
+                                "seat_number" : seat.seat_number,
+                                "seat_type" : seat.seat_type,
+                                "seat_price" : str(seat.price)
+                            }
+                            for seat in booking_seats_list
+                        ],
+                        "passengers" : [
+                            {
+                                "id" : passenger.id,
+                                "name" : passenger.name,
+                                "age" : passenger.age,
+                                "gender" : passenger.gender,
+                            }
+                            for passenger in booking_passengers_list
+                        ],
+                        "total_amount" : str(booking_list[0].total_amount),
+                        "user_id" : booking_list[0].user_id,
+                        "user_first_name" : "",
+                        "user_email" : "",
+                        "user_mobile" : "",
+                        "booking_status" : "CONFIRMED",
+                    }
+                    rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
 
 
 
