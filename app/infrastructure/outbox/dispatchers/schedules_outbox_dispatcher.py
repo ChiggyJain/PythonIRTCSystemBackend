@@ -37,10 +37,10 @@ async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_SCHEDULE_CREATED_TOPIC,
         group_id=settings.KAFKA_SCHEDULE_CREATED_TOPIC_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-schedules-consumer",
+        client_id=f"{settings.KAFKA_CLIENT_ID}-schedules-consumer",
     )
     await consumer.start()
-    app_logger.info("masterdata_schedules_dispatch_consumer_worker started")
+    app_logger.info("schedules_consumer_worker started")
     try:
         async for message in consumer:
             try:
@@ -54,7 +54,7 @@ async def run_worker() -> None:
                     app_logger.error(f"Failed to index ScheduledID: {payload.get('schedule_id')}")
                 # await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"masterdata_schedules_dispatch_consumer_worker error: {exc}")
+                app_logger.error(f"schedules_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
