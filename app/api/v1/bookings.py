@@ -92,7 +92,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "inventory:schedule:availability",
+        "name": "user:booking:details",
         "logging": {
             "console": True,
             "file": True,
@@ -112,7 +112,7 @@ async def get_booking_details_by_booking_id(
         "booking_id" : booking_id,
         "user_id" : user_details_from_access_token.get("sub")
     }
-    return await service.get_booking_details_by_id(payload=payload)
+    return await service.get_booking_details_by_booking_id(payload=payload)
 
 router.add_api_route(
     "/{booking_id}",

@@ -242,9 +242,6 @@ class BookingService:
 
 
 
-
-
-
     async def create_booking_details(self, *, payload: dict) -> dict:
         
         try:
@@ -722,6 +719,7 @@ class BookingService:
             )
         
 
+
     async def verify_payment_details(self, *, payload: dict) -> dict:
         
         try:
@@ -795,6 +793,7 @@ class BookingService:
             )
 
     
+
     async def process_booking_payment_orders_success_details(self, *, payload: dict) -> dict:
         
         try:
@@ -1253,6 +1252,124 @@ class BookingService:
             )
         
 
+
+    async def get_booking_details_by_booking_id(self, *, payload: dict) -> dict:
+        
+        try:
+
+            # extracted parameters
+            booking_id = payload.get("booking_id", 0)
+            user_id = payload.get("user_id", 0)
+            
+            if not all([
+                booking_id > 0,
+                user_id > 0,
+            ]):
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passsed for getting booking details"]
+                )
+            
+            # fetching booking details
+            booking_list = await self.booking_repo.get_booking_details(
+                where_conditions = [
+                    Bookings.id == booking_id,
+                    Bookings.user_id == user_id,
+                ],
+                order_by = [
+                    Bookings.id.asc()
+                ]
+            )
+            if not booking_list:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Booking details not found"]
+                )
+            if booking_list:
+
+                # fetching booking seats details
+                booking_seats_list = await self.booking_repo.get_booking_seats_details(
+                    where_conditions = [
+                        BookingSeats.booking_id == booking_id,
+                    ]
+                )
+                if not booking_seats_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking seats details not found for booking-id: {booking_id}"]
+                    )
+                # fetching booking passengers details
+                booking_passengers_list = await self.booking_repo.get_booking_passengers_details(
+                    where_conditions = [
+                        BookingPassengers.booking_id == booking_id,
+                    ]
+                )
+                if not booking_passengers_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking passengers details not found for booking-id: {booking_id}"]
+                    )  
+                # fetching users details
+                user_details = await self.user_repo.get_by_id(
+                    user_id=booking_list[0].user_id
+                )
+                if not user_details:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking user details not found for booking-id: {booking_id}"]
+                    )  
+                
+                if True:
+
+                    response_data = {
+                        "booking_id" : booking_list[0].id,
+                        "schedule_id" : booking_list[0].schedule_id,
+                        "train_id" : booking_list[0].train_id,
+                        "train_number" : booking_list[0].train_number,
+                        "train_name" : booking_list[0].train_name,
+                        "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
+                        "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
+                        "departure_date" : str(booking_list[0].departure_date),
+                        "seats" : [
+                            {
+                                "seat_id" : seat.seat_id,
+                                "seat_number" : seat.seat_number,
+                                "seat_type" : seat.seat_type,
+                                "seat_price" : str(seat.price)
+                            }
+                            for seat in booking_seats_list
+                        ],
+                        "passengers" : [
+                            {
+                                "id" : passenger.id,
+                                "name" : passenger.name,
+                                "age" : passenger.age,
+                                "gender" : passenger.gender,
+                            }
+                            for passenger in booking_passengers_list
+                        ],
+                        "total_amount" : str(booking_list[0].total_amount),
+                        "user_id" : booking_list[0].user_id,
+                        "user_first_name" : user_details.first_name,
+                        "user_email" : user_details.email,
+                        "user_mobile" : user_details.mobile,
+                        "booking_status_reason" : "Confirmation successfully",
+                        "booking_status" : booking_list[0].status,
+                    }
+        
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking details found"],
+                        data=response_data,
+                    )
+
+
+        except Exception as e:
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+        
 
     async def store_booking_confirmed_into_outbox_events(
         self,
