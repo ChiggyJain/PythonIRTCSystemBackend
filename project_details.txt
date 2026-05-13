@@ -564,6 +564,23 @@ AND schedule_id IN (1);
 
 
 
+Kibana =>
+
+POST /routes/_update/1
+{
+  "doc": {
+    "schedules": [
+      {
+        "schedule_id": 1,
+        "departure_date": "2026-05-13",
+        "available": 12,
+        "locked": 0,
+        "booked": 0,
+        "status": "A"
+      }
+    ]
+  }
+}
 
 
 
