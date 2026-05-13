@@ -42,8 +42,8 @@ class Settings(BaseSettings):
     KAFKA_CLIENT_ID: str = "irtc-backend"
     
     # password changed related kafka topic and consumer
-    KAFKA_PWDCHANGED_OTP_TOPIC: str = "pwdchanged-otp-dispatch"
-    KAFKA_PWDCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "pwdchanged-otp-dispatch-consumergrp-1"
+    KAFKA_PWDCHANGED_OTP_TOPIC: str = "pwdchanged-otp"
+    KAFKA_PWDCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "pwdchanged-otp-consumergrp-1"
     PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # password changed related email and sms provider name
