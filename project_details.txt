@@ -542,14 +542,14 @@ TRUNCATE PAYMENT_AUDIT_LOGS;
 
 UPDATE SCHEDULE_INVENTORY 
 SET 
-departure_date='2026-05-12',
+departure_date='2026-05-13',
 available_seats=total_seats,
 locked=0,
 booked=0,
 version=0,
 status="ACTIVE"
 WHERE 1
-AND schedule_id IN (2);
+AND schedule_id IN (1);
 
 UPDATE SEAT_INVENTORY 
 SET 
@@ -560,7 +560,7 @@ locked_at=NULL,
 locked_expires_at=NULL,
 status="AVAILABLE"
 WHERE 1
-AND schedule_id IN (2);
+AND schedule_id IN (1);
 
 
 
