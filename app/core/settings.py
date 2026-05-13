@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     
     # password changed related kafka topic and consumer
     KAFKA_PWDCHANGED_OTP_TOPIC: str = "pwdchanged-otp"
-    KAFKA_PWDCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "pwdchanged-otp-consumergrp"
+    KAFKA_PWDCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "pwdchanged-otp-consumer-group"
     PWDCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # password changed related email and sms provider name
@@ -54,7 +54,7 @@ class Settings(BaseSettings):
 
     # email verification related kafka topic and consumer
     KAFKA_EMAILVERIFICATION_OTP_TOPIC: str = "emailverification-otp"
-    KAFKA_EMAILVERIFICATION_OTP_TOPIC_CONSUMER_GROUP: str = "emailverification-otp-consumergrp"
+    KAFKA_EMAILVERIFICATION_OTP_TOPIC_CONSUMER_GROUP: str = "emailverification-otp-consumer-group"
     EMAILVERIFICATION_OTP_OUTBOX_MAX_RETRIES: int = 6
 
     # email verification related email and sms provider name
@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     
     # email changed related kafka topic and consumer
     KAFKA_EMAILCHANGED_OTP_TOPIC: str = "emailchanged-otp"
-    KAFKA_EMAILCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "emailchanged-otp-consumergrp"
+    KAFKA_EMAILCHANGED_OTP_TOPIC_CONSUMER_GROUP: str = "emailchanged-otp-consumer-group"
     EMAILCHANGED_OTP_OUTBOX_MAX_RETRIES: int = 6
     
     # email changed related email and sms provider name
@@ -114,28 +114,28 @@ class Settings(BaseSettings):
 
     # Station KAFKA TOPIC and CONSUMER
     KAFKA_STATION_CREATED_TOPIC: str = "station-created"
-    KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP: str = "station-events-consumergrp"
+    KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP: str = "station-events-consumer-group"
     STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER
     KAFKA_TRAIN_CREATED_TOPIC: str = "train-created"
-    KAFKA_TRAIN_CREATED_TOPIC_CONSUMER_GROUP: str = "train-created-consumergrp"
+    KAFKA_TRAIN_CREATED_TOPIC_CONSUMER_GROUP: str = "train-created-consumer-group"
     TRAIN_OUTBOX_MAX_RETRIES: int = 6
     
     # Route KAFKA TOPIC and CONSUMER
     KAFKA_ROUTE_CREATED_TOPIC: str = "route-created"
-    KAFKA_ROUTE_CREATED_TOPIC_CONSUMER_GROUP: str = "route-created-consumergrp"
+    KAFKA_ROUTE_CREATED_TOPIC_CONSUMER_GROUP: str = "route-created-consumer-group"
     ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
     # Schedule KAFKA TOPIC and CONSUMER
     KAFKA_SCHEDULE_CREATED_TOPIC: str = "schedule-created"
-    KAFKA_SCHEDULE_CREATED_TOPIC_CONSUMER_GROUP: str = "schedule-created-consumergrp"
-    KAFKA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "schedule-inventory-consumergrp"
+    KAFKA_SCHEDULE_CREATED_TOPIC_CONSUMER_GROUP: str = "schedule-created-consumer-group"
+    KAFKA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "schedule-inventory-consumer-group"
     SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
 
     # masterdata schedule-inventory seat availability update topic and consumer
     KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC: str ="schedule-inventory-seat-availability-updated"
-    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC_CONSUMER_GROUP: str ="schedule-inventory-seat-availability-updated-consumergrp"
+    KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC_CONSUMER_GROUP: str ="schedule-inventory-seat-availability-updated-consumer-group"
     KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC_OUTBOX_MAX_RETRIES: int =6
 
     # ELASTICSEARCH CONFIG
@@ -163,7 +163,7 @@ class Settings(BaseSettings):
 
     KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC: str = "payment-success"
     KAFKA_BOOKING_PAYMENT_FAILED_TOPIC: str = "payment-failed"
-    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP: str = "payment-successfailed-consumergrp"
+    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP: str = "payment-successfailed-consumer-group"
     KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
     
     
