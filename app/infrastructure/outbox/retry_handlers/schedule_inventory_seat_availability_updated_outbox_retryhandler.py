@@ -20,7 +20,7 @@ class ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler(OutboxBaseRetry
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.KAFKA_SCHEDULE_CREATED_TOPIC)
+        max_retries = int(settings.SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_OUTBOX_MAX_RETRIES)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(
