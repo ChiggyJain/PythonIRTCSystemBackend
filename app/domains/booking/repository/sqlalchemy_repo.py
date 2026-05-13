@@ -56,9 +56,9 @@ class BookingSQLAlchemyRepository:
             .limit(limit)
         )
 
-        bookings_result = await self.db.execute(booking_query)
+        bookings_result = await self._db_session.execute(booking_query)
         bookings = bookings_result.scalars().all()
-        total_result = await self.db.execute(count_query)
+        total_result = await self._db_session.execute(count_query)
         total = total_result.scalar()
 
         if not bookings:
@@ -74,14 +74,14 @@ class BookingSQLAlchemyRepository:
 
         booking_ids = [b.id for b in bookings]
 
-        seats_result = await self.db.execute(
+        seats_result = await self._db_session.execute(
             select(BookingSeats)
             .where(BookingSeats.booking_id.in_(booking_ids))
             .order_by(BookingSeats.seat_number.asc())
         )
         seats = seats_result.scalars().all()
 
-        passengers_result = await self.db.execute(
+        passengers_result = await self._db_session.execute(
             select(BookingPassengers)
             .where(BookingPassengers.booking_id.in_(booking_ids))
         )

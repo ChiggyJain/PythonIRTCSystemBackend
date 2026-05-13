@@ -569,3 +569,17 @@
 2026-05-13 16:18:40 | INFO | ES client created for index: stations
 2026-05-13 16:18:47 | INFO | ES client created for index: routes
 2026-05-13 16:18:47 | INFO | ES client created for index: stations
+2026-05-13 16:19:23 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:19:23.164047 | 2026-05-13 16:19:23.173771 | 9 | None | 500
+2026-05-13 16:19:34 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:19:34.035484 | 2026-05-13 16:19:34.036665 | 1 | None | 500
+2026-05-13 16:19:41 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:19:41.281577 | 2026-05-13 16:19:41.284617 | 3 | None | 500
+2026-05-13 16:19:47 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:19:47.714726 | 2026-05-13 16:19:47.716168 | 1 | None | 500
+2026-05-13 16:20:49 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:20:49.998302 | 2026-05-13 16:20:49.999933 | 1 | None | 500
+2026-05-13 16:21:17 | INFO | SpawnProcess-87-19678 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:21:17.461186 | 2026-05-13 16:21:17.463246 | 2 | None | 500
+2026-05-13 16:21:40 | INFO | ES client created for index: routes
+2026-05-13 16:21:40 | INFO | ES client created for index: stations
+2026-05-13 16:21:45 | INFO | ES client created for index: routes
+2026-05-13 16:21:45 | INFO | ES client created for index: stations
+2026-05-13 16:21:51 | INFO | ES client created for index: routes
+2026-05-13 16:21:51 | INFO | ES client created for index: stations
+2026-05-13 16:21:54 | INFO | ES client created for index: routes
+2026-05-13 16:21:54 | INFO | ES client created for index: stations
