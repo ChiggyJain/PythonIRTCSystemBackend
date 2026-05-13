@@ -1092,11 +1092,11 @@ class BookingService:
                 gateway_payment_id,
                 amount > 0,
                 reason,
-                payment_order_status == "CAPTURED"
+                payment_order_status != "CAPTURED"
             ]):
                 return standardize_response(
                     status_code=400,
-                    messages=[f"Invalid parameters are passsed for processing booking payment success details"]
+                    messages=[f"Invalid parameters are passsed for processing booking payment failed details"]
                 )
             
             # fetching booking details
@@ -1116,10 +1116,10 @@ class BookingService:
                 )
             if booking_list:
 
-                if booking_list[0].status == "CONFIRMED":
+                if booking_list[0].status in ["FAILED", "CANCELLED", "EXPIRED"]:
                     return standardize_response(
                         status_code=200,
-                        messages=[f"Booking already confirmed for payment-order-id: {payment_order_id}"]
+                        messages=[f"Booking {booking_list[0].id} already in terminal state: {booking_list[0].status}"]
                     )
                 if booking_list[0].status != "PAYMENT_PENDING":
                     return standardize_response(
@@ -1169,8 +1169,9 @@ class BookingService:
                             "version" : booking_list[0].version,
                         },
                         update_data = {
+                            "failure_reason" : reason,
                             "version" : booking_list[0].version + 1,
-                            "status" : "CONFIRMING"
+                            "status" : "FAILED"
                         }
                     )
                     if cnt_of_booking_records_updated<=0:
@@ -1178,34 +1179,14 @@ class BookingService:
                             status_code=200,
                             messages=[f"Booking {booking_id} already handled by another process, skipping"]
                         )
-                    
-                    # confirming seats into external inventory services
-                    confirmedSeatRspObj = None
-                    confirmedSeatData = None
-                    async with httpx.AsyncClient() as client:
-                        response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/confirm", json={
-                            "schedule_id" : booking_list[0].schedule_id,
-                            "seat_ids" : seat_ids,
-                            "booking_id" : booking_list[0].id,
-                            "user_id" : booking_list[0].user_id,
-                            "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
-                            "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
-                        })
-                        confirmedSeatRspObj = response.json()
-                        confirmedSeatData = confirmedSeatRspObj.get("data", None)
-                    print(f"confirmedSeatRspObj: {confirmedSeatRspObj}")
-                    
-                    # updating booking status as confirmed
-                    cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
-                        where_data = {
-                            "id" : booking_list[0].id,
-                            "version" : "CONFIRMING",
-                        },
-                        update_data = {
-                            "version" : booking_list[0].version + 1,
-                            "status" : "CONFIRMED"
-                        }
-                    )
+
+                    # refund payment and release seats
+                    params1 = {
+                        "booking_id" : booking_list[0].id,
+                        "seat_ids" : seat_ids,
+                        "reason" : str(e)
+                    }
+                    compensatedRspObj = await self.compensateAll(payload=params1)
 
                     # releasing the seats locks from redis as forcing
                     allRedisSeatsLockKeys = []
@@ -1249,8 +1230,8 @@ class BookingService:
                         "user_first_name" : user_details.first_name,
                         "user_email" : user_details.email,
                         "user_mobile" : user_details.mobile,
-                        "booking_status_reason" : "Confirmation successfully",
-                        "booking_status" : "CONFIRMED",
+                        "booking_status_reason" : f"Payment failed: {reason[:60]}",
+                        "booking_status" : "FAILED",
                     }
                     outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
                     print(f"outbox_events_rsp: {outbox_events_rsp}")
@@ -1262,86 +1243,12 @@ class BookingService:
                         messages=[f"Booking details processed successfully"],
                         data={
                             "booking_id" : booking_list[0].id,
-                            "booking_status" : "CONFIRMED"
+                            "booking_status" : "FAILED"
                         }
                     )
 
 
         except Exception as e:
-
-            await self._db_session.rollback()
-
-            # refund payment and release seats
-            params1 = {
-                "booking_id" : booking_list[0].id,
-                "seat_ids" : seat_ids,
-                "reason" : str(e)
-            }
-            compensatedRspObj = await self.compensateAll(payload=params1)
-
-            # updating booking status as failed
-            cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
-                where_data = {
-                    "id" : booking_list[0].id,
-                    "status" : ["PAYMENT_PENDING", "CONFIRMING"],
-                },
-                update_data = {
-                    "failure_reason" : f"confirmation failed: {str(e)[:60]}",
-                    "version" : booking_list[0].version + 1,
-                    "status" : "FAILED"
-                }
-            )
-            
-            # releasing the seats locks from redis as forcing
-            allRedisSeatsLockKeys = []
-            for eachSeatId in seat_ids:
-                key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
-                allRedisSeatsLockKeys.append(key)
-            releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-            print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
-            
-            # adding records into outbox events table
-            # data published into kafka-topics via workers and consumer will be consume the message
-            params1 = {
-                "booking_id" : booking_list[0].id,
-                "schedule_id" : booking_list[0].schedule_id,
-                "train_id" : booking_list[0].train_id,
-                "train_number" : booking_list[0].train_number,
-                "train_name" : booking_list[0].train_name,
-                "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
-                "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
-                "departure_date" : str(booking_list[0].departure_date),
-                "seats" : [
-                    {
-                        "seat_id" : seat.seat_id,
-                        "seat_number" : seat.seat_number,
-                        "seat_type" : seat.seat_type,
-                        "seat_price" : str(seat.price)
-                    }
-                    for seat in booking_seats_list
-                ],
-                "passengers" : [
-                    {
-                        "id" : passenger.id,
-                        "name" : passenger.name,
-                        "age" : passenger.age,
-                        "gender" : passenger.gender,
-                    }
-                    for passenger in booking_passengers_list
-                ],
-                "total_amount" : str(booking_list[0].total_amount),
-                "user_id" : booking_list[0].user_id,
-                "user_first_name" : user_details.first_name,
-                "user_email" : user_details.email,
-                "user_mobile" : user_details.mobile,
-                "booking_status_reason" : f"Confirmation failed: {str(e)[:60]}",
-                "booking_status" : "FAILED",
-            }
-            outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
-            print(f"outbox_events_rsp: {outbox_events_rsp}")
-            
-            await self._db_session.commit()
-
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
