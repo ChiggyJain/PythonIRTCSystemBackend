@@ -52,22 +52,15 @@ class BookingSQLAlchemyRepository:
         booking_query = (
             booking_query
             .order_by(Bookings.created_at.desc())
-            # .offset(skip)
-            # .limit(limit)
+            .offset(skip)
+            .limit(limit)
         )
 
         bookings_result = await self._db_session.execute(booking_query)
-        print(
-            booking_query.compile(
-                compile_kwargs={"literal_binds": True}
-            )
-        )
-
         bookings = bookings_result.scalars().all()
         total_result = await self._db_session.execute(count_query)
         total = total_result.scalar()
-        print(f"bookings: {bookings}")
-
+        
         if not bookings:
             return {
                 "bookings": [],
