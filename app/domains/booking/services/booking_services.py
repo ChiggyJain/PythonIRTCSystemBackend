@@ -1499,6 +1499,18 @@ class BookingService:
                             messages=[f"Booking {booking_id} already handled by another process, skipping"]
                         )
 
+                    # cancel seats into external inventory services
+                    cancelledSeatRspObj = None
+                    cancelledSeatData = None
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/cancel", json={
+                            "schedule_id" : booking_list[0].schedule_id,
+                            "booking_id" : booking_list[0].id,
+                            "user_id" : booking_list[0].user_id,
+                        })
+                        cancelledSeatRspObj = response.json()
+                        cancelledSeatData = cancelledSeatRspObj.get("data", None)
+                    print(f"cancelledSeatRspObj: {cancelledSeatRspObj}")
                     
 
                     return standardize_response(
