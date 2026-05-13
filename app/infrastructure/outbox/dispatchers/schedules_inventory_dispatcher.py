@@ -17,9 +17,6 @@ async def process_message(payload: dict) -> bool:
         service = InventoryService(db_session=db)
         response = await service.process_train_schedule_created_event_for_inventory(payload=payload)
         result = json.loads(response.body)
-        app_logger.info(
-            f"inventory_schedule_consumer | schedule_id={payload.get('schedule_id')} | status_code={result.get('status_code')}"
-        )
         return True
 
 
@@ -35,12 +32,16 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                app_logger.info(f"inventory_consumer received payload: {payload}")
+                topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 success = await process_message(payload)
                 if success:
-                    await consumer.commit()
+                    print(f"Successfully initialize inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                else:
+                    print(f"Fail to initialize inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                await consumer.commit()
             except Exception as exc:
-                app_logger.error(f"schedules_inventory_consumer_worker error: {exc}")
+                print(f"schedules_inventory_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
