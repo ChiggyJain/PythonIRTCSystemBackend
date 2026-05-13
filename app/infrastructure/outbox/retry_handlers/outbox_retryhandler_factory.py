@@ -16,6 +16,7 @@ class OutboxRetryHandlerFactory:
         "MASTERDATA_STATIONS": MasterDataStationsOutboxRetryHandler,
         "MASTERDATA_ROUTES": MasterDataRoutesOutboxRetryHandler,
         "MASTERDATA_SCHEDULES": MasterDataSchedulesOutboxRetryHandler,
+        "SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED" : PaymentOrdersUpdatedStatusOutboxRetryHandler,
         "PAYMENT_ORDERS_UPDATED_STATUS" : PaymentOrdersUpdatedStatusOutboxRetryHandler,
     }
 

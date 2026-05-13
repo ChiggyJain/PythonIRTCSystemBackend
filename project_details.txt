@@ -573,6 +573,7 @@ POST /routes/_update/1
       {
         "schedule_id": 1,
         "departure_date": "2026-05-13",
+        "total" : 12,
         "available": 12,
         "locked": 0,
         "booked": 0,
