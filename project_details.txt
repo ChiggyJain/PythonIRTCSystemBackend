@@ -133,60 +133,60 @@ Create Email Verification OTP Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic emailverification-otp-dispatch \
+  --topic emailverification-otp \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic [Email Verification OTP] =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailverification-otp-dispatch
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailverification-otp
 
 
 Create Email Changed OTP Topic [Email Changed OTP] =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic emailchanged-otp-dispatch \
+  --topic emailchanged-otp \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic [Email Changed OTP] =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailchanged-otp-dispatch
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic emailchanged-otp
 
 
 Create MasterData-Stations Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic masterdata-station-created \
+  --topic station-created \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic masterdata-station-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic station-created
 
 
 Create MasterData-Routes Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic masterdata-route-created \
+  --topic route-created \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic masterdata-route-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic route-created
 
 
 Create MasterData-Schedules Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic masterdata-schedule-created \
+  --topic schedule-created \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic masterdata-schedule-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic schedule-created
 
 
 
