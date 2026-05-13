@@ -26,34 +26,6 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         return result.scalar_one_or_none()
 
     
-    async def create_user(
-        self,
-        *,
-        first_name: str,
-        last_name: str,
-        mobile: str,
-        email: str,
-        password: str,
-        gender: str,
-        profile: str
-    ) -> Users:
-
-        user = Users(
-            first_name=first_name,
-            last_name=last_name,
-            mobile=mobile,
-            email=email,
-            password=password,
-            gender=gender,
-            profile=profile,
-            status="A",
-            created_at=now_ist(),
-            updated_at=now_ist(),
-        )
-        self.db_session.add(user)
-        return user
-    
-
     async def get_by_id(
         self,
         user_id: int,
@@ -91,3 +63,34 @@ class UsersSQLAlchemyRepository(UsersRepositoryBase):
         if not row:
             return None
         return dict(row)
+    
+    
+    async def create_user(
+        self,
+        *,
+        first_name: str,
+        last_name: str,
+        mobile: str,
+        email: str,
+        password: str,
+        gender: str,
+        profile: str
+    ) -> Users:
+
+        user = Users(
+            first_name=first_name,
+            last_name=last_name,
+            mobile=mobile,
+            email=email,
+            password=password,
+            gender=gender,
+            profile=profile,
+            status="A",
+            created_at=now_ist(),
+            updated_at=now_ist(),
+        )
+        self.db_session.add(user)
+        return user
+    
+
+    
