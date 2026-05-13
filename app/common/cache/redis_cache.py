@@ -188,4 +188,4 @@ async def releaseBookingSeatLocksThroughRedis(allKeys, keyValue):
 
 
 async def forceReleaseSeatLocksThroughRedis(allKeys):
-    await cache_delete(*allKeys)
+    return await cache_delete(*allKeys)
