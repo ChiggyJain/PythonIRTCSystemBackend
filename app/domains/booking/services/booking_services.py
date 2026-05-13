@@ -25,6 +25,7 @@ from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepo
 from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
 from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
+from app.domains.users.repository.sqlalchemy_repo import UsersSQLAlchemyRepository
 
 
 settings = get_settings()
@@ -38,7 +39,7 @@ class BookingService:
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.booking_repo = BookingSQLAlchemyRepository(db_session)
         self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
-
+        self.user_repo = UsersSQLAlchemyRepository(db_session)
 
 
     async def compensateAll(self, *, payload: dict) -> dict:
@@ -869,7 +870,16 @@ class BookingService:
                         status_code=404,
                         messages=[f"Booking passengers details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
                     )  
-                 
+                # fetching users details
+                user_details = await self.user_repo.get_by_id(
+                    user_id=booking_list[0].user_id
+                )
+                if not user_details:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking user details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
+                    )  
+                
                 if True:
 
                     seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
@@ -958,9 +968,9 @@ class BookingService:
                         ],
                         "total_amount" : str(booking_list[0].total_amount),
                         "user_id" : booking_list[0].user_id,
-                        "user_first_name" : "",
-                        "user_email" : "",
-                        "user_mobile" : "",
+                        "user_first_name" : user_details.first_name,
+                        "user_email" : user_details.email,
+                        "user_mobile" : user_details.mobile,
                         "booking_status" : "CONFIRMED",
                     }
                     rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
