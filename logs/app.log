@@ -679,3 +679,7 @@
 2026-05-13 19:17:53 | INFO | ES client created for index: stations
 2026-05-13 19:18:01 | INFO | ES client created for index: routes
 2026-05-13 19:18:01 | INFO | ES client created for index: stations
+2026-05-13 19:20:00 | INFO | ES client created for index: routes
+2026-05-13 19:20:00 | INFO | ES client created for index: stations
+2026-05-13 19:20:04 | INFO | ES client created for index: routes
+2026-05-13 19:20:04 | INFO | ES client created for index: stations

@@ -1620,7 +1620,7 @@ class BookingService:
                     data={
                         "booking_id" : booking_list[0].id,
                         "booking_status" : "CANCELLED",
-                        "payment_refund_initiated_status" : is_payment_refund_initiated,
+                        "is_payment_refund_initiated" : is_payment_refund_initiated,
                     }
                 )
 
