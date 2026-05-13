@@ -230,8 +230,8 @@ python -m app.workers.outbox.payment_orders_updated_status_outbox_worker
 python -m app.infrastructure.outbox.dispatchers.payment_orders_updated_status_outbox_dispatcher
 
 Booking Updated Status:
-python -m app.workers.outbox.booking_status_outbox_worker
-python -m app.infrastructure.outbox.dispatchers.booking_status_send_email_outbox_dispatcher
+python -m app.workers.outbox.booking_updated_status_outbox_worker
+python -m app.infrastructure.outbox.dispatchers.booking_updated_status_send_email_outbox_dispatcher
 
 
 
