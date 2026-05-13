@@ -68,10 +68,10 @@ async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_ROUTE_CREATED_TOPIC,
         group_id=settings.KAFKA_ROUTE_CREATED_TOPIC_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-routes-consumer",
+        client_id=f"{settings.KAFKA_CLIENT_ID}-routes-consumer",
     )
     await consumer.start()
-    app_logger.info("masterdata_routes_dispatch_consumer_worker started")
+    app_logger.info("routes_consumer_worker started")
     try:
         async for message in consumer:
             try:
@@ -86,7 +86,7 @@ async def run_worker() -> None:
                 
                 await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"masterdata_routes_dispatch_consumer_worker error: {exc}")
+                app_logger.error(f"routes_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
