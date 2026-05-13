@@ -48,10 +48,10 @@ async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_STATION_CREATED_TOPIC,
         group_id=settings.KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-stations-consumer",
+        client_id=f"{settings.KAFKA_CLIENT_ID}-stations-consumer",
     )
     await consumer.start()
-    app_logger.info("masterdata_stations_dispatch_consumer_worker started")
+    app_logger.info("stations_consumer_worker started")
     try:
         async for message in consumer:
             try:
@@ -65,7 +65,7 @@ async def run_worker() -> None:
                     app_logger.error(f"Failed to index StationID: {payload.get('station_id')}")
                 await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"masterdata_stations_dispatch_consumer_worker error: {exc}")
+                app_logger.error(f"stations_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
