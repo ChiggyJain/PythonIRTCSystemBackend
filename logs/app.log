@@ -583,3 +583,34 @@
 2026-05-13 16:21:51 | INFO | ES client created for index: stations
 2026-05-13 16:21:54 | INFO | ES client created for index: routes
 2026-05-13 16:21:54 | INFO | ES client created for index: stations
+2026-05-13 16:22:03 | INFO | SpawnProcess-91-19800 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:22:03.425552 | 2026-05-13 16:22:03.478173 | 52 | None | 200
+2026-05-13 16:23:32 | INFO | ES client created for index: routes
+2026-05-13 16:23:32 | INFO | ES client created for index: stations
+2026-05-13 16:23:39 | INFO | ES client created for index: routes
+2026-05-13 16:23:39 | INFO | ES client created for index: stations
+2026-05-13 16:23:40 | INFO | SpawnProcess-95-19906 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:23:40.455280 | 2026-05-13 16:23:40.492518 | 37 | None | 500
+2026-05-13 16:23:48 | INFO | ES client created for index: routes
+2026-05-13 16:23:48 | INFO | ES client created for index: stations
+2026-05-13 16:23:50 | INFO | SpawnProcess-96-19920 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:23:50.853858 | 2026-05-13 16:23:50.895211 | 41 | None | 404
+2026-05-13 16:23:57 | INFO | ES client created for index: routes
+2026-05-13 16:23:57 | INFO | ES client created for index: stations
+2026-05-13 16:24:02 | INFO | ES client created for index: routes
+2026-05-13 16:24:02 | INFO | ES client created for index: stations
+2026-05-13 16:24:03 | INFO | SpawnProcess-100-19952 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:24:03.652941 | 2026-05-13 16:24:03.689032 | 36 | None | 404
+2026-05-13 16:25:25 | INFO | ES client created for index: routes
+2026-05-13 16:25:25 | INFO | ES client created for index: stations
+2026-05-13 16:25:27 | INFO | SpawnProcess-102-20012 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:25:27.248176 | 2026-05-13 16:25:27.298574 | 50 | None | 404
+2026-05-13 16:25:51 | INFO | ES client created for index: routes
+2026-05-13 16:25:51 | INFO | ES client created for index: stations
+2026-05-13 16:26:16 | INFO | ES client created for index: routes
+2026-05-13 16:26:16 | INFO | ES client created for index: stations
+2026-05-13 16:26:18 | INFO | SpawnProcess-105-20052 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:26:18.251631 | 2026-05-13 16:26:18.296599 | 44 | None | 404
+2026-05-13 16:27:10 | INFO | ES client created for index: routes
+2026-05-13 16:27:10 | INFO | ES client created for index: stations
+2026-05-13 16:27:14 | INFO | SpawnProcess-106-20092 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:27:14.108322 | 2026-05-13 16:27:14.154250 | 45 | None | 404
+2026-05-13 16:27:54 | INFO | ES client created for index: routes
+2026-05-13 16:27:54 | INFO | ES client created for index: stations
+2026-05-13 16:28:27 | INFO | ES client created for index: routes
+2026-05-13 16:28:27 | INFO | ES client created for index: stations
+2026-05-13 16:28:31 | INFO | SpawnProcess-109-20149 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:28:31.102039 | 2026-05-13 16:28:31.147125 | 45 | None | 404
+2026-05-13 16:29:15 | INFO | SpawnProcess-109-20149 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:29:15.267155 | 2026-05-13 16:29:15.285382 | 18 | None | 200

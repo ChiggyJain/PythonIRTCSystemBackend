@@ -1378,17 +1378,23 @@ class BookingService:
             page = payload.get("page", 1)
             limit = payload.get("limit", 10)
             
-            response_data = await self.booking_repo.get_user_bookings(
+            response_data_obj = await self.booking_repo.get_user_bookings(
                 user_id = user_id,
                 status = status,
                 page = page,
                 limit = limit,
             )
-
+            if not response_data_obj["bookings"]:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"User bookings not found"],
+                    data=response_data_obj
+                )
+            
             return standardize_response(
                 status_code=200,
                 messages=[f"User bookings found"],
-                data=response_data
+                data=response_data_obj
             )
 
         except Exception as e:
