@@ -184,7 +184,7 @@ async def cancel_booking_details(
 
 router.add_api_route(
     "/{booking_id}/cancel",
-    get_booking_details_by_booking_id,
+    cancel_booking_details,
     methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )
