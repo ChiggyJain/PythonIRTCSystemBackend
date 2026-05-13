@@ -167,6 +167,16 @@ class Settings(BaseSettings):
     KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
     
     
+    KAFKA_BOOKING_STATUS_TOPIC: str = "booking-status"
+    KAFKA_BOOKING_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-status-email-consumer-group"
+    KAFKA_BOOKING_STATUS_OUTBOX_MAX_RETRIES: int = 6
+
+    BOOKING_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
+    BOOKING_STATUS_FROM_EMAIL: str = "cjain9975@gmail.com"
+    BOOKING_STATUS_EMAIL_SUBJECT_PREFIX: str = "Booking Information"
+    BOOKING_STATUS_SMS_PROVIDER: str = "NONE"
+    
+
     # Pydantic Settings Config
     model_config = SettingsConfigDict(
         env_file=".env",
