@@ -1367,6 +1367,38 @@ class BookingService:
             )
         
 
+
+    async def get_user_bookings(self, *, payload: dict) -> dict:
+        
+        try:
+
+            # extracted parameters
+            user_id = payload.get("user_id", 0)
+            status = payload.get("status", "CONFIRMED")
+            page = payload.get("page", 1)
+            limit = payload.get("limit", 10)
+            
+            response_data = await self.booking_repo.get_user_bookings(
+                user_id = user_id,
+                status = status,
+                page = page,
+                limit = limit,
+            )
+
+            return standardize_response(
+                status_code=200,
+                messages=[f"User bookings found"],
+                data=response_data
+            )
+
+        except Exception as e:
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+        
+
+
     async def store_booking_confirmed_into_outbox_events(
         self,
         payload: dict

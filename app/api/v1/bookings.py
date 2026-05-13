@@ -1,5 +1,6 @@
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Query
+from typing import Optional
 from app.common.decorators.feature_control import feature_control
 from app.core.routing.feature_route import FeatureAPIRoute
 from app.core.settings import get_settings
@@ -117,6 +118,42 @@ async def get_booking_details_by_booking_id(
 router.add_api_route(
     "/{booking_id}",
     get_booking_details_by_booking_id,
+    methods=["GET"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+@feature_control(
+    {
+        "name": "user:bookings",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 1000,
+            "window": 60,
+        },
+    }
+)
+async def get_user_bookings(
+    status: str | None = Query(None),
+    page: int = Query(None),
+    limit: int = Query(None),
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),    
+    service: BookingService = Depends(get_booking_service),
+):
+    payload = {
+        "user_id" : int(user_details_from_access_token.get("sub")),
+        "status" : status,
+        "page" : page,
+        "limit" : limit,
+    }
+    return await service.get_user_bookings(payload=payload)
+
+router.add_api_route(
+    "/",
+    get_user_bookings,
     methods=["GET"],
     route_class_override=FeatureAPIRoute,
 )
