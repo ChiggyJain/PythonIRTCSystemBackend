@@ -273,3 +273,19 @@
 2026-05-13 11:40:41 | INFO | ES client created for index: stations
 2026-05-13 11:40:43 | INFO | ES client created for index: routes
 2026-05-13 11:40:43 | INFO | ES client created for index: stations
+2026-05-13 11:41:06 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:41:11 | INFO | SpawnProcess-36-21958 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:41:11.818972 | 2026-05-13 11:41:11.826403 | 7 | None | 200
+2026-05-13 11:41:11 | INFO | SpawnProcess-36-21958 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:41:11.857093 | 2026-05-13 11:41:11.871123 | 14 | None | 200
+2026-05-13 11:41:11 | INFO | SpawnProcess-36-21958 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 11:41:11.948858 | 2026-05-13 11:41:11.989815 | 40 | None | 201
+2026-05-13 11:41:12 | INFO | SpawnProcess-36-21958 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 11:41:12.046875 | 2026-05-13 11:41:12.059741 | 12 | None | 201
+2026-05-13 11:41:12 | INFO | SpawnProcess-36-21958 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:41:11.641850 | 2026-05-13 11:41:12.069479 | 427 | None | 201
+2026-05-13 11:41:16 | INFO | SpawnProcess-36-21958 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 11:41:15.999915 | 2026-05-13 11:41:16.016010 | 16 | None | 200
+2026-05-13 11:41:16 | INFO | SpawnProcess-36-21958 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:41:15.955313 | 2026-05-13 11:41:16.018572 | 63 | None | 200
+2026-05-13 11:41:18 | INFO | SpawnProcess-36-21958 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:41:18.072977 | 2026-05-13 11:41:18.090753 | 17 | None | 200
+2026-05-13 11:41:18 | ERROR | payment_orders_updated_status_consumer_worker error: 'JSONResponse' object has no attribute 'json'
+2026-05-13 11:42:36 | INFO | ES client created for index: routes
+2026-05-13 11:42:36 | INFO | ES client created for index: stations
+2026-05-13 11:42:45 | INFO | ES client created for index: routes
+2026-05-13 11:42:45 | INFO | ES client created for index: stations
+2026-05-13 11:42:47 | INFO | ES client created for index: routes
+2026-05-13 11:42:47 | INFO | ES client created for index: stations
