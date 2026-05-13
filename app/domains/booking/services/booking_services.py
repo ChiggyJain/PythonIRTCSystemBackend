@@ -813,7 +813,6 @@ class BookingService:
                 payment_order_id > 0,
                 gateway_order_id,
                 gateway_payment_id,
-                amount > 0,
                 reason,
                 payment_order_status == "CAPTURED"
             ]):
@@ -991,7 +990,7 @@ class BookingService:
 
 
         except Exception as e:
-
+            
             await self._db_session.rollback()
 
             # refund payment and release seats
@@ -1090,7 +1089,6 @@ class BookingService:
                 payment_order_id > 0,
                 gateway_order_id,
                 gateway_payment_id,
-                amount > 0,
                 reason,
                 payment_order_status != "CAPTURED"
             ]):

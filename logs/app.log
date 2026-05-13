@@ -174,3 +174,62 @@
 2026-05-12 18:08:08 | INFO | SpawnProcess-7-23015 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-12 18:08:08.070147 | 2026-05-12 18:08:08.149152 | 79 | None | 200
 2026-05-12 18:08:08 | INFO | SpawnProcess-7-23015 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-12 18:08:08.050607 | 2026-05-12 18:08:08.150683 | 100 | None | 200
 2026-05-12 18:08:25 | INFO | SpawnProcess-7-23015 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-12 18:08:25.424115 | 2026-05-12 18:08:25.504425 | 80 | None | 200
+2026-05-13 11:18:19 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 11:18:29 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:18:54 | INFO | ES client created for index: routes
+2026-05-13 11:18:54 | INFO | ES client created for index: stations
+2026-05-13 11:18:57 | INFO | SpawnProcess-1-20890 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-13 11:18:57.119682 | 2026-05-13 11:18:57.622156 | 502 | None | 200
+2026-05-13 11:19:24 | INFO | SpawnProcess-1-20890 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:19:24.020788 | 2026-05-13 11:19:24.025965 | 5 | None | 200
+2026-05-13 11:19:24 | INFO | SpawnProcess-1-20890 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:19:24.052868 | 2026-05-13 11:19:24.062100 | 9 | None | 200
+2026-05-13 11:19:24 | INFO | SpawnProcess-1-20890 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 11:19:24.105485 | 2026-05-13 11:19:24.131760 | 26 | None | 201
+2026-05-13 11:19:24 | INFO | SpawnProcess-1-20890 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 11:19:24.165664 | 2026-05-13 11:19:24.179075 | 13 | None | 201
+2026-05-13 11:19:24 | INFO | SpawnProcess-1-20890 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:19:23.813651 | 2026-05-13 11:19:24.188849 | 375 | None | 201
+2026-05-13 11:19:53 | INFO | SpawnProcess-1-20890 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 11:19:53.488017 | 2026-05-13 11:19:53.507118 | 19 | None | 200
+2026-05-13 11:19:53 | INFO | SpawnProcess-1-20890 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:19:53.443568 | 2026-05-13 11:19:53.509042 | 65 | None | 200
+2026-05-13 11:19:55 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:22:20 | INFO | ES client created for index: routes
+2026-05-13 11:22:20 | INFO | ES client created for index: stations
+2026-05-13 11:22:34 | INFO | ES client created for index: routes
+2026-05-13 11:22:34 | INFO | ES client created for index: stations
+2026-05-13 11:22:45 | INFO | ES client created for index: routes
+2026-05-13 11:22:45 | INFO | ES client created for index: stations
+2026-05-13 11:22:54 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:23:09 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:23:10 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:23:10 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:23:14 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:24:06 | INFO | ES client created for index: routes
+2026-05-13 11:24:06 | INFO | ES client created for index: stations
+2026-05-13 11:24:16 | INFO | ES client created for index: routes
+2026-05-13 11:24:16 | INFO | ES client created for index: stations
+2026-05-13 11:24:27 | INFO | ES client created for index: routes
+2026-05-13 11:24:27 | INFO | ES client created for index: stations
+2026-05-13 11:24:32 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:24:32 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:24:32 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:24:33 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:24:33 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:25:02 | INFO | ES client created for index: routes
+2026-05-13 11:25:02 | INFO | ES client created for index: stations
+2026-05-13 11:25:10 | INFO | ES client created for index: routes
+2026-05-13 11:25:10 | INFO | ES client created for index: stations
+2026-05-13 11:25:14 | INFO | ES client created for index: routes
+2026-05-13 11:25:14 | INFO | ES client created for index: stations
+2026-05-13 11:25:19 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:25:19 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:25:19 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:25:19 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:25:20 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:25:20 | ERROR | payment_orders_updated_status_consumer_worker error: cannot access local variable 'booking_list' where it is not associated with a value
+2026-05-13 11:28:53 | INFO | ES client created for index: routes
+2026-05-13 11:28:53 | INFO | ES client created for index: stations
+2026-05-13 11:29:05 | INFO | ES client created for index: routes
+2026-05-13 11:29:05 | INFO | ES client created for index: stations
+2026-05-13 11:29:13 | INFO | ES client created for index: routes
+2026-05-13 11:29:13 | INFO | ES client created for index: stations
+2026-05-13 11:29:20 | INFO | ES client created for index: routes
+2026-05-13 11:29:20 | INFO | ES client created for index: stations
+2026-05-13 11:29:31 | INFO | ES client created for index: routes
+2026-05-13 11:29:31 | INFO | ES client created for index: stations
+2026-05-13 11:29:35 | INFO | ES client created for index: routes
+2026-05-13 11:29:35 | INFO | ES client created for index: stations
