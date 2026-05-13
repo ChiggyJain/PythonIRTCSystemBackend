@@ -36,11 +36,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         }
         # Index/upsert the document
         await station_repo.index(es_document)
-        app_logger.info(f"Indexed station to ES using StationID: {payload.get('station_id')}")
         await es_client.close()
         return True
     except Exception as e:
-        app_logger.error(f"ES indexing error: {e}")
+        print(f"ES indexing error: {e}")
         return False
 
 
@@ -56,16 +55,16 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                app_logger.info(f"Received payload: {payload}")
-                # Index to Elasticsearch
+                topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 success = await index_to_elasticsearch(payload)
                 if success:
-                    app_logger.info(f"Successfully indexed StationID: {payload.get('station_id')}")
+                    print(f"Successfully added stations to index-station using Station-ID: {payload.get('station_id')}")
                 else:
-                    app_logger.error(f"Failed to index StationID: {payload.get('station_id')}")
+                    print(f"Failed to add stations to index-station using Station-ID: {payload.get('station_id')}")
                 await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"stations_consumer_worker error: {exc}")
+                print(f"stations_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
