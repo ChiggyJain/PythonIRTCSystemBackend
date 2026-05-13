@@ -31,7 +31,7 @@ async def run_worker() -> None:
                     if (topic_name == settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC):
                         response = await service.process_booking_payment_orders_success_details(payload=payload)
                         print(f"Consumer rsp: {json.loads(response.body)}")
-                    elif (topic_name == settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC):
+                    elif (topic_name == settings.KAFKA_BOOKING_PAYMENT_FAILED_TOPIC):
                         response = await service.process_booking_payment_orders_failed_details(payload=payload)
                         print(f"Consumer rsp: {json.loads(response.body)}")
                     await consumer.commit()

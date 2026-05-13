@@ -307,3 +307,14 @@
 2026-05-13 11:45:06 | INFO | SpawnProcess-39-22095 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:45:06.052994 | 2026-05-13 11:45:06.165495 | 112 | None | 200
 2026-05-13 11:45:25 | INFO | payment_orders_updated_status_consumer_worker started
 2026-05-13 11:45:25 | INFO | SpawnProcess-39-22095 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:45:25.971152 | 2026-05-13 11:45:25.986561 | 15 | None | 200
+2026-05-13 11:46:08 | INFO | SpawnProcess-39-22095 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:46:08.593358 | 2026-05-13 11:46:08.596355 | 2 | None | 200
+2026-05-13 11:46:08 | INFO | SpawnProcess-39-22095 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:46:08.621881 | 2026-05-13 11:46:08.629952 | 8 | None | 200
+2026-05-13 11:46:08 | INFO | SpawnProcess-39-22095 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 11:46:08.677632 | 2026-05-13 11:46:08.696493 | 18 | None | 201
+2026-05-13 11:46:08 | INFO | SpawnProcess-39-22095 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 11:46:08.734338 | 2026-05-13 11:46:08.750582 | 16 | None | 201
+2026-05-13 11:46:08 | INFO | SpawnProcess-39-22095 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:46:08.551147 | 2026-05-13 11:46:08.763662 | 212 | None | 201
+2026-05-13 11:46:11 | INFO | SpawnProcess-39-22095 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 11:46:11.891382 | 2026-05-13 11:46:11.977297 | 85 | None | 200
+2026-05-13 11:46:11 | INFO | SpawnProcess-39-22095 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:46:11.858208 | 2026-05-13 11:46:11.981259 | 123 | None | 200
+2026-05-13 11:46:26 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 11:46:31 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:47:37 | INFO | ES client created for index: routes
+2026-05-13 11:47:37 | INFO | ES client created for index: stations
