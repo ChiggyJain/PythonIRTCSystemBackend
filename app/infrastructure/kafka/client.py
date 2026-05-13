@@ -26,12 +26,14 @@ def build_producer(
 
 def build_consumer(
     *,
-    topic: str,
+    topic: str | list[str],
     group_id: str,
     client_id: str,
 ) -> AIOKafkaConsumer:
+    
+    topics = [topic] if isinstance(topic, str) else topic
     return AIOKafkaConsumer(
-        topic,
+        *topics,
         bootstrap_servers=_settings.KAFKA_BOOTSTRAP_SERVERS,
         group_id=group_id,
         client_id=client_id,
