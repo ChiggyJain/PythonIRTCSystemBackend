@@ -23,6 +23,7 @@ from app.domains.booking.models.booking_seats_models import BookingSeats
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
+from app.infrastructure.outbox.repository.sqlalchemy_repo import OutboxEventsSQLAlchemyRepository
 
 
 settings = get_settings()
@@ -35,6 +36,8 @@ class BookingService:
         self._db_session = db_session
         self.idempotency_repo = IdempotencySQLAlchemyRepository(db_session)
         self.booking_repo = BookingSQLAlchemyRepository(db_session)
+        self.outbox_repo = OutboxEventsSQLAlchemyRepository(db_session)
+
         
 
     async def compensateAll(self, *, payload: dict) -> dict:
@@ -908,7 +911,7 @@ class BookingService:
                     releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
                     print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
 
-
+                    # 
 
 
 
@@ -918,6 +921,41 @@ class BookingService:
                 status_code=500,
                 messages=[f"{str(e)}"]
             )
+        
+    
+    async def store_payment_orders_updated_status_into_outbox_events(
+        self,
+        payload: dict
+    ):
+
+        rsp = {
+            "outbox_event_id" : 0
+        }
+        try:
+            
+            created_outbox_events_row = await self.outbox_repo.add_outbox_event(
+                aggregate_type="PAYMENT_ORDERS",
+                aggregate_id=payload.get("payment_order_id", 0),
+                event_type="PAYMENT_ORDERS_UPDATED_STATUS",
+                payload_json={
+                    "booking_id": payload.get("booking_id", 0),
+                    "payment_order_id": payload.get("payment_order_id", 0),
+                    "gateway_order_id": payload.get("gateway_order_id", ""),
+                    "gateway_payment_id": payload.get("gateway_payment_id", ""),
+                    "amount": str(payload.get("amount", 0)),
+                    "reason": payload.get("reason", "")[:90],
+                    "payment_order_status": payload.get("payment_order_status", ""),
+                },
+                status="PENDING"
+            )
+            rsp = {
+                "outbox_event_id" : created_outbox_events_row.id
+            }
+            
+        except Exception as e:
+            pass
+
+        return rsp
 
 
 
