@@ -973,7 +973,8 @@ class BookingService:
                         "user_mobile" : user_details.mobile,
                         "booking_status" : "CONFIRMED",
                     }
-                    rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
+                    outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
+                    print(f"outbox_events_rsp: {outbox_events_rsp}")
 
 
 
