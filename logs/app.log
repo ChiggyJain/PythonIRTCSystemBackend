@@ -622,3 +622,9 @@
 2026-05-13 16:30:04 | INFO | ES client created for index: stations
 2026-05-13 16:30:08 | INFO | SpawnProcess-115-20229 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:30:08.705026 | 2026-05-13 16:30:08.747497 | 42 | None | 200
 2026-05-13 16:30:30 | INFO | SpawnProcess-115-20229 | user:booking:details | 127.0.0.1 | GET | /api/v1/bookings/1 | 2026-05-13 16:30:30.406160 | 2026-05-13 16:30:30.481222 | 75 | None | 200
+2026-05-13 17:48:05 | INFO | ES client created for index: routes
+2026-05-13 17:48:05 | INFO | ES client created for index: stations
+2026-05-13 17:48:12 | INFO | SpawnProcess-1-24642 | cancel:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/cancel | 2026-05-13 17:48:12.912852 | 2026-05-13 17:48:12.940806 | 27 | None | 404
+2026-05-13 17:48:19 | INFO | SpawnProcess-1-24642 | cancel:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/cancel | 2026-05-13 17:48:19.322490 | 2026-05-13 17:48:19.420542 | 98 | None | 200
+2026-05-13 17:49:58 | INFO | ES client created for index: routes
+2026-05-13 17:49:58 | INFO | ES client created for index: stations

@@ -1625,6 +1625,7 @@ class BookingService:
 
 
         except Exception as e:
+            await self._db_session.rollback()
             return standardize_response(
                 status_code=500,
                 messages=[f"{str(e)}"]
