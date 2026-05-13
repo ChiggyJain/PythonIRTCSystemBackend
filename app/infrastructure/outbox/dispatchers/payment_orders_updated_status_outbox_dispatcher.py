@@ -24,8 +24,8 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                print(f"Received payload: {payload}")
                 topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 async with AsyncSessionLocal() as db_session:
                     service = BookingService(db_session)
                     if (topic_name == settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC):

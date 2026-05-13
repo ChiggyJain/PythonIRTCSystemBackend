@@ -318,3 +318,28 @@
 2026-05-13 11:46:31 | INFO | payment_orders_updated_status_consumer_worker started
 2026-05-13 11:47:37 | INFO | ES client created for index: routes
 2026-05-13 11:47:37 | INFO | ES client created for index: stations
+2026-05-13 11:50:02 | INFO | SpawnProcess-42-22292 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:50:02.153309 | 2026-05-13 11:50:02.159886 | 6 |  | 500
+2026-05-13 11:50:08 | INFO | SpawnProcess-42-22292 | user:trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-13 11:50:08.939050 | 2026-05-13 11:50:08.940155 | 1 |  | 500
+2026-05-13 11:50:15 | INFO | SpawnProcess-42-22292 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-13 11:50:14.947521 | 2026-05-13 11:50:15.392812 | 445 | None | 200
+2026-05-13 11:50:39 | INFO | SpawnProcess-42-22292 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:50:39.737122 | 2026-05-13 11:50:39.741966 | 4 | None | 200
+2026-05-13 11:50:39 | INFO | SpawnProcess-42-22292 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:50:39.768537 | 2026-05-13 11:50:39.779402 | 10 | None | 200
+2026-05-13 11:50:39 | INFO | SpawnProcess-42-22292 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:50:39.611405 | 2026-05-13 11:50:39.782247 | 170 | None | 400
+2026-05-13 11:50:59 | INFO | SpawnProcess-42-22292 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:50:59.269960 | 2026-05-13 11:50:59.272196 | 2 | None | 200
+2026-05-13 11:50:59 | INFO | SpawnProcess-42-22292 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:50:59.298335 | 2026-05-13 11:50:59.303392 | 5 | None | 200
+2026-05-13 11:50:59 | INFO | SpawnProcess-42-22292 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 11:50:59.449878 | 2026-05-13 11:50:59.476857 | 26 | None | 201
+2026-05-13 11:50:59 | INFO | SpawnProcess-42-22292 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 11:50:59.513685 | 2026-05-13 11:50:59.526445 | 12 | None | 201
+2026-05-13 11:50:59 | INFO | SpawnProcess-42-22292 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:50:59.220456 | 2026-05-13 11:50:59.538100 | 317 | None | 201
+2026-05-13 11:51:03 | INFO | SpawnProcess-42-22292 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 11:51:03.236931 | 2026-05-13 11:51:03.249791 | 12 | None | 200
+2026-05-13 11:51:03 | INFO | SpawnProcess-42-22292 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:51:03.203332 | 2026-05-13 11:51:03.251839 | 48 | None | 200
+2026-05-13 11:51:23 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 11:51:30 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:52:41 | INFO | ES client created for index: routes
+2026-05-13 11:52:41 | INFO | ES client created for index: stations
+2026-05-13 11:52:49 | INFO | ES client created for index: routes
+2026-05-13 11:52:49 | INFO | ES client created for index: stations
+2026-05-13 11:52:51 | INFO | ES client created for index: routes
+2026-05-13 11:52:51 | INFO | ES client created for index: stations
+2026-05-13 11:53:06 | INFO | ES client created for index: routes
+2026-05-13 11:53:06 | INFO | ES client created for index: stations
+2026-05-13 11:53:08 | INFO | ES client created for index: routes
+2026-05-13 11:53:08 | INFO | ES client created for index: stations
