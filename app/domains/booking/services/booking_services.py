@@ -1477,9 +1477,10 @@ class BookingService:
                         messages=[f"Booking user details not found"]
                     )  
                 
-                if True:
+                seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
 
-                    seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
+                # cancel confirmed booking: release seats + refund
+                if booking_list[0].status in ["CONFIRMED"]:
 
                     # automically claim this booking — if expiry job or cancel already changed it, bail out
                     cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
@@ -1511,16 +1512,34 @@ class BookingService:
                         cancelledSeatRspObj = response.json()
                         cancelledSeatData = cancelledSeatRspObj.get("data", None)
                     print(f"cancelledSeatRspObj: {cancelledSeatRspObj}")
+                    if cancelledSeatRspObj == None:
+                        pass
                     
+                    # initiate refund process into external payment service
+                    if booking_list[0].payment_order_id:
+                        idempotency_key = f"{booking_list[0].id}-cancel-refund"
+                        refundPaymentRspObj = None
+                        # refundPaymentData = None
+                        async with httpx.AsyncClient() as client:
+                            response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/refunds", json={
+                                "idempotency_key" : idempotency_key,
+                                "payment_order_id" : booking_list[0].payment_order_id,
+                                "amount" : booking_list[0].total_amount,
+                                "reason" : "User cancel booking",
+                            })
+                            refundPaymentRspObj = response.json()
+                            # refundPaymentData = refundPaymentRspObj.get("data", None)
+                        print(f"refundPaymentRspObj: {refundPaymentRspObj}")
 
-                    return standardize_response(
-                        status_code=200,
-                        messages=[f"Booking details processed successfully"],
-                        data={
-                            "booking_id" : booking_list[0].id,
-                            "booking_status" : "FAILED"
-                        }
-                    )
+
+                # cancel booking: release seats
+                if booking_list[0].status in ["PAYMENT_PENDING", "SEATS_HELD"]:
+                    pass
+
+
+
+
+                    
 
 
         except Exception as e:
