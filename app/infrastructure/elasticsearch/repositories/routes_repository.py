@@ -56,8 +56,13 @@ class RoutesElasticsearchRepository:
                         String targetId = params.schedules.schedule_id.toString();
                         boolean found = false;
                         for (int i = 0; i < ctx._source.schedules.size(); i++) {
-                            if (ctx._source.schedules[i].schedule_id != null && ctx._source.schedules[i].schedule_id.toString() == targetId) {
-                                ctx._source.schedules[i] = params.schedules;
+                            if (
+                                ctx._source.schedules[i].schedule_id != null &&
+                                ctx._source.schedules[i].schedule_id.toString() == targetId
+                            ) {
+                                for (entry in params.schedules.entrySet()) {
+                                    ctx._source.schedules[i][entry.getKey()] = entry.getValue();
+                                }
                                 found = true;
                                 break;
                             }

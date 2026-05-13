@@ -14,7 +14,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
         routes_repo = RoutesElasticsearchRepository(es_client)
-        train_id = payload.get("train_details", {}).get("train_id", 0)
+        train_id = payload.get("train_id", 0)
         update_schedule_param = {
             "schedule_id" : payload.get("schedule_id", 0),
             "departure_date" : payload.get("departure_date", ""),
