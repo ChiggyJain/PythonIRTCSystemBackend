@@ -161,6 +161,11 @@ class Settings(BaseSettings):
     PAYMENT_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
 
 
+    KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC: str = "payment-success"
+    KAFKA_BOOKING_PAYMENT_FAILED_TOPIC: str = "payment-failed"
+    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP: str = "payment-successfailed-consumergrp-1"
+    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
+    
     
     # Pydantic Settings Config
     model_config = SettingsConfigDict(
