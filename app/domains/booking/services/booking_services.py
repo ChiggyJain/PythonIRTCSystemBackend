@@ -787,6 +787,19 @@ class BookingService:
                 messages=[f"{str(e)}"]
             )
 
+    
+    async def create_booking_details(self, *, payload: dict) -> dict:
+        
+        try:
+            
+            pass
+
+        except Exception as e:
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+
 
 
 
