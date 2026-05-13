@@ -1404,6 +1404,120 @@ class BookingService:
             )
         
 
+    async def cancel_booking_details(self, *, payload: dict) -> dict:
+        
+        try:
+
+            # extracted parameters
+            booking_id = payload.get("booking_id", 0)
+            user_id = payload.get("user_id", 0)
+
+            if not all([
+                booking_id > 0,
+                user_id > 0,
+            ]):
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passsed for cancelling booking details"]
+                )
+            
+            # fetching booking details
+            booking_list = await self.booking_repo.get_booking_details(
+                where_conditions = [
+                    Bookings.id == booking_id,
+                    Bookings.user_id == user_id,
+                ],
+                order_by = [
+                    Bookings.id.asc()
+                ]
+            )
+            if not booking_list:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Booking not found"]
+                )
+            if booking_list:
+
+                if booking_list[0].status in ["CANCELLED", "CANCELLING", "FAILED", "EXPIRED", "CONFIRMING"]:
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking {booking_list[0].id} already in terminal state: {booking_list[0].status}"]
+                    )
+                
+                # fetching booking seats details
+                booking_seats_list = await self.booking_repo.get_booking_seats_details(
+                    where_conditions = [
+                        BookingSeats.booking_id == booking_id,
+                    ]
+                )
+                if not booking_seats_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking seats details not found"]
+                    )
+                # fetching booking passengers details
+                booking_passengers_list = await self.booking_repo.get_booking_passengers_details(
+                    where_conditions = [
+                        BookingPassengers.booking_id == booking_id,
+                    ]
+                )
+                if not booking_passengers_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking passengers details"]
+                    )  
+                
+                # fetching users details
+                user_details = await self.user_repo.get_by_id(
+                    user_id=booking_list[0].user_id
+                )
+                if not user_details:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking user details not found"]
+                    )  
+                
+                if True:
+
+                    seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
+
+                    # automically claim this booking — if expiry job or cancel already changed it, bail out
+                    cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
+                        where_data = {
+                            "id" : booking_list[0].id,
+                            "version" : booking_list[0].version,
+                        },
+                        update_data = {
+                            "failure_reason" : "User cancelled",
+                            "version" : booking_list[0].version + 1,
+                            "status" : "CANCELLING"
+                        }
+                    )
+                    if cnt_of_booking_records_updated<=0:
+                        return standardize_response(
+                            status_code=409,
+                            messages=[f"Booking {booking_id} already handled by another process, skipping"]
+                        )
+
+                    
+
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking details processed successfully"],
+                        data={
+                            "booking_id" : booking_list[0].id,
+                            "booking_status" : "FAILED"
+                        }
+                    )
+
+
+        except Exception as e:
+            return standardize_response(
+                status_code=500,
+                messages=[f"{str(e)}"]
+            )
+
+
 
     async def store_booking_confirmed_into_outbox_events(
         self,

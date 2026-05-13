@@ -90,7 +90,6 @@ router.add_api_route(
 )
 
 
-
 @feature_control(
     {
         "name": "user:booking:details",
@@ -155,5 +154,37 @@ router.add_api_route(
     "/",
     get_user_bookings,
     methods=["GET"],
+    route_class_override=FeatureAPIRoute,
+)
+
+
+@feature_control(
+    {
+        "name": "user:booking:cancel",
+        "logging": {
+            "console": True,
+            "file": True,
+        },
+        "rate_limit": {
+            "limit": 1000,
+            "window": 60,
+        },
+    }
+)
+async def cancel_booking_details(
+    booking_id: int,
+    user_details_from_access_token: dict = Depends(get_current_user_details_from_access_token),    
+    service: BookingService = Depends(get_booking_service),
+):
+    payload = {
+        "booking_id" : booking_id,
+        "user_id" : int(user_details_from_access_token.get("sub"))
+    }
+    return await service.cancel_booking_details(payload=payload)
+
+router.add_api_route(
+    "/{booking_id}/cancel",
+    get_booking_details_by_booking_id,
+    methods=["POST"],
     route_class_override=FeatureAPIRoute,
 )

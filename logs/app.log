@@ -620,3 +620,5 @@
 2026-05-13 16:30:00 | INFO | ES client created for index: stations
 2026-05-13 16:30:04 | INFO | ES client created for index: routes
 2026-05-13 16:30:04 | INFO | ES client created for index: stations
+2026-05-13 16:30:08 | INFO | SpawnProcess-115-20229 | user:bookings | 127.0.0.1 | GET | /api/v1/bookings/ | 2026-05-13 16:30:08.705026 | 2026-05-13 16:30:08.747497 | 42 | None | 200
+2026-05-13 16:30:30 | INFO | SpawnProcess-115-20229 | user:booking:details | 127.0.0.1 | GET | /api/v1/bookings/1 | 2026-05-13 16:30:30.406160 | 2026-05-13 16:30:30.481222 | 75 | None | 200
