@@ -1411,6 +1411,7 @@ class BookingService:
             # extracted parameters
             booking_id = payload.get("booking_id", 0)
             user_id = payload.get("user_id", 0)
+            is_payment_refund_initiated = "NO"
 
             if not all([
                 booking_id > 0,
@@ -1530,6 +1531,7 @@ class BookingService:
                             refundPaymentRspObj = response.json()
                             # refundPaymentData = refundPaymentRspObj.get("data", None)
                         print(f"refundPaymentRspObj: {refundPaymentRspObj}")
+                        is_payment_refund_initiated = "YES"
 
 
                 # cancel non-confirmed-status booking: release seats
@@ -1618,7 +1620,7 @@ class BookingService:
                     data={
                         "booking_id" : booking_list[0].id,
                         "booking_status" : "CANCELLED",
-                        "payment_refund_initiated_status" : "YES",
+                        "payment_refund_initiated_status" : is_payment_refund_initiated,
                     }
                 )
 
