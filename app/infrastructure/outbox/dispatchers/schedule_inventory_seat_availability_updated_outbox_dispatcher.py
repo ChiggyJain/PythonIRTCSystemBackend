@@ -35,12 +35,12 @@ async def index_to_elasticsearch(payload: dict) -> bool:
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.KAFKA_SCHEDULE_CREATED_TOPIC,
-        group_id=settings.KAFKA_SCHEDULE_CREATED_TOPIC_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-schedules-consumer",
+        topic=settings.KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC,
+        group_id=settings.KAFKA_SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED_TOPIC_CONSUMER_GROUP,
+        client_id=f"{settings.KAFKA_CLIENT_ID}-schedules-inventory-seat-availability-updated-consumer",
     )
     await consumer.start()
-    app_logger.info("schedules_consumer_worker started")
+    app_logger.info("schedules_inventory_seat_availability_updated_consumer_worker started")
     try:
         async for message in consumer:
             try:
@@ -49,12 +49,12 @@ async def run_worker() -> None:
                 print(f"Topic: {topic_name}, Payload: {payload}")
                 success = await index_to_elasticsearch(payload)
                 if success:
-                    app_logger.info(f"Successfully indexed ScheduledID: {payload.get('schedule_id')}")
+                    print(f"Successfully updated schedule-inventory into index-route using Schedule-ID: {payload.get('schedule_id')}")
                 else:
-                    app_logger.error(f"Failed to index ScheduledID: {payload.get('schedule_id')}")
+                    print(f"Failed to update schedule-inventory into index-route using Schedule-ID: {payload.get('schedule_id')}")
                 await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"schedules_consumer_worker error: {exc}")
+                print(f"schedules_inventory_seat_availability_updated_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
