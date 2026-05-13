@@ -17,19 +17,15 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         train_id = payload.get("train_id", 0)
         update_schedule_param = {
             "schedule_id" : payload.get("schedule_id", 0),
-            "departure_date" : payload.get("departure_date", ""),
-            "total" : payload.get("train_details", {}).get("total_seats", 0),
-            "available" : 0,
-            "locked" : 0,
-            "booked" : 0,
-            "status" : payload.get("status", "A"),
+            "available" : payload.get("available", 0),
+            "locked" : payload.get("locked", 0),
+            "booked" : payload.get("booked", 0),
         }
         await routes_repo.upsert_schedule(train_id=train_id, schedules=update_schedule_param)
-        app_logger.info(f"Indexed routes updated (schedules) to ES using TrainID: {train_id}")
         await es_client.close()
         return True
     except Exception as e:
-        app_logger.error(f"ES indexing error: {e}")
+        print(f"ES indexing error: {e}")
         return False
 
 
