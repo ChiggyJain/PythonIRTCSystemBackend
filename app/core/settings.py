@@ -169,7 +169,7 @@ class Settings(BaseSettings):
     
     KAFKA_BOOKING_STATUS_TOPIC: str = "booking-status"
     KAFKA_BOOKING_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-status-email-consumer-group"
-    KAFKA_BOOKING_STATUS_OUTBOX_MAX_RETRIES: int = 6
+    BOOKING_STATUS_OUTBOX_MAX_RETRIES: int = 6
 
     BOOKING_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
     BOOKING_STATUS_FROM_EMAIL: str = "cjain9975@gmail.com"
