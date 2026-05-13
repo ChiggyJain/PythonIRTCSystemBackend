@@ -7,6 +7,8 @@ from typing import Any, List, Optional
 from sqlalchemy import select
 from sqlalchemy import select, update, or_
 from sqlalchemy.sql import Select
+from collections import defaultdict
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.utils.datetime import now_ist
 from app.domains.booking.models.bookings_models import Bookings
@@ -20,6 +22,115 @@ class BookingSQLAlchemyRepository:
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
 
+
+    
+    async def get_user_bookings(
+        self,
+        user_id: int,
+        status: str | None = None,
+        page: int = 1,
+        limit: int = 10,
+    ):
+
+        skip = (page - 1) * limit
+
+        booking_query = select(Bookings).where(
+            Bookings.user_id == user_id
+        )
+        count_query = select(func.count()).select_from(Bookings).where(
+            Bookings.user_id == user_id
+        )
+
+        if status:
+            booking_query = booking_query.where(
+                Bookings.status == status.upper()
+            )
+            count_query = count_query.where(
+                Bookings.status == status.upper()
+            )
+
+        booking_query = (
+            booking_query
+            .order_by(Bookings.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+        )
+
+        bookings_result = await self.db.execute(booking_query)
+        bookings = bookings_result.scalars().all()
+        total_result = await self.db.execute(count_query)
+        total = total_result.scalar()
+
+        if not bookings:
+            return {
+                "bookings": [],
+                "pagination": {
+                    "page": page,
+                    "limit": limit,
+                    "total": total,
+                    "totalPages": 0,
+                }
+            }
+
+        booking_ids = [b.id for b in bookings]
+
+        seats_result = await self.db.execute(
+            select(BookingSeats)
+            .where(BookingSeats.booking_id.in_(booking_ids))
+            .order_by(BookingSeats.seat_number.asc())
+        )
+        seats = seats_result.scalars().all()
+
+        passengers_result = await self.db.execute(
+            select(BookingPassengers)
+            .where(BookingPassengers.booking_id.in_(booking_ids))
+        )
+        passengers = passengers_result.scalars().all()
+
+        seats_map = defaultdict(list)
+        for seat in seats:
+            seats_map[seat.booking_id].append({
+                "seat_id": seat.seat_id,
+                "seat_number": seat.seat_number,
+                "seat_type": seat.seat_type,
+                "price": str(seat.price),
+            })
+
+        passengers_map = defaultdict(list)
+        for passenger in passengers:
+            passengers_map[passenger.booking_id].append({
+                "name": passenger.name,
+                "age": passenger.age,
+                "gender": passenger.gender,
+            })
+
+        response = []
+        for booking in bookings:
+            response.append({
+                "booking_id": booking.id,
+                "schedule_id" : booking.schedule_id,
+                "train_id" : booking.train_id,
+                "train_number" : booking.train_number,
+                "train_name" : booking.train_name,
+                "from_station_sequence_number" : booking.from_station_sequence_number,
+                "to_station_sequence_number" : booking.to_station_sequence_number,
+                "departure_date" : str(booking.departure_date),
+                "seats": seats_map.get(booking.id, []),
+                "passengers": passengers_map.get(booking.id, []),
+                "total_amount": str(booking.total_amount),
+                "created_at": str(booking.created_at),
+                "booking_status": booking.status,
+            })
+
+        return {
+            "bookings": response,
+            "pagination": {
+                "page": page,
+                "limit": limit,
+                "total": total,
+                "totalPages": (total + limit - 1) // limit,
+            }
+        }
 
     
     async def get_booking_details(

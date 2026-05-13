@@ -1349,11 +1349,7 @@ class BookingService:
                             for passenger in booking_passengers_list
                         ],
                         "total_amount" : str(booking_list[0].total_amount),
-                        "user_id" : booking_list[0].user_id,
-                        "user_first_name" : user_details.first_name,
-                        "user_email" : user_details.email,
-                        "user_mobile" : user_details.mobile,
-                        "booking_status_reason" : "Confirmation successfully",
+                        "created_at": str(booking_list[0].created_at),
                         "booking_status" : booking_list[0].status,
                     }
         
