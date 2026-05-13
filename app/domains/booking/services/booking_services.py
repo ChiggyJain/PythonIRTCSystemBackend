@@ -856,7 +856,39 @@ class BookingService:
                 if booking_seats_list:
                     seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
                     # automically claim this booking — if expiry job or cancel already changed it, bail out
-                    
+                    cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
+                        where_data = {
+                            "id" : booking_list[0].id,
+                            "version" : booking_list[0].version,
+                        },
+                        update_data = {
+                            "version" : booking_list[0].version + 1,
+                            "status" : "CONFIRMING"
+                        }
+                    )
+                    if cnt_of_booking_records_updated<=0:
+                        return standardize_response(
+                            status_code=200,
+                            messages=[f"Booking {booking_id} already handled by another process, skipping"]
+                        )
+                    # confirming seats into external inventory services
+                    confirmedSeatRspObj = None
+                    confirmedSeatData = None
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/confirm", json={
+                            "schedule_id" : booking_list[0].schedule_id,
+                            "seat_ids" : seat_ids,
+                            "booking_id" : booking_list[0].id,
+                            "user_id" : booking_list[0].user_id,
+                            "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
+                            "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
+                        })
+                        confirmedSeatRspObj = response.json()
+                        confirmedSeatData = confirmedSeatRspObj.get("data", None)
+                    print(f"confirmedSeatRspObj: {confirmedSeatRspObj}")
+
+
+
 
 
 
