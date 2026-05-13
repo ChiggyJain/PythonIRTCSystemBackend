@@ -1524,7 +1524,7 @@ class BookingService:
                             response = await client.post(f"{settings.PAYMENT_SERVICE_BASE_URL}/api/v1/payments/refunds", json={
                                 "idempotency_key" : idempotency_key,
                                 "payment_order_id" : booking_list[0].payment_order_id,
-                                "amount" : booking_list[0].total_amount,
+                                "amount" : str(booking_list[0].total_amount),
                                 "reason" : "User cancel booking",
                             })
                             refundPaymentRspObj = response.json()
