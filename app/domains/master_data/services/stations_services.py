@@ -17,7 +17,7 @@ settings = get_settings()
 class StationsService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_STATION_CREATED = "MASTERDATA_STATION_CREATED"
+    OUTBOX_EVENT_STATION_CREATED = "KAFKA_STATION_CREATED_TOPIC"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session

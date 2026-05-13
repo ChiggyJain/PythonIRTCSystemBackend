@@ -51,7 +51,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.MASTERDATA_STATION_CREATED
+                    topic = settings.KAFKA_STATION_CREATED_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},

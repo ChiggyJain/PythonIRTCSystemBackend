@@ -10,8 +10,8 @@ settings = get_settings()
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.KAFKA_PWDCHANGED_OTP_DISPATCH_TOPIC,
-        group_id=settings.KAFKA_PWDCHANGED_OTP_DISPATCH_CONSUMER_GROUP,
+        topic=settings.KAFKA_PWDCHANGED_OTP_TOPIC,
+        group_id=settings.KAFKA_PWDCHANGED_OTP_TOPIC_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-pwdchanged-consumer",
     )
     await consumer.start()

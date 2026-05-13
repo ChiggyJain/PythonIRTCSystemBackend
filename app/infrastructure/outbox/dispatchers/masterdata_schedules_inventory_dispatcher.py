@@ -25,7 +25,7 @@ async def process_message(payload: dict) -> bool:
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.KAFKA_SCHEDULE_CREATED,
+        topic=settings.KAFKA_SCHEDULE_CREATED_TOPIC,
         group_id=settings.KAFKA_SCHEDULE_INVENTORY_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-schedules-inventory-consumer",
     )

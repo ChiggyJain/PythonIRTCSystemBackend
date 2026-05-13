@@ -19,7 +19,7 @@ settings = get_settings()
 class RoutesService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_ROUTE_CREATED = "KAFKA_ROUTE_CREATED"
+    OUTBOX_EVENT_ROUTE_CREATED = "KAFKA_ROUTE_CREATED_TOPIC"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session

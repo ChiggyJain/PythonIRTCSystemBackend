@@ -21,7 +21,7 @@ settings = get_settings()
 class TrainSchedulesService:
 
     OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_SCHEDULE_CREATED = "KAFKA_SCHEDULE_CREATED"
+    OUTBOX_EVENT_SCHEDULE_CREATED = "KAFKA_SCHEDULE_CREATED_TOPIC"
 
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
