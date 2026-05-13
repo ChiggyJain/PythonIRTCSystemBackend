@@ -256,7 +256,7 @@ class BookingService:
             seat_ids.sort()
             passengers = payload.get("passengers", [])
             booking_details = {}
-            allRedisSeatLockKeys = []
+            allRedisSeatsLockKeys = []
             redisKeySeatsLockValue = ""
             
             # checking given idempotency key exists or not
@@ -346,10 +346,10 @@ class BookingService:
             # preparing keys to acquire seat locks in redis via lua_script
             for eachSeatId in seat_ids:
                 key = f"booking:lock:seat:{schedule_id}:{eachSeatId}:{from_station_sequence_number}:{to_station_sequence_number}"
-                allRedisSeatLockKeys.append(key)
+                allRedisSeatsLockKeys.append(key)
             curTimeStamp = int(datetime.now().timestamp())    
             redisKeySeatsLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
-            acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue, settings.BOOKING_TTL_SECONDS)
+            acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue, settings.BOOKING_TTL_SECONDS)
             print(f"acquiredSeatLocksRedisResponse: {acquiredSeatLocksRedisResponse}")
             if acquiredSeatLocksRedisResponse["isSuccess"] == False:
                 return standardize_response(
@@ -457,7 +457,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -486,7 +486,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -575,7 +575,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -604,7 +604,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -633,7 +633,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -708,7 +708,7 @@ class BookingService:
             )
             await self._db_session.commit()
 
-            releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
+            releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
             print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
             return standardize_response(
@@ -901,7 +901,11 @@ class BookingService:
                     )
 
                     # releasing the seats locks from redis as forcing
-                    releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis()
+                    allRedisSeatsLockKeys = []
+                    for eachSeatId in seat_ids:
+                        key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
+                        allRedisSeatsLockKeys.append(key)
+                    releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
                     print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
 
 
