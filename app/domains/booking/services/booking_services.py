@@ -921,7 +921,7 @@ class BookingService:
                     cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
                         where_data = {
                             "id" : booking_list[0].id,
-                            "version" : "CONFIRMING",
+                            "status" : "CONFIRMING",
                         },
                         update_data = {
                             "version" : booking_list[0].version + 1,

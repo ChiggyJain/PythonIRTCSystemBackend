@@ -233,3 +233,18 @@
 2026-05-13 11:29:31 | INFO | ES client created for index: stations
 2026-05-13 11:29:35 | INFO | ES client created for index: routes
 2026-05-13 11:29:35 | INFO | ES client created for index: stations
+2026-05-13 11:30:00 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:30:00 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:00.672826 | 2026-05-13 11:30:00.755209 | 82 | None | 200
+2026-05-13 11:30:00 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:30:01 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:01.045627 | 2026-05-13 11:30:01.082954 | 37 | None | 200
+2026-05-13 11:30:01 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:30:01 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:01.362017 | 2026-05-13 11:30:01.420325 | 58 | None | 200
+2026-05-13 11:30:01 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:30:01 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:01.702391 | 2026-05-13 11:30:01.750583 | 48 | None | 200
+2026-05-13 11:30:01 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:30:02 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:02.037384 | 2026-05-13 11:30:02.063489 | 26 | None | 200
+2026-05-13 11:30:02 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:30:02 | INFO | SpawnProcess-24-21378 | confirmed:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-13 11:30:02.341653 | 2026-05-13 11:30:02.377857 | 36 | None | 200
+2026-05-13 11:30:02 | ERROR | payment_orders_updated_status_consumer_worker error: greenlet_spawn has not been called; can't call await_only() here. Was IO attempted in an unexpected place? (Background on this error at: https://sqlalche.me/e/20/xd2s)
+2026-05-13 11:35:02 | INFO | ES client created for index: routes
+2026-05-13 11:35:02 | INFO | ES client created for index: stations
