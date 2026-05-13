@@ -19,7 +19,9 @@ async def run_worker() -> None:
     try:
         async for message in consumer:
             try:
+                topic_name = message.topic
                 payload = json.loads(message.value.decode("utf-8"))
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 service = EmailChangedOtpDispatchConsumerService()
                 await service.process_payload(payload)
                 await consumer.commit()
