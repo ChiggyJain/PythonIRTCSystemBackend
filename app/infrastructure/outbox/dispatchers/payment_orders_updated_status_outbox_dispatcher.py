@@ -30,13 +30,13 @@ async def run_worker() -> None:
                     service = BookingService(db_session)
                     if (topic_name == settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC):
                         response = await service.process_booking_payment_orders_success_details(payload=payload)
-                        print(f"Consumer rsp: {json.loads(response.body)}")
+                        print(f"Consumer response: {json.loads(response.body)}")
                     elif (topic_name == settings.KAFKA_BOOKING_PAYMENT_FAILED_TOPIC):
                         response = await service.process_booking_payment_orders_failed_details(payload=payload)
-                        print(f"Consumer rsp: {json.loads(response.body)}")
+                        print(f"Consumer response: {json.loads(response.body)}")
                     await consumer.commit()
             except Exception as exc:
-                app_logger.error(f"payment_orders_updated_status_consumer_worker error: {exc}")
+                print(f"payment_orders_updated_status_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()

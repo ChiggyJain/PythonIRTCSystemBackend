@@ -45,14 +45,14 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                app_logger.info(f"Received payload: {payload}")
-                # Index to Elasticsearch
+                topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 success = await index_to_elasticsearch(payload)
                 if success:
                     app_logger.info(f"Successfully indexed ScheduledID: {payload.get('schedule_id')}")
                 else:
                     app_logger.error(f"Failed to index ScheduledID: {payload.get('schedule_id')}")
-                # await consumer.commit()                
+                await consumer.commit()                
             except Exception as exc:
                 app_logger.error(f"schedules_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)

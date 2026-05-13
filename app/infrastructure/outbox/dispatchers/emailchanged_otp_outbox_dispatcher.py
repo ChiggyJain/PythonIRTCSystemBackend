@@ -12,21 +12,21 @@ async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_EMAILCHANGED_OTP_TOPIC,
         group_id=settings.KAFKA_EMAILCHANGED_OTP_TOPIC_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-consumer",
+        client_id=f"{settings.KAFKA_CLIENT_ID}-emailchanged-otp-consumer",
     )
     await consumer.start()
-    app_logger.info("emailchanged_otp_dispatch_consumer_worker started")
+    app_logger.info("emailchanged_otp_consumer_worker started")
     try:
         async for message in consumer:
             try:
-                topic_name = message.topic
                 payload = json.loads(message.value.decode("utf-8"))
+                topic_name = message.topic
                 print(f"Topic: {topic_name}, Payload: {payload}")
                 service = EmailChangedOtpDispatchConsumerService()
                 await service.process_payload(payload)
                 await consumer.commit()
             except Exception as exc:
-                app_logger.error(f"emailchanged_otp_dispatch_consumer_worker error: {exc}")
+                print(f"emailchanged_otp_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()

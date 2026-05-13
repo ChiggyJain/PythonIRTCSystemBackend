@@ -76,17 +76,17 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                app_logger.info(f"Received payload: {payload}")
+                topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 # Index to Elasticsearch
                 success = await index_to_elasticsearch(payload)
                 if success:
                     app_logger.info(f"Successfully indexed RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
                 else:
                     app_logger.error(f"Failed to index RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
-                
                 await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"routes_consumer_worker error: {exc}")
+                print(f"routes_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
