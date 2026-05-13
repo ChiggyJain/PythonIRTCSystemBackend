@@ -933,8 +933,8 @@ class BookingService:
                     for eachSeatId in seat_ids:
                         key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                         allRedisSeatsLockKeys.append(key)
-                    releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-                    print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
+                    forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
+                    print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
 
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
@@ -1018,8 +1018,8 @@ class BookingService:
             for eachSeatId in seat_ids:
                 key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                 allRedisSeatsLockKeys.append(key)
-            releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-            print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
+            forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
+            print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
             
             # adding records into outbox events table
             # data published into kafka-topics via workers and consumer will be consume the message
@@ -1190,8 +1190,8 @@ class BookingService:
                     for eachSeatId in seat_ids:
                         key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                         allRedisSeatsLockKeys.append(key)
-                    releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-                    print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
+                    forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
+                    print(f"releasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
 
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
@@ -1479,7 +1479,7 @@ class BookingService:
                 
                 seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
 
-                # cancel confirmed booking: release seats + refund
+                # cancel confirmed-status booking: release seats + refund
                 if booking_list[0].status in ["CONFIRMED"]:
 
                     # automically claim this booking — if expiry job or cancel already changed it, bail out
@@ -1532,9 +1532,45 @@ class BookingService:
                         print(f"refundPaymentRspObj: {refundPaymentRspObj}")
 
 
-                # cancel booking: release seats
+                # cancel non-confirmed-status booking: release seats
                 if booking_list[0].status in ["PAYMENT_PENDING", "SEATS_HELD"]:
-                    pass
+                    
+                    # unlock hold seats into external inventory service
+                    unLockHoldSeatRspObj = None
+                    # unLockHoldSeatData = None
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(f"{settings.INVENTORY_SERVICE_BASE_URL}/api/v1/inventory/schedules/seats/unlock", json={
+                            "user_id" : user_id,
+                            "schedule_id" : booking_list[0].schedule_id,
+                            "seat_ids" : seat_ids,
+                            "from_station_sequence_number" : booking_list[0].from_station_sequence_number,
+                            "to_station_sequence_number" : booking_list[0].to_station_sequence_number,
+                        })
+                        unLockHoldSeatRspObj = response.json()
+                        # unLockHoldSeatData = unLockHoldSeatRspObj.get("data", None)
+                    print(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
+
+                
+                # updating booking status as cancelled
+                cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
+                    where_data = {
+                        "id" : booking_list[0].id,
+                    },
+                    update_data = {
+                        "version" : booking_list[0].version + 1,
+                        "status" : "CANCELLED"
+                    }
+                )
+
+                # releasing the seats locks from redis as forcing
+                allRedisSeatsLockKeys = []
+                for eachSeatId in seat_ids:
+                    key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
+                    allRedisSeatsLockKeys.append(key)
+                forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
+                print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
+
+                
 
 
 
