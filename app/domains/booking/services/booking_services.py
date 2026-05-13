@@ -15,6 +15,7 @@ from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.cache.redis_cache import (
     acquireBookingSeatLocksThroughRedis,
+    forceReleaseSeatLocksThroughRedis,
     releaseBookingSeatLocksThroughRedis
 )
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
@@ -255,8 +256,8 @@ class BookingService:
             seat_ids.sort()
             passengers = payload.get("passengers", [])
             booking_details = {}
-            allRedisLockKeys = []
-            redisKeyLockValue = ""
+            allRedisSeatLockKeys = []
+            redisKeySeatsLockValue = ""
             
             # checking given idempotency key exists or not
             event_key = f"{idempotency_key}:booking"
@@ -345,10 +346,10 @@ class BookingService:
             # preparing keys to acquire seat locks in redis via lua_script
             for eachSeatId in seat_ids:
                 key = f"booking:lock:seat:{schedule_id}:{eachSeatId}:{from_station_sequence_number}:{to_station_sequence_number}"
-                allRedisLockKeys.append(key)
+                allRedisSeatLockKeys.append(key)
             curTimeStamp = int(datetime.now().timestamp())    
-            redisKeyLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
-            acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue, settings.BOOKING_TTL_SECONDS)
+            redisKeySeatsLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
+            acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue, settings.BOOKING_TTL_SECONDS)
             print(f"acquiredSeatLocksRedisResponse: {acquiredSeatLocksRedisResponse}")
             if acquiredSeatLocksRedisResponse["isSuccess"] == False:
                 return standardize_response(
@@ -456,7 +457,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -485,7 +486,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -574,7 +575,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -603,7 +604,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -632,7 +633,7 @@ class BookingService:
                 )
                 await self._db_session.commit()
 
-                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+                releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
                 print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
@@ -707,7 +708,7 @@ class BookingService:
             )
             await self._db_session.commit()
 
-            releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisLockKeys, redisKeyLockValue)
+            releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatLockKeys, redisKeySeatsLockValue)
             print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
             return standardize_response(
@@ -886,7 +887,22 @@ class BookingService:
                         confirmedSeatRspObj = response.json()
                         confirmedSeatData = confirmedSeatRspObj.get("data", None)
                     print(f"confirmedSeatRspObj: {confirmedSeatRspObj}")
+                    
+                    # updating booking status as confirmed
+                    cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
+                        where_data = {
+                            "id" : booking_list[0].id,
+                            "version" : "CONFIRMING",
+                        },
+                        update_data = {
+                            "version" : booking_list[0].version + 1,
+                            "status" : "CONFIRMED"
+                        }
+                    )
 
+                    # releasing the seats locks from redis as forcing
+                    releasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis()
+                    print(f"releasedSeatLocksCntThroughRedis: {releasedSeatLocksCntThroughRedis}")
 
 
 

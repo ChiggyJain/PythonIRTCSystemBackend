@@ -23,10 +23,11 @@ async def cache_get(
 
 async def cache_delete(
     *keys: str,
-):
+) -> int:
 
     redis = get_redis()
-    await redis.delete(*keys)
+    deleted_count = await redis.delete(*keys)
+    return deleted_count
 
 
 async def cache_set(
