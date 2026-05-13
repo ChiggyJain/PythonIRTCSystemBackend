@@ -360,3 +360,7 @@
 2026-05-13 11:55:53 | INFO | SpawnProcess-50-22681 | user:payment:order:refund | 127.0.0.1 | POST | /api/v1/payments/refunds | 2026-05-13 11:55:53.409595 | 2026-05-13 11:55:53.418334 | 8 | None | 500
 2026-05-13 11:58:22 | INFO | ES client created for index: routes
 2026-05-13 11:58:22 | INFO | ES client created for index: stations
+2026-05-13 11:59:04 | INFO | ES client created for index: routes
+2026-05-13 11:59:04 | INFO | ES client created for index: stations
+2026-05-13 11:59:06 | INFO | ES client created for index: routes
+2026-05-13 11:59:06 | INFO | ES client created for index: stations
