@@ -56,11 +56,10 @@ async def index_to_elasticsearch(payload: dict) -> bool:
         }
         # Index/upsert the document
         await routes_repo.index(es_document)
-        app_logger.info(f"Indexed routes to ES using RouteID: {route_id}, TrainID: {train_details.get("train_id", 0)}")
         await es_client.close()
         return True
     except Exception as e:
-        app_logger.error(f"ES indexing error: {e}")
+        print(f"ES indexing error: {e}")
         return False
 
 
@@ -81,9 +80,9 @@ async def run_worker() -> None:
                 # Index to Elasticsearch
                 success = await index_to_elasticsearch(payload)
                 if success:
-                    app_logger.info(f"Successfully indexed RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
+                    print(f"Successfully added route details into index-route using Route-ID: {payload.get('route_id')}")
                 else:
-                    app_logger.error(f"Failed to index RouteID: {payload.get('route_id')}, TrainID: {payload.get("train_details").get("train_id", 0)}")
+                    print(f"Fail to add route details into index-route using Route-ID: {payload.get('route_id')}")
                 await consumer.commit()                
             except Exception as exc:
                 print(f"routes_consumer_worker error: {exc}")
