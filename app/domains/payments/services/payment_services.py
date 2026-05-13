@@ -225,7 +225,7 @@ class PaymentService:
                         gateway_refund_id=payment_gateway_refund_rsp_obj["payment_gateway_refund_id"],
                         failure_reason=None,
                         metadata_json=None,
-                        status="INITIATED" if payment_gateway_refund_rsp_obj["status_code"] == 201 else "FAILED",
+                        status="INITIATED" if payment_gateway_refund_rsp_obj["status_code"] == 200 else "FAILED",
                     )
 
                     # updating the payment order table status
