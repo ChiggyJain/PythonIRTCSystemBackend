@@ -347,3 +347,16 @@
 2026-05-13 11:54:51 | INFO | ES client created for index: stations
 2026-05-13 11:54:59 | INFO | ES client created for index: routes
 2026-05-13 11:54:59 | INFO | ES client created for index: stations
+2026-05-13 11:55:29 | INFO | SpawnProcess-50-22681 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 11:55:29.277816 | 2026-05-13 11:55:29.283265 | 5 | None | 200
+2026-05-13 11:55:29 | INFO | SpawnProcess-50-22681 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 11:55:29.310742 | 2026-05-13 11:55:29.325011 | 14 | None | 200
+2026-05-13 11:55:29 | INFO | SpawnProcess-50-22681 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 11:55:29.367726 | 2026-05-13 11:55:29.403674 | 35 | None | 201
+2026-05-13 11:55:29 | INFO | SpawnProcess-50-22681 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 11:55:29.448151 | 2026-05-13 11:55:29.468022 | 19 | None | 201
+2026-05-13 11:55:29 | INFO | SpawnProcess-50-22681 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 11:55:29.114929 | 2026-05-13 11:55:29.483064 | 368 | None | 201
+2026-05-13 11:55:32 | INFO | SpawnProcess-50-22681 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 11:55:32.459176 | 2026-05-13 11:55:32.516120 | 56 | None | 200
+2026-05-13 11:55:32 | INFO | SpawnProcess-50-22681 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 11:55:32.424873 | 2026-05-13 11:55:32.517876 | 93 | None | 200
+2026-05-13 11:55:47 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 11:55:53 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 11:55:53 | INFO | SpawnProcess-50-22681 | unlock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/unlock | 2026-05-13 11:55:53.356896 | 2026-05-13 11:55:53.375339 | 18 | None | 200
+2026-05-13 11:55:53 | INFO | SpawnProcess-50-22681 | user:payment:order:refund | 127.0.0.1 | POST | /api/v1/payments/refunds | 2026-05-13 11:55:53.409595 | 2026-05-13 11:55:53.418334 | 8 | None | 500
+2026-05-13 11:58:22 | INFO | ES client created for index: routes
+2026-05-13 11:58:22 | INFO | ES client created for index: stations

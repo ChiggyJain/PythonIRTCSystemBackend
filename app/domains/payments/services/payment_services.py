@@ -232,7 +232,7 @@ class PaymentService:
                     if payment_gateway_refund_rsp_obj["status_code"] == 200:
                         cnt_of_payment_orders_row_updated = await self.payment_repo.update_payment_orders_details(
                             where_data = {
-                                PaymentOrders.id == payment_order.id
+                                "id" : payment_order.id,
                             },
                             update_data = {
                                 "version" : PaymentOrders.version + 1,
