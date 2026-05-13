@@ -1182,7 +1182,7 @@ class BookingService:
                     params1 = {
                         "booking_id" : booking_list[0].id,
                         "seat_ids" : seat_ids,
-                        "reason" : str(e)
+                        "reason" : reason[:90],
                     }
                     compensatedRspObj = await self.compensateAll(payload=params1)
 
