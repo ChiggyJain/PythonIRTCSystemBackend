@@ -25,7 +25,6 @@ async def index_to_elasticsearch(payload: dict) -> bool:
             "status" : payload.get("status", "A"),
         }
         await routes_repo.upsert_schedule(train_id=train_id, schedules=update_schedule_param)
-        app_logger.info(f"Indexed routes updated (schedules) to ES using TrainID: {train_id}")
         await es_client.close()
         return True
     except Exception as e:
@@ -45,16 +44,16 @@ async def run_worker() -> None:
         async for message in consumer:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
-                app_logger.info(f"Received payload: {payload}")
-                # Index to Elasticsearch
+                topic_name = message.topic
+                print(f"Topic: {topic_name}, Payload: {payload}")
                 success = await index_to_elasticsearch(payload)
                 if success:
-                    app_logger.info(f"Successfully indexed ScheduledID: {payload.get('schedule_id')}")
+                    print(f"Successfully added schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
                 else:
-                    app_logger.error(f"Failed to index ScheduledID: {payload.get('schedule_id')}")
-                # await consumer.commit()                
+                    print(f"Failed to add schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
+                await consumer.commit()                
             except Exception as exc:
-                app_logger.error(f"schedules_consumer_worker error: {exc}")
+                print(f"schedules_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()
