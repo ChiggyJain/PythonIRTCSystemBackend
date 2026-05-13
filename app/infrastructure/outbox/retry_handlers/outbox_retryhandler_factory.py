@@ -5,7 +5,9 @@ from app.infrastructure.outbox.retry_handlers.pwdchanged_otp_outbox_retryhandler
 from app.infrastructure.outbox.retry_handlers.stations_outbox_retryhandler import MasterDataStationsOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.routes_outbox_retryhandler import MasterDataRoutesOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.schedules_outbox_retryhandler import MasterDataSchedulesOutboxRetryHandler
+from app.infrastructure.outbox.retry_handlers.schedule_inventory_seat_availability_updated_outbox_retryhandler import ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.payment_orders_updated_status_outbox_retryhandler import PaymentOrdersUpdatedStatusOutboxRetryHandler
+
 
 class OutboxRetryHandlerFactory:
 
@@ -16,7 +18,7 @@ class OutboxRetryHandlerFactory:
         "MASTERDATA_STATIONS": MasterDataStationsOutboxRetryHandler,
         "MASTERDATA_ROUTES": MasterDataRoutesOutboxRetryHandler,
         "MASTERDATA_SCHEDULES": MasterDataSchedulesOutboxRetryHandler,
-        "SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED" : PaymentOrdersUpdatedStatusOutboxRetryHandler,
+        "SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED" : ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler,
         "PAYMENT_ORDERS_UPDATED_STATUS" : PaymentOrdersUpdatedStatusOutboxRetryHandler,
     }
 
