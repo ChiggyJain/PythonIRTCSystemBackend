@@ -549,7 +549,8 @@ class InventoryService:
                 "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
                 "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
             }
-            rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+            outbox_events_rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+            print(f"outbox_events_rsp: {outbox_events_rsp}")
 
             await self._db_session.commit()
 
@@ -684,7 +685,8 @@ class InventoryService:
                 "locked" : recounts_schedule_aggregates_status_rsp_obj["locked"],
                 "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
             }
-            rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+            outbox_events_rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
+            print(f"outbox_events_rsp: {outbox_events_rsp}")
 
             await self._db_session.commit()
 
@@ -913,7 +915,7 @@ class InventoryService:
         self,
         payload: dict
     ):
-
+        
         rsp = {
             "outbox_event_id" : 0
         }
