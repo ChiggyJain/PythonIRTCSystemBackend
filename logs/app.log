@@ -269,3 +269,7 @@
 2026-05-13 11:40:21 | INFO | ES client created for index: stations
 2026-05-13 11:40:23 | INFO | ES client created for index: routes
 2026-05-13 11:40:23 | INFO | ES client created for index: stations
+2026-05-13 11:40:41 | INFO | ES client created for index: routes
+2026-05-13 11:40:41 | INFO | ES client created for index: stations
+2026-05-13 11:40:43 | INFO | ES client created for index: routes
+2026-05-13 11:40:43 | INFO | ES client created for index: stations
