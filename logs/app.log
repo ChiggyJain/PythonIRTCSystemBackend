@@ -377,3 +377,14 @@
 2026-05-13 12:00:42 | INFO | SpawnProcess-53-22956 | user:payment:order:refund | 127.0.0.1 | POST | /api/v1/payments/refunds | 2026-05-13 12:00:42.673927 | 2026-05-13 12:00:42.691615 | 17 | None | 200
 2026-05-13 12:02:05 | INFO | ES client created for index: routes
 2026-05-13 12:02:05 | INFO | ES client created for index: stations
+2026-05-13 12:02:40 | INFO | SpawnProcess-54-23171 | inventory:schedule:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-13 12:02:40.112641 | 2026-05-13 12:02:40.119568 | 6 | None | 200
+2026-05-13 12:02:40 | INFO | SpawnProcess-54-23171 | inventory:schedule:seats:availability | 127.0.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-13 12:02:40.147319 | 2026-05-13 12:02:40.162672 | 15 | None | 200
+2026-05-13 12:02:40 | INFO | SpawnProcess-54-23171 | lock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-13 12:02:40.280348 | 2026-05-13 12:02:40.313036 | 32 | None | 201
+2026-05-13 12:02:40 | INFO | SpawnProcess-54-23171 | user:payment:order:create | 127.0.0.1 | POST | /api/v1/payments/orders | 2026-05-13 12:02:40.354915 | 2026-05-13 12:02:40.369700 | 14 | None | 201
+2026-05-13 12:02:40 | INFO | SpawnProcess-54-23171 | user:booking:create | 127.0.0.1 | POST | /api/v1/bookings/ | 2026-05-13 12:02:39.959957 | 2026-05-13 12:02:40.382928 | 422 | None | 201
+2026-05-13 12:02:42 | INFO | SpawnProcess-54-23171 | user:payment:verify | 127.0.0.1 | POST | /api/v1/payments/orders/verify | 2026-05-13 12:02:42.702784 | 2026-05-13 12:02:42.714588 | 11 | None | 200
+2026-05-13 12:02:42 | INFO | SpawnProcess-54-23171 | user:booking:verify:payment | 127.0.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-13 12:02:42.667807 | 2026-05-13 12:02:42.716693 | 48 | None | 200
+2026-05-13 12:03:03 | INFO | payment_orders_updated_status_outbox_worker started
+2026-05-13 12:03:08 | INFO | payment_orders_updated_status_consumer_worker started
+2026-05-13 12:03:08 | INFO | SpawnProcess-54-23171 | unlock:seats | 127.0.0.1 | POST | /api/v1/inventory/schedules/seats/unlock | 2026-05-13 12:03:08.709917 | 2026-05-13 12:03:08.727750 | 17 | None | 200
+2026-05-13 12:03:08 | INFO | SpawnProcess-54-23171 | user:payment:order:refund | 127.0.0.1 | POST | /api/v1/payments/refunds | 2026-05-13 12:03:08.759033 | 2026-05-13 12:03:08.770650 | 11 | None | 200
