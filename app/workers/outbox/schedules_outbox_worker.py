@@ -18,9 +18,9 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-masterdata-schedules-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-schedules-outbox-publisher")
     await producer.start()
-    app_logger.info("masterdata_schedules_outbox_worker started")
+    app_logger.info("schedules_outbox_worker started")
 
     try:
 
