@@ -7,7 +7,7 @@ from app.infrastructure.outbox.retry_handlers.routes_outbox_retryhandler import 
 from app.infrastructure.outbox.retry_handlers.schedules_outbox_retryhandler import MasterDataSchedulesOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.schedule_inventory_seat_availability_updated_outbox_retryhandler import ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler
 from app.infrastructure.outbox.retry_handlers.payment_orders_updated_status_outbox_retryhandler import PaymentOrdersUpdatedStatusOutboxRetryHandler
-from app.infrastructure.outbox.retry_handlers.booking_status_outbox_retryhandler import BookingStatusOutboxRetryHandler
+from app.infrastructure.outbox.retry_handlers.booking_updated_status_outbox_retryhandler import BookingUpdatedStatusOutboxRetryHandler
 
 class OutboxRetryHandlerFactory:
 
@@ -20,7 +20,7 @@ class OutboxRetryHandlerFactory:
         "MASTERDATA_SCHEDULES": MasterDataSchedulesOutboxRetryHandler,
         "SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED" : ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler,
         "PAYMENT_ORDERS_UPDATED_STATUS" : PaymentOrdersUpdatedStatusOutboxRetryHandler,
-        "BOOKING_STATUS" : BookingStatusOutboxRetryHandler,
+        "BOOKING_UPDATED_STATUS" : BookingUpdatedStatusOutboxRetryHandler,
     }
 
     @staticmethod

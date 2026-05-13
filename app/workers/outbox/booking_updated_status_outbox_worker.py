@@ -18,9 +18,9 @@ BATCH_SIZE = 100
 
 async def run_worker() -> None:
 
-    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-booking-status-outbox-publisher")
+    producer = build_producer(client_id=f"{settings.KAFKA_CLIENT_ID}-booking-updated-status-outbox-publisher")
     await producer.start()
-    app_logger.info("booking_status_outbox_worker started")
+    app_logger.info("booking_updated_status_outbox_worker started")
 
     try:
 
@@ -37,7 +37,10 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            aggregate_type="STATIONS", limit=1, now_time=now_ist(),
+                            aggregate_type="BOOKINGS",
+                            event_type="BOOKINGS_UPDATED_STATUS",
+                            limit=1, 
+                            now_time=now_ist(),
                         )
                         if not events:
                             break
@@ -82,7 +85,7 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "BOOKING_STATUS", "outbox_repo": outbox_repo
+                                    "retry_handler_type": "BOOKING_UPDATED_STATUS", "outbox_repo": outbox_repo
                                 }
                                 outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {

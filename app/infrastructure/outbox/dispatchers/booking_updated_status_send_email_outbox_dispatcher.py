@@ -11,10 +11,10 @@ async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_BOOKING_STATUS_TOPIC,
         group_id=settings.KAFKA_BOOKING_STATUS_EMAIL_CONSUMER_GROUP,
-        client_id=f"{settings.KAFKA_CLIENT_ID}-booking-status-send-email-otp-consumer",
+        client_id=f"{settings.KAFKA_CLIENT_ID}-booking-updated-status-send-email-otp-consumer",
     )
     await consumer.start()
-    app_logger.info("booking_status_send_email_consumer started")
+    app_logger.info("booking_updated_status_send_email_consumer started")
     try:
         async for message in consumer:
             try:
@@ -23,7 +23,7 @@ async def run_worker() -> None:
                 print(f"Topic: {topic_name}, Payload: {payload}")
                 await consumer.commit()
             except Exception as exc:
-                print(f"booking_status_send_email_consumer error: {exc}")
+                print(f"booking_updated_status_send_email_consumer error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         await consumer.stop()

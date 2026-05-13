@@ -7,7 +7,7 @@ from app.infrastructure.outbox.retry_handlers.outbox_base_retryhandler import Ou
 
 settings = get_settings()
 
-class BookingStatusOutboxRetryHandler(OutboxBaseRetryHandler):
+class BookingUpdatedStatusOutboxRetryHandler(OutboxBaseRetryHandler):
 
     def __init__(self, **kwargs):
         self.outbox_repo = kwargs.get("outbox_repo", None)
