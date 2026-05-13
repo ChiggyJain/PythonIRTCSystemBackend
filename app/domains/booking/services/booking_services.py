@@ -18,6 +18,7 @@ from app.common.cache.redis_cache import (
     releaseBookingSeatLocksThroughRedis
 )
 from app.common.repository.idempotency.sqlalchemy_repo import IdempotencySQLAlchemyRepository
+from app.domains.booking.models.booking_seats_models import BookingSeats
 from app.domains.booking.repository.sqlalchemy_repo import BookingSQLAlchemyRepository
 from app.domains.booking.models.bookings_models import Bookings
 from app.domains.booking.models.booking_saga_logs_models import BookingSagaLogs
@@ -788,11 +789,77 @@ class BookingService:
             )
 
     
-    async def create_booking_details(self, *, payload: dict) -> dict:
+    async def process_booking_payment_orders_success_details(self, *, payload: dict) -> dict:
         
         try:
+
+            # extracted parameters
+            booking_id = payload.get("booking_id", 0)
+            payment_order_id = payload.get("payment_order_id", 0)
+            gateway_order_id = payload.get("gateway_order_id", "")
+            gateway_payment_id = payload.get("gateway_payment_id", "")
+            amount = payload.get("amount", 0)
+            reason = payload.get("reason", "")
+            payment_order_status = payload.get("payment_order_status", "")
+
+            if not all([
+                booking_id > 0,
+                payment_order_id > 0,
+                gateway_order_id,
+                gateway_payment_id,
+                amount > 0,
+                reason,
+                payment_order_status == "CAPTURED"
+            ]):
+                return standardize_response(
+                    status_code=400,
+                    messages=[f"Invalid parameters are passsed for processing booking payment success details"]
+                )
             
-            pass
+            # fetching booking details
+            booking_list = await self.booking_repo.get_booking_details(
+                where_conditions = [
+                    Bookings.id == booking_id,
+                    Bookings.payment_order_id == payment_order_id,
+                ],
+                order_by = [
+                    Bookings.id.asc()
+                ]
+            )
+            if not booking_list:
+                return standardize_response(
+                    status_code=404,
+                    messages=[f"Booking not found for payment-order-id: {payment_order_id}"]
+                )
+            if booking_list:
+                if booking_list[0].status == "CONFIRMED":
+                    return standardize_response(
+                        status_code=200,
+                        messages=[f"Booking already confirmed for payment-order-id: {payment_order_id}"]
+                    )
+                if booking_list[0].status != "PAYMENT_PENDING":
+                    return standardize_response(
+                        status_code=400,
+                        messages=[f"Booking {booking_id} in unexpected status {booking_list[0].status} for payment-order-id: {payment_order_id}"]
+                    )
+                # fetching the booking seats details
+                booking_seats_list = await self.booking_repo.get_booking_seats_details(
+                    where_conditions = [
+                        BookingSeats.booking_id == booking_id,
+                    ]
+                )
+                if not booking_seats_list:
+                    return standardize_response(
+                        status_code=404,
+                        messages=[f"Booking seats details not found for booking-id: {booking_id}, payment-order-id: {payment_order_id}"]
+                    )
+                if booking_seats_list:
+                    seat_ids = [eachBookingSeatObj.seat_id for eachBookingSeatObj in booking_seats_list]
+                    # automically claim this booking — if expiry job or cancel already changed it, bail out
+                    
+
+
+
 
         except Exception as e:
             return standardize_response(

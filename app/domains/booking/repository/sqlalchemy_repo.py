@@ -56,6 +56,41 @@ class BookingSQLAlchemyRepository:
         return list(result.scalars().all())
     
 
+    async def get_booking_seats_details(
+        self, 
+        select_columns: Optional[List[Any]] = None,
+        where_conditions: Optional[List[Any]] = None,
+        order_by: Optional[List[Any]] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+    ) -> List[BookingSeats] | None:
+
+        if select_columns:
+            stmt: Select = select(*select_columns)
+        else:
+            stmt: Select = select(BookingSeats)
+
+        if where_conditions:
+            stmt = stmt.where(*where_conditions)
+
+        if order_by:
+            stmt = stmt.order_by(*order_by)
+
+        if limit:
+            stmt = stmt.limit(limit)
+
+        if offset:
+            stmt = stmt.offset(offset)
+
+        result = await self._db_session.execute(stmt)
+
+        if select_columns:
+            return result.mappings().all()
+
+        return list(result.scalars().all())
+    
+    
+
     async def get_booking_saga_logs_details(
         self, 
         select_columns: Optional[List[Any]] = None,
