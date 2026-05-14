@@ -83,7 +83,7 @@ def get_emailchanged_email_otp_sender() -> EmailOtpSenderBase:
     raise RuntimeError(f"Unsupported EMAILCHANGED OTP email provider: {provider}")
 
 
-def get_booking_email_sender() -> EmailSenderBase:
+def get_booking_updated_status_email_sender() -> EmailSenderBase:
     global _booking_updated_status_email_sender_instances
     if _booking_updated_status_email_sender_instances is not None:
         return _booking_updated_status_email_sender_instances
