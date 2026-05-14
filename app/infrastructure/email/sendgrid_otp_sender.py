@@ -1,12 +1,8 @@
 
-"""
-SendGrid implementation for email OTP sender.
-"""
-
 import asyncio
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-from app.domains.security.providers.base import (
+from app.infrastructure.email.base import (
     EmailOtpSenderBase,
     OtpSendResult,
 )
