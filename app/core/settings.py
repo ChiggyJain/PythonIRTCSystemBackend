@@ -168,8 +168,8 @@ class Settings(BaseSettings):
     KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
     
     
-    KAFKA_BOOKING_UPDATED_STATUS_TOPIC: str = "booking-status"
-    KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-status-email-consumer-group"
+    KAFKA_BOOKING_UPDATED_STATUS_TOPIC: str = "booking-updated-status"
+    KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-updated-status-email-consumer-group"
     BOOKING_UPDATED_STATUS_OUTBOX_MAX_RETRIES: int = 6
 
     BOOKING_UPDATED_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
