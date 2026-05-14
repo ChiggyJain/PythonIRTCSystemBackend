@@ -1,8 +1,4 @@
 
-"""
-Redis client
-Provides async Redis instance.
-"""
 
 from redis.asyncio import Redis
 from app.core.settings import get_settings
@@ -11,16 +7,7 @@ _settings = get_settings()
 
 redis_client: Redis | None = None
 
-
-# =========================================================
-# Get Redis instance
-# =========================================================
-
 def get_redis() -> Redis:
-    """
-    Returns singleton Redis client
-    """
-
     global redis_client
     if redis_client is None:
         redis_client = Redis(

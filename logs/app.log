@@ -56,3 +56,7 @@
 2026-05-14 15:19:09 | INFO | ES client created for index: stations
 2026-05-14 15:19:16 | INFO | ES client created for index: routes
 2026-05-14 15:19:16 | INFO | ES client created for index: stations
+2026-05-14 15:20:00 | INFO | ES client created for index: routes
+2026-05-14 15:20:00 | INFO | ES client created for index: stations
+2026-05-14 15:20:06 | INFO | ES client created for index: routes
+2026-05-14 15:20:06 | INFO | ES client created for index: stations
