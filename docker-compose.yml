@@ -242,11 +242,17 @@ services:
   station-outbox-worker:
     <<: *worker-base
     container_name: irtc-station-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
     command: python -m app.workers.outbox.stations_outbox_worker
 
   station-outbox-dispatcher:
     <<: *worker-base
     container_name: irtc-station-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
     command: python -m app.infrastructure.outbox.dispatchers.stations_outbox_dispatcher 
   
 

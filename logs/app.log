@@ -20,3 +20,5 @@
 2026-05-14 14:47:28 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 20:17:27.950215 | 2026-05-14 20:17:28.098048 | 147 | None | 201
 2026-05-14 15:08:13 | INFO | ES client created for index: routes
 2026-05-14 15:08:13 | INFO | ES client created for index: stations
+2026-05-14 15:16:33 | INFO | ES client created for index: routes
+2026-05-14 15:16:33 | INFO | ES client created for index: stations
