@@ -1,6 +1,32 @@
 
 services:
 
+  
+  mysql:
+    image: mysql:8.4
+    container_name: irtc-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: IRTC
+      MYSQL_USER: c
+      MYSQL_PASSWORD: Dharmilal@7186
+    command:
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    
+  redis:
+    image: redis:7.2
+    container_name: irtc-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+  
   kafka:
     image: apache/kafka:3.9.0
     container_name: irtc-kafka
@@ -20,15 +46,6 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     volumes:
       - kafka_data:/var/lib/kafka/data
-    restart: unless-stopped
-
-  redis:
-    image: redis:7.2
-    container_name: irtc-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
     restart: unless-stopped
 
   elasticsearch:
@@ -54,5 +71,6 @@ services:
   
 
 volumes:
+  mysql_data:
   redis_data:
   kafka_data:
