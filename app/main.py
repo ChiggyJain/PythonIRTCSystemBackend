@@ -1,14 +1,4 @@
 
-"""
-Main Application Entry
-Responsible for:
----------------
-- Create FastAPI app
-- Register middleware
-- Register exception handlers
-- Register routers
-"""
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.settings import get_settings
@@ -38,62 +28,35 @@ async def lifespan(app: FastAPI):
 
 
 
-# =========================================================
 # Create App
-# =========================================================
-
 app = FastAPI(
     title=settings.APP_NAME,
     lifespan=lifespan,
 )
 
 
-# =========================================================
 # Middleware
-# =========================================================
-
-"""
-Register exception middleware
-Must be before routers
-"""
-
 app.add_middleware(ExceptionMiddleware)
 
 
-# =========================================================
 # Exception Handlers
-# =========================================================
-
 register_exception_handlers(app)
 
 
-# =========================================================
 # Routers (future)
-# =========================================================
-
 from app.api.v1.router import router as v1_router
 app.include_router(v1_router, prefix="/api/v1")
 
 
-# =========================================================
-# Health Check API
-# =========================================================
-
 
 @app.get("/health")
 async def health_check():
-    """
-    Health check endpoint
-    Used for:
-    - Load balancer
-    - Docker
-    - Kubernetes
-    - Monitoring
-    """
-
     return standardize_response(
-        data={"service": APP_NAME},
-        messages=["Service running"],
+        status_code=200,
+        messages=["Services running"],
+        data={
+            "service": settings.APP_NAME
+        },
     )
 
 
@@ -102,8 +65,11 @@ async def readiness_check():
     try:
         await app.state.routes_es_client.client.ping()
         return standardize_response(
-            data={"ready": True},
-            messages=["Service ready"],
+            status_code=200,
+            messages=["Elasticsearch services ready"],
+            data={
+                "ready": True
+            },            
         )
     except Exception:
         raise BaseAppException(
