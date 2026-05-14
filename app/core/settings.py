@@ -1,6 +1,8 @@
 
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from urllib.parse import quote_plus
+from pydantic import computed_field
 
 
 class Settings(BaseSettings):
@@ -32,6 +34,20 @@ class Settings(BaseSettings):
     MYSQL_DB_NAME: str
     MYSQL_DB_USER: str
     MYSQL_DB_PASSWORD: str
+
+
+    @computed_field
+    @property
+    def MYSQL_DB_URL(self) -> str:
+        encoded_password = quote_plus(self.MYSQL_DB_PASSWORD)
+        return (
+            f"mysql+asyncmy://"
+            f"{self.MYSQL_DB_USER}:"
+            f"{encoded_password}@"
+            f"{self.MYSQL_DB_HOST}:"
+            f"{self.MYSQL_DB_PORT}/"
+            f"{self.MYSQL_DB_NAME}"
+        )
 
     # redis config
     REDIS_HOST: str
