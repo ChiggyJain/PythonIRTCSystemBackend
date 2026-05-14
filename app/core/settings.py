@@ -172,10 +172,10 @@ class Settings(BaseSettings):
     KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-status-email-consumer-group"
     BOOKING_UPDATED_STATUS_OUTBOX_MAX_RETRIES: int = 6
 
-    BOOKING_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
-    BOOKING_STATUS_FROM_EMAIL: str = "cjain9975@gmail.com"
-    BOOKING_STATUS_EMAIL_SUBJECT_PREFIX: str = "Booking Information"
-    BOOKING_STATUS_SMS_PROVIDER: str = "NONE"
+    BOOKING_UPDATED_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
+    BOOKING_UPDATED_STATUS_FROM_EMAIL: str = "cjain9975@gmail.com"
+    BOOKING_UPDATED_STATUS_EMAIL_SUBJECT_PREFIX: str = "Booking Information"
+    BOOKING_UPDATED_STATUS_SMS_PROVIDER: str = "NONE"
     
 
     # Pydantic Settings Config

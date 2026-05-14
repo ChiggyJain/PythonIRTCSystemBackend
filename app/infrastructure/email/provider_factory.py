@@ -87,11 +87,11 @@ def get_booking_updated_status_email_sender() -> EmailSenderBase:
     global _booking_updated_status_email_sender_instances
     if _booking_updated_status_email_sender_instances is not None:
         return _booking_updated_status_email_sender_instances
-    provider = _settings.BOOKING_STATUS_EMAIL_PROVIDER.strip().upper()
+    provider = _settings.BOOKING_UPDATED_STATUS_EMAIL_PROVIDER.strip().upper()
     if provider == "SENDGRID":
         _booking_updated_status_email_sender_instances = SendGridEmailSender(
             api_key=_settings.SENDGRID_API_KEY,
-            from_email=_settings.BOOKING_STATUS_FROM_EMAIL,
+            from_email=_settings.BOOKING_UPDATED_STATUS_FROM_EMAIL,
             dry_run=_settings.SENDGRID_DRY_RUN,
         )
         return _booking_updated_status_email_sender_instances
