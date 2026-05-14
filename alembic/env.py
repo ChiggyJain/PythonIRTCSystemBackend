@@ -13,23 +13,17 @@ Supports:
 
 import asyncio
 from logging.config import fileConfig
-
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
 from alembic import context
-
-from app.core.config import MYSQL_DB_URL
+from app.core.settings import get_settings
 from app.infrastructure.database.base import Base
-
-# IMPORTANT
-# load all models
 from app.infrastructure.database import models_importer  # noqa
 
 
 config = context.config
-
+settings = get_settings()
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -39,7 +33,7 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    return MYSQL_DB_URL
+    return settings.MYSQL_DB_URL
 
 
 def run_migrations_offline():

@@ -11,7 +11,7 @@ Responsible for:
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.core.config import APP_NAME
+from app.core.settings import get_settings
 from app.core.settings import get_settings
 from app.middlewares.exception_middleware import ExceptionMiddleware
 from app.core.exception_handlers import register_exception_handlers
@@ -20,6 +20,7 @@ from app.infrastructure.elasticsearch.client import build_elasticsearch_client
 from app.core.exceptions import BaseAppException
 
 
+settings = get_settings()
 
 
 @asynccontextmanager
@@ -42,7 +43,7 @@ async def lifespan(app: FastAPI):
 # =========================================================
 
 app = FastAPI(
-    title=APP_NAME,
+    title=settings.APP_NAME,
     lifespan=lifespan,
 )
 

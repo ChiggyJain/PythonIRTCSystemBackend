@@ -5,10 +5,9 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     AsyncSession,
 )
-# from app.core.config import MYSQL_DB_URL
 from app.core.settings import get_settings
-settings = get_settings()
 
+settings = get_settings()
 
 engine = create_async_engine(
     settings.MYSQL_DB_URL,
