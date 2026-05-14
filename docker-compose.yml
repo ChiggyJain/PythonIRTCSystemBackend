@@ -1,4 +1,24 @@
 
+
+x-worker-base: &worker-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  env_file:
+    - .env
+  depends_on:
+    mysql:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    kafka:
+      condition: service_healthy
+    elasticsearch:
+      condition: service_healthy
+    backend:
+      condition: service_healthy
+  restart: unless-stopped
+
 services:
 
   
@@ -220,24 +240,7 @@ services:
     restart: unless-stopped
 
   
-  x-worker-base: &worker-base
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-    restart: unless-stopped
+  
 
   station-outbox-worker:
     <<: *worker-base
@@ -249,7 +252,7 @@ services:
 
   station-outbox-dispatcher:
     <<: *worker-base
-    container_name: irtc-station-dispatcher
+    container_name: irtc-station-outbox-dispatcher
     depends_on:
       backend:
         condition: service_healthy
