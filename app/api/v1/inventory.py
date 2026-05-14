@@ -22,13 +22,13 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "inventory:schedule:availability",
+        "name": "schedule:availability",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 1000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -49,13 +49,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "inventory:schedule:seats:availability",
+        "name": "availability:seats",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 1000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -93,7 +93,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -127,7 +127,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -161,7 +161,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -195,7 +195,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }

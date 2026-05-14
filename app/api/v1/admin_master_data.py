@@ -34,7 +34,7 @@ router = APIRouter()
             "file": True,
         },
         "rate_limit": {
-            "limit": 100000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -69,7 +69,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -103,7 +103,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -137,7 +137,7 @@ router.add_api_route(
             "file": True,
         },
         "rate_limit": {
-            "limit": 100000,
+            "limit": 200000,
             "window": 60,
         },
     }

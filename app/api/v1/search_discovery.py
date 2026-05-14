@@ -18,13 +18,13 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:search:stations",
+        "name": "search:stations",
         "logging": {
             "console": True, 
             "file": True
         },
         "rate_limit": {
-            "limit": 100, 
+            "limit": 200000, 
             "window": 60
         },
     }
@@ -48,13 +48,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:search:trains",
+        "name": "search:trains",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }

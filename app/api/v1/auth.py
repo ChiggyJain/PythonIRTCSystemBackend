@@ -24,7 +24,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:refreshtoken",
+        "name": "refreshtoken",
         "logging": {
             "console" : True,
             "file" : True,
@@ -59,7 +59,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:logout:currentdevices",
+        "name": "logout:currentdevices",
         "logging": {
             "console" : True,
             "file" : True,
@@ -92,7 +92,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:logout:alldevices",
+        "name": "logout:alldevices",
         "logging": {
             "console" : True,
             "file" : True,

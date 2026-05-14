@@ -20,13 +20,13 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:payment:order:create",
+        "name": "payment:create:order",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -54,13 +54,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:payment:order:refund",
+        "name": "payment:create:refund",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -89,13 +89,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:payment:verify",
+        "name": "payment:order:verify",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }

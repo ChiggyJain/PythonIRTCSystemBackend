@@ -20,13 +20,13 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:booking:create",
+        "name": "booking:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -56,13 +56,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:booking:verify:payment",
+        "name": "booking:verify:payment",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -92,13 +92,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:booking:details",
+        "name": "booking:details",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 1000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -124,13 +124,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:bookings",
+        "name": "bookings:details",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 1000,
+            "limit": 200000,
             "window": 60,
         },
     }
@@ -160,13 +160,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:booking:cancel",
+        "name": "booking:cancel",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 1000,
+            "limit": 200000,
             "window": 60,
         },
     }

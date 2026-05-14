@@ -43,7 +43,7 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:signup",
+        "name": "signup",
         "logging": {
             "console" : True,
             "file" : False
@@ -82,7 +82,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:login",
+        "name": "login",
         "logging": {
             "console": True,
             "file": True,
@@ -118,7 +118,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:profile",
+        "name": "profile",
         "logging": {
             "console": True,
             "file": True,
@@ -153,7 +153,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:passwordchange:requestotp",
+        "name": "pwdchange:requestotp",
         "logging": {
             "console": True,
             "file": True,
@@ -190,7 +190,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:passwordchange:requestotp:confirm",
+        "name": "pwdchange:confirmotp",
         "logging": {
             "console": True,
             "file": True,
@@ -231,7 +231,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:emailverification:requestotp",
+        "name": "emailverification:requestotp",
         "logging": {
             "console": True, 
             "file": True
@@ -270,7 +270,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:emailverification:requestotp:confirm",
+        "name": "emailverification:confirmotp",
         "logging": {
             "console": True, 
             "file": True
@@ -308,7 +308,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:emailchange:requestotp",
+        "name": "emailchange:requestotp",
         "logging": {""
             "console": True, 
             "file": True
@@ -347,7 +347,7 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:emailchange:requestotp:confirm",
+        "name": "emailchange:confirmotp",
         "logging": {
             "console": True, 
             "file": True
