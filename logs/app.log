@@ -108,3 +108,7 @@
 2026-05-14 10:28:27 | INFO | ES client created for index: stations
 2026-05-14 10:28:30 | INFO | ES client created for index: routes
 2026-05-14 10:28:30 | INFO | ES client created for index: stations
+2026-05-14 10:28:35 | INFO | booking_updated_status_outbox_worker started
+2026-05-14 10:28:49 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:29:58 | INFO | ES client created for index: routes
+2026-05-14 10:29:58 | INFO | ES client created for index: stations

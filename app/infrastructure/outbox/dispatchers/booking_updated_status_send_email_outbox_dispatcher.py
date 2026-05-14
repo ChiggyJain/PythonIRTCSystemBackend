@@ -48,7 +48,7 @@ async def run_worker() -> None:
                     - Status: {booking_status}
                     - Reason: {booking_status_reason}
                     Thank you for using IRTC.
-                    """
+                """
                 html_content = f"""
                     <html>
                         <body style="font-family: Arial, sans-serif; line-height: 1.6;">
