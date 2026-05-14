@@ -213,6 +213,36 @@ services:
       elasticsearch:
         condition: service_healthy
     restart: unless-stopped
+
+  
+  x-worker-base: &worker-base
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    restart: unless-stopped
+
+  station-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-station-outbox-worker
+    command: python -m app.workers.outbox.stations_outbox_worker
+
+  station-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-station-dispatcher
+    command: python -m app.infrastructure.outbox.dispatchers.stations_outbox_dispatcher 
   
 
 volumes:
