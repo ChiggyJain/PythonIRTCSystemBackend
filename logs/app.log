@@ -5,3 +5,7 @@
 2026-05-14 10:56:44 | INFO | ES client created for index: routes
 2026-05-14 10:56:44 | INFO | ES client created for index: stations
 2026-05-14 10:57:53 | ERROR | ratelimit error | key=signup:ip:172.19.0.1 | Error 111 connecting to 127.0.0.1:6380. Connection refused.
+2026-05-14 11:04:16 | INFO | ES client created for index: routes
+2026-05-14 11:04:16 | INFO | ES client created for index: stations
+2026-05-14 13:45:56 | INFO | ES client created for index: routes
+2026-05-14 13:45:56 | INFO | ES client created for index: stations
