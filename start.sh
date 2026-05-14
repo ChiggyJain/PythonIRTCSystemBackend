@@ -33,9 +33,9 @@ done
 printf "Elasticsearch server started...\n"
 
 
-printf "Generating Alembic migration...\n
+printf "Generating Alembic migration...\n"
 alembic revision --autogenerate -m "auto migration"
-printf "Applying Alembic migration...\n
+printf "Applying Alembic migration...\n"
 alembic upgrade head
 printf "Alembic migration completed...\n"
 
