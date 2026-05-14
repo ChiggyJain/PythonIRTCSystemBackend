@@ -28,13 +28,13 @@ router = APIRouter()
 
 @feature_control(
     {
-        "name": "user:stations:create",
+        "name": "stations:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 100000,
             "window": 60,
         },
     }
@@ -63,13 +63,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:trains:create",
+        "name": "trains:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 100000,
             "window": 60,
         },
     }
@@ -97,13 +97,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:train:route:create",
+        "name": "routes:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 100000,
             "window": 60,
         },
     }
@@ -131,13 +131,13 @@ router.add_api_route(
 
 @feature_control(
     {
-        "name": "user:train:schedule:create",
+        "name": "schedules:create",
         "logging": {
             "console": True,
             "file": True,
         },
         "rate_limit": {
-            "limit": 100,
+            "limit": 100000,
             "window": 60,
         },
     }
