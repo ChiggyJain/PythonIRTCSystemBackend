@@ -236,7 +236,7 @@ services:
       elasticsearch:
         condition: service_healthy
       backend:
-        condition: service_started
+        condition: service_healthy
     restart: unless-stopped
 
   station-outbox-worker:
