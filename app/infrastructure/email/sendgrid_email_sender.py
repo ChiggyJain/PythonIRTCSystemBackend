@@ -55,6 +55,7 @@ class SendGridEmailSender(EmailSenderBase):
         try:
             
             response = await asyncio.to_thread(self._client.send, msg)
+            print(f"response: {response}")
             accepted = response.status_code in (200, 202)
             message_id = None
             if hasattr(response, "headers") and response.headers:

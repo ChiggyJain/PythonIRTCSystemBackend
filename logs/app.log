@@ -1,0 +1,7 @@
+2026-05-14 09:34:04 | INFO | ES client created for index: routes
+2026-05-14 09:34:04 | INFO | ES client created for index: stations
+2026-05-14 09:35:33 | INFO | booking_updated_status_outbox_worker started
+2026-05-14 09:35:40 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 09:42:18 | INFO | ES client created for index: routes
+2026-05-14 09:42:18 | INFO | ES client created for index: stations
+2026-05-14 09:42:47 | INFO | booking_updated_status_send_email_consumer started
