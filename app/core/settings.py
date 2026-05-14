@@ -161,13 +161,11 @@ class Settings(BaseSettings):
     INVENTORY_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
     PAYMENT_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
 
-
     KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC: str = "payment-success"
     KAFKA_BOOKING_PAYMENT_FAILED_TOPIC: str = "payment-failed"
     KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP: str = "payment-successfailed-consumer-group"
     KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
-    
-    
+        
     KAFKA_BOOKING_UPDATED_STATUS_TOPIC: str = "booking-updated-status"
     KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-updated-status-email-consumer-group"
     BOOKING_UPDATED_STATUS_OUTBOX_MAX_RETRIES: int = 6
@@ -175,6 +173,8 @@ class Settings(BaseSettings):
     BOOKING_UPDATED_STATUS_EMAIL_PROVIDER: str = "SENDGRID"
     BOOKING_UPDATED_STATUS_FROM_EMAIL: str = "cjain9975@gmail.com"
     BOOKING_UPDATED_STATUS_EMAIL_SUBJECT_PREFIX: str = "Booking Information"
+    BOOKING_UPDATED_STATUS_EMAIL_MAX_RETRIES: int = 3
+    BOOKING_UPDATED_STATUS_EMAIL_RETRY_DELAY_SECONDS: int = 2
     BOOKING_UPDATED_STATUS_SMS_PROVIDER: str = "NONE"
     
 
