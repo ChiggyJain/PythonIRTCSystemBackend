@@ -41,14 +41,6 @@ async def run_worker() -> None:
 
                 # Build email content
                 subject = f"{settings.BOOKING_UPDATED_STATUS_EMAIL_SUBJECT_PREFIX} - {booking_status}"
-                plain_text_content = f"""
-                    Your booking {booking_id} status has been updated to: {booking_status}
-                    Booking Details:
-                    - Booking ID: {booking_id}
-                    - Status: {booking_status}
-                    - Reason: {booking_status_reason}
-                    Thank you for using IRTC.
-                """
                 html_content = f"""
                     <html>
                         <body style="font-family: Arial, sans-serif; line-height: 1.6;">
