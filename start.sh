@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -e
 
 printf "Waiting for MySQL server to start...\n"
 until nc -z mysql 3306; do
@@ -32,11 +33,12 @@ done
 printf "Elasticsearch server started...\n"
 
 
-printf "Alembic migration started..\n"
-alembic revision --autogenerate -m "create tables"
+printf "Generating Alembic migration...\n
+alembic revision --autogenerate -m "auto migration"
+printf "Applying Alembic migration...\n
 alembic upgrade head
 printf "Alembic migration completed...\n"
 
-printf "FastAPI server to start...\n"
+printf "Alembic migration completed...\n"
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 printf "FastAPI server started...\n"
