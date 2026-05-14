@@ -36,7 +36,7 @@ class SendGridEmailSender(EmailSenderBase):
     ) -> EmailSendResult:
 
         if self._dry_run:
-            print(f"Dry run: Would send email to {to_email} with subject '{subject}'")
+            print(f"Dry run, to_email: {to_email}, subject: {subject}, plain_text_content: {plain_text_content}, html_content: {html_content}")
             return EmailSendResult(
                 accepted=True,
                 provider=self._provider,
