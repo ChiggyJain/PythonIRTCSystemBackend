@@ -22,7 +22,7 @@ _settings = get_settings()
 _sms_sender: SmsOtpSenderBase | None = None
 _pwdchanged_email_sender: EmailOtpSenderBase | None = None
 _emailverification_email_sender: EmailOtpSenderBase | None = None
-_emailchanged_email_sender_instances: EmailOtpSenderBase | None = None
+_emailchanged_email_sender_instances: EmailSenderBase | None = None
 _booking_updated_status_email_sender_instances: EmailSenderBase | None = None
 
 
