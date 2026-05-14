@@ -12,8 +12,6 @@ services:
       MYSQL_DATABASE: IRTC
       MYSQL_USER: c
       MYSQL_PASSWORD: Dharmilal@7186
-    command:
-      --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped
