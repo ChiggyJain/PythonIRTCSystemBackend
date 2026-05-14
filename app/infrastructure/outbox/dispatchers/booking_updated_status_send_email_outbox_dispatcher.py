@@ -9,8 +9,8 @@ settings = get_settings()
 
 async def run_worker() -> None:
     consumer = build_consumer(
-        topic=settings.KAFKA_BOOKING_STATUS_TOPIC,
-        group_id=settings.KAFKA_BOOKING_STATUS_EMAIL_CONSUMER_GROUP,
+        topic=settings.KAFKA_BOOKING_UPDATED_STATUS_TOPIC,
+        group_id=settings.KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-booking-updated-status-send-email-otp-consumer",
     )
     await consumer.start()

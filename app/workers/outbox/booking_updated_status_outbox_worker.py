@@ -54,7 +54,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.KAFKA_BOOKING_STATUS_TOPIC
+                    topic = settings.KAFKA_BOOKING_UPDATED_STATUS_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
