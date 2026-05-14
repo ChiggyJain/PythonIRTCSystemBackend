@@ -13,3 +13,8 @@
 2026-05-14 14:06:34 | INFO | ES client created for index: stations
 2026-05-14 14:43:55 | INFO | ES client created for index: routes
 2026-05-14 14:43:55 | INFO | ES client created for index: stations
+2026-05-14 14:46:35 | INFO | ES client created for index: routes
+2026-05-14 14:46:35 | INFO | ES client created for index: stations
+2026-05-14 14:46:55 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-14 20:16:54.995665 | 2026-05-14 20:16:55.302673 | 307 | None | 200
+2026-05-14 14:47:02 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 20:17:02.280903 | 2026-05-14 20:17:02.281905 | 1 |  | 500
+2026-05-14 14:47:28 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 20:17:27.950215 | 2026-05-14 20:17:28.098048 | 147 | None | 201

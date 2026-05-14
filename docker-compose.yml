@@ -74,6 +74,95 @@ services:
       retries: 10
     restart: unless-stopped
 
+  
+    kafka-init:
+      image: apache/kafka:3.9.0
+      container_name: irtc-kafka-init
+      depends_on:
+        kafka:
+          condition: service_healthy
+      command: >
+
+        sh -c "
+        echo 'Waiting for Kafka...' && 
+        sleep 10 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic pwdchanged-otp
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic emailverification-otp
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic emailchanged-otp
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic station-created
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic route-created
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic schedule-created
+        --partitions 6
+        --replication-factor 1 &&
+        
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic payment-success
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic payment-failed
+        --partitions 6
+        --replication-factor 1 &&
+
+        /opt/kafka/bin/kafka-topics.sh
+        --bootstrap-server kafka:9092
+        --create
+        --if-not-exists
+        --topic booking-updated-status
+        --partitions 6
+        --replication-factor 1 &&
+
+        echo 'All Kafka topics created successfully.'
+        "
+      restart: "no"
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
     container_name: irtc-elasticsearch
