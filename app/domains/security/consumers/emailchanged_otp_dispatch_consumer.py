@@ -239,7 +239,7 @@ class EmailChangedOtpDispatchConsumerService:
                         Email Changing OTP Request Information
                     </h2>
                     <p>
-                        Your OTP-Code: <strong>{otp}</strong> and OTP-ID: {challenge_id}. This OTP expires in 5 minutes.
+                        Your OTP-Code: <strong>{otp}</strong> and OTP-ID: <strong>{challenge_id}</strong>. This OTP expires in 5 minutes.
                     </p>
                 </body>
             </html>
