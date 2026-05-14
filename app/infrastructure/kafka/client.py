@@ -1,6 +1,3 @@
-"""
-Kafka client builders.
-"""
 
 from aiokafka import (
     AIOKafkaProducer, AIOKafkaConsumer
