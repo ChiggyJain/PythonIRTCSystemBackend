@@ -1,0 +1,4 @@
+2026-05-14 16:14:23 | INFO | ES client created for index: routes
+2026-05-14 16:14:23 | INFO | ES client created for index: stations
+2026-05-14 16:14:32 | INFO | SpawnProcess-1-34213 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-14 16:14:32.019264 | 2026-05-14 16:14:32.089254 | 69 | None | 400
+2026-05-14 16:14:42 | INFO | SpawnProcess-1-34213 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-14 16:14:42.133798 | 2026-05-14 16:14:42.504793 | 370 | None | 200
