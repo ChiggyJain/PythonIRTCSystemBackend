@@ -7,7 +7,7 @@ from cryptography.fernet import Fernet
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.infrastructure.otp.provider_factory import get_emailchanged_email_otp_sender
+from app.infrastructure.email.provider_factory import get_emailchanged_email_otp_sender
 from app.domains.security.providers.base import OtpSendResult
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 
