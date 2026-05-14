@@ -78,6 +78,26 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
       - elasticsearch
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: irtc-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+      - ./perf:/app/perf
+    depends_on:
+      - mysql
+      - phpmyadmin
+      - redis
+      - kafka
+      - elasticsearch
+    restart: unless-stopped
   
 
 volumes:
