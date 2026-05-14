@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     # email service provider key config
     SENDGRID_API_KEY: str
+    SENDGRID_DRY_RUN: bool = True
 
     # mysql db config
     MYSQL_DB_HOST: str
