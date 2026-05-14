@@ -2,7 +2,6 @@
 from app.core.settings import get_settings
 from app.infrastructure.email.base import (
     EmailSenderBase,
-    EmailOtpSenderBase,
     SmsOtpSenderBase,
 )
 from app.infrastructure.email.sendgrid_email_sender import (
@@ -17,8 +16,8 @@ _settings = get_settings()
 
 
 _sms_sender: SmsOtpSenderBase | None = None
-_pwdchanged_email_sender_instances: EmailOtpSenderBase | None = None
-_emailverification_email_sender_instances: EmailOtpSenderBase | None = None
+_pwdchanged_email_sender_instances: EmailSenderBase | None = None
+_emailverification_email_sender_instances: EmailSenderBase | None = None
 _emailchanged_email_sender_instances: EmailSenderBase | None = None
 _booking_updated_status_email_sender_instances: EmailSenderBase | None = None
 

@@ -7,8 +7,10 @@ from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
 from app.infrastructure.otp.provider_factory import get_pwdchanged_sms_otp_sender
-from app.infrastructure.otp.provider_factory import get_pwdchanged_email_otp_sender
-from app.domains.security.providers.base import OtpSendResult
+from app.infrastructure.email.provider_factory import get_pwdchanged_email_otp_sender
+from app.infrastructure.email.base import (
+    EmailSendResult,
+)
 from app.domains.security.repository.sqlalchemy_repo import SecuritySQLAlchemyRepository
 
 
@@ -206,52 +208,54 @@ class PwdChangedOtpDispatchConsumerService:
                 raise
 
 
-    async def _send_with_retry(
-        self,
-        *,
-        channel: str,
-        destination: str,
-        otp: str,
-        purpose: str,
-        challenge_id: str,
-    ) -> OtpSendResult:
+    async def _send_with_retry(self, *, channel: str, destination: str, otp: str, purpose: str, challenge_id: str,) -> EmailSendResult:
         
-        last_result = OtpSendResult(
+        last_result = EmailSendResult(
             accepted=False,
             provider="UNKNOWN",
+            provider_message_id ="UNKNOWN",
             error_code="UNKNOWN",
             error_message="unknown",
         )
+        
+        # Build email content
+        subject = f"{settings.PWDCHANGED_OTP_EMAIL_SUBJECT_PREFIX}"
+        html_content = f"""
+            <html>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                    <h2 style="color: #d9534f;">
+                        Password Changing OTP Request Information
+                    </h2>
+                    <p>
+                        Your OTP-Code: <strong>{otp}</strong> and OTP-ID: <strong>{challenge_id}</strong>. This OTP expires in 5 minutes.
+                    </p>
+                </body>
+            </html>
+        """
 
         for attempt in range(1, self.SEND_MAX_ATTEMPTS + 1):
             try:
-                result = await asyncio.wait_for(
-                    self._send_once(
-                        channel=channel,
-                        destination=destination,
-                        otp=otp,
-                        purpose=purpose,
-                        challenge_id=challenge_id,
-                    ),
-                    timeout=self.SEND_PROVIDER_TIMEOUT_SECONDS,
+                result = await self.email_sender.send_email(
+                    to_email=destination,
+                    subject=subject,
+                    html_content=html_content,
                 )
-
                 if result.accepted:
                     return result
-
                 last_result = result
-
             except asyncio.TimeoutError:
-                last_result = OtpSendResult(
+                last_result = EmailSendResult(
                     accepted=False,
                     provider="UNKNOWN",
+                    provider_message_id ="UNKNOWN",
                     error_code="PROVIDER_TIMEOUT",
                     error_message=f"provider timeout > {self.SEND_PROVIDER_TIMEOUT_SECONDS}s",
                 )
             except Exception as exc:
-                last_result = OtpSendResult(
+                last_result = EmailSendResult(
                     accepted=False,
                     provider="UNKNOWN",
+                    provider_message_id ="UNKNOWN",
                     error_code="PROVIDER_EXCEPTION",
                     error_message=str(exc),
                 )
@@ -262,37 +266,6 @@ class PwdChangedOtpDispatchConsumerService:
         return last_result
 
 
-    async def _send_once(
-        self,
-        *,
-        channel: str,
-        destination: str,
-        otp: str,
-        purpose: str,
-        challenge_id: str,
-    ) -> OtpSendResult:
-        if channel == "EMAIL":
-            return await self.email_sender.send_otp(
-                to_email=destination,
-                otp=otp,
-                purpose=purpose,
-                challenge_id=challenge_id,
-            )
-
-        if channel == "MOBILE":
-            return await self.sms_sender.send_otp(
-                to_mobile=destination,
-                otp=otp,
-                purpose=purpose,
-                challenge_id=challenge_id,
-            )
-
-        return OtpSendResult(
-            accepted=False,
-            provider="UNKNOWN",
-            error_code="INVALID_CHANNEL",
-            error_message=f"unsupported channel={channel}",
-        )
 
 
     def _build_fernet(
