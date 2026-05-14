@@ -202,3 +202,16 @@
 2026-05-14 10:56:05 | INFO | ES client created for index: stations
 2026-05-14 10:56:08 | INFO | ES client created for index: routes
 2026-05-14 10:56:08 | INFO | ES client created for index: stations
+2026-05-14 10:57:43 | INFO | emailchanged_otp_outbox_worker started
+2026-05-14 10:57:53 | INFO | emailchanged_otp_consumer_worker started
+2026-05-14 10:57:58 | INFO | SpawnProcess-137-20538 | user:login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-14 10:57:57.873575 | 2026-05-14 10:57:58.252058 | 378 | None | 200
+2026-05-14 10:58:17 | INFO | SpawnProcess-137-20538 | user:emailchange:requestotp | 127.0.0.1 | POST | /api/v1/users/email/change/request-otp | 2026-05-14 10:58:17.240687 | 2026-05-14 10:58:17.350333 | 109 | None | 200
+2026-05-14 11:00:05 | INFO | ES client created for index: routes
+2026-05-14 11:00:05 | INFO | ES client created for index: stations
+2026-05-14 11:00:30 | INFO | emailchanged_otp_consumer_worker started
+2026-05-14 11:01:32 | INFO | ES client created for index: routes
+2026-05-14 11:01:32 | INFO | ES client created for index: stations
+2026-05-14 11:01:37 | INFO | ES client created for index: routes
+2026-05-14 11:01:37 | INFO | ES client created for index: stations
+2026-05-14 11:01:42 | INFO | ES client created for index: routes
+2026-05-14 11:01:42 | INFO | ES client created for index: stations

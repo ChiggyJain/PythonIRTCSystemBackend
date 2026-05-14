@@ -93,7 +93,7 @@ def get_emailchanged_email_otp_sender() -> EmailSenderBase:
         _emailchanged_email_sender_instances = SendGridEmailSender(
             api_key=_settings.SENDGRID_API_KEY,
             from_email=_settings.EMAILCHANGED_OTP_FROM_EMAIL,
-            subject_prefix=_settings.EMAILCHANGED_OTP_EMAIL_SUBJECT_PREFIX,
+            dry_run=_settings.SENDGRID_DRY_RUN,
         )
         return _emailchanged_email_sender_instances
     raise RuntimeError(f"Unsupported EMAILCHANGED OTP email provider: {provider}")
