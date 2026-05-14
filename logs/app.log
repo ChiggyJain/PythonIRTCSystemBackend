@@ -5,3 +5,69 @@
 2026-05-14 09:42:18 | INFO | ES client created for index: routes
 2026-05-14 09:42:18 | INFO | ES client created for index: stations
 2026-05-14 09:42:47 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 09:47:40 | INFO | booking_updated_status_outbox_worker started
+2026-05-14 09:47:46 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 09:53:43 | INFO | booking_updated_status_outbox_worker started
+2026-05-14 09:53:47 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 09:55:43 | INFO | ES client created for index: routes
+2026-05-14 09:55:43 | INFO | ES client created for index: stations
+2026-05-14 09:56:17 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:04:31 | INFO | ES client created for index: routes
+2026-05-14 10:04:31 | INFO | ES client created for index: stations
+2026-05-14 10:04:33 | INFO | ES client created for index: routes
+2026-05-14 10:04:33 | INFO | ES client created for index: stations
+2026-05-14 10:04:37 | INFO | ES client created for index: routes
+2026-05-14 10:04:37 | INFO | ES client created for index: stations
+2026-05-14 10:04:41 | INFO | ES client created for index: routes
+2026-05-14 10:04:41 | INFO | ES client created for index: stations
+2026-05-14 10:04:55 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:07:11 | INFO | ES client created for index: routes
+2026-05-14 10:07:11 | INFO | ES client created for index: stations
+2026-05-14 10:07:22 | INFO | ES client created for index: routes
+2026-05-14 10:07:22 | INFO | ES client created for index: stations
+2026-05-14 10:07:32 | INFO | ES client created for index: routes
+2026-05-14 10:07:32 | INFO | ES client created for index: stations
+2026-05-14 10:07:34 | INFO | ES client created for index: routes
+2026-05-14 10:07:34 | INFO | ES client created for index: stations
+2026-05-14 10:07:43 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:13:08 | INFO | ES client created for index: routes
+2026-05-14 10:13:08 | INFO | ES client created for index: stations
+2026-05-14 10:13:20 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:13:47 | INFO | ES client created for index: routes
+2026-05-14 10:13:47 | INFO | ES client created for index: stations
+2026-05-14 10:13:52 | INFO | ES client created for index: routes
+2026-05-14 10:13:52 | INFO | ES client created for index: stations
+2026-05-14 10:14:03 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:14:53 | INFO | ES client created for index: routes
+2026-05-14 10:14:53 | INFO | ES client created for index: stations
+2026-05-14 10:14:58 | INFO | ES client created for index: routes
+2026-05-14 10:14:58 | INFO | ES client created for index: stations
+2026-05-14 10:15:07 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:15:51 | INFO | ES client created for index: routes
+2026-05-14 10:15:51 | INFO | ES client created for index: stations
+2026-05-14 10:17:08 | INFO | ES client created for index: routes
+2026-05-14 10:17:08 | INFO | ES client created for index: stations
+2026-05-14 10:17:11 | INFO | ES client created for index: routes
+2026-05-14 10:17:11 | INFO | ES client created for index: stations
+2026-05-14 10:17:37 | INFO | ES client created for index: routes
+2026-05-14 10:17:37 | INFO | ES client created for index: stations
+2026-05-14 10:17:44 | INFO | ES client created for index: routes
+2026-05-14 10:17:44 | INFO | ES client created for index: stations
+2026-05-14 10:18:06 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:19:04 | INFO | ES client created for index: routes
+2026-05-14 10:19:04 | INFO | ES client created for index: stations
+2026-05-14 10:19:20 | INFO | ES client created for index: routes
+2026-05-14 10:19:20 | INFO | ES client created for index: stations
+2026-05-14 10:19:28 | INFO | ES client created for index: routes
+2026-05-14 10:19:28 | INFO | ES client created for index: stations
+2026-05-14 10:19:39 | INFO | booking_updated_status_send_email_consumer started
+2026-05-14 10:21:08 | INFO | ES client created for index: routes
+2026-05-14 10:21:08 | INFO | ES client created for index: stations
+2026-05-14 10:21:14 | INFO | ES client created for index: routes
+2026-05-14 10:21:14 | INFO | ES client created for index: stations
+2026-05-14 10:21:18 | INFO | ES client created for index: routes
+2026-05-14 10:21:18 | INFO | ES client created for index: stations
+2026-05-14 10:21:27 | INFO | ES client created for index: routes
+2026-05-14 10:21:27 | INFO | ES client created for index: stations
+2026-05-14 10:21:48 | INFO | ES client created for index: routes
+2026-05-14 10:21:48 | INFO | ES client created for index: stations

@@ -2,7 +2,9 @@
 from typing import Any
 import asyncio
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import (
+    Mail, Content
+)
 from app.infrastructure.email.base import (
     EmailSenderBase,
     EmailSendResult,
@@ -48,14 +50,18 @@ class SendGridEmailSender(EmailSenderBase):
         )
 
         if plain_text_content:
-            msg.plain_text_content = plain_text_content
+            msg.add_content(
+                Content(
+                    "text/plain",
+                    plain_text_content
+                )
+            )
         if html_content:
             msg.html_content = html_content
 
         try:
             
             response = await asyncio.to_thread(self._client.send, msg)
-            print(f"response: {response}")
             accepted = response.status_code in (200, 202)
             message_id = None
             if hasattr(response, "headers") and response.headers:
@@ -76,10 +82,10 @@ class SendGridEmailSender(EmailSenderBase):
                 error_message=f"sendgrid status code={response.status_code}",
             )
 
-        except Exception as exc:
+        except Exception as e:
             return EmailSendResult(
                 accepted=False,
                 provider=self._provider,
                 error_code="SENDGRID_EXCEPTION",
-                error_message=str(exc),
+                error_message=str(e),
             )
