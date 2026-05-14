@@ -57,7 +57,12 @@ class SendGridEmailSender(EmailSenderBase):
                 )
             )
         if html_content:
-            msg.html_content = html_content
+            msg.add_content(
+                Content(
+                    "text/html",
+                    html_content
+                )
+            )
 
         try:
             

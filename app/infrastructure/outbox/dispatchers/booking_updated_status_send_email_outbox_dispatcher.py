@@ -41,7 +41,7 @@ async def run_worker() -> None:
 
                 # Build email content
                 subject = f"{settings.BOOKING_UPDATED_STATUS_EMAIL_SUBJECT_PREFIX} - {booking_status}"
-                body = f"""
+                plain_text_content = f"""
                     Your booking {booking_id} status has been updated to: {booking_status}
                     Booking Details:
                     - Booking ID: {booking_id}
@@ -49,6 +49,44 @@ async def run_worker() -> None:
                     - Reason: {booking_status_reason}
                     Thank you for using IRTC.
                     """
+                html_content = f"""
+                    <html>
+                        <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                            <h2 style="color: #d9534f;">
+                                Booking Status Updated
+                            </h2>
+                            <p>
+                                Your booking-id: <strong>{booking_id} </strong> status has been updated to:
+                                <strong style="color: red;">{booking_status}</strong>
+                            </p>
+                            <h3>Booking Details</h3>
+                            <table 
+                                style="border-collapse: collapse;width: 400px;"
+                                border="1"
+                                cellpadding="10"
+                            >
+                                <tr>
+                                    <td><strong>Booking ID:</strong></td>
+                                    <td>{booking_id}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td style="color: red;">
+                                        {booking_status}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Reason:</strong></td>
+                                    <td>{booking_status_reason}</td>
+                                </tr>
+                            </table>
+                            <br>
+                            <p>
+                                Thank you for using <strong>IRTC</strong>.
+                            </p>
+                        </body>
+                    </html>
+                """
 
                 # Send email with retry
                 email_sent = False
@@ -56,7 +94,7 @@ async def run_worker() -> None:
                     result = await email_sender.send_email(
                         to_email=user_email,
                         subject=subject,
-                        plain_text_content=body,
+                        html_content=html_content,
                     )  
                     if result.accepted:
                         print(f"Email sent successfully for booking {booking_id} on attempt {attempt + 1}")
