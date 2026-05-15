@@ -18,9 +18,6 @@ settings = get_settings()
 
 class RoutesService:
 
-    OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_ROUTE_CREATED = "KAFKA_ROUTE_TOPIC"
-
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
         self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
@@ -43,7 +40,7 @@ class RoutesService:
             request_id = payload.get("request_id", "")
 
             # user level rate-limitter
-            user_rate_key = f"user:train:route:create:{user_id}"
+            user_rate_key = f"route:create:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.ROUTE_CREATE_API_RATE_LIMIT_REQUEST,
@@ -106,7 +103,7 @@ class RoutesService:
             await self.outbox_repo.add_outbox_event(
                 aggregate_type="ROUTES",
                 aggregate_id=str(route.id),
-                event_type=self.OUTBOX_EVENT_ROUTE_CREATED,
+                event_type="ROUTES_CREATE",
                 payload_json={
                     "route_id": route.id,
                     "train_details" : {
@@ -144,14 +141,14 @@ class RoutesService:
                         for rs in route_stations
                     ],
                     "route_status": route.status,
-                    "event_type": self.OUTBOX_EVENT_ROUTE_CREATED,
+                    "event_type": "ROUTES_CREATE",
                     "event_version": 1,
                     "created_by_user_id": user_id,
                     "correlation_id": correlation_id,
                     "request_id": request_id,
                     "event_created_at": str(now_ist()),
                 },
-                status=self.OUTBOX_STATUS_PENDING,
+                status="PENDING",
             )
 
             await self._db_session.commit()
