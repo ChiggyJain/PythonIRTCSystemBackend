@@ -81,3 +81,8 @@
 2026-05-15 10:55:32 | INFO | ES client instances created
 2026-05-15 10:55:32 | ERROR | ES indexing error: 'AsyncElasticsearch' object has no attribute 'update_document'
 2026-05-15 10:56:20 | INFO | ES client instances created
+2026-05-15 10:56:30 | INFO | ES client instances created
+2026-05-15 10:56:30 | ERROR | ES indexing error: 'AsyncElasticsearch' object has no attribute 'update_document'
+2026-05-15 10:56:44 | INFO | schedules_consumer_worker started
+2026-05-15 10:57:04 | INFO | ES client instances created
+2026-05-15 10:57:51 | INFO | SpawnProcess-9-71218 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 10:57:51.461613 | 2026-05-15 10:57:51.518187 | 56 | None | 200
