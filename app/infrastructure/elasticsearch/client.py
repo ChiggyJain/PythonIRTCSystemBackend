@@ -1,57 +1,84 @@
 
-
 from typing import Any, Optional
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, NotFoundError, RequestError
 from app.common.utils.logger import app_logger
 from app.infrastructure.elasticsearch.config import get_elasticsearch_config
 
 
 class ElasticsearchClient:
     
-    def __init__(self, client: AsyncElasticsearch, index_name: str):
+    def __init__(self, client: AsyncElasticsearch):
         self.client = client
-        self.index_name = index_name
     
 
-    async def index(
+    async def create_index_if_not_exists(self, index_name: str, mapping: dict[str, Any]) -> None:
+        try:
+            exists = await self.client.indices.exists(index=index_name)
+            if not exists:
+                await self.client.indices.create(index=index_name, body=mapping)
+                app_logger.info(f"Created ES index: {index_name}")
+        except Exception as e:
+            app_logger.error(f"Unexpected error creating ES index {index_name}: {e}")
+            raise
+    
+
+    async def index_document(
         self,
+        index_name: str,
         document: dict[str, Any],
         doc_id: Optional[str] = None,
     ) -> dict:
-        
-        return await self.client.index(
-            index=self.index_name,
-            id=doc_id,
-            document=document,
-            refresh=True
-        )
-    
-
-    async def get(self, doc_id: str) -> Optional[dict]:
         try:
-            return await self.client.get(index=self.index_name, id=doc_id)
+            return await self.client.index(
+                index=index_name,
+                id=doc_id,
+                document=document,
+                refresh=True
+            )
         except Exception as e:
-            app_logger.error(f"ES get error: {e}")
-            return None
+            app_logger.error(f"Unexpected ES index error for {index_name}: {e}")
+            raise
     
 
-    async def search(self, query: dict) -> dict:
-        return await self.client.search(index=self.index_name, body=query)
-    
-    
-    async def delete(self, doc_id: str) -> bool:
+    async def get_document(self, index_name: str, doc_id: str) -> Optional[dict]:
         try:
-            await self.client.delete(index=self.index_name, id=doc_id)
+            return await self.client.get(index=index_name, id=doc_id)
+        except Exception as e:
+            app_logger.error(f"Unexpected ES get error for {index_name}: {e}")
+            raise
+    
+
+    async def search_documents(self, index_name: str, query: dict) -> dict:
+        try:
+            return await self.client.search(index=index_name, body=query)
+        except Exception as e:
+            app_logger.error(f"Unexpected ES search error for {index_name}: {e}")
+            raise
+    
+    
+    async def delete_document(self, index_name: str, doc_id: str) -> bool:
+        try:
+            await self.client.delete(index=index_name, id=doc_id)
             return True
         except Exception as e:
-            app_logger.error(f"ES delete error: {e}")
-            return False
+            app_logger.error(f"Unexpected ES delete error for {index_name}: {e}")
+            raise
+    
+
+    async def update_document(self, index_name: str, doc_id: str, body: dict[str, Any]) -> dict:
+        try:
+            return await self.client.update(index=index_name, id=doc_id, body=body, refresh=True)
+        except Exception as e:
+            app_logger.error(f"Unexpected ES update error for {index_name}: {e}")
+            raise
+
     
     async def close(self) -> None:
         await self.client.close()
 
 
-def build_elasticsearch_client(index_name: str | None) -> ElasticsearchClient:
+
+def build_elasticsearch_client() -> ElasticsearchClient:
     config = get_elasticsearch_config()
     client_kwargs = {
         "hosts": [config.url],
@@ -61,5 +88,5 @@ def build_elasticsearch_client(index_name: str | None) -> ElasticsearchClient:
     if config.username and config.password:
         client_kwargs["basic_auth"] = (config.username, config.password)
     client = AsyncElasticsearch(**client_kwargs)
-    app_logger.info(f"ES client created for index: {index_name}")
-    return ElasticsearchClient(client=client, index_name=index_name)
+    app_logger.info("ES client created")
+    return ElasticsearchClient(client=client)
