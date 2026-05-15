@@ -147,12 +147,11 @@ async def run_worker():
                 if success:
                     await consumer.commit()
                     app_logger.info(
-                        f"Successfully index routes document for event_type: {event_type}, station_id: {payload.get('route_id')}"
+                        f"Successfully index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
                     )
-
                 else:
                     app_logger.error(
-                        f"Failed index routes document for event_type: {event_type}, station_id: {payload.get('route_id')}"
+                        f"Failed index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
                     )
 
             except Exception as exc:

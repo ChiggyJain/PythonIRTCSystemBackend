@@ -21,32 +21,19 @@ async def add_schedules_to_elasticsearch(
 
     try:
 
-        train_details = payload.get(
-            "train_details", {}
-        )
-
-        train_id = train_details.get(
-            "train_id"
-        )
+        train_details = payload.get("train_details", {})
+        train_id = train_details.get("train_id")
 
         if not train_id:
-
             app_logger.error(
                 "train_id missing in payload"
             )
-
             return False
 
         update_schedule_param = {
-            "schedule_id": payload.get(
-                "schedule_id"
-            ),
-            "departure_date": payload.get(
-                "departure_date", ""
-            ),
-            "total": train_details.get(
-                "total_seats", 0
-            ),
+            "schedule_id": payload.get("schedule_id"),
+            "departure_date": payload.get("departure_date", ""),
+            "total": train_details.get("total_seats", 0),
             "available": 0,
             "locked": 0,
             "booked": 0,
@@ -63,11 +50,9 @@ async def add_schedules_to_elasticsearch(
         return True
 
     except Exception as exc:
-
         app_logger.exception(
-            f"Schedule indexing failed: {exc}"
+            f"Exception occurs to add schedules into routes index document: {exc}"
         )
-
         return False
 
 
@@ -85,15 +70,12 @@ async def run_worker():
         ),
     )
 
-    es_client = build_elasticsearch_client()
-
+    es_client_instances = build_elasticsearch_client()
     routes_repo = RoutesElasticsearchRepository(
-        es_client_instances=es_client,
+        es_client_instances=es_client_instances,
         index_name=settings.ELASTICSEARCH_ROUTES_INDEX
     )
-
     await consumer.start()
-
     app_logger.info(
         "schedules_consumer_worker started"
     )
@@ -104,58 +86,47 @@ async def run_worker():
 
             try:
 
-                payload = json.loads(
-                    message.value.decode("utf-8")
-                )
-
-                event_type = payload.get(
-                    "event_type"
-                )
-
+                payload = json.loads(message.value.decode("utf-8"))
+                event_type = payload.get("event_type")
                 success = False
 
                 if event_type == "SCHEDULES_CREATE":
-
                     success = (
                         await add_schedules_to_elasticsearch(
                             routes_repo=routes_repo,
                             payload=payload
                         )
                     )
+                if event_type == "SCHEDULES_UPDATE":
+                    pass    
+                if event_type == "SCHEDULES_DELETE":
+                    pass
 
                 if success:
-
                     await consumer.commit()
-
                     app_logger.info(
-                        f"Committed offset "
-                        f"schedule_id="
-                        f"{payload.get('schedule_id')}"
+                        f"Successfully scheudles into index routes document for event_type: {event_type}, schedule_id: {payload.get('schedule_id')}"
                     )
 
                 else:
-
                     app_logger.error(
-                        f"Failed processing "
-                        f"schedule_id="
-                        f"{payload.get('schedule_id')}"
+                        f"Failed scheudles into index routes document for event_type: {event_type}, schedule_id: {payload.get('schedule_id')}"
                     )
 
             except Exception as exc:
-
                 app_logger.exception(
-                    f"Worker error: {exc}"
+                    f"Schedules worker processing error: {exc}"
                 )
 
                 await asyncio.sleep(1)
 
     finally:
-
+        app_logger.info(
+            "Close schedules consumer and elasticsearch client"
+        )
         await consumer.stop()
-
-        await es_client.close()
+        await es_client_instances.close()
 
 
 if __name__ == "__main__":
-
     asyncio.run(run_worker())
