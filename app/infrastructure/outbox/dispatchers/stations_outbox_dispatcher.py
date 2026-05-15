@@ -57,7 +57,7 @@ async def run_worker() -> None:
     )
     es_client_instances = build_elasticsearch_client()
     station_repo = StationElasticsearchRepository(
-        es_client_instances_instances=es_client_instances,
+        es_client_instances=es_client_instances,
         index_name=settings.ELASTICSEARCH_STATIONS_INDEX
     )
     await station_repo.create_index_if_not_exists()
