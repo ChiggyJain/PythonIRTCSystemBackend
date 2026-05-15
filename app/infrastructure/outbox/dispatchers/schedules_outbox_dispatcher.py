@@ -12,8 +12,11 @@ settings = get_settings()
 
 async def add_schedules_to_elasticsearch(payload: dict) -> bool:
     try:
-        es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
-        routes_repo = RoutesElasticsearchRepository(es_client)
+        es_client_instances = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
+        routes_repo = RoutesElasticsearchRepository(
+            es_client_instances=es_client_instances,
+            index_name=settings.ELASTICSEARCH_ROUTES_INDEX
+        )
         train_id = payload.get("train_details", {}).get("train_id", 0)
         update_schedule_param = {
             "schedule_id" : payload.get("schedule_id", 0),
@@ -24,8 +27,11 @@ async def add_schedules_to_elasticsearch(payload: dict) -> bool:
             "booked" : 0,
             "status" : payload.get("status", "A"),
         }
-        await routes_repo.upsert_schedule(train_id=train_id, schedules=update_schedule_param)
-        await es_client.close()
+        await routes_repo.upsert_schedule(
+            train_id=str(train_id), 
+            schedules=update_schedule_param
+        )
+        await es_client_instances.close()
         return True
     except Exception as e:
         app_logger.error(f"ES indexing error: {e}")
