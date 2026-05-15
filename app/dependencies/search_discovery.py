@@ -6,9 +6,13 @@ from app.domains.search_discovery.services.station_search_service import Station
 
 
 def get_train_search_service(request: Request) -> TrainSearchService:
-    es_client = request.app.state.routes_es_client
-    return TrainSearchService(es_client=es_client)
+    es_client_instances = request.app.state.es_client_instances
+    return TrainSearchService(
+        es_client_instances=es_client_instances
+    )
 
 def get_station_search_service(request: Request) -> StationSearchService:
-    es_client = request.app.state.stations_es_client
-    return StationSearchService(es_client=es_client)
+    es_client_instances = request.app.state.es_client_instances
+    return StationSearchService(
+        es_client_instances=es_client_instances
+    )
