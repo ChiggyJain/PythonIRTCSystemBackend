@@ -100,5 +100,5 @@ def build_elasticsearch_client() -> ElasticsearchClient:
     if config.username and config.password:
         client_kwargs["basic_auth"] = (config.username, config.password)
     client = AsyncElasticsearch(**client_kwargs)
-    app_logger.info("ES client created")
+    app_logger.info("ES client instances created")
     return ElasticsearchClient(client=client)

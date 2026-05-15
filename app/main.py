@@ -15,14 +15,12 @@ settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.es_client = build_elasticsearch_client()
+    app.state.es_client_instances = build_elasticsearch_client()
     try:
         yield
     finally:
         # graceful close
-        await app.state.routes_es_client.close()
-        await app.state.stations_es_client.close()
-
+        await app.state.es_client_instances.close()
 
 
 # Create App
@@ -60,7 +58,7 @@ async def health_check():
 @app.get("/routes_es_client_ready")
 async def readiness_check():
     try:
-        await app.state.routes_es_client.client.ping()
+        await app.state.es_client_instances.client.ping()
         return standardize_response(
             status_code=200,
             messages=["Elasticsearch services ready"],
