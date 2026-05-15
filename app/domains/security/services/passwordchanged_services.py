@@ -68,7 +68,7 @@ class PasswordChangeOtpService:
         try:
 
             # extra user-level rate limit (in addition to IP)
-            cacheKey = f"user:passwordchange:requestotp:{user_id}"
+            cacheKey = f"pwdchange:requestotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=cacheKey,
                 limit=settings.PWDCHANGED_OTP_API_RATE_LIMIT_REQUEST,
@@ -257,7 +257,7 @@ class PasswordChangeOtpService:
                 )
             
             # Extra user-level rate limit (in addition to route IP-based limit)
-            user_rate_key = f"user:passwordchange:requestotp:confirm:{user_id}"
+            user_rate_key = f"pwdchange:confirmotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.PWDCHANGED_CONFIRM_API_RATE_LIMIT_REQUEST,
