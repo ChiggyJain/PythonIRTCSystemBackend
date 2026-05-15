@@ -12,7 +12,7 @@ settings = get_settings()
 
 async def add_schedules_to_elasticsearch(payload: dict) -> bool:
     try:
-        es_client_instances = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
+        es_client_instances = build_elasticsearch_client()
         routes_repo = RoutesElasticsearchRepository(
             es_client_instances=es_client_instances,
             index_name=settings.ELASTICSEARCH_ROUTES_INDEX
