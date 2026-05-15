@@ -72,6 +72,9 @@ class ElasticsearchClient:
                 refresh=True
             )
             return True
+        except NotFoundError:
+            app_logger.warning(f"Document {doc_id} not found in index {index_name} for deletion")
+            return False
         except Exception as e:
             app_logger.error(f"Unexpected ES delete error for {index_name}: {e}")
             raise

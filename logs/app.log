@@ -68,3 +68,11 @@
 2026-05-15 10:50:56 | INFO | ES client instances created
 2026-05-15 10:51:00 | INFO | ES client instances created
 2026-05-15 10:51:05 | INFO | ES client instances created
+2026-05-15 10:52:01 | INFO | ES client instances created
+2026-05-15 10:52:01 | INFO | Created ES index: routes
+2026-05-15 10:52:01 | ERROR | Unexpected ES get error for routes: NotFoundError(404, "{'_index': 'routes', '_id': '1', 'found': False}")
+2026-05-15 10:52:40 | INFO | routes_consumer_worker started
+2026-05-15 10:52:40 | INFO | ES client instances created
+2026-05-15 10:52:40 | WARNING | Document not found in index=routes, id=1
+2026-05-15 10:53:57 | INFO | ES client instances created
+2026-05-15 10:54:41 | INFO | ES client instances created
