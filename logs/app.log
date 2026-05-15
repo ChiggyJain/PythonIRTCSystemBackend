@@ -168,3 +168,15 @@
 2026-05-15 16:18:46 | INFO | ES client instances created
 2026-05-15 16:18:55 | INFO | ES client instances created
 2026-05-15 16:18:58 | INFO | ES client instances created
+2026-05-15 16:20:15 | INFO | stations_outbox_worker started
+2026-05-15 16:20:19 | INFO | ES client instances created
+2026-05-15 16:20:19 | ERROR | Unexpected error creating ES index stations: BadRequestError(400, 'illegal_argument_exception', 'The difference between max_gram and min_gram in NGram Tokenizer must be less than or equal to: [1] but was [18]. This limit can be set by changing the [index.max_ngram_diff] index level setting.')
+2026-05-15 16:20:34 | INFO | ES client instances created
+2026-05-15 16:20:34 | ERROR | Unexpected error creating ES index stations: BadRequestError(400, 'illegal_argument_exception', 'The difference between max_gram and min_gram in NGram Tokenizer must be less than or equal to: [1] but was [18]. This limit can be set by changing the [index.max_ngram_diff] index level setting.')
+2026-05-15 16:22:10 | INFO | ES client instances created
+2026-05-15 16:22:19 | INFO | ES client instances created
+2026-05-15 16:22:30 | INFO | ES client instances created
+2026-05-15 16:22:38 | INFO | ES client instances created
+2026-05-15 16:23:18 | INFO | ES client instances created
+2026-05-15 16:23:24 | INFO | ES client instances created
+2026-05-15 16:23:30 | INFO | ES client instances created

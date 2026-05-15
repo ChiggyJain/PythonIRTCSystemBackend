@@ -11,11 +11,6 @@ STATIONS_INDEX_MAPPING = {
                     "tokenizer": "autocomplete_tokenizer",
                     "filter": ["lowercase"]
                 },
-                "substring_analyzer": {
-                    "type": "custom",
-                    "tokenizer": "substring_tokenizer",
-                    "filter": ["lowercase"]
-                },
                 "search_analyzer": {
                     "type": "custom",
                     "tokenizer": "standard",
@@ -29,12 +24,6 @@ STATIONS_INDEX_MAPPING = {
                     "max_gram" : 20,
                     "token_chars" : ["letter", "digit"]
                 },
-                "substring_tokenizer": {
-                    "type": "ngram",
-                    "min_gram": 2,
-                    "max_gram": 20,
-                    "token_chars": ["letter", "digit"]
-                },
             }
         }
     },
@@ -46,7 +35,7 @@ STATIONS_INDEX_MAPPING = {
             },
             "name": {
                 "type": "text",
-                "analyzer": "substring_analyzer",
+                "analyzer": "autocomplete_analyzer",
                 "search_analyzer": "search_analyzer",
                 "fields": {
                     "keyword": {
@@ -60,7 +49,7 @@ STATIONS_INDEX_MAPPING = {
             },
             "city": {
                 "type": "text",
-                "analyzer": "substring_analyzer",
+                "analyzer": "autocomplete_analyzer",
                 "search_analyzer": "search_analyzer",
             },
             "suggest": {
