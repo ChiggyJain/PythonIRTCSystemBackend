@@ -1,25 +1,23 @@
 
 import asyncio
 import json
-
-from redis import event
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
 from app.infrastructure.elasticsearch.client import build_elasticsearch_client
-from app.infrastructure.elasticsearch.repositories.station_repository import StationElasticsearchRepository
+from app.infrastructure.elasticsearch.repositories.station_repository import (
+    StationElasticsearchRepository
+)
 
 settings = get_settings()
 
 
-async def add_stations_to_elasticsearch(payload: dict) -> bool:
+async def add_station(
+    station_repo: StationElasticsearchRepository,
+    payload: dict
+) -> bool:
     try:
-        es_client_instances = build_elasticsearch_client()
-        station_repo = StationElasticsearchRepository(
-            es_client_instances=es_client_instances,
-            index_name=settings.ELASTICSEARCH_STATIONS_INDEX
-        )
-        await station_repo.create_index_if_not_exists()
+
         es_document = {
             "station_id": payload.get("station_id", 0),
             "name": payload.get("name", ""),
@@ -28,58 +26,88 @@ async def add_stations_to_elasticsearch(payload: dict) -> bool:
             "state": payload.get("state", ""),
             "suggest": {
                 "input": [
-                    v for v in [
+                    value for value in [
                         payload.get("name", ""),
                         payload.get("code", ""),
                         payload.get("city", "")
-                    ] if v
+                    ] if value
                 ],
                 "weight": 10
             }
         }
         await station_repo.index_document(
-            doc_id=str(payload.get("station_id", 0)),
+            doc_id=str(payload.get("station_id")),
             document=es_document
         )
-        await es_client_instances.close()
         return True
-    except Exception as e:
-        print(f"ES indexing error: {e}")
+
+    except Exception as exc:
+        app_logger.exception(
+            f"Exception occurs to add station index document: {exc}"
+        )
         return False
 
 
 async def run_worker() -> None:
+
     consumer = build_consumer(
         topic=settings.KAFKA_STATION_TOPIC,
         group_id=settings.KAFKA_STATION_TOPIC_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-stations-consumer",
     )
+    es_client_instances = build_elasticsearch_client()
+    station_repo = StationElasticsearchRepository(
+        es_client_instances_instances=es_client_instances,
+        index_name=settings.ELASTICSEARCH_STATIONS_INDEX
+    )
+    await station_repo.create_index_if_not_exists()
     await consumer.start()
     app_logger.info("stations_consumer_worker started")
+
     try:
+
         async for message in consumer:
             try:
+
                 payload = json.loads(message.value.decode("utf-8"))
-                topic_name = message.topic
-                event_type = payload.get("event_type", "")
+                event_type = payload.get("event_type")
                 success = False
-                print(f"Topic: {topic_name}, Payload: {payload}")
+
                 if event_type == "STATIONS_CREATE":
-                    success = await add_stations_to_elasticsearch(payload)
-                    if success:
-                        print(f"Successfully added stations to index-station using Station-ID: {payload.get('station_id')}")
-                    else:
-                        print(f"Failed to add stations to index-station using Station-ID: {payload.get('station_id')}")
-                if event_type == "STATIONS_UPDATE":
+                    success = await add_station(
+                        station_repo=station_repo,
+                        payload=payload
+                    )
+
+                elif event_type == "STATIONS_UPDATE":
                     pass
-                if event_type == "STATIONS_DELETE":
+
+                elif event_type == "STATIONS_DELETE":
                     pass
-                await consumer.commit()                
+
+                if success:
+                    await consumer.commit()
+                    app_logger.info(
+                        f"Offset committed for "
+                        f"station_id={payload.get('station_id')}"
+                    )
+                else:
+                    app_logger.error(
+                        f"Failed to add station index document station_id:{payload.get('station_id')}"
+                    )
+
             except Exception as exc:
-                print(f"stations_consumer_worker error: {exc}")
-                await asyncio.sleep(0.2)
+                app_logger.exception(
+                    f"Stations Worker processing error: {exc}"
+                )
+                await asyncio.sleep(1)
+
     finally:
+        app_logger.info(
+            "Close stations consumer and elasticsearch client"
+        )
         await consumer.stop()
+        await es_client_instances.close()
 
 
 if __name__ == "__main__":
