@@ -19,9 +19,12 @@ class RoutesElasticsearchRepository:
         )
     
     
-    async def index(self, document: dict[str, Any]) -> dict:
-        doc_id = str(document.get("train_id"))
-        return await self.es_client_instances.index(document=document, doc_id=doc_id)
+    async def index_document(self, doc_id: str, document: dict[str, Any]) -> dict:
+        return await self.es_client_instances.index_document(
+            index_name=self.index_name,
+            document=document,
+            doc_id=doc_id
+        )    
     
 
     async def get_by_id(self, train_id: int) -> Optional[dict]:
@@ -238,6 +241,9 @@ class RoutesElasticsearchRepository:
             ]
         }
 
-        return await self.es_client_instances.search(query=search_body)
+        return await self.es_client_instances.search_document(
+            index_name=self.index_name,
+            query=search_body
+        )
 
         

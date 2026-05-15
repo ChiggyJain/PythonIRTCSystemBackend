@@ -12,11 +12,12 @@ settings = get_settings()
 
 async def add_routes_to_elasticsearch(payload: dict) -> bool:
     try:
-        es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
-        routes_repo = RoutesElasticsearchRepository(es_client)
-        # Create index with mapping if not exists
+        es_client_instances = build_elasticsearch_client()
+        routes_repo = RoutesElasticsearchRepository(
+            es_client_instances=es_client_instances,
+            index_name=settings.ELASTICSEARCH_ROUTES_INDEX
+        )
         await routes_repo.create_index_if_not_exists()
-        # Prepare ES document (only required fields)
         route_id = payload.get('route_id', 0)
         train_details = payload.get("train_details")
         seatSummary = {
