@@ -12,7 +12,7 @@ from app.infrastructure.elasticsearch.repositories.station_repository import (
 settings = get_settings()
 
 
-async def add_station(
+async def add_station_to_elasticsearch(
     station_repo: StationElasticsearchRepository,
     payload: dict
 ) -> bool:
@@ -74,7 +74,7 @@ async def run_worker() -> None:
                 success = False
 
                 if event_type == "STATIONS_CREATE":
-                    success = await add_station(
+                    success = await add_station_to_elasticsearch(
                         station_repo=station_repo,
                         payload=payload
                     )
@@ -88,17 +88,16 @@ async def run_worker() -> None:
                 if success:
                     await consumer.commit()
                     app_logger.info(
-                        f"Offset committed for "
-                        f"station_id={payload.get('station_id')}"
+                        f"Successfully index station document for event_type: {event_type}, station_id: {payload.get('station_id')}"
                     )
                 else:
                     app_logger.error(
-                        f"Failed to add station index document station_id:{payload.get('station_id')}"
+                        f"Failed index station document for event_type: {event_type}, station_id: {payload.get('station_id')}"
                     )
 
             except Exception as exc:
                 app_logger.exception(
-                    f"Stations Worker processing error: {exc}"
+                    f"Stations worker processing error: {exc}"
                 )
                 await asyncio.sleep(1)
 
