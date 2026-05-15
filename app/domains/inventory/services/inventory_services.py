@@ -47,9 +47,6 @@ class InventoryService:
 
         try:
             
-            IDEMPOTENCY_EVENT_TYPE = "KAFKA_SCHEDULE_TOPIC"
-            IDEMPOTENCY_EVENT_KEY_PREFIX = "SCHEDULES_CREATED"
-
             schedule_id = int(payload.get("schedule_id", 0))
             train_details = payload.get("train_details") or {}
             seat_details = payload.get("seat_details") or []
@@ -74,12 +71,12 @@ class InventoryService:
                 return standardize_response(status_code=400, messages=["Invalid departure_date in payload"])
             
             # checking idempotency key
-            event_key = f"{IDEMPOTENCY_EVENT_KEY_PREFIX}:{schedule_id}"
+            event_key = f"SCHEDULE_INVENTORY_CREATE:{schedule_id}"
             existing = await self.idempotency_repo.get_idempotency_record_by_event_key(event_key)
             if existing:
                 return standardize_response(
                     status_code=201,
-                    messages=["Schedule already processed"],
+                    messages=["Schedule inventory initialization already processed"],
                     data={
                         "schedule_id": schedule_id,
                     }
@@ -126,14 +123,13 @@ class InventoryService:
 
             await self.idempotency_repo.add_idempotency_record(
                 event_key=event_key,
-                event_type=IDEMPOTENCY_EVENT_TYPE,
             )
 
             await self._db_session.commit()
 
             return standardize_response(
                 status_code=201,
-                messages=["Schedule processed"],
+                messages=["Schedule inventory initialization processed"],
                 data={
                     "schedule_id": schedule_id,
                 }
@@ -144,7 +140,7 @@ class InventoryService:
             msg = str(getattr(ex, "orig", ex)).lower()
             return standardize_response(
                 status_code=400,
-                messages=[f"Unable to create train route due to data constraint violation. {msg}"],
+                messages=[f"Unable to initialize schedule inventory due to data constraint violation. {msg}"],
             )
         
         except BaseAppException as e:
