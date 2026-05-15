@@ -82,7 +82,7 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "MASTERDATA_SCHEDULES", "outbox_repo": outbox_repo
+                                    "retry_handler_type": "SCHEDULES", "outbox_repo": outbox_repo
                                 }
                                 outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {
