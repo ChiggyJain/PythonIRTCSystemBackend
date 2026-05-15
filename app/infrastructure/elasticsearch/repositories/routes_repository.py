@@ -8,7 +8,7 @@ from app.infrastructure.elasticsearch.mappings.routes_mapping import ROUTES_INDE
 class RoutesElasticsearchRepository:
     
     def __init__(self, es_client_instances: ElasticsearchClient, index_name: str):
-        self.es_client_instances_client_instances = es_client_instances
+        self.es_client_instances = es_client_instances
         self.index_name = index_name
     
 
