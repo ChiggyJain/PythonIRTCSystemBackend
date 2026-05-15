@@ -7,34 +7,23 @@ from app.infrastructure.elasticsearch.mappings.stations_mapping import STATIONS_
 
 class StationElasticsearchRepository:
     
-    def __init__(self, es_client: ElasticsearchClient):
-        self.es = es_client
+    def __init__(self, es_client_instances: ElasticsearchClient, index_name: str):
+        self.es_client_instances_instances = es_client_instances
+        self.index_name = index_name
     
 
     async def create_index_if_not_exists(self) -> None:
-        try:
-            exists = await self.es.client.indices.exists(index=self.es.index_name)
-            if not exists:
-                await self.es.client.indices.create(
-                    index=self.es.index_name,
-                    body=STATIONS_INDEX_MAPPING
-                )
-                app_logger.info(f"Created ES index: {self.es.index_name}")
-        except Exception as e:
-            app_logger.error(f"Failed to create ES index: {e}")
-            raise
+        await self.es_client_instances_instances.create_index_if_not_exists(self.index_name, STATIONS_INDEX_MAPPING)
     
 
-    async def index(self, document: dict[str, Any]) -> dict:
-        doc_id = str(document.get("station_id"))
-        return await self.es.index(document=document, doc_id=doc_id)
+    async def index_document(self, doc_id: str, document: dict[str, Any]) -> dict:
+        return await self.es_client_instances_instances.index_document(
+            index_name=self.index_name,
+            document=document,
+            doc_id=doc_id
+        )    
     
-
-    async def get_by_id(self, station_id: int) -> Optional[dict]:
-        return await self.es.get(doc_id=str(station_id))
-    
-    
-    async def search_dropdown(
+    async def search_stations(
         self,
         *,
         query: str,
@@ -105,4 +94,7 @@ class StationElasticsearchRepository:
             ]
         }
 
-        return await self.es.search(query=search_body)
+        return await self.es_client_instances_instances.search_document(
+            index_name=self.index_name,
+            query=search_body
+        )

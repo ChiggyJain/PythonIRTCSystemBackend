@@ -51,7 +51,7 @@ class ElasticsearchClient:
             raise
     
 
-    async def search_documents(self, index_name: str, query: dict) -> dict:
+    async def search_document(self, index_name: str, query: dict) -> dict:
         try:
             return await self.client.search(index=index_name, body=query)
         except Exception as e:

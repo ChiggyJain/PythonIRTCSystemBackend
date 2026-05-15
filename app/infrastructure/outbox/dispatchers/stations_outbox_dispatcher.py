@@ -14,8 +14,11 @@ settings = get_settings()
 
 async def add_stations_to_elasticsearch(payload: dict) -> bool:
     try:
-        es_client = build_elasticsearch_client(settings.ELASTICSEARCH_STATIONS_INDEX)
-        station_repo = StationElasticsearchRepository(es_client)
+        es_client_instances = build_elasticsearch_client()
+        station_repo = StationElasticsearchRepository(
+            es_client_instances=es_client_instances,
+            index_name=settings.ELASTICSEARCH_STATIONS_INDEX
+        )
         # Create index with mapping if not exists
         await station_repo.create_index_if_not_exists()
         # Prepare ES document (only required fields)
@@ -37,8 +40,11 @@ async def add_stations_to_elasticsearch(payload: dict) -> bool:
             }
         }
         # Index/upsert the document
-        await station_repo.index(es_document)
-        await es_client.close()
+        await station_repo.index_document(
+            doc_id=payload.get("station_id", 0),
+            document=es_document
+        )
+        await es_client_instances.close()
         return True
     except Exception as e:
         print(f"ES indexing error: {e}")
