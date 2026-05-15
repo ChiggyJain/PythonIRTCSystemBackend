@@ -159,7 +159,7 @@ services:
       --bootstrap-server kafka:9092
       --create
       --if-not-exists
-      --topic payment-success
+      --topic payment-update-status
       --partitions 6
       --replication-factor 1 &&
 

@@ -177,10 +177,9 @@ class Settings(BaseSettings):
     INVENTORY_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
     PAYMENT_SERVICE_BASE_URL: str ="http://127.0.0.1:8000"
 
-    KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC: str = "payment-success"
-    KAFKA_BOOKING_PAYMENT_FAILED_TOPIC: str = "payment-failed"
-    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP: str = "payment-successfailed-consumer-group"
-    KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES: int = 6
+    KAFKA_PAYMENT_UPDATED_STATUS_TOPIC: str = "payment-update-status"
+    KAFKA_PAYMENT_UPDATED_STATUS_TOPIC_CONSUMER_GROUP: str = "payment-update-statusfailed-consumer-group"
+    PAYMENT_UPDATED_STATUS_OUTBOX_MAX_RETRIES: int = 6
         
     KAFKA_BOOKING_UPDATED_STATUS_TOPIC: str = "booking-updated-status"
     KAFKA_BOOKING_UPDATED_STATUS_EMAIL_CONSUMER_GROUP: str = "booking-updated-status-email-consumer-group"

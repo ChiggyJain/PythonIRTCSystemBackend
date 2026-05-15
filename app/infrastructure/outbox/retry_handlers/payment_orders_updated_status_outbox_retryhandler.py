@@ -20,7 +20,7 @@ class PaymentOrdersUpdatedStatusOutboxRetryHandler(OutboxBaseRetryHandler):
 
         now = now_ist()
         retry_count_after = int(event.retry_count) + 1
-        max_retries = int(settings.KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_OUTBOX_MAX_RETRIES)
+        max_retries = int(settings.PAYMENT_UPDATED_STATUS_OUTBOX_MAX_RETRIES)
 
         if retry_count_after>=max_retries:
             await self.outbox_repo.mark_outbox_failed(

@@ -12,10 +12,9 @@ settings = get_settings()
 async def run_worker() -> None:
     consumer = build_consumer(
         topic=[
-            settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC,
-            settings.KAFKA_BOOKING_PAYMENT_FAILED_TOPIC,
+            settings.KAFKA_PAYMENT_UPDATED_STATUS_TOPIC,
         ],
-        group_id=settings.KAFKA_BOOKING_PAYMENT_SUCCESSFAILED_TOPIC_CONSUMER_GROUP,
+        group_id=settings.KAFKA_PAYMENT_UPDATED_STATUS_TOPIC_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-payment-orders-updated-status-consumer",
     )
     await consumer.start()
@@ -25,13 +24,14 @@ async def run_worker() -> None:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 topic_name = message.topic
+                payment_order_status = payload.get("payment_order_status", "")
                 print(f"Topic: {topic_name}, Payload: {payload}")
                 async with AsyncSessionLocal() as db_session:
                     service = BookingService(db_session)
-                    if (topic_name == settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC):
+                    if (payment_order_status == "CAPTURED"):
                         response = await service.process_booking_payment_orders_success_details(payload=payload)
                         print(f"Consumer response: {json.loads(response.body)}")
-                    elif (topic_name == settings.KAFKA_BOOKING_PAYMENT_FAILED_TOPIC):
+                    elif (topic_name!="CAPTURED"):
                         response = await service.process_booking_payment_orders_failed_details(payload=payload)
                         print(f"Consumer response: {json.loads(response.body)}")
                     await consumer.commit()

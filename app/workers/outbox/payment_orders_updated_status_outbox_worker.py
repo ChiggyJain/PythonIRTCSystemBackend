@@ -54,10 +54,8 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.KAFKA_BOOKING_PAYMENT_SUCCESS_TOPIC
-                    if payload["payment_order_status"] != "CAPTURED":
-                        topic = settings.KAFKA_BOOKING_PAYMENT_FAILED_TOPIC
-
+                    topic = settings.KAFKA_PAYMENT_UPDATED_STATUS_TOPIC
+                    
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
