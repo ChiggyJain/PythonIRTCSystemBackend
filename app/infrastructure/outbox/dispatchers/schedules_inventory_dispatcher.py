@@ -53,7 +53,7 @@ async def run_worker() -> None:
                     topic_name = message.topic
                     event_type = payload.get("event_type", "")
                     success = False
-                    print(f"Topic: {topic_name}, Payload: {payload}")
+                    app_logger.info(f"Topic: {topic_name}, Payload: {payload}")
                     if event_type == "SCHEDULES_CREATE":
                         success = await initialize_schedule_inventory_process_details(payload)    
                     if event_type == "SCHEDULES_UPDATE":
@@ -61,14 +61,14 @@ async def run_worker() -> None:
                     if event_type == "SCHEDULES_DELETE":
                         pass
                     if success:
-                        print(f"Successfully schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
+                        app_logger.info(f"Successfully schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
                         await consumer.commit()
                     else:
-                        print(f"Failed schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
+                        app_logger.error(f"Failed schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
             except asyncio.TimeoutError:
                 continue    
             except Exception as exc:
-                print(f"schedules_inventory_consumer_worker error: {exc}")
+                app_logger.exception(f"schedules_inventory_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
                 
     finally:
