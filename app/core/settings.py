@@ -131,7 +131,7 @@ class Settings(BaseSettings):
 
     # Station KAFKA TOPIC and CONSUMER
     KAFKA_STATION_TOPIC: str = "station-created"
-    KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP: str = "station-events-consumer-group"
+    KAFKA_STATION_TOPIC_CONSUMER_GROUP: str = "station-events-consumer-group"
     STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER

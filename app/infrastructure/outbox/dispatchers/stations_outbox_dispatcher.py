@@ -46,7 +46,7 @@ async def index_to_elasticsearch(payload: dict) -> bool:
 async def run_worker() -> None:
     consumer = build_consumer(
         topic=settings.KAFKA_STATION_TOPIC,
-        group_id=settings.KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP,
+        group_id=settings.KAFKA_STATION_TOPIC_CONSUMER_GROUP,
         client_id=f"{settings.KAFKA_CLIENT_ID}-stations-consumer",
     )
     await consumer.start()
