@@ -39,3 +39,15 @@
 2026-05-15 02:46:04 | INFO | ES client created for index: stations
 2026-05-15 02:49:12 | INFO | ES client created for index: routes
 2026-05-15 02:49:12 | INFO | ES client created for index: stations
+2026-05-15 10:28:15 | INFO | ES client instances created
+2026-05-15 10:28:55 | INFO | SpawnProcess-1-63436 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-15 10:28:54.773124 | 2026-05-15 10:28:55.344789 | 571 | None | 200
+2026-05-15 10:29:05 | INFO | SpawnProcess-1-63436 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-15 10:29:05.393738 | 2026-05-15 10:29:05.394631 | 0 |  | 500
+2026-05-15 10:31:20 | INFO | stations_outbox_worker started
+2026-05-15 10:31:29 | INFO | stations_consumer_worker started
+2026-05-15 10:31:34 | INFO | SpawnProcess-1-63436 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-15 10:31:34.570016 | 2026-05-15 10:31:34.612569 | 42 | None | 201
+2026-05-15 10:31:36 | INFO | ES client instances created
+2026-05-15 10:31:36 | ERROR | Unexpected error creating ES index stations: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
+2026-05-15 10:31:45 | ERROR | Unexpected ES search error for stations: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
+2026-05-15 10:31:45 | INFO | SpawnProcess-1-63436 | search:stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-15 10:31:45.874748 | 2026-05-15 10:31:45.948824 | 74 | None | 503
+2026-05-15 10:33:41 | INFO | ES client instances created
+2026-05-15 10:33:41 | ERROR | Unexpected error creating ES index stations: Connection error caused by: ConnectionError(Connection error caused by: ClientConnectorError(Cannot connect to host 127.0.0.1:9200 ssl:default [Connect call failed ('127.0.0.1', 9200)]))
