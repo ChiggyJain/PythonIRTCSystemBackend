@@ -135,8 +135,8 @@ class Settings(BaseSettings):
     STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER
-    KAFKA_TRAIN_CREATED_TOPIC: str = "train-created"
-    KAFKA_TRAIN_CREATED_TOPIC_CONSUMER_GROUP: str = "train-created-consumer-group"
+    KAFKA_TRAIN_TOPIC: str = "train-created"
+    KAFKA_TRAIN_TOPIC_CONSUMER_GROUP: str = "train-created-consumer-group"
     TRAIN_OUTBOX_MAX_RETRIES: int = 6
     
     # Route KAFKA TOPIC and CONSUMER
