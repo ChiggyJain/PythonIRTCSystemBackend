@@ -58,7 +58,7 @@ class OutboxEvents(Base):
     aggregate_id: Mapped[str] = mapped_column(String(100), nullable=False)
     
     # Event name/version used by workers and Kafka routing.
-    # Example: PWDCHANGED_OTP_DISPATCH_REQUESTED_V1
+    # Example: PWDCHANGED_OTP_REQUESTED_V1
     event_type: Mapped[str] = mapped_column(String(80), nullable=False)
     
     # Event body (JSON) required by downstream workers/consumers.
