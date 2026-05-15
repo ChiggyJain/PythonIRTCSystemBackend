@@ -146,7 +146,7 @@ async def run_worker() -> None:
                             db_event = await outbox_repo.get_by_id(event.id)
                             if db_event:
                                 retry_handler = OutboxRetryHandlerFactory.getOutboxRetryHandler(
-                                    retry_handler_type="PWDCHANGED_OTP",
+                                    retry_handler_type="EMAILCHANGED_OTP",
                                     outbox_repo=outbox_repo
                                 )
                                 await retry_handler.handle(
