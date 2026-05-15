@@ -75,7 +75,7 @@ async def run_worker() -> None:
                     outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                     events = await outbox_repo.fetch_pending_outbox_events(
                         aggregate_type="OTP_CHALLENGE", 
-                        event_type="PWDCHANGED_OTP_REQUESTED",
+                        event_type="EMAILVERIFICATION_OTP_REQUESTED",
                         limit=BATCH_SIZE, 
                         now_time=now_ist(),
                     )
