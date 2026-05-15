@@ -199,3 +199,12 @@
 2026-05-15 16:42:01 | INFO | Shutdown signal received
 2026-05-15 16:42:01 | INFO | Gracefully shutting down
 2026-05-15 16:42:01 | INFO | Shutdown completed
+2026-05-15 16:46:23 | INFO | routes_outbox_worker started
+2026-05-15 16:46:25 | INFO | ES client instances created
+2026-05-15 16:46:25 | INFO | Created ES index: routes
+2026-05-15 16:46:28 | INFO | routes_consumer_worker started
+2026-05-15 16:46:28 | WARNING | Document not found in index=routes, id=1
+2026-05-15 16:46:28 | INFO | Successfully index routes document for event_type: ROUTES_CREATE, route_id: 1
+2026-05-15 16:46:51 | INFO | Shutdown signal received
+2026-05-15 16:46:51 | INFO | Gracefully shutting down
+2026-05-15 16:46:51 | INFO | Shutdown completed
