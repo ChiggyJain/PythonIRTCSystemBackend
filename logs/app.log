@@ -209,3 +209,21 @@
 2026-05-15 16:46:51 | INFO | Gracefully shutting down
 2026-05-15 16:46:51 | INFO | Shutdown completed
 2026-05-15 17:45:57 | INFO | ES client instances created
+2026-05-15 17:46:04 | INFO | stations_outbox_worker started
+2026-05-15 17:46:09 | INFO | ES client instances created
+2026-05-15 17:46:09 | INFO | Created ES index: stations
+2026-05-15 17:46:12 | INFO | stations_consumer_worker started
+2026-05-15 17:46:12 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 1
+2026-05-15 17:46:12 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 2
+2026-05-15 17:46:23 | INFO | Shutdown signal received
+2026-05-15 17:46:24 | INFO | Flushing Kafka producer
+2026-05-15 17:46:24 | INFO | Stopping Kafka producer
+2026-05-15 17:46:24 | INFO | Outbox worker shutdown completed
+2026-05-15 17:46:34 | INFO | Shutdown signal received
+2026-05-15 17:46:34 | INFO | Gracefully shutting down
+2026-05-15 17:46:34 | INFO | Shutdown completed
+2026-05-15 17:48:06 | INFO | stations_outbox_worker started
+2026-05-15 17:48:07 | INFO | Shutdown signal received
+2026-05-15 17:48:08 | INFO | Flushing Kafka producer
+2026-05-15 17:48:08 | INFO | Stopping Kafka producer
+2026-05-15 17:48:08 | INFO | Outbox worker shutdown completed
