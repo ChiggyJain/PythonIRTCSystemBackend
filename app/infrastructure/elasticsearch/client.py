@@ -46,6 +46,11 @@ class ElasticsearchClient:
                 index=index_name, 
                 id=doc_id
             )
+        except NotFoundError:
+            app_logger.warning(
+                f"Document not found in index={index_name}, id={doc_id}"
+            )
+            return None
         except Exception as e:
             app_logger.error(f"Unexpected ES get error for {index_name}: {e}")
             raise
