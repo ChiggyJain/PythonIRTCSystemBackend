@@ -8,16 +8,16 @@ from app.infrastructure.elasticsearch.mappings.stations_mapping import STATIONS_
 class StationElasticsearchRepository:
     
     def __init__(self, es_client_instances: ElasticsearchClient, index_name: str):
-        self.es_client_instances_instances = es_client_instances
+        self.es_client_instances = es_client_instances
         self.index_name = index_name
     
 
     async def create_index_if_not_exists(self) -> None:
-        await self.es_client_instances_instances.create_index_if_not_exists(self.index_name, STATIONS_INDEX_MAPPING)
+        await self.es_client_instances.create_index_if_not_exists(self.index_name, STATIONS_INDEX_MAPPING)
     
 
     async def index_document(self, doc_id: str, document: dict[str, Any]) -> dict:
-        return await self.es_client_instances_instances.index_document(
+        return await self.es_client_instances.index_document(
             index_name=self.index_name,
             document=document,
             doc_id=doc_id
@@ -94,7 +94,7 @@ class StationElasticsearchRepository:
             ]
         }
 
-        return await self.es_client_instances_instances.search_document(
+        return await self.es_client_instances.search_document(
             index_name=self.index_name,
             query=search_body
         )

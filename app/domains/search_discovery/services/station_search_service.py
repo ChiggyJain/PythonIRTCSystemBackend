@@ -3,14 +3,20 @@ from app.core.exceptions import BaseAppException
 from app.core.response import (
     standardize_response, 
 )
+from app.core.settings import get_settings
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.station_repository import StationElasticsearchRepository
+
+settings = get_settings()
 
 
 class StationSearchService:
 
-    def __init__(self, es_client: ElasticsearchClient):
-        self.station_es_repo = StationElasticsearchRepository(es_client)
+    def __init__(self, es_client_instances: ElasticsearchClient):
+        self.station_es_repo = StationElasticsearchRepository(
+            es_client_instances=es_client_instances,
+            index_name=settings.ELASTICSEARCH_STATIONS_INDEX
+        )
 
 
     async def search_stations(
@@ -21,7 +27,7 @@ class StationSearchService:
     ) -> dict:
         
         try:
-            es_result = await self.station_es_repo.search_dropdown(
+            es_result = await self.station_es_repo.search_stations(
                 query=q,
                 size=size,
             )
