@@ -86,3 +86,34 @@
 2026-05-15 10:56:44 | INFO | schedules_consumer_worker started
 2026-05-15 10:57:04 | INFO | ES client instances created
 2026-05-15 10:57:51 | INFO | SpawnProcess-9-71218 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 10:57:51.461613 | 2026-05-15 10:57:51.518187 | 56 | None | 200
+2026-05-15 15:35:17 | INFO | ES client instances created
+2026-05-15 15:35:18 | INFO | stations_outbox_worker started
+2026-05-15 15:35:57 | INFO | ES client instances created
+2026-05-15 15:35:57 | INFO | Created ES index: stations
+2026-05-15 15:36:01 | INFO | stations_consumer_worker started
+2026-05-15 15:36:17 | INFO | SpawnProcess-1-12445 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-15 15:36:17.413657 | 2026-05-15 15:36:17.791832 | 378 | None | 200
+2026-05-15 15:36:44 | INFO | SpawnProcess-1-12445 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-15 15:36:44.381975 | 2026-05-15 15:36:44.396458 | 14 | None | 201
+2026-05-15 15:36:45 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 1
+2026-05-15 15:36:49 | INFO | SpawnProcess-1-12445 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-15 15:36:49.219689 | 2026-05-15 15:36:49.296212 | 76 | None | 201
+2026-05-15 15:36:51 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 2
+2026-05-15 15:36:54 | INFO | SpawnProcess-1-12445 | trains:create | 127.0.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-15 15:36:54.919282 | 2026-05-15 15:36:54.935994 | 16 | None | 201
+2026-05-15 15:36:59 | INFO | SpawnProcess-1-12445 | routes:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-15 15:36:59.365558 | 2026-05-15 15:36:59.372193 | 6 | None | 400
+2026-05-15 15:37:10 | INFO | SpawnProcess-1-12445 | routes:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-15 15:37:10.455341 | 2026-05-15 15:37:10.539995 | 84 | None | 201
+2026-05-15 15:37:19 | INFO | SpawnProcess-1-12445 | schedules:create | 127.0.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-15 15:37:19.450414 | 2026-05-15 15:37:19.469782 | 19 | None | 201
+2026-05-15 15:37:27 | INFO | SpawnProcess-1-12445 | search:stations | 127.0.0.1 | GET | /api/v1/search/stations | 2026-05-15 15:37:27.371125 | 2026-05-15 15:37:27.421493 | 50 | None | 200
+2026-05-15 15:37:48 | INFO | routes_outbox_worker started
+2026-05-15 15:38:04 | INFO | ES client instances created
+2026-05-15 15:38:07 | INFO | routes_consumer_worker started
+2026-05-15 15:38:07 | INFO | Successfully index routes document for event_type: ROUTES_CREATE, route_id: 1
+2026-05-15 15:38:37 | INFO | schedules_outbox_worker started
+2026-05-15 15:39:01 | INFO | ES client instances created
+2026-05-15 15:39:04 | INFO | schedules_consumer_worker started
+2026-05-15 15:39:04 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:39:27 | INFO | SpawnProcess-1-12445 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 15:39:27.250346 | 2026-05-15 15:39:27.294580 | 44 | None | 200
+2026-05-15 15:39:53 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 15:40:00 | INFO | SpawnProcess-1-12445 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 15:40:00.004706 | 2026-05-15 15:40:00.010244 | 5 | None | 200
+2026-05-15 15:40:02 | INFO | SpawnProcess-1-12445 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 15:40:02.658710 | 2026-05-15 15:40:02.663290 | 4 | None | 200
+2026-05-15 15:43:02 | INFO | ES client instances created
+2026-05-15 15:43:21 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:45:18 | INFO | ES client instances created
+2026-05-15 15:45:31 | INFO | ES client instances created

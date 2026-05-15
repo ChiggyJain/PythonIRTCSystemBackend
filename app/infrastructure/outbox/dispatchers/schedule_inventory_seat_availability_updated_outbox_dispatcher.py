@@ -81,7 +81,7 @@ async def run_worker():
     )
     await consumer.start()
     app_logger.info(
-        "schedule inventory consumer started"
+        "schedule inventory seat availability updated onsumer started"
     )
 
     try:
@@ -116,7 +116,7 @@ async def run_worker():
 
     finally:
         app_logger.info(
-            "Close schedule inventory consumer and elasticsearch client"
+            "Close schedule inventory seat availability updated consumer and elasticsearch client"
         )
         await consumer.stop()
         await es_client_instances.close()
