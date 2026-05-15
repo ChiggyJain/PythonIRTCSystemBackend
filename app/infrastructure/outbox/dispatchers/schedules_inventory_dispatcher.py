@@ -17,8 +17,9 @@ async def initialize_schedule_inventory_process_details(payload: dict) -> bool:
         service = InventoryService(db_session=db)
         response = await service.process_train_schedule_created_event_for_inventory(payload=payload)
         result = json.loads(response.body)
-        return True
-
+        if result.get("status_code") == 201:
+            return True
+        return False
 
 async def run_worker() -> None:
     consumer = build_consumer(
@@ -37,16 +38,16 @@ async def run_worker() -> None:
                 success = False
                 print(f"Topic: {topic_name}, Payload: {payload}")
                 if event_type == "SCHEDULES_CREATE":
-                    success = await initialize_schedule_inventory_process_details(payload)
-                    if success:
-                        print(f"Successfully initialize schedule inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
-                    else:
-                        print(f"Fail to initialize schedule inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                    success = await initialize_schedule_inventory_process_details(payload)    
                 if event_type == "SCHEDULES_UPDATE":
                     pass
                 if event_type == "SCHEDULES_DELETE":
                     pass
-                await consumer.commit()
+                if success:
+                    print(f"Successfully schedule inventory details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
+                    await consumer.commit()
+                else:
+                    print(f"Failed schedule inventory details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
             except Exception as exc:
                 print(f"schedules_inventory_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)

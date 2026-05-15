@@ -144,12 +144,12 @@ class InventoryService:
             )
         
         except BaseAppException as e:
-            print(f"e: {ex}")
+            print(f"e: {e}")
             await self._db_session.rollback()
             raise e
         
         except Exception as e:
-            print(f"e: {ex}")
+            print(f"e: {e}")
             await self._db_session.rollback()
             return standardize_response(
                 status_code=500,

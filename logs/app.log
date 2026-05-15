@@ -118,3 +118,19 @@
 2026-05-15 15:45:18 | INFO | ES client instances created
 2026-05-15 15:45:31 | INFO | ES client instances created
 2026-05-15 15:45:53 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:46:08 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 15:46:31 | INFO | ES client instances created
+2026-05-15 15:46:46 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:46:50 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 15:52:21 | INFO | ES client instances created
+2026-05-15 15:52:33 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:52:41 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 15:53:35 | INFO | ES client instances created
+2026-05-15 15:53:44 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 15:53:52 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 15:54:54 | INFO | ES client instances created
+2026-05-15 15:55:01 | INFO | ES client instances created
+2026-05-15 15:55:09 | INFO | ES client instances created
+2026-05-15 15:55:33 | INFO | ES client instances created
+2026-05-15 15:55:41 | INFO | ES client instances created
+2026-05-15 15:55:51 | INFO | ES client instances created
