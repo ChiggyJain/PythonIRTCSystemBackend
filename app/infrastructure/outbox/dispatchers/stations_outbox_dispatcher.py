@@ -1,6 +1,8 @@
 
 import asyncio
 import json
+
+from redis import event
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
@@ -10,7 +12,7 @@ from app.infrastructure.elasticsearch.repositories.station_repository import Sta
 settings = get_settings()
 
 
-async def index_to_elasticsearch(payload: dict) -> bool:
+async def add_stations_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_STATIONS_INDEX)
         station_repo = StationElasticsearchRepository(es_client)
@@ -56,12 +58,19 @@ async def run_worker() -> None:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 topic_name = message.topic
+                event_type = payload.get("event_type", "")
+                success = False
                 print(f"Topic: {topic_name}, Payload: {payload}")
-                success = await index_to_elasticsearch(payload)
-                if success:
-                    print(f"Successfully added stations to index-station using Station-ID: {payload.get('station_id')}")
-                else:
-                    print(f"Failed to add stations to index-station using Station-ID: {payload.get('station_id')}")
+                if event_type == "STATIONS_CREATE":
+                    success = await add_stations_to_elasticsearch(payload)
+                    if success:
+                        print(f"Successfully added stations to index-station using Station-ID: {payload.get('station_id')}")
+                    else:
+                        print(f"Failed to add stations to index-station using Station-ID: {payload.get('station_id')}")
+                if event_type == "STATIONS_UPDATE":
+                    pass
+                if event_type == "STATIONS_DELETE":
+                    pass
                 await consumer.commit()                
             except Exception as exc:
                 print(f"stations_consumer_worker error: {exc}")
