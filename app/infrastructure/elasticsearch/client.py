@@ -42,7 +42,10 @@ class ElasticsearchClient:
 
     async def get_document(self, index_name: str, doc_id: str) -> Optional[dict]:
         try:
-            return await self.client.get(index=index_name, id=doc_id)
+            return await self.client.get(
+                index=index_name, 
+                id=doc_id
+            )
         except Exception as e:
             app_logger.error(f"Unexpected ES get error for {index_name}: {e}")
             raise
@@ -58,7 +61,11 @@ class ElasticsearchClient:
     
     async def delete_document(self, index_name: str, doc_id: str) -> bool:
         try:
-            await self.client.delete(index=index_name, id=doc_id)
+            await self.client.delete(
+                index=index_name, 
+                id=doc_id, 
+                refresh=True
+            )
             return True
         except Exception as e:
             app_logger.error(f"Unexpected ES delete error for {index_name}: {e}")
@@ -67,12 +74,17 @@ class ElasticsearchClient:
 
     async def update_document(self, index_name: str, doc_id: str, body: dict[str, Any]) -> dict:
         try:
-            return await self.client.update(index=index_name, id=doc_id, body=body, refresh=True)
+            return await self.client.update(
+                index=index_name, 
+                id=doc_id, 
+                body=body, 
+                refresh=True
+            )
         except Exception as e:
             app_logger.error(f"Unexpected ES update error for {index_name}: {e}")
             raise
 
-    
+
     async def close(self) -> None:
         await self.client.close()
 
