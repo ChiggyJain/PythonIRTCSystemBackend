@@ -19,9 +19,7 @@ async def add_stations_to_elasticsearch(payload: dict) -> bool:
             es_client_instances=es_client_instances,
             index_name=settings.ELASTICSEARCH_STATIONS_INDEX
         )
-        # Create index with mapping if not exists
         await station_repo.create_index_if_not_exists()
-        # Prepare ES document (only required fields)
         es_document = {
             "station_id": payload.get("station_id", 0),
             "name": payload.get("name", ""),
@@ -39,7 +37,6 @@ async def add_stations_to_elasticsearch(payload: dict) -> bool:
                 "weight": 10
             }
         }
-        # Index/upsert the document
         await station_repo.index_document(
             doc_id=payload.get("station_id", 0),
             document=es_document
