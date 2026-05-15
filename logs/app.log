@@ -141,3 +141,5 @@
 2026-05-15 16:00:42 | INFO | ES client instances created
 2026-05-15 16:01:52 | INFO | ES client instances created
 2026-05-15 16:05:17 | INFO | ES client instances created
+2026-05-15 16:05:33 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
+2026-05-15 16:05:38 | INFO | schedules_inventory_consumer_worker started
