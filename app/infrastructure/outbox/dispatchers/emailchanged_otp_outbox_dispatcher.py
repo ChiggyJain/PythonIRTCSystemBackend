@@ -1,12 +1,21 @@
 
 import asyncio
 import json
+import signal
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.domains.security.consumers.emailchanged_otp_dispatch_consumer import EmailChangedOtpDispatchConsumerService
 from app.infrastructure.kafka.client import build_consumer
 
+
 settings = get_settings()
+shutdown_event = asyncio.Event()
+
+def shutdown_handler():
+    app_logger.info(f"Shutdown signal received")
+    shutdown_event.set()
+
+
 
 async def run_worker() -> None:
     consumer = build_consumer(
@@ -17,20 +26,49 @@ async def run_worker() -> None:
     await consumer.start()
     app_logger.info("emailchanged_otp_consumer_worker started")
     try:
-        async for message in consumer:
+        while not shutdown_event.is_set():
             try:
-                payload = json.loads(message.value.decode("utf-8"))
-                topic_name = message.topic
-                print(f"Topic: {topic_name}, Payload: {payload}")
-                service = EmailChangedOtpDispatchConsumerService()
-                await service.process_payload(payload)
-                await consumer.commit()
+                message_batch = await asyncio.wait_for(
+                    consumer.getmany(timeout_ms=1000),
+                    timeout=2
+                )
+                for tp, messages in message_batch.items():
+                    for message in messages:
+                        if shutdown_event.is_set():
+                            break
+                        payload = json.loads(message.value.decode("utf-8"))
+                        topic_name = message.topic
+                        app_logger.info(f"Topic: {topic_name}, Payload: {payload}")
+                        service = EmailChangedOtpDispatchConsumerService()
+                        await service.process_payload(payload)
+                        await consumer.commit()
+            except asyncio.TimeoutError:
+                continue
             except Exception as exc:
-                print(f"emailchanged_otp_consumer_worker error: {exc}")
+                app_logger.exception(f"emailchanged_otp_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
+        app_logger.info(
+            "Gracefully shutting down"
+        )
         await consumer.stop()
+        app_logger.info(
+            "Shutdown completed"
+        )
+
+
+async def main():
+    loop = asyncio.get_running_loop()
+    loop.add_signal_handler(
+        signal.SIGINT,
+        shutdown_handler
+    )
+    loop.add_signal_handler(
+        signal.SIGTERM,
+        shutdown_handler
+    )
+    await run_worker()
 
 
 if __name__ == "__main__":
-    asyncio.run(run_worker())
+    asyncio.run(main())

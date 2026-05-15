@@ -38,7 +38,7 @@ async def run_worker() -> None:
                             break
                     payload = json.loads(message.value.decode("utf-8"))
                     topic_name = message.topic
-                    print(f"Topic: {topic_name}, Payload: {payload}")
+                    app_logger.info(f"Topic: {topic_name}, Payload: {payload}")
                     service = PwdChangedOtpDispatchConsumerService()
                     await service.process_payload(payload)
                     await consumer.commit()
