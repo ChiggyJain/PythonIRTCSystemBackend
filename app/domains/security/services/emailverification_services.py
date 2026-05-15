@@ -62,7 +62,7 @@ class EmailVerificationOtpService:
         try:
 
             # extra user-level rate limit (in addition to IP)
-            user_rate_key = f"user:emailverification:requestotp:{user_id}"
+            user_rate_key = f"emailverification:requestotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.EMAILVERIFICATION_OTP_API_RATE_LIMIT_REQUEST,
@@ -213,7 +213,7 @@ class EmailVerificationOtpService:
         try:
             
             # Extra user-level rate limit (in addition to route IP-based limit)
-            user_rate_key = f"user:emailverification:requestotp:confirm:{user_id}"
+            user_rate_key = f"emailverification:confirmotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.EMAILVERIFICATION_CONFIRM_API_RATE_LIMIT_REQUEST,
