@@ -13,7 +13,9 @@ class StationElasticsearchRepository:
     
 
     async def create_index_if_not_exists(self) -> None:
-        await self.es_client_instances.create_index_if_not_exists(self.index_name, STATIONS_INDEX_MAPPING)
+        await self.es_client_instances.create_index_if_not_exists(
+            self.index_name, STATIONS_INDEX_MAPPING
+        )
     
 
     async def index_document(self, doc_id: str, document: dict[str, Any]) -> dict:

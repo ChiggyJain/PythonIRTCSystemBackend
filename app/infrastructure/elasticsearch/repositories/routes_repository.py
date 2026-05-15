@@ -7,35 +7,29 @@ from app.infrastructure.elasticsearch.mappings.routes_mapping import ROUTES_INDE
 
 class RoutesElasticsearchRepository:
     
-    def __init__(self, es_client: ElasticsearchClient):
-        self.es = es_client
+    def __init__(self, es_client_instances: ElasticsearchClient, index_name: str):
+        self.es_client_instances_client_instances = es_client_instances
+        self.index_name = index_name
     
 
     async def create_index_if_not_exists(self) -> None:
-        try:
-            exists = await self.es.client.indices.exists(index=self.es.index_name)
-            if not exists:
-                await self.es.client.indices.create(
-                    index=self.es.index_name,
-                    body=ROUTES_INDEX_MAPPING
-                )
-                app_logger.info(f"Created ES index: {self.es.index_name}")
-        except Exception as e:
-            app_logger.error(f"Failed to create ES index: {e}")
-            raise
+        await self.es_client_instances.create_index_if_not_exists(
+            self.index_name, 
+            ROUTES_INDEX_MAPPING
+        )
     
     
     async def index(self, document: dict[str, Any]) -> dict:
         doc_id = str(document.get("train_id"))
-        return await self.es.index(document=document, doc_id=doc_id)
+        return await self.es_client_instances.index(document=document, doc_id=doc_id)
     
 
     async def get_by_id(self, train_id: int) -> Optional[dict]:
-        return await self.es.get(doc_id=str(train_id))
+        return await self.es_client_instances.get(doc_id=str(train_id))
     
 
     async def delete(self, train_id: int) -> bool:
-        return await self.es.delete(doc_id=str(train_id))
+        return await self.es_client_instances.delete(doc_id=str(train_id))
     
 
     async def upsert_schedule(
@@ -44,8 +38,8 @@ class RoutesElasticsearchRepository:
         schedules: dict[str, Any]
     ) -> dict:
         
-        return await self.es.client.update(
-            index=self.es.index_name,
+        return await self.es_client_instances.client.update(
+            index=self.es_client_instances.index_name,
             id=str(train_id),
             body={
                 "script": {
@@ -244,6 +238,6 @@ class RoutesElasticsearchRepository:
             ]
         }
 
-        return await self.es.search(query=search_body)
+        return await self.es_client_instances.search(query=search_body)
 
         

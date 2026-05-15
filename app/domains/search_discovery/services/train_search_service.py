@@ -4,14 +4,20 @@ from app.core.exceptions import BaseAppException
 from app.core.response import (
     standardize_response, 
 )
+from app.core.settings import get_settings
 from app.infrastructure.elasticsearch.client import ElasticsearchClient
 from app.infrastructure.elasticsearch.repositories.routes_repository import RoutesElasticsearchRepository
+
+settings = get_settings()
 
 
 class TrainSearchService:
 
-    def __init__(self, es_client: ElasticsearchClient):
-        self.routes_es_repo = RoutesElasticsearchRepository(es_client)
+    def __init__(self, es_client_instances: ElasticsearchClient):
+        self.routes_es_repo = RoutesElasticsearchRepository(
+            es_client_instances=es_client_instances,
+            index_name=settings.ELASTICSEARCH_ROUTES_INDEX
+        )
 
 
     async def search_trains(
