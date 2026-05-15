@@ -58,7 +58,7 @@ class TrainsService:
                 )
 
             # User-level limiter for train creation
-            user_rate_key = f"user:trains:create:{user_id}"
+            user_rate_key = f"trains:create:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.TRAIN_CREATE_API_RATE_LIMIT_REQUEST,
