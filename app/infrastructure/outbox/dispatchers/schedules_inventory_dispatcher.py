@@ -12,7 +12,7 @@ from app.domains.inventory.services.inventory_services import (
 settings = get_settings()
 
 
-async def process_message(payload: dict) -> bool:
+async def initialize_schedule_inventory_process_details(payload: dict) -> bool:
     async with AsyncSessionLocal() as db:
         service = InventoryService(db_session=db)
         response = await service.process_train_schedule_created_event_for_inventory(payload=payload)
@@ -33,12 +33,19 @@ async def run_worker() -> None:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 topic_name = message.topic
+                event_type = payload.get("event_type", "")
+                success = False
                 print(f"Topic: {topic_name}, Payload: {payload}")
-                success = await process_message(payload)
-                if success:
-                    print(f"Successfully initialize inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
-                else:
-                    print(f"Fail to initialize inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                if event_type == "SCHEDULES_CREATE":
+                    success = await initialize_schedule_inventory_process_details(payload)
+                    if success:
+                        print(f"Successfully initialize schedule inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                    else:
+                        print(f"Fail to initialize schedule inventory details using Schedule-ID: {payload.get("schedule_id", 0)}")
+                if event_type == "SCHEDULES_UPDATE":
+                    pass
+                if event_type == "SCHEDULES_DELETE":
+                    pass
                 await consumer.commit()
             except Exception as exc:
                 print(f"schedules_inventory_consumer_worker error: {exc}")
