@@ -44,10 +44,10 @@ async def run_worker() -> None:
                 if event_type == "SCHEDULES_DELETE":
                     pass
                 if success:
-                    print(f"Successfully schedule inventory details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
+                    print(f"Successfully schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
                     await consumer.commit()
                 else:
-                    print(f"Failed schedule inventory details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
+                    print(f"Failed schedule inventory (CRUD) details for event_type: {event_type}, Schedule-ID: {payload.get("schedule_id", 0)}")
             except Exception as exc:
                 print(f"schedules_inventory_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
