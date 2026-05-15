@@ -42,20 +42,20 @@ async def run_worker() -> None:
                         payload = json.loads(message.value.decode("utf-8"))
                         topic_name = message.topic
                         payment_order_status = payload.get("payment_order_status", "")
-                        print(f"Topic: {topic_name}, Payload: {payload}")
+                        app_logger.info(f"Topic: {topic_name}, Payload: {payload}")
                         async with AsyncSessionLocal() as db_session:
                             service = BookingService(db_session)
                             if (payment_order_status == "CAPTURED"):
                                 response = await service.process_booking_payment_orders_success_details(payload=payload)
-                                print(f"Consumer response: {json.loads(response.body)}")
+                                app_logger.info(f"Consumer response: {json.loads(response.body)}")
                             elif (payment_order_status!="CAPTURED"):
                                 response = await service.process_booking_payment_orders_failed_details(payload=payload)
-                                print(f"Consumer response: {json.loads(response.body)}")
+                                app_logger.info(f"Consumer response: {json.loads(response.body)}")
                             await consumer.commit()
             except asyncio.TimeoutError:
                 continue    
             except Exception as exc:
-                print(f"payment_orders_updated_status_consumer_worker error: {exc}")
+                app_logger.exception(f"payment_orders_updated_status_consumer_worker error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         app_logger.info(
