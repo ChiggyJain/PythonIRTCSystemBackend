@@ -43,7 +43,7 @@ async def run_worker() -> None:
                         
                         payload = json.loads(message.value.decode("utf-8"))
                         topic_name = message.topic
-                        print(f"Topic: {topic_name}, Payload: {payload}")
+                        app_logger.info(f"Topic: {topic_name}, Payload: {payload}")
 
                         # extract booking details
                         booking_id = payload.get("booking_id")
@@ -52,7 +52,7 @@ async def run_worker() -> None:
                         booking_status_reason = payload.get("booking_status_reason", "N/A")
 
                         if not user_email:
-                            print(f"No user email in booking updated status payload")
+                            app_logger.info(f"No user email in booking updated status payload")
                             await consumer.commit()
                             continue
 
@@ -106,22 +106,22 @@ async def run_worker() -> None:
                                 html_content=html_content,
                             )  
                             if result.accepted:
-                                print(f"Email sent successfully for booking {booking_id} on attempt {attempt + 1}")
+                                app_logger.info(f"Email sent successfully for booking {booking_id} on attempt {attempt + 1}")
                                 email_sent = True
                                 break
                             else:
-                                print(f"Email send attempt {attempt + 1} failed for booking {booking_id}: {result.error_message}")
+                                app_logger.info(f"Email send attempt {attempt + 1} failed for booking {booking_id}: {result.error_message}")
                                 if attempt < settings.BOOKING_UPDATED_STATUS_EMAIL_MAX_RETRIES:
                                     await asyncio.sleep(settings.BOOKING_UPDATED_STATUS_EMAIL_RETRY_DELAY_SECONDS)
 
                         if not email_sent:
                             await consumer.commit()
-                            print(f"Email send failed after {settings.BOOKING_UPDATED_STATUS_EMAIL_MAX_RETRIES + 1} attempts for booking {booking_id}")
+                            app_logger.info(f"Email send failed after {settings.BOOKING_UPDATED_STATUS_EMAIL_MAX_RETRIES + 1} attempts for booking {booking_id}")
             
             except asyncio.TimeoutError:
                 continue    
             except Exception as exc:
-                print(f"booking_updated_status_send_email_consumer error: {exc}")
+                app_logger.exception(f"booking_updated_status_send_email_consumer error: {exc}")
                 await asyncio.sleep(0.2)
     finally:
         app_logger.info(
