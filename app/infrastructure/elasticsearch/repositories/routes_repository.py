@@ -32,21 +32,17 @@ class RoutesElasticsearchRepository:
             index_name=self.index_name,
             doc_id=doc_id
         )
-    
-
-    async def delete(self, train_id: int) -> bool:
-        return await self.es_client_instances.delete(doc_id=str(train_id))
-    
+        
 
     async def upsert_schedule(
         self,
-        train_id: int,
+        doc_id: str,
         schedules: dict[str, Any]
     ) -> dict:
         
-        return await self.es_client_instances.client.update(
-            index=self.es_client_instances.index_name,
-            id=str(train_id),
+        return await self.es_client_instances.client.update_document(
+            index_name=self.es_client_instances.index_name,
+            doc_id=doc_id,
             body={
                 "script": {
                     "source": """
@@ -75,8 +71,7 @@ class RoutesElasticsearchRepository:
                         "schedules": schedules
                     }
                 }
-            },
-            refresh=True
+            }
         )
     
 
