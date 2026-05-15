@@ -99,6 +99,26 @@ class OutboxEventsSQLAlchemyRepository(OutboxEventsRepositoryBase):
         return list(res.scalars().all())
 
 
+
+    async def bulk_mark_processing(
+        self,
+        *,
+        event_ids: list,
+        updated_at: datetime,
+    ) -> None:
+
+        stmt = (
+            update(OutboxEvents)
+            .where(OutboxEvents.id.in_(event_ids))
+            .values(
+                status="PROCESSING",
+                updated_at=updated_at
+            )
+        )
+        await self._db_session.execute(stmt)
+        await self._db_session.flush()
+
+
     async def mark_outbox_processing(
         self,
         *,
