@@ -39,7 +39,12 @@ class StationElasticsearchRepository:
             
             "size": size,
             "track_total_hits": False,
-            "_source": ["station_id", "name", "code", "city"],
+            "_source": [
+                "station_id", 
+                "name", 
+                "code", 
+                "city"
+            ],
             "query": {
                 "bool": {
                     "should": [
@@ -47,7 +52,7 @@ class StationElasticsearchRepository:
                             "term": {
                                 "code": {
                                     "value": q_upper,
-                                    "boost": 12
+                                    "boost": 20
                                 }
                             }
                         },
@@ -55,35 +60,20 @@ class StationElasticsearchRepository:
                             "prefix": {
                                 "code": {
                                     "value": q_upper,
-                                    "boost": 8
-                                }
-                            }
-                        },
-                        {
-                            "match_phrase_prefix": {
-                                "name": {
-                                    "query": q,
-                                    "boost": 5
-                                }
-                            }
-                        },
-                        {
-                            "match_phrase_prefix": {
-                                "city": {
-                                    "query": q,
-                                    "boost": 4
+                                    "boost": 10
                                 }
                             }
                         },
                         {
                             "multi_match": {
                                 "query": q,
-                                "fields": ["name^3", "city^2", "code^4"],
-                                "fuzziness": "AUTO",
-                                "prefix_length": 1,
-                                "minimum_should_match": "75%",
+                                "fields": [
+                                    "name^5", 
+                                    "city^3",
+                                ],
                                 "type": "best_fields",
-                                "boost": 2
+                                "fuzziness": "AUTO",
+                                "minimum_should_match": "75%",
                             }
                         }
                     ],

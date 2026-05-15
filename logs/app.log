@@ -143,3 +143,28 @@
 2026-05-15 16:05:17 | INFO | ES client instances created
 2026-05-15 16:05:33 | INFO | Successfully scheudles into index routes document for event_type: SCHEDULES_CREATE, schedule_id: 1
 2026-05-15 16:05:38 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 16:09:18 | INFO | schedules_inventory_consumer_worker started
+2026-05-15 16:09:23 | INFO | schedule_inventory_seat_availability_updated_outbox_worker started
+2026-05-15 16:10:00 | INFO | schedule_inventory_seat_availability_updated_outbox_worker started
+2026-05-15 16:10:22 | INFO | ES client instances created
+2026-05-15 16:10:25 | INFO | schedule inventory seat availability updated onsumer started
+2026-05-15 16:10:25 | INFO | Successfully updated schedule inventory into index routes document for schedule_id: 1
+2026-05-15 16:10:30 | INFO | SpawnProcess-28-15890 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 16:10:30.855252 | 2026-05-15 16:10:30.871296 | 16 | None | 200
+2026-05-15 16:10:39 | INFO | SpawnProcess-28-15890 | search:trains | 127.0.0.1 | GET | /api/v1/search/trains | 2026-05-15 16:10:39.637448 | 2026-05-15 16:10:39.644846 | 7 | None | 200
+2026-05-15 16:11:17 | INFO | Close stations consumer and elasticsearch client
+2026-05-15 16:11:19 | INFO | Close routes consumer and elasticsearch client
+2026-05-15 16:11:21 | INFO | Close schedules consumer and elasticsearch client
+2026-05-15 16:11:25 | INFO | Close schedule inventory seat availability updated consumer and elasticsearch client
+2026-05-15 16:15:30 | INFO | ES client instances created
+2026-05-15 16:15:33 | INFO | ES client instances created
+2026-05-15 16:15:56 | INFO | ES client instances created
+2026-05-15 16:16:16 | INFO | ES client instances created
+2026-05-15 16:16:33 | INFO | ES client instances created
+2026-05-15 16:17:24 | INFO | ES client instances created
+2026-05-15 16:17:32 | INFO | ES client instances created
+2026-05-15 16:17:41 | INFO | ES client instances created
+2026-05-15 16:18:19 | INFO | ES client instances created
+2026-05-15 16:18:39 | INFO | ES client instances created
+2026-05-15 16:18:46 | INFO | ES client instances created
+2026-05-15 16:18:55 | INFO | ES client instances created
+2026-05-15 16:18:58 | INFO | ES client instances created
