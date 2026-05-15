@@ -10,7 +10,7 @@ from app.infrastructure.elasticsearch.repositories.routes_repository import Rout
 settings = get_settings()
 
 
-async def index_to_elasticsearch(payload: dict) -> bool:
+async def add_schedules_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
         routes_repo = RoutesElasticsearchRepository(es_client)
@@ -45,12 +45,19 @@ async def run_worker() -> None:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 topic_name = message.topic
+                event_type = payload.get("event_type", "")
+                success = False
                 print(f"Topic: {topic_name}, Payload: {payload}")
-                success = await index_to_elasticsearch(payload)
-                if success:
-                    print(f"Successfully added schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
-                else:
-                    print(f"Failed to add schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
+                if event_type == "SCHEDULES_CREATE":
+                    success = await add_schedules_to_elasticsearch(payload)
+                    if success:
+                        print(f"Successfully added schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
+                    else:
+                        print(f"Failed to add schedule into index-route of Scheduled-ID: {payload.get('schedule_id')}")
+                if event_type == "SCHEDULES_UPDATE":
+                    pass
+                if event_type == "SCHEDULES_DELETE":
+                    pass
                 await consumer.commit()                
             except Exception as exc:
                 print(f"schedules_consumer_worker error: {exc}")

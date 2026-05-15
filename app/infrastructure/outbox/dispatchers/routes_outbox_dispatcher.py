@@ -10,7 +10,7 @@ from app.infrastructure.elasticsearch.repositories.routes_repository import Rout
 settings = get_settings()
 
 
-async def index_to_elasticsearch(payload: dict) -> bool:
+async def add_routes_to_elasticsearch(payload: dict) -> bool:
     try:
         es_client = build_elasticsearch_client(settings.ELASTICSEARCH_ROUTES_INDEX)
         routes_repo = RoutesElasticsearchRepository(es_client)
@@ -76,13 +76,19 @@ async def run_worker() -> None:
             try:
                 payload = json.loads(message.value.decode("utf-8"))
                 topic_name = message.topic
+                event_type = payload.get("event_type", "")
+                success = False
                 print(f"Topic: {topic_name}, Payload: {payload}")
-                # Index to Elasticsearch
-                success = await index_to_elasticsearch(payload)
-                if success:
-                    print(f"Successfully added route details into index-route using Route-ID: {payload.get('route_id')}")
-                else:
-                    print(f"Fail to add route details into index-route using Route-ID: {payload.get('route_id')}")
+                if event_type == "ROUTES_CREATE":
+                    success = await add_routes_to_elasticsearch(payload)
+                    if success:
+                        print(f"Successfully added route details into index-route using Route-ID: {payload.get('route_id')}")
+                    else:
+                        print(f"Fail to add route details into index-route using Route-ID: {payload.get('route_id')}")
+                if event_type == "ROUTES_UPDATE":
+                    pass
+                if event_type == "ROUTES_DELETE":
+                    pass
                 await consumer.commit()                
             except Exception as exc:
                 print(f"routes_consumer_worker error: {exc}")
