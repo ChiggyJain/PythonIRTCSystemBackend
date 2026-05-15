@@ -40,7 +40,7 @@ class RoutesElasticsearchRepository:
         schedules: dict[str, Any]
     ) -> dict:
         
-        return await self.es_client_instances.client.update_document(
+        return await self.es_client_instances.update_document(
             index_name=self.index_name,
             doc_id=train_id,
             body={

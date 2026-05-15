@@ -76,3 +76,8 @@
 2026-05-15 10:52:40 | WARNING | Document not found in index=routes, id=1
 2026-05-15 10:53:57 | INFO | ES client instances created
 2026-05-15 10:54:41 | INFO | ES client instances created
+2026-05-15 10:55:23 | INFO | schedules_outbox_worker started
+2026-05-15 10:55:32 | INFO | schedules_consumer_worker started
+2026-05-15 10:55:32 | INFO | ES client instances created
+2026-05-15 10:55:32 | ERROR | ES indexing error: 'AsyncElasticsearch' object has no attribute 'update_document'
+2026-05-15 10:56:20 | INFO | ES client instances created
