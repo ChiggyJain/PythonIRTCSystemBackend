@@ -60,7 +60,7 @@ class EmailChangedOtpService:
         try:
             
             # extra user-level rate limit (in addition to IP)
-            user_rate_key = f"user:emailchange:requestotp:{user_id}"
+            user_rate_key = f"emailchange:requestotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.EMAILCHANGE_OTP_API_RATE_LIMIT_REQUEST,
@@ -238,7 +238,7 @@ class EmailChangedOtpService:
         try:
             
             # Extra user-level rate limit (in addition to route IP-based limit)
-            user_rate_key = f"user:emailchange:requestotp:confirm:{user_id}"
+            user_rate_key = f"emailchange:confirmotp:{user_id}"
             user_allowed_request = await rate_limiter.check_window_limit(
                 key=user_rate_key,
                 limit=settings.EMAILCHANGE_CONFIRM_API_RATE_LIMIT_REQUEST,
