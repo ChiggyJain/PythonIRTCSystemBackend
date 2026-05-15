@@ -105,36 +105,36 @@ Create Stations Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic station-created \
+  --topic station \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic station-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic station
 
 
 Create Routes Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic route-created \
+  --topic route \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic route-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic route
 
 
 Create Schedules Topic =>
 ./kafka/bin/kafka-topics.sh \
   --bootstrap-server 127.0.0.1:9092 \
   --create \
-  --topic schedule-created \
+  --topic schedule \
   --partitions 6 \
   --replication-factor 1
 
 Display created Topic =>
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic schedule-created
+./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --describe --topic schedule
 
 
 Create Schedule Inventory Seat availability Updated Topic =>

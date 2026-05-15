@@ -130,23 +130,23 @@ class Settings(BaseSettings):
     SCHEDULE_CREATE_API_RATE_WINDOW_SECONDS: int = 60
 
     # Station KAFKA TOPIC and CONSUMER
-    KAFKA_STATION_TOPIC: str = "station-created"
-    KAFKA_STATION_TOPIC_CONSUMER_GROUP: str = "station-events-consumer-group"
+    KAFKA_STATION_TOPIC: str = "station"
+    KAFKA_STATION_TOPIC_CONSUMER_GROUP: str = "station-consumer-group"
     STATION_OUTBOX_MAX_RETRIES: int = 6
 
     # Train KAFKA TOPIC and CONSUMER
-    KAFKA_TRAIN_TOPIC: str = "train-created"
-    KAFKA_TRAIN_TOPIC_CONSUMER_GROUP: str = "train-created-consumer-group"
+    KAFKA_TRAIN_TOPIC: str = "train"
+    KAFKA_TRAIN_TOPIC_CONSUMER_GROUP: str = "train-consumer-group"
     TRAIN_OUTBOX_MAX_RETRIES: int = 6
     
     # Route KAFKA TOPIC and CONSUMER
-    KAFKA_ROUTE_CREATED_TOPIC: str = "route-created"
-    KAFKA_ROUTE_CREATED_TOPIC_CONSUMER_GROUP: str = "route-created-consumer-group"
+    KAFKA_ROUTE_TOPIC: str = "route"
+    KAFKA_ROUTE_TOPIC_CONSUMER_GROUP: str = "route-consumer-group"
     ROUTE_OUTBOX_MAX_RETRIES: int = 6
     
     # Schedule KAFKA TOPIC and CONSUMER
-    KAFKA_SCHEDULE_CREATED_TOPIC: str = "schedule-created"
-    KAFKA_SCHEDULE_CREATED_TOPIC_CONSUMER_GROUP: str = "schedule-created-consumer-group"
+    KAFKA_SCHEDULE_TOPIC: str = "schedule"
+    KAFKA_SCHEDULE_TOPIC_CONSUMER_GROUP: str = "schedule-consumer-group"
     KAFKA_SCHEDULE_INVENTORY_CONSUMER_GROUP: str = "schedule-inventory-consumer-group"
     SCHEDULE_OUTBOX_MAX_RETRIES: int = 6
 
