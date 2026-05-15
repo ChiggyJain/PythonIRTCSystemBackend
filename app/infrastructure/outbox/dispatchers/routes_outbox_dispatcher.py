@@ -1,6 +1,7 @@
 
 import asyncio
 import json
+import signal
 from app.common.utils.logger import app_logger
 from app.core.settings import get_settings
 from app.infrastructure.kafka.client import build_consumer
@@ -10,6 +11,12 @@ from app.infrastructure.elasticsearch.repositories.routes_repository import (
 )
 
 settings = get_settings()
+shutdown_event = asyncio.Event()
+
+def shutdown_handler():
+    app_logger.info(f"Shutdown signal received")
+    shutdown_event.set()
+
 
 
 
@@ -128,32 +135,38 @@ async def run_worker():
 
     try:
 
-        async for message in consumer:
-
+        while not shutdown_event.is_set():
             try:
+                message_batch = await asyncio.wait_for(
+                    consumer.getmany(timeout_ms=1000),
+                    timeout=2
+                )
+                for tp, messages in message_batch.items():
+                    for message in messages:
+                        if shutdown_event.is_set():
+                            break
+                        payload = json.loads(message.value.decode("utf-8"))
+                        event_type = payload.get("event_type", "")
+                        success = False
+                        if event_type == "ROUTES_CREATE":
+                            success = (
+                                await add_routes_to_elasticsearch(
+                                    routes_repo=routes_repo,
+                                    payload=payload
+                                )
+                            )
+                        if success:
+                            await consumer.commit()
+                            app_logger.info(
+                                f"Successfully index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
+                            )
+                        else:
+                            app_logger.error(
+                                f"Failed index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
+                            )
 
-                payload = json.loads(message.value.decode("utf-8"))
-                event_type = payload.get("event_type", "")
-                success = False
-
-                if event_type == "ROUTES_CREATE":
-                    success = (
-                        await add_routes_to_elasticsearch(
-                            routes_repo=routes_repo,
-                            payload=payload
-                        )
-                    )
-
-                if success:
-                    await consumer.commit()
-                    app_logger.info(
-                        f"Successfully index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
-                    )
-                else:
-                    app_logger.error(
-                        f"Failed index routes document for event_type: {event_type}, route_id: {payload.get('route_id')}"
-                    )
-
+            except asyncio.TimeoutError:
+                continue
             except Exception as exc:
                 app_logger.exception(
                     f"Routes worker processing error: {exc}"
@@ -163,11 +176,27 @@ async def run_worker():
 
     finally:
         app_logger.info(
-            "Close routes consumer and elasticsearch client"
+            "Gracefully shutting down"
         )
         await consumer.stop()
         await es_client_instances.close()
+        app_logger.info(
+            "Shutdown completed"
+        )
+
+
+async def main():
+    loop = asyncio.get_running_loop()
+    loop.add_signal_handler(
+        signal.SIGINT,
+        shutdown_handler
+    )
+    loop.add_signal_handler(
+        signal.SIGTERM,
+        shutdown_handler
+    )
+    await run_worker()
 
 
 if __name__ == "__main__":
-    asyncio.run(run_worker())
+    asyncio.run(main())

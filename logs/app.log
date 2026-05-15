@@ -185,3 +185,17 @@
 2026-05-15 16:23:37 | INFO | stations_consumer_worker started
 2026-05-15 16:24:18 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 1
 2026-05-15 16:24:37 | INFO | Close stations consumer and elasticsearch client
+2026-05-15 16:41:15 | INFO | stations_outbox_worker started
+2026-05-15 16:41:18 | INFO | ES client instances created
+2026-05-15 16:41:21 | INFO | stations_consumer_worker started
+2026-05-15 16:41:21 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 1
+2026-05-15 16:41:30 | INFO | Shutdown signal received
+2026-05-15 16:41:31 | INFO | Gracefully shutting down
+2026-05-15 16:41:31 | INFO | Shutdown completed
+2026-05-15 16:41:57 | INFO | ES client instances created
+2026-05-15 16:42:00 | INFO | stations_consumer_worker started
+2026-05-15 16:42:00 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 2
+2026-05-15 16:42:00 | INFO | Successfully index station document for event_type: STATIONS_CREATE, station_id: 1
+2026-05-15 16:42:01 | INFO | Shutdown signal received
+2026-05-15 16:42:01 | INFO | Gracefully shutting down
+2026-05-15 16:42:01 | INFO | Shutdown completed
