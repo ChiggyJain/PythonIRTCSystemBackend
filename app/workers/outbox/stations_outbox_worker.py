@@ -37,7 +37,9 @@ async def run_worker() -> None:
                         outbox_repo = OutboxEventsSQLAlchemyRepository(db)
                         # fetching pending/retry/ outbox event details only
                         events = await outbox_repo.fetch_pending_outbox_events(
-                            aggregate_type="STATIONS", limit=1, now_time=now_ist(),
+                            aggregate_type="STATIONS", 
+                            limit=1, 
+                            now_time=now_ist(),
                         )
                         if not events:
                             break
@@ -51,7 +53,7 @@ async def run_worker() -> None:
                 try:
                     
                     # kafka topic
-                    topic = settings.KAFKA_STATION_CREATED_TOPIC
+                    topic = settings.KAFKA_STATION_TOPIC
                     # preparing message for publishing to the kafka topic
                     message = json.dumps(
                         {"outbox_id": event.id, "event_type": event.event_type, **payload},
@@ -82,7 +84,7 @@ async def run_worker() -> None:
                             event = await outbox_repo.get_by_id(event.id)
                             if event!=None:
                                 params = {
-                                    "retry_handler_type": "MASTERDATA_STATIONS", "outbox_repo": outbox_repo
+                                    "retry_handler_type": "STATIONS", "outbox_repo": outbox_repo
                                 }
                                 outbox_retry_handler_class_obj = OutboxRetryHandlerFactory.getOutboxRetryHandler(**params)
                                 params = {

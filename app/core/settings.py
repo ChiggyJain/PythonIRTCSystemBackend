@@ -130,7 +130,7 @@ class Settings(BaseSettings):
     SCHEDULE_CREATE_API_RATE_WINDOW_SECONDS: int = 60
 
     # Station KAFKA TOPIC and CONSUMER
-    KAFKA_STATION_CREATED_TOPIC: str = "station-created"
+    KAFKA_STATION_TOPIC: str = "station-created"
     KAFKA_STATION_CREATED_TOPIC_CONSUMER_GROUP: str = "station-events-consumer-group"
     STATION_OUTBOX_MAX_RETRIES: int = 6
 

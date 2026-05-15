@@ -15,7 +15,7 @@ class OutboxRetryHandlerFactory:
         "EMAILCHANGED_OTP": EmailChangedOtpOutboxRetryHandler,
         "EMAILVERIFICATION_OTP": EmailVerificationOtpOutboxRetryHandler,
         "PWDCHANGED_OTP": PwdChangedOtpOutboxRetryHandler,
-        "MASTERDATA_STATIONS": MasterDataStationsOutboxRetryHandler,
+        "STATIONS": MasterDataStationsOutboxRetryHandler,
         "MASTERDATA_ROUTES": MasterDataRoutesOutboxRetryHandler,
         "MASTERDATA_SCHEDULES": MasterDataSchedulesOutboxRetryHandler,
         "SCHEDULE_INVENTORY_SEAT_AVAILABILITY_UPDATED" : ScheduleInventorySeatAvailabilityUpdatedOutboxRetryHandler,

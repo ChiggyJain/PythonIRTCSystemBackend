@@ -28,3 +28,14 @@
 2026-05-14 15:26:29 | INFO | ES client created for index: stations
 2026-05-14 15:29:43 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-14 20:59:43.166006 | 2026-05-14 20:59:43.495604 | 329 | None | 200
 2026-05-14 15:30:03 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 21:00:03.638098 | 2026-05-14 21:00:03.791251 | 153 | None | 201
+2026-05-14 15:35:00 | INFO | ES client created for index: routes
+2026-05-14 15:35:00 | INFO | ES client created for index: stations
+2026-05-14 15:35:23 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-14 21:05:23.694276 | 2026-05-14 21:05:23.999415 | 305 | None | 200
+2026-05-14 15:35:43 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 21:05:43.278901 | 2026-05-14 21:05:43.355035 | 76 | None | 201
+2026-05-14 15:38:58 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 21:08:58.575244 | 2026-05-14 21:08:58.579878 | 4 | None | 400
+2026-05-14 15:39:05 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 21:09:05.782100 | 2026-05-14 21:09:05.857579 | 75 | None | 201
+2026-05-14 15:42:03 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-14 21:12:03.640072 | 2026-05-14 21:12:03.651074 | 11 | None | 201
+2026-05-15 02:46:04 | INFO | ES client created for index: routes
+2026-05-15 02:46:04 | INFO | ES client created for index: stations
+2026-05-15 02:49:12 | INFO | ES client created for index: routes
+2026-05-15 02:49:12 | INFO | ES client created for index: stations
