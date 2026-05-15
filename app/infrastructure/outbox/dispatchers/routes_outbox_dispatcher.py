@@ -28,7 +28,9 @@ async def add_routes_to_elasticsearch(payload: dict) -> bool:
             seatSummary["total"]+= 1
             if eachSeatObj['seat_type'] in seatSummary:
                 seatSummary[eachSeatObj['seat_type']]+= 1
-        existing_doc = await routes_repo.get_by_id(train_details.get("train_id", 0))
+        existing_doc = await routes_repo.get_document(
+            doc_id=str(train_details.get("train_id", 0))
+        )
         existing_schedules = []
         if existing_doc and existing_doc.get("_source"):
             existing_schedules = existing_doc["_source"].get("schedules", [])
@@ -56,8 +58,11 @@ async def add_routes_to_elasticsearch(payload: dict) -> bool:
             "schedules" : existing_schedules
         }
         # Index/upsert the document
-        await routes_repo.index(es_document)
-        await es_client.close()
+        await routes_repo.index_document(
+            doc_id=str(train_details.get("train_id", 0)),
+            document=es_document
+        )
+        await es_client_instances.close()
         return True
     except Exception as e:
         print(f"ES indexing error: {e}")

@@ -38,7 +38,7 @@ async def add_stations_to_elasticsearch(payload: dict) -> bool:
             }
         }
         await station_repo.index_document(
-            doc_id=payload.get("station_id", 0),
+            doc_id=str(payload.get("station_id", 0)),
             document=es_document
         )
         await es_client_instances.close()

@@ -27,8 +27,11 @@ class RoutesElasticsearchRepository:
         )    
     
 
-    async def get_by_id(self, train_id: int) -> Optional[dict]:
-        return await self.es_client_instances.get(doc_id=str(train_id))
+    async def get_document(self, doc_id: str) -> Optional[dict]:
+        return await self.es_client_instances.get_document(
+            index_name=self.index_name,
+            doc_id=doc_id
+        )
     
 
     async def delete(self, train_id: int) -> bool:
