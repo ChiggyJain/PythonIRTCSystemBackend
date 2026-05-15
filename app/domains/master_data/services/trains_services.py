@@ -18,9 +18,6 @@ settings = get_settings()
 
 class TrainsService:
 
-    OUTBOX_STATUS_PENDING = "PENDING"
-    OUTBOX_EVENT_TRAIN_CREATED = "KAFKA_TRAIN_CREATED_TOPIC"
-
     def __init__(self, db_session: AsyncSession):
         self._db_session = db_session
         self.masterdata_repo = MasterDataSQLAlchemyRepository(db_session)
@@ -91,9 +88,9 @@ class TrainsService:
 
             # create outbox event snapshot
             await self.outbox_repo.add_outbox_event(
-                aggregate_type="TRAIN",
+                aggregate_type="TRAINS",
                 aggregate_id=str(train.id),
-                event_type=self.OUTBOX_EVENT_TRAIN_CREATED,
+                event_type="TRAINS_CREATE",
                 payload_json={
                     "train_id": train.id,
                     "train_number": train.train_number,
@@ -111,14 +108,14 @@ class TrainsService:
                         }
                         for seat in seats
                     ],
-                    "event_type": self.OUTBOX_EVENT_TRAIN_CREATED,
+                    "event_type": "TRAINS_CREATE",
                     "event_version": 1,
                     "created_by_user_id": user_id,
                     "correlation_id": correlation_id,
                     "request_id": request_id,
                     "event_created_at": str(now_ist()),
                 },
-                status=self.OUTBOX_STATUS_PENDING,
+                status="PENDING",
             )
 
             await self._db_session.commit()
