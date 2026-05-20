@@ -96,6 +96,19 @@ The project follows a layered domain architecture:
 
 This structure keeps domain logic separated from infrastructure code and makes the event-driven flows clear and maintainable.
 
+### Booking Saga Flow
+
+Booking in this project is implemented as a Saga-style workflow rather than a single monolithic transaction.
+
+- A booking request starts in the backend and writes a local booking state to MySQL.
+- Redis is used for fast access data, rate limiting, and to coordinate distributed seat locks during booking.
+- The booking service creates outbox events for inventory lock, payment order, and booking status updates.
+- Kafka topics carry each step as an event, so the system can resume and retry independently.
+- A successful payment result triggers a confirm flow that locks the seat permanently and marks the booking confirmed.
+- A failure or timeout triggers compensating actions, such as unlocking seat reservations and canceling the booking.
+
+This Saga-style pattern helps the application maintain consistency across services without requiring distributed transactions.
+
 ## 🔌 Port Reference
 
 | Component | Local URL | Container port | Notes |
