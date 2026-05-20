@@ -236,6 +236,7 @@ http://127.0.0.1:5601/app/home
 
 Docker Commands =>
 docker compose down -v && docker compose build --no-cache && docker compose up -d --force-recreate
+docker compose build --no-cache kafka-init && docker compose up -d --force-recreate --no-deps kafka-init
 docker compose -f docker-compose.elastic.yml down -v && docker compose -f docker-compose.elastic.yml build --no-cache && docker compose -f docker-compose.elastic.yml up -d --force-recreate
 docker rm -f $(docker ps -aq) && docker rmi -f $(docker images -aq)
 

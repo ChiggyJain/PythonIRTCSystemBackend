@@ -90,3 +90,4 @@
 2026-05-20 06:18:44 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:48:44.472040 | 2026-05-20 11:48:44.482126 | 10 | None | 200
 2026-05-20 06:26:26 | INFO | ES client instances created
 2026-05-20 06:34:10 | INFO | ES client instances created
+2026-05-20 06:39:49 | INFO | ES client instances created
