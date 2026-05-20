@@ -239,7 +239,7 @@ The backend exposes the FastAPI docs at:
 ### Health and readiness
 
 - `GET /health` — service health
-- `GET /routes_es_client_ready` — Elasticsearch readiness for route search
+- `GET /routes_es_client_ready` — Elasticsearch services health
 
 ### API route groups
 
@@ -278,9 +278,8 @@ Content-Type: application/json
   "mobile": "9975967186",
   "email": "cjain9975@gmail.com",
   "gender": "Male",
-  "password": "Test1@123456",
-  "confirm_password": "Test1@123456",
-  "profile": "User/Admin"
+  "password": "",
+  "confirm_password": ""
 }
 ```
 
