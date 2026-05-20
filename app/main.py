@@ -55,8 +55,8 @@ async def health_check():
     )
 
 
-@app.get("/routes_es_client_ready")
-async def readiness_check():
+@app.get("/es_health_check")
+async def es_health_check():
     try:
         await app.state.es_client_instances.client.ping()
         return standardize_response(
@@ -69,5 +69,5 @@ async def readiness_check():
     except Exception:
         raise BaseAppException(
             status_code=503,
-            messages=["Elasticsearch not reachable for RoutesES"],
+            messages=["Elasticsearch services not reachable"],
         )
