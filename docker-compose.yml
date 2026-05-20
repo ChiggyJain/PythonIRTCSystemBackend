@@ -1,5 +1,6 @@
 
-
+# workers will be built on app images
+# defined once and reuse
 x-worker-base: &worker-base
   build:
     context: .
@@ -19,9 +20,10 @@ x-worker-base: &worker-base
       condition: service_healthy
   restart: unless-stopped
 
+# services are defined
 services:
 
-  
+  # mysql db
   mysql:
     image: mysql:8.4
     container_name: irtc-mysql
@@ -41,6 +43,7 @@ services:
       retries: 10
     restart: unless-stopped
 
+  # UI for view mysql db
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: irtc-phpmyadmin
@@ -54,6 +57,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     
+  # redis
   redis:
     image: redis:7.2
     container_name: irtc-redis
@@ -68,6 +72,7 @@ services:
       retries: 10
     restart: unless-stopped
   
+  # kafka (using Kraft)
   kafka:
     image: apache/kafka:3.9.0
     container_name: irtc-kafka
@@ -94,7 +99,7 @@ services:
       retries: 10
     restart: unless-stopped
 
-  
+  # creating kafka topics which required by applications
   kafka-init:
     image: apache/kafka:3.9.0
     container_name: irtc-kafka-init
@@ -175,6 +180,7 @@ services:
       "
     restart: "no"
 
+  # elastic searches
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
     container_name: irtc-elasticsearch
@@ -191,6 +197,7 @@ services:
       retries: 20
     restart: unless-stopped
   
+  # UI for elastic search for CRUD
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.1
     container_name: irtc-kibana
@@ -203,6 +210,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # main application code building the packages/images
   backend:
     build:
       context: .
@@ -232,6 +240,7 @@ services:
     restart: unless-stopped
 
   
+  # applications all different types background workers
   
   # background workers for password changed
   pwdchanged-otp-outbox-worker:
