@@ -212,9 +212,7 @@ services:
 
   # main application code building the packages/images
   # right now is by-pass
-  backend-real:
-    profiles:
-      - backend
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -243,7 +241,9 @@ services:
     restart: unless-stopped
 
   # dummy backend and this service will be used with another services as per required dependencies
-  backend:
+  backend-dummy:
+    profiles:
+      - backend
     image: alpine
     command: sh -c "while true; do sleep 1000; done"
     healthcheck:
