@@ -180,7 +180,7 @@ services:
 
       echo 'All Kafka topics created successfully.'
       "
-    restart: "no"
+    restart: unless-stopped
 
   # elastic searches
   elasticsearch:
