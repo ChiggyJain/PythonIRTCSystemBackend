@@ -2,7 +2,6 @@
 from app.core.settings import get_settings
 from app.infrastructure.email.base import (
     EmailSenderBase,
-    SmsOtpSenderBase,
 )
 from app.infrastructure.email.sendgrid_email_sender import (
     SendGridEmailSender,

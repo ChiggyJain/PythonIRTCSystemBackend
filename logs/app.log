@@ -22,3 +22,27 @@
 2026-05-20 05:30:59 | INFO | MainProcess-17 | booking:details | 172.19.0.1 | GET | /api/v1/bookings/1 | 2026-05-20 11:00:59.446898 | 2026-05-20 11:00:59.456331 | 9 | None | 200
 2026-05-20 05:36:36 | INFO | MainProcess-17 | schedule:availability | 172.19.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-20 11:06:36.752114 | 2026-05-20 11:06:36.754819 | 2 | None | 200
 2026-05-20 05:36:40 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:06:40.657158 | 2026-05-20 11:06:40.667251 | 10 | None | 200
+2026-05-20 05:46:52 | INFO | ES client instances created
+2026-05-20 05:47:50 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 11:17:50.301278 | 2026-05-20 11:17:50.679984 | 378 | None | 200
+2026-05-20 05:48:28 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 11:18:28.849786 | 2026-05-20 11:18:28.864662 | 14 | None | 201
+2026-05-20 05:48:35 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 11:18:35.633923 | 2026-05-20 11:18:35.646144 | 12 | None | 201
+2026-05-20 05:48:42 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 11:18:42.217146 | 2026-05-20 11:18:42.363462 | 146 | None | 201
+2026-05-20 05:48:49 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 11:18:49.105080 | 2026-05-20 11:18:49.113421 | 8 | None | 201
+2026-05-20 05:48:54 | INFO | MainProcess-17 | trains:create | 172.19.0.1 | POST | /api/v1/admin/master-data/trains | 2026-05-20 11:18:54.326593 | 2026-05-20 11:18:54.419231 | 92 | None | 201
+2026-05-20 05:48:57 | INFO | MainProcess-17 | routes:create | 172.19.0.1 | POST | /api/v1/admin/master-data/train-routes | 2026-05-20 11:18:57.030005 | 2026-05-20 11:18:57.071605 | 41 | None | 201
+2026-05-20 05:49:00 | INFO | MainProcess-17 | schedules:create | 172.19.0.1 | POST | /api/v1/admin/master-data/train-schedules | 2026-05-20 11:19:00.764453 | 2026-05-20 11:19:00.864096 | 99 | None | 201
+2026-05-20 05:49:03 | INFO | MainProcess-17 | search:stations | 172.19.0.1 | GET | /api/v1/search/stations | 2026-05-20 11:19:03.757507 | 2026-05-20 11:19:03.809987 | 52 | None | 200
+2026-05-20 05:49:07 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:19:07.065936 | 2026-05-20 11:19:07.129964 | 64 | None | 200
+2026-05-20 05:49:11 | INFO | MainProcess-17 | schedule:availability | 172.19.0.1 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-20 11:19:11.888801 | 2026-05-20 11:19:11.892847 | 4 | None | 200
+2026-05-20 05:49:16 | INFO | MainProcess-17 | availability:seats | 172.19.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-20 11:19:16.344802 | 2026-05-20 11:19:16.356780 | 11 | None | 200
+2026-05-20 05:49:33 | INFO | MainProcess-17 | availability:seats | 172.19.0.1 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-20 11:19:33.006494 | 2026-05-20 11:19:33.012643 | 6 | None | 200
+2026-05-20 05:49:36 | INFO | MainProcess-17 | schedule:availability | 172.19.0.9 | GET | /api/v1/inventory/schedules/1/availability | 2026-05-20 11:19:36.953879 | 2026-05-20 11:19:36.957159 | 3 | None | 200
+2026-05-20 05:49:36 | INFO | MainProcess-17 | availability:seats | 172.19.0.9 | GET | /api/v1/inventory/schedules/1/seats | 2026-05-20 11:19:36.970610 | 2026-05-20 11:19:36.975501 | 4 | None | 200
+2026-05-20 05:49:37 | INFO | MainProcess-17 | lock:seats | 172.19.0.9 | POST | /api/v1/inventory/schedules/seats/lock | 2026-05-20 11:19:37.003804 | 2026-05-20 11:19:37.033320 | 29 | None | 201
+2026-05-20 05:49:37 | INFO | MainProcess-17 | payment:create:order | 172.19.0.9 | POST | /api/v1/payments/orders | 2026-05-20 11:19:37.053833 | 2026-05-20 11:19:37.068041 | 14 | None | 201
+2026-05-20 05:49:37 | INFO | MainProcess-17 | booking:create | 172.19.0.1 | POST | /api/v1/bookings/ | 2026-05-20 11:19:36.805498 | 2026-05-20 11:19:37.077857 | 272 | None | 201
+2026-05-20 05:49:41 | INFO | MainProcess-17 | payment:order:verify | 172.19.0.9 | POST | /api/v1/payments/orders/verify | 2026-05-20 11:19:41.031250 | 2026-05-20 11:19:41.080443 | 49 | None | 200
+2026-05-20 05:49:41 | INFO | MainProcess-17 | booking:verify:payment | 172.19.0.1 | POST | /api/v1/bookings/verify-payment | 2026-05-20 11:19:41.000771 | 2026-05-20 11:19:41.084359 | 83 | None | 200
+2026-05-20 05:49:42 | INFO | MainProcess-17 | confirmed:seats | 172.19.0.19 | POST | /api/v1/inventory/schedules/seats/confirm | 2026-05-20 11:19:42.884931 | 2026-05-20 11:19:42.901763 | 16 | None | 200
+2026-05-20 05:49:44 | INFO | MainProcess-17 | booking:details | 172.19.0.1 | GET | /api/v1/bookings/1 | 2026-05-20 11:19:44.913231 | 2026-05-20 11:19:44.923927 | 10 | None | 200
+2026-05-20 05:49:53 | INFO | MainProcess-17 | bookings:details | 172.19.0.1 | GET | /api/v1/bookings/ | 2026-05-20 11:19:53.716766 | 2026-05-20 11:19:53.731711 | 14 | None | 200
