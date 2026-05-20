@@ -2,7 +2,6 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 import json
-import sched
 import httpx
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,6 +10,7 @@ from app.core.response import (
     standardize_response, 
 )
 from app.core.settings import get_settings
+from app.common.utils.logger import app_logger
 from app.common.utils.datetime import now_ist, today_ist
 from app.common.utils.orm_to_dict import orm_to_dict
 from app.common.cache.redis_cache import (
@@ -157,7 +157,7 @@ class BookingService:
                 })
                 unLockHoldSeatRspObj = response.json()
                 # unLockHoldSeatData = unLockHoldSeatRspObj.get("data", None)
-            print(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
+            app_logger.info(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
             
             # updating booking saga log table
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -214,7 +214,7 @@ class BookingService:
                 })
                 refundPaymentRspObj = response.json()
                 # refundPaymentData = refundPaymentRspObj.get("data", None)
-            print(f"refundPaymentRspObj: {refundPaymentRspObj}")
+            app_logger.info(f"refundPaymentRspObj: {refundPaymentRspObj}")
             
             # updating booking saga log table
             isBookingSagaLogsRecordUpdated = await self.booking_repo.update_booking_saga_logs_details(
@@ -278,7 +278,7 @@ class BookingService:
                 # response.raise_for_status()
                 data = response.json()
                 inventoryScheduleDataObj = data.get("data", None)
-            print(f"inventoryScheduleDataObj: {inventoryScheduleDataObj}")
+            app_logger.info(f"inventoryScheduleDataObj: {inventoryScheduleDataObj}")
             if inventoryScheduleDataObj == None:
                 return standardize_response(
                     status_code=404,
@@ -307,7 +307,7 @@ class BookingService:
                 # response.raise_for_status()
                 data = response.json()
                 seatData = data.get("data", None)
-            print(f"seatData: {seatData}")
+            app_logger.info(f"seatData: {seatData}")
             if seatData == None:
                 return standardize_response(
                     status_code=404,
@@ -352,7 +352,7 @@ class BookingService:
             curTimeStamp = int(datetime.now().timestamp())    
             redisKeySeatsLockValue = f"pre-{curTimeStamp}:{curTimeStamp}"
             acquiredSeatLocksRedisResponse = await acquireBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue, settings.BOOKING_TTL_SECONDS)
-            print(f"acquiredSeatLocksRedisResponse: {acquiredSeatLocksRedisResponse}")
+            app_logger.info(f"acquiredSeatLocksRedisResponse: {acquiredSeatLocksRedisResponse}")
             if acquiredSeatLocksRedisResponse["isSuccess"] == False:
                 return standardize_response(
                     status_code=400,
@@ -437,7 +437,7 @@ class BookingService:
                 # response.raise_for_status()
                 holdSeatRspObj = response.json()
                 holdSeatData = holdSeatRspObj.get("data", None)
-            print(f"holdSeatRspObj: {holdSeatRspObj}")
+            app_logger.info(f"holdSeatRspObj: {holdSeatRspObj}")
             if holdSeatRspObj == None:
                 
                 params1 = {
@@ -460,7 +460,7 @@ class BookingService:
                 await self._db_session.commit()
 
                 releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+                app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
@@ -489,7 +489,7 @@ class BookingService:
                 await self._db_session.commit()
 
                 releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+                app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=holdSeatRspObj.get("status_code"),
@@ -555,7 +555,7 @@ class BookingService:
                 # response.raise_for_status()
                 createdPaymentOrderRequestRspObj = response.json()
                 createdPaymentOrderRequestData = createdPaymentOrderRequestRspObj.get("data", None)
-            print(f"createdPaymentOrderRequestRspObj: {createdPaymentOrderRequestRspObj}")
+            app_logger.info(f"createdPaymentOrderRequestRspObj: {createdPaymentOrderRequestRspObj}")
             if createdPaymentOrderRequestRspObj == None:
 
                 params1 = {
@@ -578,7 +578,7 @@ class BookingService:
                 await self._db_session.commit()
 
                 releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+                app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=404,
@@ -607,7 +607,7 @@ class BookingService:
                 await self._db_session.commit()
 
                 releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+                app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
@@ -636,7 +636,7 @@ class BookingService:
                 await self._db_session.commit()
 
                 releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-                print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+                app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
                 return standardize_response(
                     status_code=400,
@@ -711,7 +711,7 @@ class BookingService:
             await self._db_session.commit()
 
             releasedSeatLocksRedisResponse = await releaseBookingSeatLocksThroughRedis(allRedisSeatsLockKeys, redisKeySeatsLockValue)
-            print(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
+            app_logger.info(f"releasedSeatLocksRedisResponse: {releasedSeatLocksRedisResponse}")
 
             return standardize_response(
                 status_code=500,
@@ -773,7 +773,7 @@ class BookingService:
                     })
                     verifyPaymentRspObj = response.json()
                     verifyPaymentRspData = verifyPaymentRspObj.get("data", None)
-                print(f"verifyPaymentRspObj: {verifyPaymentRspObj}")
+                app_logger.info(f"verifyPaymentRspObj: {verifyPaymentRspObj}")
                 if verifyPaymentRspObj == None:
                     return standardize_response(
                         status_code=400,
@@ -914,7 +914,7 @@ class BookingService:
                         })
                         confirmedSeatRspObj = response.json()
                         confirmedSeatData = confirmedSeatRspObj.get("data", None)
-                    print(f"confirmedSeatRspObj: {confirmedSeatRspObj}")
+                    app_logger.info(f"confirmedSeatRspObj: {confirmedSeatRspObj}")
                     
                     # updating booking status as confirmed
                     cnt_of_booking_records_updated = await self.booking_repo.update_booking_details(
@@ -934,7 +934,7 @@ class BookingService:
                         key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                         allRedisSeatsLockKeys.append(key)
                     forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-                    print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
+                    app_logger.info(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
 
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
@@ -974,7 +974,7 @@ class BookingService:
                         "booking_status" : "CONFIRMED",
                     }
                     outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
-                    print(f"outbox_events_rsp: {outbox_events_rsp}")
+                    app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
                     await self._db_session.commit()
 
@@ -1019,7 +1019,7 @@ class BookingService:
                 key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                 allRedisSeatsLockKeys.append(key)
             forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-            print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
+            app_logger.info(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
             
             # adding records into outbox events table
             # data published into kafka-topics via workers and consumer will be consume the message
@@ -1059,7 +1059,7 @@ class BookingService:
                 "booking_status" : "FAILED",
             }
             outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
-            print(f"outbox_events_rsp: {outbox_events_rsp}")
+            app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
             
             await self._db_session.commit()
 
@@ -1191,7 +1191,7 @@ class BookingService:
                         key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                         allRedisSeatsLockKeys.append(key)
                     forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-                    print(f"releasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
+                    app_logger.info(f"releasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
 
                     # adding records into outbox events table
                     # data published into kafka-topics via workers and consumer will be consume the message
@@ -1231,7 +1231,7 @@ class BookingService:
                         "booking_status" : "FAILED",
                     }
                     outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
-                    print(f"outbox_events_rsp: {outbox_events_rsp}")
+                    app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
                     await self._db_session.commit()
 
@@ -1512,7 +1512,7 @@ class BookingService:
                         })
                         cancelledSeatRspObj = response.json()
                         cancelledSeatData = cancelledSeatRspObj.get("data", None)
-                    print(f"cancelledSeatRspObj: {cancelledSeatRspObj}")
+                    app_logger.info(f"cancelledSeatRspObj: {cancelledSeatRspObj}")
                     if cancelledSeatRspObj == None:
                         pass
                     
@@ -1530,7 +1530,7 @@ class BookingService:
                             })
                             refundPaymentRspObj = response.json()
                             # refundPaymentData = refundPaymentRspObj.get("data", None)
-                        print(f"refundPaymentRspObj: {refundPaymentRspObj}")
+                        app_logger.info(f"refundPaymentRspObj: {refundPaymentRspObj}")
                         is_payment_refund_initiated = "YES"
 
 
@@ -1550,7 +1550,7 @@ class BookingService:
                         })
                         unLockHoldSeatRspObj = response.json()
                         # unLockHoldSeatData = unLockHoldSeatRspObj.get("data", None)
-                    print(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
+                    app_logger.info(f"unLockHoldSeatRspObj: {unLockHoldSeatRspObj}")
 
                 
                 # updating booking status as cancelled
@@ -1570,7 +1570,7 @@ class BookingService:
                     key = f"booking:lock:seat:{booking_list[0].schedule_id}:{eachSeatId}:{booking_list[0].from_station_sequence_number}:{booking_list[0].to_station_sequence_number}"
                     allRedisSeatsLockKeys.append(key)
                 forceReleasedSeatLocksCntThroughRedis = await forceReleaseSeatLocksThroughRedis(allRedisSeatsLockKeys)
-                print(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
+                app_logger.info(f"forceReleasedSeatLocksCntThroughRedis: {forceReleasedSeatLocksCntThroughRedis}")
 
                 # adding records into outbox events table
                 # data published into kafka-topics via workers and consumer will be consume the message
@@ -1610,7 +1610,7 @@ class BookingService:
                     "booking_status" : "CANCELLED",
                 }
                 outbox_events_rsp = await self.store_booking_confirmed_into_outbox_events(payload=params1)
-                print(f"outbox_events_rsp: {outbox_events_rsp}")
+                app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
                 await self._db_session.commit()
 

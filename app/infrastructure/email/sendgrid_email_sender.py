@@ -9,6 +9,7 @@ from app.infrastructure.email.base import (
     EmailSenderBase,
     EmailSendResult,
 )
+from app.common.utils.logger import app_logger
 
 
 class SendGridEmailSender(EmailSenderBase):
@@ -36,7 +37,7 @@ class SendGridEmailSender(EmailSenderBase):
     ) -> EmailSendResult:
 
         if self._dry_run:
-            print(f"Dry run, to_email: {to_email}, subject: {subject}, plain_text_content: {plain_text_content}, html_content: {html_content}")
+            app_logger.info(f"Dry run, to_email: {to_email}, subject: {subject}, plain_text_content: {plain_text_content}, html_content: {html_content}")
             return EmailSendResult(
                 accepted=True,
                 provider=self._provider,

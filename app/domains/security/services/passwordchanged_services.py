@@ -92,7 +92,7 @@ class PasswordChangeOtpService:
                     messages=["User not found"],
                 )  
             if user.is_mobile_verified == "N":
-                print(f"In future we have to check mobile is verified or not. Pending-Task")
+                app_logger.info(f"In future we have to check mobile is verified or not. Pending-Task")
             if user.is_email_verified == "N":
                 return standardize_response(
                     status_code=401,

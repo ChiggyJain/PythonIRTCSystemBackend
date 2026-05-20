@@ -1,7 +1,6 @@
 
 from decimal import Decimal
 from datetime import date, datetime, timedelta
-import sched
 from typing import List
 from sqlalchemy import select, update, or_, func
 from sqlalchemy import (
@@ -22,6 +21,7 @@ from app.core.response import (
     standardize_response, 
 )
 from app.core.settings import get_settings
+from app.common.utils.logger import app_logger
 from app.domains.inventory.models.seat_inventory_models import SeatInventory
 from app.domains.inventory.models.schedule_inventory_models import ScheduleInventory
 from app.domains.inventory.models.seat_segment_lock_models import SeatSegmentLockInventory
@@ -546,7 +546,7 @@ class InventoryService:
                 "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
             }
             outbox_events_rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
-            print(f"outbox_events_rsp: {outbox_events_rsp}")
+            app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
             await self._db_session.commit()
 
@@ -682,7 +682,7 @@ class InventoryService:
                 "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
             }
             outbox_events_rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
-            print(f"outbox_events_rsp: {outbox_events_rsp}")
+            app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
             await self._db_session.commit()
 
@@ -804,7 +804,7 @@ class InventoryService:
                 "booked" : recounts_schedule_aggregates_status_rsp_obj["booked"],
             }
             outbox_events_rsp = await self.store_seat_update_availability_into_outbox_events(payload=params1)
-            print(f"outbox_events_rsp: {outbox_events_rsp}")
+            app_logger.info(f"outbox_events_rsp: {outbox_events_rsp}")
 
             await self._db_session.commit()
 
