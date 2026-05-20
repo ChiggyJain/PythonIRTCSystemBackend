@@ -1,3 +1,7 @@
 2026-05-20 05:07:36 | INFO | ES client instances created
 2026-05-20 05:07:52 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 10:37:51.753506 | 2026-05-20 10:37:52.084677 | 331 | None | 200
 2026-05-20 05:08:09 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 10:38:08.968617 | 2026-05-20 10:38:09.055128 | 86 | None | 201
+2026-05-20 05:11:18 | INFO | ES client instances created
+2026-05-20 05:11:32 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 10:41:32.068205 | 2026-05-20 10:41:32.446700 | 378 | None | 200
+2026-05-20 05:11:48 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 10:41:48.748379 | 2026-05-20 10:41:48.831685 | 83 | None | 201
+2026-05-20 05:12:17 | INFO | MainProcess-17 | search:stations | 172.19.0.1 | GET | /api/v1/search/stations | 2026-05-20 10:42:17.687498 | 2026-05-20 10:42:17.798719 | 111 | None | 200

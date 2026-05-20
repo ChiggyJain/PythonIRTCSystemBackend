@@ -254,6 +254,58 @@ services:
   
   # applications all different types background workers
   
+  # background workers for password changed
+  pwdchanged-otp-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-pwdchanged-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.pwdchanged_otp_outbox_worker
+
+  pwdchanged-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-pwdchanged-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.pwdchanged_otp_outbox_dispatcher
+  
+  # background workers for email changed
+  emailchanged-otp-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-emailchanged-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.emailchanged_otp_outbox_worker
+
+  emailchanged-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-emailchanged-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher
+
+  # background workers for email verification
+  emailverification-otp-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-emailverification-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.emailverification_otp_outbox_worker
+
+  emailverification-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-emailverification-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.emailverification_otp_outbox_dispatcher
+
+
   # background workers for stations
   stations-outbox-worker:
     <<: *worker-base

@@ -15,7 +15,7 @@ settings = get_settings()
 shutdown_event = asyncio.Event()
 
 POLL_INTERVAL_IDLE_SECONDS = 2
-POLL_INTERVAL_ACTIVE_SECONDS = 0.2
+POLL_INTERVAL_ACTIVE_SECONDS = 1
 BATCH_SIZE = 100
 
 def shutdown_handler():
@@ -79,17 +79,19 @@ async def run_worker() -> None:
                         limit=BATCH_SIZE, 
                         now_time=now_ist(),
                     )
-                    if not events:
-                        await asyncio.sleep(
-                            POLL_INTERVAL_IDLE_SECONDS
+                    if events:
+                        event_ids = [event.id for event in events]
+                        updated_at = now_ist()
+                        await outbox_repo.bulk_mark_processing(
+                            event_ids=event_ids,
+                            updated_at=updated_at
                         )
-                        continue
-                    event_ids = [event.id for event in events]
-                    updated_at = now_ist()
-                    await outbox_repo.bulk_mark_processing(
-                        event_ids=event_ids,
-                        updated_at=updated_at
-                    )
+            
+            if not events:
+                await asyncio.sleep(
+                    POLL_INTERVAL_IDLE_SECONDS
+                )
+                continue
             
             # Step2: Processing events outside db transactions
             for event in events:
