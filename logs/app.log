@@ -227,3 +227,11 @@
 2026-05-15 17:48:08 | INFO | Flushing Kafka producer
 2026-05-15 17:48:08 | INFO | Stopping Kafka producer
 2026-05-15 17:48:08 | INFO | Outbox worker shutdown completed
+2026-05-20 03:48:39 | INFO | ES client instances created
+2026-05-20 03:49:48 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 09:19:48.477756 | 2026-05-20 09:19:48.765659 | 287 | None | 200
+2026-05-20 03:51:31 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 09:20:41.349345 | 2026-05-20 09:21:31.618034 | 50268 | None | 500
+2026-05-20 04:04:01 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 09:34:01.748176 | 2026-05-20 09:34:01.966785 | 218 | None | 200
+2026-05-20 04:05:14 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 09:34:23.938821 | 2026-05-20 09:35:14.119969 | 50181 | None | 500
+2026-05-20 09:37:55 | INFO | ES client instances created
+2026-05-20 09:38:08 | INFO | SpawnProcess-1-84777 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-20 09:38:07.816141 | 2026-05-20 09:38:08.247914 | 431 | None | 200
+2026-05-20 09:38:23 | INFO | SpawnProcess-1-84777 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 09:38:23.528241 | 2026-05-20 09:38:23.611507 | 83 | None | 201
