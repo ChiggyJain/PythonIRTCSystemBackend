@@ -211,7 +211,10 @@ services:
     restart: unless-stopped
 
   # main application code building the packages/images
-  backend:
+  # right now is by-pass
+  backend-real:
+    profiles:
+      - backend
     build:
       context: .
       dockerfile: Dockerfile
@@ -238,6 +241,13 @@ services:
       timeout: 5s
       retries: 20
     restart: unless-stopped
+
+  # dummy backend and this service will be used with another services as per required dependencies
+  backend:
+    image: alpine
+    command: sh -c "while true; do sleep 1000; done"
+    healthcheck:
+      test: ["CMD", "true"]
 
   
   # applications all different types background workers
