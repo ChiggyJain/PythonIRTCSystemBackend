@@ -33,7 +33,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DB_NAME}
       MYSQL_USER: ${MYSQL_DB_USER}
-      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD
+      MYSQL_PASSWORD: ${MYSQL_DB_PASSWORD}
     env_file:
       - .env
     volumes:
