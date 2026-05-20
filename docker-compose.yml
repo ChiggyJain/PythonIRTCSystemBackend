@@ -376,6 +376,9 @@ services:
         condition: service_healthy
     command: python -m app.infrastructure.outbox.dispatchers.booking_updated_status_send_email_outbox_dispatcher
 
+
+
+# volumes config
 volumes:
   mysql_data:
   redis_data:
