@@ -6,7 +6,6 @@ from cryptography.fernet import Fernet
 from app.infrastructure.database.session import AsyncSessionLocal
 from app.common.utils.datetime import now_ist
 from app.core.settings import get_settings
-from app.infrastructure.otp.provider_factory import get_pwdchanged_sms_otp_sender
 from app.infrastructure.email.provider_factory import get_pwdchanged_email_otp_sender
 from app.infrastructure.email.base import (
     EmailSendResult,
@@ -26,7 +25,7 @@ class PwdChangedOtpDispatchConsumerService:
 
     def __init__(self):
         self.security_repo = None
-        self.sms_sender = get_pwdchanged_sms_otp_sender()
+        self.sms_sender = None
         self.email_sender = get_pwdchanged_email_otp_sender()
         self._fernet = self._build_fernet(
             secret=f"{settings.JWT_SECRET_KEY}:otp-cipher:v1"
