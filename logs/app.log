@@ -119,3 +119,4 @@
 2026-05-20 06:53:39 | INFO | MainProcess-18 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 12:23:39.003007 | 2026-05-20 12:23:39.009863 | 6 | None | 200
 2026-05-20 06:54:02 | INFO | MainProcess-18 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 12:24:02.664431 | 2026-05-20 12:24:02.676507 | 12 | None | 200
 2026-05-20 07:35:15 | INFO | ES client instances created
+2026-05-20 08:05:46 | INFO | MainProcess-119 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 13:35:45.751496 | 2026-05-20 13:35:46.095185 | 343 | None | 200
