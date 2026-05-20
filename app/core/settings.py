@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     MYSQL_DB_NAME: str
     MYSQL_DB_USER: str
     MYSQL_DB_PASSWORD: str
+    MYSQL_ROOT_PASSWORD: str
 
 
     @computed_field
