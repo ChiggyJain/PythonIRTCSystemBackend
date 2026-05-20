@@ -167,14 +167,6 @@ services:
       --bootstrap-server kafka:9092
       --create
       --if-not-exists
-      --topic payment-failed
-      --partitions 6
-      --replication-factor 1 &&
-
-      /opt/kafka/bin/kafka-topics.sh
-      --bootstrap-server kafka:9092
-      --create
-      --if-not-exists
       --topic booking-updated-status
       --partitions 6
       --replication-factor 1 &&
@@ -241,23 +233,183 @@ services:
 
   
   
-
-  station-outbox-worker:
+  # background workers for password changed
+  pwdchanged-otp-outbox-worker:
     <<: *worker-base
-    container_name: irtc-station-outbox-worker
+    container_name: irtc-pwdchanged-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.pwdchanged_otp_outbox_worker
+
+  pwdchanged-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-pwdchanged-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.pwdchanged_otp_outbox_dispatcher
+  
+  # background workers for email changed
+  emailchanged-otp-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-emailchanged-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.emailchanged_otp_outbox_worker
+
+  emailchanged-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-emailchanged-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.emailchanged_otp_outbox_dispatcher
+
+  # background workers for email verification
+  emailverification-otp-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-emailverification-otp-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.emailverification_otp_outbox_worker
+
+  emailverification-otp-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-emailverification-otp-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.emailverification_otp_outbox_dispatcher
+
+
+  # background workers for stations
+  stations-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-stations-outbox-worker
     depends_on:
       backend:
         condition: service_healthy
     command: python -m app.workers.outbox.stations_outbox_worker
 
-  station-outbox-dispatcher:
+  stations-outbox-dispatcher:
     <<: *worker-base
-    container_name: irtc-station-outbox-dispatcher
+    container_name: irtc-stations-outbox-dispatcher
     depends_on:
       backend:
         condition: service_healthy
-    command: python -m app.infrastructure.outbox.dispatchers.stations_outbox_dispatcher 
+    command: python -m app.infrastructure.outbox.dispatchers.stations_outbox_dispatcher
+
+
+  # background workers for routes
+  routes-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-routes-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.routes_outbox_worker
+
+  routes-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-routes-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.routes_outbox_dispatcher
+
+
+  # background workers for schedules
+  schedules-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-schedules-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.schedules_outbox_worker
+
+  schedules-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-schedules-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.schedules_outbox_dispatcher
+
+
+  # background workers for schedules inventory
+  schedule-inventory-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-schedule-inventory-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.schedules_inventory_worker
+
+  schedule-inventory-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-schedule-inventory-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.schedules_inventory_dispatcher
+
   
+  # background workers for schedules inventory seat availability updated
+  schedule-inventory-seat-availability-updated-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-schedule-inventory-seat-availability-updated-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.schedule_inventory_seat_availability_outbox_worker
+
+  schedule-inventory-seat-availability-updated-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-schedule-inventory-seat-availability-updated-outbox-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.schedule_inventory_seat_availability_updated_outbox_dispatcher
+
+  
+  # background workers for payment orders updated status
+  payment-updated-status-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-payment-updated-status-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.payment_orders_updated_status_outbox_worker
+
+  payment-updated-status-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-payment-updated-status-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.payment_orders_updated_status_outbox_dispatcher
+
+  
+  # background workers for booking updated status
+  booking-updated-status-outbox-worker:
+    <<: *worker-base
+    container_name: irtc-booking-updated-status-outbox-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.workers.outbox.booking_updated_status_outbox_worker
+
+  booking-updated-status-outbox-dispatcher:
+    <<: *worker-base
+    container_name: irtc-booking-updated-status-dispatcher
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: python -m app.infrastructure.outbox.dispatchers.booking_updated_status_send_email_outbox_dispatcher
+
 
 volumes:
   mysql_data:
