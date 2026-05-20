@@ -120,7 +120,7 @@ services:
           --topic \$1 \
           --partitions 6 \
           --replication-factor 1;
-      }
+      };
       create_topic pwdchanged-otp;
       create_topic emailverification-otp;
       create_topic emailchanged-otp;
