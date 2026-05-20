@@ -1,73 +1,123 @@
-# IRTC System Backend
+# 🚆 IRTC System Backend
 
-A Python FastAPI backend for the IRTC booking and notification system. This repository contains the backend service, infrastructure configuration, and Docker Compose setup to run the full stack locally.
+A Python FastAPI backend for an IRCTC-style train ticketing system with event-driven flows, search, and background workers.
 
-## Project Overview
-
-The backend is built with:
-- FastAPI
-- SQLAlchemy + Alembic for MySQL database migrations
-- Redis for caching and rate limiting
-- Kafka (KRaft) for event-driven outbox and asynchronous processing
-- Elasticsearch for search indices and discovery
-- SendGrid for email integration (configured via environment variables)
-
-The repository includes:
-- `app/` — FastAPI app code, API routes, domain logic, repositories, middlewares, workers, and infrastructure integration
-- `Dockerfile` — application container build
-- `docker-compose.yml` — full local stack including MySQL, Redis, Kafka, Elasticsearch, Kibana, phpMyAdmin, backend, and background workers
-- `start.sh` — container entrypoint script that waits for external services, runs Alembic migrations, and starts Uvicorn
+This repository includes:
+- `app/` — FastAPI application, domain logic, API routes, middleware, services, and workers
+- `Dockerfile` — backend container build definition
+- `docker-compose.yml` — full local infrastructure stack: MySQL, Redis, Kafka, Elasticsearch, Kibana, phpMyAdmin, backend, and workers
+- `start.sh` — startup wrapper for dependency checks, Alembic migration, and Uvicorn launch
 - `requirements.txt` — Python dependencies
-- `alembic/` — migration configuration and versions
-- `.env` — environment variables used by the app and Docker Compose
+- `.env` — environment configuration for local development and Docker Compose
 
-## Requirements
+## 📋 Table of Contents
 
-- Docker Engine
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Port Reference](#-port-reference)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Services](#-services)
+- [Kafka Topics](#-kafka-topics)
+- [API Documentation](#-api-documentation)
+- [Environment Variables](#-environment-variables)
+- [Project Structure](#-project-structure)
+- [Notes](#-notes)
+
+---
+
+## 🎯 Overview
+
+This project implements a backend for an IRCTC-like booking system using a single FastAPI application plus background workers and asynchronous integration with Kafka, Redis, MySQL, and Elasticsearch.
+
+The repository architecture is designed to demonstrate:
+- REST API with FastAPI
+- asynchronous event-driven processing using Kafka topics
+- database migrations with Alembic
+- caching and rate-limiting support via Redis
+- search and discovery using Elasticsearch
+- containerized local development with Docker Compose
+
+## 🏗️ Architecture
+
+The backend serves API requests and also relies on asynchronous worker processes for outbox dispatch and Kafka-based integration.
+
+Key architectural components:
+- **FastAPI backend** — main HTTP API exposed on `/api/v1`
+- **Database layer** — MySQL for application persistence
+- **Redis** — caching, rate limiting, and short-term storage
+- **Kafka** — event streaming and topic-driven workers
+- **Elasticsearch** — search index for station/route discovery
+- **Outbox workers** — asynchronous dispatch of OTP and master-data events
+
+The app combines synchronous requests with asynchronous event flows to support features such as OTP email handling, booking inventory coordination, and search indexing.
+
+## 🔌 Port Reference
+
+| Component | Local URL | Container port | Notes |
+|---|---|---|---|
+| Backend API | http://localhost:8000 | 8000 | FastAPI app /docs available |
+| phpMyAdmin | http://localhost:8080 | 80 | MySQL UI |
+| MySQL | localhost:3307 | 3306 | Database for app |
+| Redis | localhost:6380 | 6379 | Cache and rate limiting |
+| Kafka | localhost:9092 | 9092 | Event broker |
+| Elasticsearch | http://localhost:9200 | 9200 | Search index |
+| Kibana | http://localhost:5601 | 5601 | Elasticsearch UI |
+
+## 🛠️ Tech Stack
+
+### Backend
+- Python 3.12
+- FastAPI
+- Uvicorn
+- SQLAlchemy + asyncmy
+- Alembic migrations
+- Pydantic / Pydantic Settings
+- SendGrid mail integration
+
+### Infrastructure
 - Docker Compose
-- Python 3.12+ (if running locally without Docker)
+- MySQL 8.4
+- Redis 7.2
+- Apache Kafka 3.9.0 (KRaft mode)
+- Elasticsearch 8.15.1
+- Kibana 8.15.1
+- phpMyAdmin
+
+### Messaging and Search
+- Kafka topics for event-driven asynchronous workflows
+- Elasticsearch for station/route search and discovery
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+- Python 3.12+ (optional for local non-container execution)
 - Git
 
-## Setup
+### Installation
 
-### 1. Clone the repository
+Clone the repository:
 
 ```bash
-git clone https://github.com/your-repo/your-project.git
+git clone https://github.com/your-user/PythonIRTCSystemBackend.git
 cd PythonIRTCSystemBackend
 ```
 
-### 2. Review environment variables
+### Quick Start
 
-The repository contains a `.env` file with required settings for:
-- JWT configuration
-- MySQL connection
-- Redis connection
-- Kafka bootstrap servers
-- Elasticsearch connection
-- SendGrid API key
-- Internal service URLs
-- Kafka topics and outbox retry settings
+If you just pulled the code and want to launch the full stack immediately, run:
 
-Important values in `.env`:
-- `MYSQL_DB_HOST=mysql`
-- `MYSQL_DB_PORT=3306`
-- `MYSQL_DB_NAME=IRTC`
-- `MYSQL_DB_USER=c`
-- `MYSQL_DB_PASSWORD=...`
-- `MYSQL_ROOT_PASSWORD=...`
-- `REDIS_HOST=redis`
-- `REDIS_PORT=6379`
-- `KAFKA_BOOTSTRAP_SERVERS=kafka:9092`
-- `ELASTICSEARCH_URL=http://elasticsearch:9200`
-- `INVENTORY_SERVICE_BASE_URL=http://backend:8000`
-- `PAYMENT_SERVICE_BASE_URL=http://backend:8000`
+```bash
+docker compose down -v && docker compose build --no-cache && docker compose up -d --force-recreate
+```
 
-> If you need a custom configuration, copy `.env` to another file or update values locally before starting Docker.
-
-### 3. Install Python dependencies (optional, for local development)
-
-If you want to run the backend directly outside Docker:
+Install Python dependencies locally (optional):
 
 ```bash
 python -m venv venv
@@ -76,93 +126,98 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Docker Compose Setup
+### Running with Docker Compose
 
-This project is designed to run with the full stack defined in `docker-compose.yml`.
-
-### 4. Start the full stack
+Start the full stack:
 
 ```bash
 docker compose up -d
 ```
 
-This command starts the following services:
-
-- `mysql` — MySQL 8.4 database
-- `phpmyadmin` — MySQL UI at port `8080`
-- `redis` — Redis cache at port `6380`
-- `kafka` — Apache Kafka broker at port `9092`
-- `kafka-init` — topic creation helper for required topics
-- `elasticsearch` — Elasticsearch cluster at port `9200`
-- `kibana` — Kibana UI at port `5601`
-- `backend` — backend API server on port `8000`
-- `backend-dummy` — dummy dependency service for compose dependency topology
-- background worker services for OTP, station, route, schedule and outbox processing
-
-### 5. Check service status
+Verify services:
 
 ```bash
 docker compose ps
 ```
 
-### 6. View logs
+View logs:
 
 ```bash
 docker compose logs -f
 ```
 
-### 7. Stop the stack
+Stop and remove containers:
 
 ```bash
 docker compose down -v
 ```
 
-## Application Startup Behavior
+### Running Locally Without Docker
 
-The backend container uses `start.sh` as its entrypoint. It:
-
-1. Waits for MySQL, Redis, Kafka, and Elasticsearch to become available
-2. Generates/creates Alembic migration via `alembic revision --autogenerate`
-3. Applies migrations with `alembic upgrade head`
-4. Starts Uvicorn on port `8000`
-
-## Local Development
-
-If you prefer to run the backend without Docker after installing dependencies:
+The backend can be run directly if dependencies are installed, but it still requires the supporting services from Docker Compose.
 
 ```bash
 source venv/bin/activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-> Note: The backend still requires MySQL, Redis, Kafka, and Elasticsearch. It is easiest to run those dependencies with Docker Compose.
+### Elasticsearch-Only Compose
 
-## Database Migrations
-
-Use Alembic for schema management:
+To run Elasticsearch and Kibana alone:
 
 ```bash
-alembic revision --autogenerate -m "create tables"
-alembic upgrade head
+docker compose -f docker-compose.elastic.yml up -d
 ```
 
-## Available Endpoints
+## 📦 Services
 
-- Backend base URL: `http://localhost:8000`
-- API docs: `http://localhost:8000/docs`
-- OpenAPI JSON: `http://localhost:8000/openapi.json`
-- Health check: `http://localhost:8000/health`
-- Elasticsearch readiness: `http://localhost:8000/routes_es_client_ready`
-- API prefix: `/api/v1`
+### `backend`
+- Builds from `Dockerfile`
+- Serves FastAPI app on port `8000`
+- Uses `start.sh` to wait for MySQL, Redis, Kafka, Elasticsearch, then run Alembic and start Uvicorn
 
-## UI and Monitoring URLs
+### `mysql`
+- MySQL 8.4 database
+- Exposes port `3307` locally
+- Uses `.env` values for credentials
 
-- phpMyAdmin: `http://localhost:8080`
-- Kibana: `http://localhost:5601`
+### `phpmyadmin`
+- Web UI for MySQL
+- Access at `http://localhost:8080`
 
-## Kafka Topic Initialization
+### `redis`
+- Redis cache exposed on `6380` locally
 
-`docker-compose.yml` includes a `kafka-init` service that creates the following topics automatically after Kafka becomes healthy:
+### `kafka`
+- Kafka broker on `9092`
+
+### `kafka-init`
+- Creates required Kafka topics automatically
+
+### `elasticsearch`
+- Elasticsearch single-node cluster on `9200`
+
+### `kibana`
+- Kibana UI on `http://localhost:5601`
+
+### Worker services
+- `pwdchanged-otp-outbox-worker`
+- `pwdchanged-otp-outbox-dispatcher`
+- `emailchanged-otp-outbox-worker`
+- `emailchanged-otp-outbox-dispatcher`
+- `emailverification-otp-outbox-worker`
+- `emailverification-otp-outbox-dispatcher`
+- `stations-outbox-worker`
+- `stations-outbox-dispatcher`
+- `routes-outbox-worker`
+- `routes-outbox-dispatcher`
+- `schedules-outbox-worker`
+- `schedules-outbox-dispatcher`
+- and other workers defined in `docker-compose.yml`
+
+## 📡 Kafka Topics
+
+The compose stack creates these Kafka topics:
 
 - `pwdchanged-otp`
 - `emailverification-otp`
@@ -174,55 +229,128 @@ alembic upgrade head
 - `payment-updated-status`
 - `booking-updated-status`
 
-If you need to manually recreate topics, use Kafka commands from the repository notes.
+## 🧪 API Documentation
 
-## Worker Services
+The backend exposes the FastAPI docs at:
 
-Background worker containers are defined in `docker-compose.yml` for:
+- `http://localhost:8000/docs`
+- `http://localhost:8000/openapi.json`
 
-- password-changed OTP outbox and dispatcher
-- email-changed OTP outbox and dispatcher
-- email-verification OTP outbox and dispatcher
-- station outbox and dispatcher
-- route outbox and dispatcher
-- schedule outbox and dispatcher
+### Health and readiness
 
-These workers are built from the same `Dockerfile` and run Python modules under `app.workers` and `app.infrastructure.outbox.dispatchers`.
+- `GET /health` — service health
+- `GET /routes_es_client_ready` — Elasticsearch readiness for route search
 
-## Useful Commands
+### API route groups
 
-From `project_details.txt` and repository scripts:
+All API routes are mounted under `/api/v1`.
 
-```bash
-# Run backend locally
-uvicorn app.main:app --reload
+- `POST /api/v1/auth/...` — authentication, OTP, login, refresh
+- `GET/POST /api/v1/users/...` — user operations
+- `GET/POST /api/v1/admin/master-data/...` — admin/master-data CRUD
+- `GET /api/v1/search_discovery/...` — search and discovery
+- `GET/POST /api/v1/inventory/...` — inventory endpoints
+- `GET/POST /api/v1/bookings/...` — booking operations
+- `GET/POST /api/v1/payments/...` — payments and refunds
 
-# Run Alembic migrations
-alembic revision --autogenerate -m "create tables"
-alembic upgrade head
+### Example requests
 
-# Redis cleanup
-redis-cli flushdb
-redis-cli get <key>
+Send OTP:
 
-# Kafka topic management (if running Kafka locally)
-./kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --create --topic pwdchanged-otp --partitions 6 --replication-factor 1
+```http
+POST http://localhost:8000/api/v1/auth/send-otp
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
 ```
 
-## Notes
+User signup example:
 
-- The environment variables in `.env` are loaded by `app.core.settings.Settings` using Pydantic Settings.
-- `backend` container health checks the docs page: `http://localhost:8000/docs`.
-- Elasticsearch is configured for single-node mode and security is disabled in Docker Compose.
+```http
+POST http://127.0.0.1:8000/api/v1/users/signup
+Content-Type: application/json
 
-## Alternative Compose for Elasticsearch Only
-
-A separate `docker-compose.elastic.yml` is included for starting just Elasticsearch and Kibana when needed.
-
-```bash
-docker compose -f docker-compose.elastic.yml up -d
+{
+  "first_name": "Chirag",
+  "last_name": "Jain",
+  "mobile": "9975967186",
+  "email": "cjain9975@gmail.com",
+  "gender": "Male",
+  "password": "Test1@123456",
+  "confirm_password": "Test1@123456",
+  "profile": "User/Admin"
+}
 ```
 
-## Final Notes
+Verify OTP:
 
-This README documents the full local development and Docker-based environment for `PythonIRTCSystemBackend`. If you want to add new features, follow the existing app structure and keep environment variables in `.env`.
+```http
+POST http://localhost:8000/api/v1/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
+```
+
+Create booking:
+
+```http
+POST http://localhost:8000/api/v1/bookings
+Content-Type: application/json
+Authorization: Bearer <access_token>
+```
+
+## 🔐 Environment Variables
+
+Configuration is loaded from `.env` using Pydantic Settings.
+
+Important variables:
+
+- `APP_NAME`, `APP_ENV`, `APP_DEBUG`
+- `JWT_SECRET_KEY`, `TOKEN_HASH_SECRET`, `JWT_ALGORITHM`
+- `MYSQL_DB_HOST`, `MYSQL_DB_PORT`, `MYSQL_DB_NAME`, `MYSQL_DB_USER`, `MYSQL_DB_PASSWORD`, `MYSQL_ROOT_PASSWORD`
+- `REDIS_HOST`, `REDIS_PORT`, `REDIS_DB`
+- `KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_CLIENT_ID`
+- `ELASTICSEARCH_URL`, `ELASTICSEARCH_USERNAME`, `ELASTICSEARCH_PASSWORD`, `ELASTICSEARCH_VERIFY_CERTS`
+- `SENDGRID_API_KEY`, `SENDGRID_DRY_RUN`
+- `INVENTORY_SERVICE_BASE_URL`, `PAYMENT_SERVICE_BASE_URL`
+
+> Do not commit secrets or the `.env` file to version control.
+
+## 📁 Project Structure
+
+```
+PythonIRTCSystemBackend/
+├── .env
+├── Dockerfile
+├── docker-compose.yml
+├── docker-compose.elastic.yml
+├── README.md
+├── requirements.txt
+├── start.sh
+├── app/
+│   ├── api/
+│   │   └── v1/           # API routers by domain
+│   ├── common/           # shared helpers, security, cache
+│   ├── core/             # application settings, exception handlers, response wrapper
+│   ├── dependencies/     # FastAPI dependencies
+│   ├── domains/          # business logic and service classes
+│   ├── infrastructure/   # database, kafka, email, redis, outbox integrations
+│   ├── middlewares/      # middleware definitions
+│   ├── services/         # saga and background service orchestration
+│   └── workers/          # background worker entrypoints
+├── alembic/              # migration configuration and versions
+└── project_details.txt   # notes and helper commands
+```
+
+## 💡 Notes
+
+- `Dockerfile` installs dependencies, copies source code, and runs `start.sh`.
+- `start.sh` waits for MySQL, Redis, Kafka, and Elasticsearch, then runs Alembic migrations before launching Uvicorn.
+- The API is primarily served at `http://localhost:8000` and the docs are available at `http://localhost:8000/docs`.
+- `docker-compose.elastic.yml` is available for Elasticsearch + Kibana only.
+

@@ -37,14 +37,17 @@ router.include_router(
 router.include_router(
     inventory_router,
     prefix="/inventory",
+    tags=["Inventory"],
 )
 
 router.include_router(
     booking_router,
     prefix="/bookings",
+    tags=["Bookings"],
 )
 
 router.include_router(
     payment_router,
     prefix="/payments",
+    tags=["Payments"],
 )
