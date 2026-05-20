@@ -48,12 +48,53 @@ The backend serves API requests and also relies on asynchronous worker processes
 Key architectural components:
 - **FastAPI backend** — main HTTP API exposed on `/api/v1`
 - **Database layer** — MySQL for application persistence
-- **Redis** — caching, rate limiting, and short-term storage
-- **Kafka** — event streaming and topic-driven workers
+- **Redis** — fast read cache, rate limiting, frequently accessed data, and distributed seat lock management for booking operations
+- **Kafka** — event streaming and topic-driven workers for asynchronous decoupling
 - **Elasticsearch** — search index for station/route discovery
-- **Outbox workers** — asynchronous dispatch of OTP and master-data events
+- **Outbox workers** — asynchronous dispatch of domain events to Kafka
+- **Saga-style booking coordination** — booking workflows coordinate inventory locks, payment orders, and eventual confirmation or rollback
 
-The app combines synchronous requests with asynchronous event flows to support features such as OTP email handling, booking inventory coordination, and search indexing.
+The app combines synchronous request handling with asynchronous event flows to support features such as OTP email handling, booking inventory coordination, distributed locks, and search indexing.
+
+## 🧩 Event-driven Outbox + Dispatcher Pattern
+
+This project uses the Outbox pattern to keep Kafka event publishing reliable and decoupled from HTTP request handling.
+
+### Why this pattern?
+- Writes domain events to the database as part of the same transaction as business changes.
+- Prevents lost events when Kafka is temporarily unavailable.
+- Moves Kafka publish logic out of user-facing request handlers.
+- Supports retries and eventual consistency.
+
+### How the flow works
+1. Domain code creates an event record in the `outbox_events` table.
+2. An outbox worker reads pending rows and marks them processing.
+3. The worker publishes event payloads to Kafka topics.
+4. The worker marks each event published, or retries/fails if publishing fails.
+5. A dispatcher process consumes the Kafka topic and applies side effects.
+
+### Producers, topics, and consumers
+| Kafka topic | Outbox worker | Dispatcher / consumer | Container name | Consumer group |
+|---|---|---|---|---|
+| `pwdchanged-otp` | `pwdchanged-otp-outbox-worker` | `pwdchanged-otp-outbox-dispatcher` | `irtc-pwdchanged-otp-outbox-dispatcher` | `pwdchanged-otp-consumer-group` |
+| `emailverification-otp` | `emailverification-otp-outbox-worker` | `emailverification-otp-outbox-dispatcher` | `irtc-emailverification-otp-outbox-dispatcher` | `emailverification-otp-consumer-group` |
+| `emailchanged-otp` | `emailchanged-otp-outbox-worker` | `emailchanged-otp-outbox-dispatcher` | `irtc-emailchanged-otp-outbox-dispatcher` | `emailchanged-otp-consumer-group` |
+| `station` | `stations-outbox-worker` | `stations-outbox-dispatcher` | `irtc-stations-outbox-dispatcher` | `station-consumer-group` |
+| `route` | `routes-outbox-worker` | `routes-outbox-dispatcher` | `irtc-routes-outbox-dispatcher` | `route-consumer-group` |
+| `schedule` | `schedules-outbox-worker` | `schedules-outbox-dispatcher` | `irtc-schedules-outbox-dispatcher` | `schedule-consumer-group` |
+| `schedule-inventory-seat-availability-updated` | `schedule-inventory-seat-availability-updated-outbox-worker` | `schedule-inventory-seat-availability-updated-outbox-dispatcher` | `irtc-schedule-inventory-seat-availability-updated-outbox-dispatcher` | `schedule-inventory-seat-availability-updated-consumer-group` |
+| `payment-updated-status` | `payment-updated-status-outbox-worker` | `payment-updated-status-outbox-dispatcher` | `irtc-payment-updated-status-outbox-dispatcher` | `payment-updated-status-consumer-group` |
+| `booking-updated-status` | `booking-updated-status-outbox-worker` | `booking-updated-status-send-email-outbox-dispatcher` | `irtc-booking-updated-status-send-email-outbox-dispatcher` | `booking-updated-status-email-consumer-group` |
+
+### Internal architecture pattern
+The project follows a layered domain architecture:
+- `app/api/v1/` — HTTP adapters and route definitions.
+- `app/domains/` — business logic and consumer services.
+- `app/infrastructure/` — DB, Kafka, Elasticsearch, Redis, email, and outbox plumbing.
+- `app/workers/` — background workers that publish to Kafka or consume Kafka topics.
+- `app/core/`, `app/common/`, and `app/dependencies/` — shared configuration, middleware, and FastAPI integration.
+
+This structure keeps domain logic separated from infrastructure code and makes the event-driven flows clear and maintainable.
 
 ## 🔌 Port Reference
 
@@ -278,8 +319,9 @@ Content-Type: application/json
   "mobile": "9975967186",
   "email": "cjain9975@gmail.com",
   "gender": "Male",
-  "password": "",
-  "confirm_password": ""
+  "password": "Test1@123456",
+  "confirm_password": "Test1@123456",
+  "profile": "User/Admin"
 }
 ```
 
@@ -321,6 +363,8 @@ Important variables:
 > Do not commit secrets or the `.env` file to version control.
 
 ## 📁 Project Structure
+
+The repository uses a layered domain architecture that separates API adapters, domain logic, infrastructure adapters, and background workers.
 
 ```
 PythonIRTCSystemBackend/
