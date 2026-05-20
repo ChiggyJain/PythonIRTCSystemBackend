@@ -7,30 +7,15 @@ from app.infrastructure.email.base import (
 from app.infrastructure.email.sendgrid_email_sender import (
     SendGridEmailSender,
 )
-from app.infrastructure.sms.noop_sms_otp_sender import (
-    NoopSmsOtpSender
-)
 
 
 _settings = get_settings()
 
 
-_sms_sender: SmsOtpSenderBase | None = None
 _pwdchanged_email_sender_instances: EmailSenderBase | None = None
 _emailverification_email_sender_instances: EmailSenderBase | None = None
 _emailchanged_email_sender_instances: EmailSenderBase | None = None
 _booking_updated_status_email_sender_instances: EmailSenderBase | None = None
-
-
-def get_pwdchanged_sms_otp_sender() -> SmsOtpSenderBase:
-    global _sms_sender
-    if _sms_sender is not None:
-        return _sms_sender
-    provider = _settings.PWDCHANGED_OTP_SMS_PROVIDER.strip().upper()
-    if provider == "NONE":
-        _sms_sender = NoopSmsOtpSender()
-        return _sms_sender
-    raise RuntimeError(f"Unsupported OTP SMS provider: {provider}")
 
 
 
