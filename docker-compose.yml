@@ -406,7 +406,7 @@ services:
 
   payment-updated-status-outbox-dispatcher:
     <<: *worker-base
-    container_name: irtc-payment-updated-status-dispatcher
+    container_name: irtc-payment-updated-status-outbox-dispatcher
     depends_on:
       backend:
         condition: service_healthy
