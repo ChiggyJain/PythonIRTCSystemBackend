@@ -88,3 +88,4 @@
 2026-05-20 06:16:48 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:46:48.770717 | 2026-05-20 11:46:48.781690 | 10 | None | 200
 2026-05-20 06:17:23 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:47:23.608349 | 2026-05-20 11:47:23.620890 | 12 | None | 200
 2026-05-20 06:18:44 | INFO | MainProcess-17 | search:trains | 172.19.0.1 | GET | /api/v1/search/trains | 2026-05-20 11:48:44.472040 | 2026-05-20 11:48:44.482126 | 10 | None | 200
+2026-05-20 06:26:26 | INFO | ES client instances created
