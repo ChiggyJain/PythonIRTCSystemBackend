@@ -402,9 +402,9 @@ services:
         condition: service_healthy
     command: python -m app.workers.outbox.booking_updated_status_outbox_worker
 
-  booking-updated-status-outbox-dispatcher:
+  booking-updated-status-send-email-outbox-dispatcher:
     <<: *worker-base
-    container_name: irtc-booking-updated-status-dispatcher
+    container_name: irtc-booking-updated-status-send-email-outbox-dispatcher
     depends_on:
       backend:
         condition: service_healthy
