@@ -235,3 +235,6 @@
 2026-05-20 09:37:55 | INFO | ES client instances created
 2026-05-20 09:38:08 | INFO | SpawnProcess-1-84777 | login | 127.0.0.1 | POST | /api/v1/users/login | 2026-05-20 09:38:07.816141 | 2026-05-20 09:38:08.247914 | 431 | None | 200
 2026-05-20 09:38:23 | INFO | SpawnProcess-1-84777 | stations:create | 127.0.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 09:38:23.528241 | 2026-05-20 09:38:23.611507 | 83 | None | 201
+2026-05-20 04:17:23 | INFO | ES client instances created
+2026-05-20 04:25:27 | INFO | MainProcess-17 | login | 172.19.0.1 | POST | /api/v1/users/login | 2026-05-20 09:55:27.019260 | 2026-05-20 09:55:27.299997 | 280 | None | 200
+2026-05-20 04:27:03 | INFO | MainProcess-17 | stations:create | 172.19.0.1 | POST | /api/v1/admin/master-data/stations | 2026-05-20 09:56:13.332423 | 2026-05-20 09:57:03.705961 | 50373 | None | 500
